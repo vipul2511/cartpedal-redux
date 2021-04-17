@@ -66,8 +66,8 @@ class SignUPScreen extends Component {
       this.setState({callUpdate: true}, () => {
         this.props.signUpConf(this.state.name, mobileNumber, this.state.email, this.state.password)
       })
-      this.SignUPCall();
-      this.props.navigation.navigate('DashBoardScreen');
+      // this.SignUPCall();
+      // this.props.navigation.navigate('DashBoardScreen');
     }
   };
 
@@ -77,8 +77,28 @@ class SignUPScreen extends Component {
         this.SignupORNot();
       })
     }
+    // if(this.props.data.message=="Signup Successfully."){
+    //   this.props.navigation.navigate('DashBoardScreen');
+    // }
   }
-
+  async SaveLoginUserData(responseData){
+    console.log('>>>>> responseData', responseData);
+    let access_token='Bearer '+responseData.data.access_token
+    let username=responseData.data.fullname;
+    console.log("username from login",username);
+    console.log(JSON.stringify(access_token));
+    await AsyncStorage.setItem('@user_id',JSON.stringify(responseData.data.userid)).then(succ=>{
+       AsyncStorage.setItem('@access_token',JSON.stringify(access_token)).then(succID=>{
+         AsyncStorage.setItem('@fcmtoken',JSON.stringify(responseData.data.device_token)).then(succToken=>{
+           AsyncStorage.setItem('@user_name', JSON.stringify(username)).then(suuc=>{
+            this.props.navigation.navigate('DashBoardScreen');
+          });
+         });
+      });
+    });
+    console.log('user===name==', JSON.stringify(responseData.data.username))
+   
+  }
   validate = (text) => {
     console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -95,7 +115,9 @@ class SignUPScreen extends Component {
   }
 
   SignupORNot= async ()=> {
-    await AsyncStorage.setItem('@is_login','1')
+    await AsyncStorage.setItem('@is_login','1').then(succ=>{
+      this.SaveLoginUserData(this.props.data);
+    })
   }
 
   SignUPCall() {
@@ -452,7 +474,8 @@ const styles = StyleSheet.create({
 
 
 function mapStateToProps(state) {
-  const { isLoading, data, success } = state.SignUpConfReducer
+  const { isLoading, data, success } = state.SignUpConfReducer;
+  console.log(data);
   return {
     isLoading, data, success
   }

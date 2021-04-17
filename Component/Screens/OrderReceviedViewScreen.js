@@ -630,7 +630,7 @@ forwardlink =async(userid)=>{
               <Text style={styles.bottomActiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -640,7 +640,7 @@ forwardlink =async(userid)=>{
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

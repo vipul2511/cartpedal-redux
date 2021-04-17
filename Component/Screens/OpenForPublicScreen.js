@@ -466,16 +466,16 @@ class OpenForPublicScreen extends Component {
                   </Text>
                   <TouchableOpacity
                    onPress={() => {
-                      this.openImageGallery();
+                    this.openCamara();
                     }}>
-                  <Text style={styles.OptionsProfileModalStyle}> Gallery</Text>
+                  <Text style={styles.OptionsProfileModalStyle}> Camera</Text>
                   </TouchableOpacity>
                   
                  <TouchableOpacity
                   onPress={() => {
-                      this.openCamara();
+                    this.openImageGallery();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> Camera</Text>
+                 <Text style={styles.Options2ProfileModalStyle}>Gallery </Text>
                  </TouchableOpacity>
 
                  <TouchableOpacity
@@ -534,7 +534,7 @@ class OpenForPublicScreen extends Component {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -544,7 +544,7 @@ class OpenForPublicScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

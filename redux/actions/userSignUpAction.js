@@ -80,12 +80,13 @@ export const signUpConf = (name, phone, email, pass) => {
 
                 if (responseData.code == '200') {
                     // this.SignupORNot();
-                    let access_token='Bearer '+responseData.data.access_token
-                    AsyncStorage.setItem('@access_token',JSON.stringify(access_token)).then(succ=>{
-                      AsyncStorage.setItem('@user_id',JSON.stringify(responseData.data.userid)).then(success=>{
-                        // this.props.navigation.navigate('DashBoardScreen');
-                      })
-                    });
+                    console.log(responseData);
+                    // let access_token='Bearer '+responseData.data.access_token
+                    // AsyncStorage.setItem('@access_token',JSON.stringify(access_token)).then(succ=>{
+                    //   AsyncStorage.setItem('@user_id',JSON.stringify(responseData.data.userid)).then(success=>{
+                    //     // this.props.navigation.navigate('DashBoardScreen');
+                    //   })
+                    // });
                     dispatch({
                         type: USER_SIGNUP_CONF_SUCCESS,
                         payload: responseData

@@ -86,8 +86,8 @@ class ProfileScreen extends Component {
         about: '',
         About: '',
         story_id:'',
-        TotalprofileView: '',
-        totalProductViews: '',
+        TotalprofileView: '0',
+        totalProductViews: '0',
         userProfileData: '',
         userStoryName: '',
         currentUserPhone: '',
@@ -1002,6 +1002,13 @@ uploadCoverPhoto = (imageList) => {
         console.error('error message', error)
       })
       .done()
+  }
+  ListEmpty=()=>{
+    return(
+      <View style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
+        <Text style={{textAlign:'center',fontWeight:'bold',fontSize:17}}>No Product!!</Text>
+      </View>
+    )
   }
   profileMenu=()=>{
     return(

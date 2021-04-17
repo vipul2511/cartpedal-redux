@@ -266,7 +266,7 @@ forwardlink =async(userid)=>{
         if (responseData.code == '200') {
           alert('User is blocked successfully');
           this.ContactListall(this.state.phonenumber);
-          this.hideLoading();
+          // this.hideLoading();
         } else {
           //  this.setState({NoData:true});
            this.hideLoading();
@@ -378,19 +378,23 @@ forwardlink =async(userid)=>{
       
       if (accessToken) {
         this.setState({ userAccessToken: accessToken });
+        this.showLoading();
         this.ProfileViewCall();
         this.userStories();
-        this.loggedUserstory();
+        this.loggedUserstory(); 
+        setTimeout(() => {
+          this.hideLoading();
+        }, 3000);
       }
     })
 
-    AsyncStorage.getItem('@user_name').then(userName => {
-      if (userName) {
-        this.setState({userName: JSON.parse(userName)})
-        console.log('Edit user name Dhasbord ====' + userName)
-
-      }
-    });
+    // AsyncStorage.getItem('@user_name').then(userName => {
+    //   if (userName) {
+    //     this.setState({userName: JSON.parse(userName)})
+    //     console.log('Edit user name Dhasbord ====' + userName)
+       
+    //   }
+    // });
   });
   const notificationOpen = await firebase
   .notifications()
@@ -406,9 +410,10 @@ if (notificationOpen) {
   });
 }
   }
+
   customButton=()=>{
-    console.log(this.props.loggedStoriesData.data[0].stories);
     this.setState({isStoryModalVisible: false});
+    if(JSON.stringify(this.props.loggedStoriesData)!=JSON.stringify({})){
     if(this.props.loggedStoriesData.data[0].stories!=JSON.stringify({}))
     {
     if(this.state.loggeduserstory_avatar==null){
@@ -418,9 +423,10 @@ if (notificationOpen) {
      const itemImage=this.state.loggeduserstory_avatar;
       this.props.navigation.navigate('UserStoryPage',{images:itemImage,storyImages:this.props.loggedStoriesData.data[0].stories,name:this.state.userName}) 
     }
-  }else{
-    alert("No story available");
   }
+}else{
+  alert("No story available");
+}
   }
   sendMessage = (UrlLink,userID) => {
     // console.log('user id', this.props.route.params.userid);
@@ -478,7 +484,10 @@ if (notificationOpen) {
   }
  
   RecentUpdateCall (newContacts) {
-   this.props.RecentDataAction(this.state.userId, this.state.userAccessToken,newContacts);
+    this.setState({callUpdate:true},()=>{
+      this.props.RecentDataAction(this.state.userId, this.state.userAccessToken,newContacts);
+    })
+ 
   }
   loggedUserstory=()=>{
       this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
@@ -488,24 +497,15 @@ if (notificationOpen) {
   }
 
   componentDidUpdate()  {
-    if (this.props.success) {
-      // this.setState({userProfileData: this.props.data.data})
-            // this.setState({TotalprofileView: this.props.data.data.profileviews})
-            // if (this.props.data.data.avatar == null) {
-            //   this.setState({avatar: null})
-            // } else {
-            //   this.setState({avatar: this.props.data.data.avatar})
-            // }
-            // if (this.props.data.data.proviews == null) {
-            //   this.setState({totalProductViews: 0})
-            // } else {
-            //   this.setState({totalProductViews: this.props.data.data.proviews})
-            // }
-            // if (this.props.data.data.about !== null) {
-            //   this.setState({about: this.props.data.data.about})
-            // }
-            if(this.props.addStorySuccess){
-              this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
+    // console.log(this.props.addStorySuccess);
+    if(this.props.addStorySuccess){
+      this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
+    }
+    // console.log(this.props.success);
+    if (this.props.success && this.state.callUpdate) {
+       this.setState({callUpdate:false},()=>{
+            if (this.props.storiesSuccess) {
+              this.setState({user_stories: this.props.storiesData});
             }
    
     if (this.props.loggedStoriesSuccess && this.props.loggedStoriesData) {
@@ -514,14 +514,52 @@ if (notificationOpen) {
       this.setState({stories:this.props.loggedStoriesData.data[0].stories});
       this.setState({userStoryName:this.props.loggedStoriesData.data[0].name})
     }
-    // if (this.props.storiesSuccess) {
-      // this.setState({user_stories: this.props.storiesData});
-    // }
-  }
+  
+  })
+}
   }
     
-  ProfileViewCall () {
-    this.props.profileView(this.state.userId, this.state.userAccessToken)
+  ProfileViewCall=()=>{
+    // this.showLoading();
+    let formData = new FormData()
+    var urlprofile =
+      'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id='+this.state.userId
+    console.log('profileurl :' + urlprofile)
+    fetch(urlprofile, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        device_id: '1234',
+        device_token: this.state.fcmtoken,
+        device_type: 'android',
+        Authorization: JSON.parse(this.state.userAccessToken),
+      },
+    })
+      .then(response => response.json())
+      .then(responseData => {
+        if (responseData.code == '200') {
+          // console.log(responseData.data.name,responseData.data.avatar)
+          if(responseData.data.name!==null){
+            this.setState({userName:responseData.data.name});
+          }
+          if (responseData.data.avatar == null) {
+            this.setState({avatar: null,loggeduserstory_avatar:null})
+          } else {
+            this.setState({avatar:responseData.data.avatar,loggeduserstory_avatar:responseData.data.avatar})
+          }
+          if (responseData.data.about !== null) {
+            this.setState({about: responseData.data.about})
+          }
+          console.log(this.state.loggeduserstory_avatar,this.state.avatar);
+        } else {
+          console.log('profile')
+          console.log('profile Data' + responseData);
+        }
+      })
+      .catch(error => {
+        console.error(error)
+      })
+      .done()
   }
   _renderTruncatedFooter = handlePress => {
     return (
@@ -697,16 +735,17 @@ if (notificationOpen) {
                   </Text>
                   <TouchableOpacity
                    onPress={() => {
-                      this.openImageGallery();
+                    this.openCamara();
+                      
                     }}>
-                  <Text style={styles.OptionsProfileModalStyle}> Gallery</Text>
+                  <Text style={styles.OptionsProfileModalStyle}>Camera </Text>
                   </TouchableOpacity>
                   
                  <TouchableOpacity
                   onPress={() => {
-                      this.openCamara();
+                    this.openImageGallery();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> Camera</Text>
+                 <Text style={styles.Options2ProfileModalStyle}> Gallery</Text>
                  </TouchableOpacity>
 
                  <TouchableOpacity
@@ -728,7 +767,7 @@ if (notificationOpen) {
                 //this.coverPhotogallery()
                 >
                 <Image
-                  source={!isEmpty(this.props.data) ? this.props.data.data.avatar : 
+                  source={this.state.loggeduserstory_avatar!=null?{uri:this.state.loggeduserstory_avatar}: 
                     this.state.pickedImage
                   }
                   style={styles.ImageViewStyle}
@@ -750,10 +789,12 @@ if (notificationOpen) {
                       <TouchableOpacity
                         style={styles.storyItemBox}
                         onPress={() => {
+                          console.log(item);
                           this.props.navigation.navigate('StoryViewScreen', {
-                           position:index, images:item.avatar,storyImages:item.stories,name:item.name,userid:item.id,storyArray:this.state.user_stories
+                           position:index, images:item.avatar,storyImages:item.stories,name:item.name,userid:item.id,storyArray:this.props.storiesData
                           })
-                        }}>
+                        }
+                        }>
                         <Image
                           source={
                             item.avatar == null
@@ -781,7 +822,7 @@ if (notificationOpen) {
                     // this.props.navigation.navigate('ShareWithScreen')
                   }}>
                   <Image
-                    source={!isEmpty(this.props.data) ? this.props.data.data.avatar : 
+                    source={this.state.avatar!=null?{uri:this.state.avatar}:
                       this.state.pickedImage
                     }
                     style={styles.Profile2ImageViewStyle}
@@ -796,16 +837,16 @@ if (notificationOpen) {
                   {this.state.userName}
                 </Text>
                 <View style={{width:width*0.8}}>
-                  {/* {!isEmpty(this.props.data) ? (
+                  {this.state.about!=''? (
                     <SeeMore
                     style={styles.ProfileDescription}
                     numberOfLines={3}
                     linkColor='red'
                     seeMoreText='read more'
                     seeLessText='read less'>
-                      {this.props.data.data.about}
+                      {this.state.about}
                       </SeeMore>
-                  ) : null} */}
+                  ) : null}
                 </View>
               </View>
               <View style={styles.RiyaMenuContainer}>
@@ -1045,7 +1086,7 @@ if (notificationOpen) {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -1055,7 +1096,7 @@ if (notificationOpen) {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -1583,7 +1624,8 @@ function mapStateToProps(state) {
   const { data: storiesData, success: storiesSuccess } = state.storiesReducer
   const { data: loggedStoriesData, success: loggedStoriesSuccess } = state.loggedStoriesReducer
    const {data:recentData,success:recentDataSuccess}= state.RecentDataReducer
-   const {success:addStorySuccess} = state.addStoryReducer;
+   const {success:addStorySuccess,data:addStorydata} = state.addStoryReducer;
+   const {success:profileSuccess,data:profileData} = state.ProfileViewReducer;
   return {
     isLoading, data, success, storiesData, storiesSuccess, loggedStoriesData, loggedStoriesSuccess,recentData,recentDataSuccess,addStorySuccess
   }

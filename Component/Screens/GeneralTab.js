@@ -465,7 +465,7 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
               data={this.state.RescentProduct}
               keyExtractor={item => item.personName}
               renderItem={({item,index}) => {
-                console.log('general data',item)
+                // console.log('general data',item)
                 return(
                 <TouchableOpacity onPress={() => {
                   this.props.navigation.navigate('OpenForPublicDetail',{id:item.id,name:item.name});

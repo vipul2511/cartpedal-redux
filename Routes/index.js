@@ -133,6 +133,7 @@ export function MainStack() {
       <Stack.Screen name="AdminReport" component={AdminReport} />
       <Stack.Screen name="ReportIssue" component={ReportIssue} />
       <Stack.Screen name="AddMoreShare" component={AddMoreShare} />
+      <Stack.Screen name="FliterScreen" component={FliterScreen} />
     </Stack.Navigator>
   );
 }

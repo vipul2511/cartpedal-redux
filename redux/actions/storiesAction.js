@@ -81,6 +81,7 @@ export const loggedStoriesAction = (userId, userAccessToken) => {
             .then(responseData => {
 
                 if (responseData.code == '200') {
+                    
                     dispatch({
                         type: GET_LOGGED_STORIES_SUCCESS,
                         payload: responseData

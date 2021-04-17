@@ -33,7 +33,7 @@ export const RecentDataAction = (userId,userAccessToken,newContacts)=> {
       .then(response => response.json())
       .then(responseData => {
         if (responseData.code == '200') {
-          // console.log('redux api data',responseData);
+          console.log('redux api data',responseData);
             dispatch({
                 type: GET_RECENT_SUCCESS,
                 payload: responseData.data

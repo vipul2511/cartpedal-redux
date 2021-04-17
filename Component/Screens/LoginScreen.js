@@ -58,7 +58,9 @@ class LoginScreen extends Component {
     }
 
     else {
+      this.setState({callUpdate: true}, () => {
       this.props.signin(this.state.phone_number, this.state.password, this.state.fcmtoken);
+      });
       // this.showLoading();
       // this.loginCall();
     //  this.props.navigation.navigate('DashBoardScreen')
@@ -66,15 +68,19 @@ class LoginScreen extends Component {
     }
   };
    componentDidUpdate()  {
-     if (this.props.success) {
+     console.log('execut',this.props.success,this.state.callUpdate);
+     if (this.props.success && this.state.callUpdate) {
+      this.setState({ callUpdate: false }, () => {
          this.LoginOrNot()
-       this.SaveLoginUserData(this.props.data)
-      this.props.navigation.navigate('DashBoardScreen')
-
+        // console.log('exue one')
+        // this.props.navigation.navigate('DashBoardScreen');
+    })
      }
    }
   LoginOrNot = async () => {
-    await AsyncStorage.setItem('@is_login', "1");
+    await AsyncStorage.setItem('@is_login', "1").then(succc=>{
+      this.SaveLoginUserData(this.props.data)
+    })
 
   }
 
@@ -87,13 +93,13 @@ class LoginScreen extends Component {
     await AsyncStorage.setItem('@user_id',JSON.stringify(responseData.data.userid)).then(succ=>{
        AsyncStorage.setItem('@access_token',JSON.stringify(access_token)).then(succID=>{
          AsyncStorage.setItem('@fcmtoken',JSON.stringify(responseData.data.device_token)).then(succToken=>{
-          // this.props.navigation.navigate('DashBoardScreen');
+           AsyncStorage.setItem('@user_name', JSON.stringify(username)).then(suuc=>{
+            this.props.navigation.navigate('DashBoardScreen');
+          });
          });
       });
     });
-    await AsyncStorage.setItem('@user_name', JSON.stringify(username));
-  
-    console.log('user===name==', JSON.stringify(responseData.data.username))
+    
    
   }
 
