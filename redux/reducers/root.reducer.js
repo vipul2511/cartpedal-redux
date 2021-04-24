@@ -11,7 +11,8 @@ import loggedStoriesReducer from './loggedUserStoryReducer';
 import RecentDataReducer from './RecentDataReducer';
 import addStoryReducer from './addStoryReducer';
 import productListReducer from './ProductListReducer';
-export default combineReducers({
+import {RESET_STORE} from '../actions/index.actions';
+const appReducer= combineReducers({
     signinReducer,
     forgotPassReducer,
     forgotPassOtpReducer,
@@ -25,3 +26,12 @@ export default combineReducers({
     addStoryReducer,
     productListReducer
 });
+const rootReducer = (state, action) => {
+    if (action.type === RESET_STORE) {
+        console.log('state',state)
+      state = undefined;
+    }
+    return appReducer(state, action)
+  }
+   
+  export default rootReducer;

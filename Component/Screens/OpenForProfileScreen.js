@@ -10,7 +10,8 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Share,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native'
 import resp from 'rn-responsive-font'
 import Toast from 'react-native-simple-toast'
@@ -23,12 +24,12 @@ import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase'
 console.disableYellowBox = true
 
-
+let width=Dimensions.get('window').width;
 
 class OpenForProfileScreen extends Component {
   constructor(props) {
     super(props);
-    console.log('props id',JSON.stringify(this.props.route.params.id));
+    // console.log('props id',JSON.stringify(this.props.route.params.id));
     this.UserProfileCall = this.UserProfileCall.bind(this),
     this.AddFavourite = this.AddFavourite.bind(this); 
     this.state = {
@@ -119,16 +120,16 @@ class OpenForProfileScreen extends Component {
 
   async componentDidMount() {
     this.showLoading();
-     console.log("working ID");
+    //  console.log("working ID");
      AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + accessToken);
+        // console.log("Edit access token ====" + accessToken);
         //this.RecentUpdateCall();
       }
     });
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
+      // console.log("Edit user id token=" +token);
       if (token) {
         this.setState({ fcmToken: token });
       }
@@ -136,10 +137,10 @@ class OpenForProfileScreen extends Component {
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
           this.setState({ userNo: userId });
-          console.log(" id from login  user id ====" + userId);
+          // console.log(" id from login  user id ====" + userId);
           this.UserProfileCall();
       }else{
-        console.log("else is executed");
+        // console.log("else is executed");
         this.hideLoading();
       }
   });
@@ -149,7 +150,7 @@ class OpenForProfileScreen extends Component {
 }
 
   actionOnRow(item) {
-    console.log('Selected Item :', item)
+    // console.log('Selected Item :', item)
     this.props.navigation.navigate('ProductDetailScreen')
   }
 
@@ -163,11 +164,11 @@ class OpenForProfileScreen extends Component {
     formData.append('user_id', id);
     formData.append('block_id',block_id);
     formData.append('type', 1);
-    console.log('form data==' + JSON.stringify(formData));
+    // console.log('form data==' + JSON.stringify(formData));
 
   // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
-    console.log('Add product Url:' + fav)
+    // console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
       headers: new Headers({
@@ -193,8 +194,8 @@ class OpenForProfileScreen extends Component {
           // alert(responseData.data.password)
            this.setState({NoData:true});
         }
-        console.log('response object:', responseData)
-        console.log('User user ID==', JSON.stringify(responseData))
+        // console.log('response object:', responseData)
+        // console.log('User user ID==', JSON.stringify(responseData))
       })
       .catch(error => {
         this.hideLoading();
@@ -235,7 +236,7 @@ class OpenForProfileScreen extends Component {
   //    .then((url) => {
   //      console.log('the url',url);
   //    });
-  console.log('working')
+  // console.log('working')
      const link = 
   new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
   .android.setPackageName('com.cart.android')
@@ -244,7 +245,7 @@ class OpenForProfileScreen extends Component {
 firebase.links()
     .createDynamicLink(link) // <--- (Optional)SHORT or UNGUESSABLE 
     .then((url) => {
-      console.log('the url',url);
+      // console.log('the url',url);
       this.onShare(url);
     });
    }
@@ -258,7 +259,7 @@ firebase.links()
    firebase.links()
      .createDynamicLink(link)
      .then((url) => {
-       console.log('the url',url);
+      //  console.log('the url',url);
       //  this.sendMessage(url,userid);
       AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
         if(NumberFormat){
@@ -279,14 +280,14 @@ firebase.links()
     let formData = new FormData()
   
     formData.append('user_id', + this.state.userNo);
-    console.log('user id in from Data',this.state.userNo);
-    console.log('props id in params',this.props.route.params.id);
+    // console.log('user id in from Data',this.state.userNo);
+    // console.log('props id in params',this.props.route.params.id);
      
     formData.append('profile_id',this.props.route.params.id)
-    console.log('form data==' + formData)
+    // console.log('form data==' + formData)
   
     var userProfile = this.state.baseUrl + 'api-user/user-profile'
-    console.log('UserProfile Url:' + userProfile)
+    // console.log('UserProfile Url:' + userProfile)
     fetch(userProfile, {
       method: 'Post',
       headers: {
@@ -311,7 +312,7 @@ firebase.links()
            responseData.data[0].covers.map((item)=>{
              imageArr.push(item.image);
            });
-           console.log('image array',imageArr);
+          //  console.log('image array',imageArr);
            this.setState({images:imageArr});
          }
           if(responseData.data[0].about!==null){
@@ -323,28 +324,28 @@ firebase.links()
             this.setState({avatar:responseData.data[0].avatar});
           }
           if(responseData.data[0].products!==undefined&&responseData.data[0].products.length>0){
-            console.log('if executed');
+            // console.log('if executed');
             this.setState({ProfileData:responseData.data[0].products});
             this.setState({wholeData:responseData.data[0]});
         }else{
-          console.log('else executed');
+          // console.log('else executed');
           this.setState({NoData:true});
             this.setState({ProfileData:''});
         }
         
         this.setState({block_id:responseData.data[0].id});
         this.setState({favourite:responseData.data[0].favourite})
-        console.log('Block========',JSON.stringify(responseData.data));
-        console.log('fevtert========',responseData.data[0].favourite);
+        // console.log('Block========',JSON.stringify(responseData.data));
+        // console.log('fevtert========',responseData.data[0].favourite);
          
        
         } else {
           // alert(responseData.data);
-          console.log(responseData.message)
+          // console.log(responseData.message)
         }
       
   
-         console.log('response profile data:', JSON.stringify(responseData))
+        //  console.log('response profile data:', JSON.stringify(responseData))
        
        
       })
@@ -373,7 +374,7 @@ firebase.links()
     await AsyncStorage.setItem('@access_token', responseData.data.access_token.toString());
     await AsyncStorage.setItem('@PofileUser',responseData.data.id.toString());
      
- console.log('Profile',responseData.data.userId);
+//  console.log('Profile',responseData.data.userId);
 }
    
   render() {
@@ -441,7 +442,7 @@ firebase.links()
               <Text style={styles.PersonNameStyle}>{this.props.route.params.name}</Text>
               <View style={styles.ListMenuContainer2}>
           <TouchableOpacity style={styles.messageButtonContainer} onPress={() => {
-                            console.log('chat screen',this.state.wholeData.id);
+                            // console.log('chat screen',this.state.wholeData.id);
                             this.props.navigation.navigate('ChatDetailScreen',{userid:this.state.wholeData.id, username:this.props.route.params.name,userabout:this.state.about,useravatar:this.state.avatar,groupexit:false,groupId:"0",msg_type:"0",userphone:this.state.wholeData.mobile})
                         // this.props.navigation.navigate('ChatDetailScreen',{userid:this.state.wholeData.id})
                       }}>
@@ -482,8 +483,8 @@ firebase.links()
               <View style={styles.PersonInfoContainer}>
                 
                 <View style={styles.card}>
-                  <View style={{width:400}}>
-                {this.state.about? (<SeeMore style={styles.PersonDescriptionStyle} numberOfLines={2}  linkColor="red" seeMoreText="read more" seeLessText="read less">
+                  <View style={{width:width-30}}>
+                {this.state.about? (<SeeMore style={styles.PersonDescriptionStyle} numberOfLines={1}  linkColor="red" seeMoreText="read more" seeLessText="read less">
                         {this.state.about}
                   </SeeMore>):null}
                   </View>
@@ -509,7 +510,7 @@ firebase.links()
               numColumns={2}
               ListEmptyComponent={this.ListEmpty}
               renderItem={({ item }) => {
-                console.log("imageprofile====",JSON.stringify(item))
+                // console.log("imageprofile====",JSON.stringify(item))
                 return (
                   // <Text>hi</Text>
                 <TouchableOpacity style={styles.listItem}

@@ -81,7 +81,7 @@ export const loggedStoriesAction = (userId, userAccessToken) => {
             .then(responseData => {
 
                 if (responseData.code == '200') {
-                    
+                    console.log('logged tory',responseData)
                     dispatch({
                         type: GET_LOGGED_STORIES_SUCCESS,
                         payload: responseData

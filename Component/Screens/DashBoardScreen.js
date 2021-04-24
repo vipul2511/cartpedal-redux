@@ -28,10 +28,11 @@ import ProfileCustomMenuIcon from './ProfileCustomMenuIcon'
 // import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firebase from 'react-native-firebase'
 import SeeMore from 'react-native-see-more-inline'
+import { DESTROY_SESSION } from "../../redux/actions/types";
 import {BackHandler} from 'react-native'
 import {isEmpty, isNull} from 'lodash'
 import Contacts from 'react-native-contacts';
-import {profileView, storiesAction, loggedStoriesAction,RecentDataAction,addStoryAction} from '../../redux/actions';
+import {profileView, storiesAction, loggedStoriesAction,RecentDataAction,addStoryAction,resetStore} from '../../redux/actions';
 import { connect} from 'react-redux'
 
 
@@ -79,6 +80,7 @@ class DashBoardScreen extends Component {
         loggeduserstory_avatar: null,
         pickedImage: require('../images/default_user.png'),
         RecentUpdateProduct: '',
+        callUpdate:false
       }
   }
 
@@ -362,7 +364,7 @@ forwardlink =async(userid)=>{
 
   componentDidMount=async ()=> {
     this.focusListener = this.props.navigation.addListener("focus", () => {
-    this.requestCameraPermission();
+    // this.requestCameraPermission();
     this.requestReadContactsPermission();
     AsyncStorage.getItem('@fcmtoken').then(token => {
       if (token) {
@@ -382,9 +384,6 @@ forwardlink =async(userid)=>{
         this.ProfileViewCall();
         this.userStories();
         this.loggedUserstory(); 
-        setTimeout(() => {
-          this.hideLoading();
-        }, 3000);
       }
     })
 
@@ -466,9 +465,10 @@ if (notificationOpen) {
       });
   };
   addStoryApi=(data)=>{
-    this.showLoading();
-    this.props.addStoryAction(this.state.userId,this.state.userAccessToken,data);
-    this.hideLoading();
+    this.setState({addstoryload:true},()=>{
+      this.props.addStoryAction(this.state.userId,this.state.userAccessToken,data);
+    })
+
   }
   ListEmpty = () => {
     return (
@@ -497,26 +497,24 @@ if (notificationOpen) {
   }
 
   componentDidUpdate()  {
-    // console.log(this.props.addStorySuccess);
-    if(this.props.addStorySuccess){
-      this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
+    // console.log('add story',this.props.recenterror,this.props.recentData)
+    if(this.props.addStorySuccess && this.state.addstoryload){
+      this.setState({addstoryload:false},()=>{
+        this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
+        this.hideLoading();
+      })
     }
-    // console.log(this.props.success);
-    if (this.props.success && this.state.callUpdate) {
-       this.setState({callUpdate:false},()=>{
-            if (this.props.storiesSuccess) {
-              this.setState({user_stories: this.props.storiesData});
-            }
-   
-    if (this.props.loggedStoriesSuccess && this.props.loggedStoriesData) {
-      // this.setState({loggeduser_stories:this.props.loggedStoriesData.data[0]});
-      this.setState({loggeduserstory_avatar:this.props.loggedStoriesData.data[0].avatar});
-      this.setState({stories:this.props.loggedStoriesData.data[0].stories});
-      this.setState({userStoryName:this.props.loggedStoriesData.data[0].name})
+    // console.log('error of data',this.props.recenterror,this.state.callUpdate)
+    if(this.props.recenterror && this.state.callUpdate){
+      this.setState({callUpdate:false,NoData:true},()=>{
+        this.hideLoading();
+        }); 
     }
-  
-  })
-}
+    // console.log('recent',this.props.recentDataSuccess,'data',this.state.callUpdate);
+    if(this.props.recentDataSuccess && this.state.callUpdate){
+      console.log('entered');
+      this.setState({callUpdate:false,spinner:false});
+    }
   }
     
   ProfileViewCall=()=>{
@@ -578,7 +576,7 @@ if (notificationOpen) {
   logOut=()=>{
     AsyncStorage.removeItem('@user_id').then(succss=>{
       AsyncStorage.removeItem('@access_token').then(resul=>{
-        this.props.navigation.navigate('LoginScreen');
+          this.props.navigation.navigate('LoginScreen');
       })
     })
   }
@@ -601,6 +599,7 @@ if (notificationOpen) {
   }
   onImagePick(response){
    // let newImage=this.state.newImageArr;
+   this.showLoading();
     let imgOjc= {
       path:response.path,
         type:response.mime,
@@ -672,6 +671,7 @@ if (notificationOpen) {
       .done()
   }
   render () {
+    // const {resetStore}=this.props
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -684,8 +684,11 @@ if (notificationOpen) {
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity
               onPress={() => {
-                AsyncStorage.removeItem('@is_login')
-               this.logOut()
+                // resetStore
+                AsyncStorage.removeItem('@is_login').then(succ=>{
+                  this.logOut()
+                })
+               
               }}>
               <Text style={styles.backButtonStyle}>Log Out</Text>
             </TouchableOpacity>
@@ -715,6 +718,7 @@ if (notificationOpen) {
         <Modal
               animationType='slide'
               transparent={true}
+              useNativeDriver={true}
               visible={this.state.isStoryModalVisible}
               onRequestClose={() => this.closeProfileModal()}>
               <View style={styles.centeredView}>
@@ -836,7 +840,7 @@ if (notificationOpen) {
                 <Text style={styles.PersonNameStyle}>
                   {this.state.userName}
                 </Text>
-                <View style={{width:width*0.8}}>
+                <View style={{width:width*0.7}}>
                   {this.state.about!=''? (
                     <SeeMore
                     style={styles.ProfileDescription}
@@ -863,10 +867,11 @@ if (notificationOpen) {
                 <TouchableOpacity>
                   <CustomMenuIcon
                     menutext='Menu'
-                    menustyle={{
-                      marginRight: 5,
-                      flexDirection: 'row',
-                      justifyContent: 'flex-end',
+                    menustyle={{ 
+                      left:4,
+                      position:'absolute',
+                      // flexDirection: 'row',
+                      // justifyContent: 'flex-end',
                     }}
                     textStyle={{
                       color: 'white',
@@ -919,11 +924,11 @@ if (notificationOpen) {
                     <View style={styles.ProfileInfoContainer}>
                       <Text style={styles.PersonNameStyle}>{item.name}</Text>
                       <View style={{marginLeft: resp(0),width:width*0.75}}>
-                        {/* {item.about ? (
+                        {item.about ? (
                    <SeeMore style={styles.ProfileDescription} numberOfLines={2}  linkColor="red" seeMoreText="read more" seeLessText="read less">
                             {item.about.substring(0,50)+".."}
                             </SeeMore>
-                        ) : null} */}
+                        ) : null}
                       </View>
                       {/* <Text >{item.about}</Text> */}
                     </View>
@@ -952,8 +957,8 @@ if (notificationOpen) {
                       <MenuIcon
                         menutext='Menu'
                         menustyle={{
-                          marginRight: 5,
-                          // position:'absolute',
+                          right:5,
+                          position:'absolute',
                           flexDirection: 'row',
                           justifyContent: 'flex-end',
                         }}
@@ -1121,7 +1126,6 @@ if (notificationOpen) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
     backgroundColor: '#fff',
   },
   Profile2Container: {
@@ -1473,13 +1477,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#9da1a3',
   },
   RiyaMenuContainer: {
-    margin: resp(15),
+  flex:0.2,
     marginTop: resp(5),
     flexDirection: 'row',
-    flex: 0.1,
-
-    width: resp(80),
-    height: resp(40),
+    // width: resp(80),
+    // height: resp(40),
   },
   ListMenuContainer: {
     marginTop: resp(20),
@@ -1623,13 +1625,13 @@ function mapStateToProps(state) {
   const { isLoading, data, success } = state.signinReducer
   const { data: storiesData, success: storiesSuccess } = state.storiesReducer
   const { data: loggedStoriesData, success: loggedStoriesSuccess } = state.loggedStoriesReducer
-   const {data:recentData,success:recentDataSuccess}= state.RecentDataReducer
+   const {data:recentData,success:recentDataSuccess,isLoading:loadingRecentData,error:recenterror}= state.RecentDataReducer
    const {success:addStorySuccess,data:addStorydata} = state.addStoryReducer;
-   const {success:profileSuccess,data:profileData} = state.ProfileViewReducer;
   return {
-    isLoading, data, success, storiesData, storiesSuccess, loggedStoriesData, loggedStoriesSuccess,recentData,recentDataSuccess,addStorySuccess
+    isLoading, data, success, storiesData,loadingRecentData,recenterror, storiesSuccess, loggedStoriesData, loggedStoriesSuccess,recentData,recentDataSuccess,addStorySuccess
   }
 }
+
 
 export default connect(mapStateToProps, { profileView, storiesAction, loggedStoriesAction,RecentDataAction,addStoryAction})(DashBoardScreen);
 

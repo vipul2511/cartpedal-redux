@@ -34,7 +34,9 @@ export default function(state = initialState, action) {
         case GET_RECENT_UPDATE_PROPS:
             return {
                 ...state,
-                [action.payload.prop]: action.payload.value
+                errorMessage: action.payload.message,
+                error:true,
+                isLoading: false,
             }
         default:
             return state

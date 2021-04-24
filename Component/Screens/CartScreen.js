@@ -30,7 +30,14 @@ class CartScreen extends Component {
     super(props)
     this.state = {}
   }
-
+  onChangeRefreshTab=(value)=>{
+    console.log('value of i',value);
+    if(value==1){
+      this.orderPlace.CartListCall() 
+    }
+    if(value==0) this.cartOrder.CartListCall()
+    if(value==2)this.orderReceived.CartListCall();
+   }
   render () {
     return (
       <SafeAreaView style={styles.container}>
@@ -61,6 +68,7 @@ class CartScreen extends Component {
             <Tabs 
               tabBarUnderlineStyle={{backgroundColor: '#F01738'}}
               tabBarActiveTextColor={'red'}
+              onChangeTab={(i)=>{this.onChangeRefreshTab(i.i)}}
               tabBarInactiveTextColor='#7F7F7F'>
               <Tab
                 heading={
@@ -68,7 +76,7 @@ class CartScreen extends Component {
                     <Text style={{fontWeight: 'bold',fontSize:resp(14)}}>Cart </Text>
                   </TabHeading>
                 }>
-                <CartPlaceScreen navigation={this.props.navigation} />
+                <CartPlaceScreen ref={(ref) => this.cartOrder = ref} navigation={this.props.navigation} />
               </Tab>
               <Tab
                 heading={
@@ -76,7 +84,7 @@ class CartScreen extends Component {
                     <Text style={{fontWeight: 'bold',fontSize:resp(14)}}>Order Placed</Text>
                   </TabHeading>
                 }>
-                <OderPlacedScreen navigation={this.props.navigation} />
+                <OderPlacedScreen ref={(ref) => this.orderPlace = ref} navigation={this.props.navigation} />
               </Tab>
               <Tab
                 heading={
@@ -84,7 +92,7 @@ class CartScreen extends Component {
                     <Text style={{fontWeight: 'bold',fontSize:resp(14)}}>Order Received</Text>
                   </TabHeading>
                 }>
-                <OderReceivedScreen navigation={this.props.navigation} />
+                <OderReceivedScreen ref={(ref) => this.orderReceived = ref} navigation={this.props.navigation} />
               </Tab>
             </Tabs>
           </Container>

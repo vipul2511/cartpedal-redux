@@ -689,7 +689,7 @@ const styles = StyleSheet.create({
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
-    flex: 0.53,
+    flex: 0.62,
    
     width: resp(0),
     height: resp(30),

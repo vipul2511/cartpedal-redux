@@ -19,7 +19,8 @@ export default function(state = initialState, action) {
                 ...state,
                 data: action.payload,
                 isLoading: false,
-                success: true
+                success: true,
+                error:false
             }
         case GET_PRODUCT_ERROR:
             return {

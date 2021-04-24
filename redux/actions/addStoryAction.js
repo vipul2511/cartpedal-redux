@@ -47,7 +47,7 @@ console.log('Add product Url:' + otpUrl)
   .catch(error => {
     console.error('error message', error);
     dispatch({
-        type: GET_STORIES_ERROR,
+        type: ADD_STORIES_ERROR,
         payload: error
     })
   })

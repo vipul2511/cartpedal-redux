@@ -45,69 +45,6 @@ class CartPlaceScreen extends Component {
         whiteIcon:require('../images/dislike.png'),
         pickedImage:require('../images/default_user.png'),
         avatar:'',
-        data: [
-          {
-            ImagePerson: require('../images/RiyaJainImage.png'),
-            personName: 'Rahul Jain',
-            Description: ' Description is the pattern of narrative',
-            message_icon: require('../images/message_icon.png'),
-            heart_icon: require('../images/Heart_icon.png'),
-            View_all: 'View All',
-            menuButtom: require('../images/more.png'),
-            productImage: require('../images/ProductImage.png'),
-            ItemName: 'Western Wear',
-            ItemPrice: '500',
-            productImage2: require('../images/ProductImage2.png'),
-            ItemName2: 'Foot Wear',
-            ItemPrice2: '300',
-            productImage3: require('../images/ProductImages3.png'),
-            ItemName3: 'Accessories ',
-            ItemPrice3: '500',
-            productImage4: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '300',
-            productImage5: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '300',
-            Cart_itemName: 'Cart Item',
-            Cart_ItemValue: '12',
-            Cart_itemName2: 'Cart Value',
-            Cart_ItemValue2: '20',
-            placeOder_button: 'Accepted'
-
-
-
-          },
-          {
-            ImagePerson: require('../images/productImage4.png'),
-            personName: 'Gaurav Jain',
-            Description: ' Description is the pattern of narrative',
-            message_icon: require('../images/message_icon.png'),
-            heart_icon: require('../images/Heart_icon.png'),
-            View_all: 'View All',
-            menuButtom: require('../images/more.png'),
-            productImage: require('../images/productImage4.png'),
-            ItemName: 'Western Wear',
-            ItemPrice: '120',
-            productImage2: require('../images/productImage5.png'),
-            ItemName2: 'Foot Wear',
-            ItemPrice2: '216',
-            productImage3: require('../images/productImage5.png'),
-            ItemName3: 'Accessories ',
-            ItemPrice3: '246',
-            productImage4: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '296',
-            productImage5: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '300',
-            Cart_itemName: 'Cart Item',
-            Cart_ItemValue: '12',
-            Cart_itemName2: 'Cart Value',
-            Cart_ItemValue2: '20',
-            placeOder_button: 'Accepted'
-          },
-        ],
       }
   }
 
@@ -187,14 +124,17 @@ class CartPlaceScreen extends Component {
     );
   };
   CartListCall() {
+    let userAccessToken,fcmToken,userNo;
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      userAccessToken= accessToken
+  AsyncStorage.getItem('@fcmtoken').then((token) => {
+    console.log("Edit user id token=" +token);
+      fcmToken= token;
+  AsyncStorage.getItem('@user_id').then((userId) => {
+      userNo= userId;
     let formData = new FormData()
-
-    formData.append('user_id', this.state.userNo)
+    formData.append('user_id',userNo)
     formData.append('type', 2)
-
-console.log('token',this.state.userAccessToken);
-
-
     console.log('form data==' + JSON.stringify(formData))
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var CartList = "http://www.cartpedal.com/frontend/web/api-product/cart-list"
@@ -204,9 +144,9 @@ console.log('token',this.state.userAccessToken);
       headers: new Headers({
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
-        device_token:this.state.fcmToken,
+        device_token:fcmToken,
         device_type: 'android',
-        Authorization: JSON.parse(this.state.userAccessToken),  
+        Authorization: JSON.parse(userAccessToken),  
         // Authorization: 'Bearer k42uBT6HNYRZup8taAw3p5J8HsbUd50wBZ1VLSba'
 
       }),
@@ -234,22 +174,14 @@ console.log('token',this.state.userAccessToken);
             this.setState({Oder_id:responseData.data[0].orderid})
             console.log('oderiD',responseData.data[0].orderid)
         }else{
-        //  console.log('else executes');
-        //   this.setState({ NoData: true });
-        //   this.setState({OderRecevieProduct:''})
         }
-          // this.SaveProductListData(responseData)
 
         } else {
-          // alert(responseData.data);
-          // alert(responseData.data.password)
           this.setState({ NoData: true });
         }
 
         console.log('response object:', responseData)
         console.log('User user ID==', JSON.stringify(responseData))
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
       .catch(error => {
         this.hideLoading();
@@ -257,7 +189,9 @@ console.log('token',this.state.userAccessToken);
       })
 
       .done()
-
+    });
+  });
+});
   }
   AskForStautsCall(orderID,blockID) {
     let formData = new FormData()
@@ -454,7 +388,7 @@ forwardlink =async(userid)=>{
             // renderItem={({ item }) => <ParsonProfile item={item} />}
             keyExtractor={(item,index) =>index}
             renderItem={({ item,index }) => {
-              console.log('order recevied',JSON.stringify(item));
+              // console.log('order recevied',JSON.stringify(item));
               return(
                 <View>
                 {item.products[0]?(  <TouchableOpacity style={styles.itemBox} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,wholeData:item })}}>
@@ -986,7 +920,7 @@ const styles = StyleSheet.create({
     margin: resp(15),
     marginTop: resp(15),
     flexDirection: 'column',
-    flex: 0.8,
+    flex: 0.68,
     width: resp(70),
     height: resp(70),
   },
@@ -1003,7 +937,7 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     marginLeft:resp(20),
     flexDirection: 'row',
-    flex: 0.8,
+    flex: 0.85,
      width: resp(0),
     height: resp(40),
   },

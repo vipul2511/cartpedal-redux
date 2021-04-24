@@ -26,7 +26,8 @@ export default function(state = initialState, action) {
                 ...state,
                 errorMessage: action.payload.message,
                 isLoading: false,
-                error: true
+                error: true,
+                success:false
             }
         case USER_SIGNIN_UPDATE_PROPS:
             return {

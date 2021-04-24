@@ -69,16 +69,7 @@ this.props.navigation.addListener('focus', this.load)
                    this.props.navigation.navigate('DashBoardScreen')
                }
            });
-            // AsyncStorage.getItem('@isSignUp').then((isSignUp) =>{
-            //     if(isSignUp==undefined || isSignUp=='0'){
-            //         this.props.navigation.navigate('LoginScreen')
-            //     }else if(isSignUp=='1'){
-            //         this.props.navigation.navigate('DashBoardScreen')
-            //     }
-            // })
-
-
-        }, 4000);
+        }, 2000);
        
     }
     

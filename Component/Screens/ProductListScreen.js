@@ -11,7 +11,8 @@ import {
   SafeAreaView,
   TouchableNativeFeedback,
   Modal,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native'
 import resp from 'rn-responsive-font'
 import Toast from 'react-native-simple-toast'
@@ -22,7 +23,7 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import {tickIcon } from '../Component/Images';
 // import { NavigationActions, withNavigation } from 'react-navigation';
 
-
+let width=Dimensions.get('window').width;
 class ProductListScreen extends Component {
   constructor (props) {
     super(props)
@@ -67,6 +68,7 @@ class ProductListScreen extends Component {
         PlusIcon:false,
         productmaster:[],
         productDetailInner:[],
+        id:'',
         profileImage:require('../images/default_user.png'),
         covers:[require('../images/default_user.png')],
         images: [
@@ -621,16 +623,25 @@ class ProductListScreen extends Component {
     
     this.setState({showHeaderIcon:true})
     console.log('working index',image)
-    this.setState({showTick:index});
+    this.setState({showTick:index,id:items.product_id});
       this.setState({productmaster:image});
       this.setState({productDetailInner:Innerimage})
 
   }
   submit=()=>{
-      AsyncStorage.setItem('@product_id',JSON.stringify('14')).then(succ=>{
+      AsyncStorage.setItem('@product_id',JSON.stringify(this.state.id)).then(succ=>{
       console.log('async storage true')
       this.props.navigation.navigate('ProductMasterImage',{imageUri:this.state.productmaster,productInner:this.state.productDetailInner})
      });
+  }
+  ListEmpty=()=>{
+    return(
+      <View style={{flex:1}}>
+     {this.state.NoData?<View style={{justifyContent:'center',alignItems:'center',marginTop:30}}>
+        <Text style={{textAlign:'center',fontWeight:'bold',fontSize:17}}>No Product!!</Text>
+      </View>:null}
+      </View>
+    )
   }
   render () {
     return (
@@ -682,7 +693,7 @@ class ProductListScreen extends Component {
               numColumns={2}
               ListEmptyComponent={this.ListEmpty}
               renderItem={({item,index}) => {
-                // console.log('itemdsfg', JSON.stringify(item))
+                console.log('itemdsfg', JSON.stringify(item))
                 return (
                   <TouchableOpacity
                   onLongPress={()=>{this.tickIcon(item,index)}}
@@ -697,7 +708,7 @@ class ProductListScreen extends Component {
                     }}
                     style={styles.listItem}>
                     <Image
-                      source={{uri: item.images[0].file_url}}
+                      source={item.images[0]?{uri: item.images[0].file_url}:this.state.profileImage}
                       style={styles.image}
                     />
                     {item.images[1]?(<TouchableOpacity style={styles.MultipleOptionContainer}>

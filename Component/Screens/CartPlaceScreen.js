@@ -145,7 +145,7 @@ forwardlink =async(userid)=>{
  }
 
   async componentDidMount() {
-    this.focusListener = this.props.navigation.addListener('focus', () => {
+    // this.focusListener = this.props.navigation.addListener('focus', () => {
       this.showLoading();
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
@@ -170,7 +170,7 @@ forwardlink =async(userid)=>{
         this.hideLoading();
       }
     });
-  });
+  // });
     //   AsyncStorage.getItem('@user_id').then((userId) => {
     //     if (userId) {
     //         this.setState( { userId: userId });
@@ -857,9 +857,9 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   CartItemContainer: {
-    flex: 0.5,
-    height: resp(22),
-    width: resp(130),
+    flex: 0.8,
+    // height: resp(22),
+    // width: resp(9000),
     margin: resp(5),
     flexDirection: 'row',
 
@@ -903,8 +903,6 @@ const styles = StyleSheet.create({
   },
   CartValueTextStyle: {
     marginLeft: resp(20),
-    width: resp(50),
-    height: resp(18),
     fontWeight: 'bold',
     fontSize: resp(15),
     color: "#2B2B2B",
@@ -1181,7 +1179,7 @@ const styles = StyleSheet.create({
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
-    flex: 0.69,
+    flex: 0.73,
     
     width: resp(0),
     height: resp(40),

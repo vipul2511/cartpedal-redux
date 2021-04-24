@@ -169,10 +169,20 @@ forwardlink =async(userid)=>{
   }
  
   CartListCall() {
-    this.showLoading()
+    this.showLoading();
+    let userAccessToken,fcmToken,userNo
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+        userAccessToken= accessToken
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
+      console.log("Edit user id token=" +token);
+        fcmToken= token;
+      
+    AsyncStorage.getItem('@user_id').then((userId) => {
+        userNo= userId;
+    
     let formData = new FormData()
       
-      formData.append('user_id', this.state.userNo)
+      formData.append('user_id',userNo)
       formData.append('type', 1)
       console.log('form data==' + JSON.stringify(formData))
      // var CartList = this.state.baseUrl + 'api-product/cart-list'
@@ -183,9 +193,9 @@ forwardlink =async(userid)=>{
         headers: new Headers({
           'Content-Type': 'multipart/form-data',
           device_id: '1111',
-          device_token:this.state.fcmToken,
+          device_token:fcmToken,
           device_type: 'android',
-          Authorization: JSON.parse(this.state.userAccessToken),  
+          Authorization: JSON.parse(userAccessToken),  
           // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
   
         }),
@@ -238,7 +248,9 @@ forwardlink =async(userid)=>{
         })
   
         .done()
-  
+      });
+    });
+  });
   }
   AskForStautsCall(blockID,orderID) {
     console.log('block ID',blockID);
@@ -930,7 +942,7 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     marginLeft:resp(20),
     flexDirection: 'row',
-    flex: 0.69,
+    flex: 0.73,
      width: resp(0),
     height: resp(40),
   },

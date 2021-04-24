@@ -50,9 +50,10 @@ export const RecentDataAction = (userId,userAccessToken,newContacts)=> {
       .catch(error => {
         console.log('error : ', error);
         dispatch({
-            type: GET_RECENT_UPDATE_PROPS,
+            type: GET_RECENT_ERROR,
             payload: error
         })
+        // return Promise.reject(error);
       })
       .done();
     }

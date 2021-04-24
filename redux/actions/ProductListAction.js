@@ -32,7 +32,13 @@ export const productlistAction=(userId,userAccessToken)=>{
                 payload: responseData.data
             })
             return Promise.resolve(responseData.data);
-      }
+      } else {
+        dispatch({
+            type: GET_PRODUCT_ERROR,
+            payload: responseData
+        })
+      return Promise.reject(responseData)    
+    }
         } else {
             dispatch({
                 type: GET_PRODUCT_ERROR,
@@ -42,11 +48,11 @@ export const productlistAction=(userId,userAccessToken)=>{
         }
       })
       .catch(error => {
-        console.log('error : ', error);
         dispatch({
             type: GET_PRODUCT_ERROR,
             payload: error
         })
+       
       })
       .done()
     }

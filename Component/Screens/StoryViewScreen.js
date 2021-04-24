@@ -961,7 +961,7 @@ class StoryViewScreen extends Component{
                   </TouchableOpacity>
                   </View>
                 </View>):
-                (<View style={{ flexDirection: 'row', marginBottom: 10,marginTop:25,borderRadius:25, alignSelf: 'center',backgroundColor:'#F1F0F2' }}>
+                (<View style={{ flexDirection: 'row', marginBottom: 10,marginTop:25,borderRadius:25,position:'absolute',bottom:20, alignSelf: 'center',backgroundColor:'#F1F0F2' }}>
                     <TextInput 
                     onChangeText={(text) => this.onChangeText(text)}
                     multiline={true}

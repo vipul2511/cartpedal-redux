@@ -5,3 +5,4 @@ export * from './storiesAction';
 export * from './RecentDataAction';
 export * from './addStoryAction';
 export * from './ProductListAction';
+export * from './logout'

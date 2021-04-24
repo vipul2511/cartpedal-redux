@@ -549,10 +549,10 @@ forwardlink =async(userid)=>{
                     menutext='Menu'
                    
                     menustyle={{
-                     
-                     marginLeft:5,
+                    position:'absolute',
+                     right:-5,
                       flexDirection: 'row',
-                      justifyContent: 'flex-end',
+                      justifyContent: 'flex-start',
                     }}
                     textStyle={{
                       color: 'white',
@@ -693,8 +693,7 @@ const styles = StyleSheet.create({
   },
 
   MenuStyleContanier: {
-   
-  marginRight:15,
+  marginRight:5,
     height: resp(30),
   },
 
@@ -1154,7 +1153,7 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     marginLeft: resp(0),
     flexDirection: 'row',
-    flex:0.1,
+    flex:0.19,
    
     width: resp(0),
     height: resp(45),

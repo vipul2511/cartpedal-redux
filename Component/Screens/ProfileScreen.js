@@ -104,6 +104,7 @@ class ProfileScreen extends Component {
         isStoryModalVisible:false,
         loggeduser_stories:'',
         nameViewer:'',
+        productData:this.props.productData,
         profileImage:require('../images/default_user.png'),
         covers:[require('../images/placeholder-image-2.png')],
         images: [
@@ -132,13 +133,13 @@ class ProfileScreen extends Component {
       if (accessToken) {
         this.setState({ userAccessToken: accessToken });
         console.log("Edit access token ====" + this.state.userAccessToken);
-       
-        this.ProductListCall();
         this.ProfileViewCall();
         this.loggedUserstory();
-       setTimeout(() => {
-         this.hideLoading();
-       }, 2000);
+        this.ProductListCall();
+
+      //  setTimeout(() => {
+      //    this.hideLoading();
+      //  }, 2000);
       }
     });
     AsyncStorage.getItem('@user_name').then((userName) => {
@@ -236,7 +237,7 @@ uploadCoverPhoto = (imageList) => {
         this.hideLoading()
         if (responseData.code == '200') {
           //  this.props.navigation.navigate('StoryViewScreen')
-          Toast.show(responseData.message)
+          // Toast.show(responseData.message)
           this.props.navigation.navigate('DashBoardScreen')
           // this.SaveProductListData(responseData
         } else {
@@ -458,10 +459,10 @@ uploadCoverPhoto = (imageList) => {
           this.setState({stories: responseData.data[0].stories})
           this.setState({userStoryName: responseData.data[0].name})
           this.setState({story_id:responseData.data[0].stories[0].stid})
-          console.log(JSON.stringify(responseData.data[0].avatar))
-          console.log(
-            'response logged user stories object:',responseData)
-          console.log('logged user stories Id==' + responseData.data[0].stories[0].stid)
+          // console.log(JSON.stringify(responseData.data[0].avatar))
+          // console.log(
+          //   'response logged user stories object:',responseData)
+          // console.log('logged user stories Id==' + responseData.data[0].stories[0].stid)
         } else {
           // alert(responseData.data);
           // this.hideLoading();
@@ -474,48 +475,6 @@ uploadCoverPhoto = (imageList) => {
       })
       .done()
   }
-  // userStories = () => {
-  //   // this.showLoading();
-  //   var urlprofile = `https://www.cartpedal.com/frontend/web/api-user/user-stories?user_id=${this.state.userId}&type=0`
-  //   console.log('profileurl :' + urlprofile)
-  //   fetch(urlprofile, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       device_id: '1234',
-  //       device_token: this.state.fcmtoken,
-  //       device_type: 'android',
-  //       Authorization: JSON.parse(this.state.userAccessToken),
-  //     },
-  //   })
-  //     .then(response => response.json())
-  //     .then(responseData => {
-  //       if (responseData.code == '200') {
-  //         //  this.hideLoading();
-  //         // this.LoginOrNot();
-  //         this.setState({user_stories: responseData.data})
-  //         console.log(JSON.stringify(responseData))
-  //         //this.props.navigation.navigate('DashBoardScreen')
-  //         // Toast.show(responseData.message);
-  //         // this.setState({productList:responseData.data})
-  //         //  this.SaveLoginUserData(responseData);
-
-  //         console.log(
-  //           'response user stories object:',
-  //           JSON.stringify(responseData),
-  //         )
-  //       } else {
-  //         // alert(responseData.data);
-  //         // this.hideLoading();
-  //         console.log('user stories' + JSON.stringify(responseData))
-  //       }
-  //     })
-  //     .catch(error => {
-  //       //  this.hideLoading();
-  //       console.error(error)
-  //     })
-  //     .done()
-  // }
 
   // CheckTextInput = () => {
   //   if (this.state.Name === '') {
@@ -542,7 +501,7 @@ uploadCoverPhoto = (imageList) => {
   // }
   uploadProfilePic = () => {
     this.showLoading()
-    console.log('upload profile pic',this.state.newImageArr);
+    // console.log('upload profile pic',this.state.newImageArr);
     console.log(
       'raw data====',
       JSON.stringify({user_id: this.state.userId, type: 1, upload: this.state.newImageArr}),
@@ -576,12 +535,12 @@ uploadCoverPhoto = (imageList) => {
           this.hideLoading()
           // this.SaveProductListData(responseData
         } else {
-          console.log(responseData.data)
+          // console.log(responseData.data)
           this.hideLoading()
           // alert(responseData.data.password)
         }
         //console.log('Edit profile response object:', responseData)
-        console.log('upload profile pic object:', JSON.stringify(responseData))
+        // console.log('upload profile pic object:', JSON.stringify(responseData))
         // console.log('access_token ', this.state.access_token)
         //   console.log('User Phone Number==' + formData.phone_number)
       })
@@ -596,11 +555,11 @@ uploadCoverPhoto = (imageList) => {
     let formData = new FormData()
     formData.append('user_id', this.state.userId)
     formData.append('story_id', this.state.deleteStoryID) 
-    console.log('form data==' + JSON.stringify(formData))
+    // console.log('form data==' + JSON.stringify(formData))
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var DeleteStoryURL =
       'http://www.cartpedal.com/frontend/web/api-user/delete-story'
-    console.log('DeleteStory Url:' + DeleteStoryURL)
+    // console.log('DeleteStory Url:' + DeleteStoryURL)
     fetch(DeleteStoryURL, {
       method: 'Post',
       headers: new Headers({
@@ -617,22 +576,22 @@ uploadCoverPhoto = (imageList) => {
       .then(responseData => {
         if (responseData.code == '200') {
           //  this.props.navigation.navigate('StoryViewScreen')
-          //Toast.show(responseData.message);
+          Toast.show(responseData.message);
             this.loggedUserstory();
           this.setState({isModalVisible: false})
           this.hideLoading();
         // this.setState({loggeduserstory_avatar: responseData.data})
           // this.SaveProductListData(responseData)
         } else {
-          console.log(responseData.data)
+          // console.log(responseData.data)
           // alert(responseData.data.password)
           this.hideLoading();
         }
         //console.log('Edit profile response object:', responseData)
-        console.log(
-          'Edit profile response object:',
-          JSON.stringify(responseData),
-        )
+        // console.log(
+        //   'Edit profile response object:',
+        //   JSON.stringify(responseData),
+        // )
         // console.log('access_token ', this.state.access_token)
         //   console.log('User Phone Number==' + formData.phone_number)
       })
@@ -648,12 +607,12 @@ uploadCoverPhoto = (imageList) => {
     formData.append('user_id', this.state.userId)
     formData.append('name', this.state.Name)
     formData.append('about', this.state.About)
-    console.log('form data==' + JSON.stringify(formData))
+    // console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl =
       'http://www.cartpedal.com/frontend/web/api-user/edit-profile'
-    console.log('Add product Url:' + EditProfileUrl)
+    // console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: new Headers({
@@ -670,7 +629,7 @@ uploadCoverPhoto = (imageList) => {
       .then(responseData => {
         if (responseData.code == '200') {
           //  this.props.navigation.navigate('StoryViewScreen')
-          //Toast.show(responseData.message);
+          Toast.show(responseData.message);
           this.ProfileViewCall()
           this.setState({isEditModalVisible: false})
           this.setState({RescentProduct: responseData.data})
@@ -678,15 +637,15 @@ uploadCoverPhoto = (imageList) => {
           // this.DeleteStoryCall();
           // this.SaveProductListData(responseData)
         } else {
-          console.log(responseData.data)
+          // console.log(responseData.data)
           this.hideLoading()
           // alert(responseData.data.password)
         }
         //console.log('Edit profile response object:', responseData)
-        console.log(
-          'Edit profile response object:',
-          JSON.stringify(responseData),
-        )
+        // console.log(
+        //   'Edit profile response object:',
+        //   JSON.stringify(responseData),
+        // )
         // console.log('access_token ', this.state.access_token)
         //   console.log('User Phone Number==' + formData.phone_number)
       })
@@ -715,7 +674,7 @@ uploadCoverPhoto = (imageList) => {
     let formData = new FormData()
     var urlprofile =
       'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id='+this.state.userId
-    console.log('profileurl :' + urlprofile)
+    // console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
       headers: {
@@ -729,7 +688,7 @@ uploadCoverPhoto = (imageList) => {
       .then(response => response.json())
       .then(responseData => {
         if (responseData.code == '200') {
-          console.log(JSON.stringify(responseData))
+          // console.log(JSON.stringify(responseData))
           //this.props.navigation.navigate('DashBoardScreen')
           // this.props.navigation.navigate('EditProductScreen')
           this.setState({userProfileData: responseData.data})
@@ -748,17 +707,17 @@ uploadCoverPhoto = (imageList) => {
             responseData.data.covers !== undefined &&
             responseData.data.covers.length > 0
           ) {
-            console.log('if executed')
+            // console.log('if executed')
             let imageArr = []
             responseData.data.covers.map(item => {
               imageArr.push(item.image)
-              console.log('images', item.image)
+              // console.log('images', item.image)
             })
             this.setState({covers: imageArr});
             this.setState({imagesCoverID:responseData.data.covers})
-            console.log('cover',responseData.data.covers);
+            // console.log('cover',responseData.data.covers);
           }else{
-            console.log('cover back part executed');
+            // console.log('cover back part executed');
             this.setState({NoCover:false});
           }
           if (responseData.data.proviews == null) {
@@ -771,15 +730,15 @@ uploadCoverPhoto = (imageList) => {
             this.setState({About:responseData.data.about})
           }
           // this.hideLoading();
-          Toast.show(responseData.message)
+          // Toast.show(responseData.message)
           // this.setState({productList:responseData.data})
           //  this.SaveLoginUserData(responseData);
-          console.log('response profile object:', JSON.stringify(responseData))
+          // console.log('response profile object:', JSON.stringify(responseData))
         } else {
           // alert(responseData.data);
           // this.hideLoading();
-          console.log('profile')
-          console.log('profile Data' + responseData.data)
+          // console.log('profile')
+          // console.log('profile Data' + responseData.data)
         }
         // console.log('User user ID==' + responseData.data.userid)
         // console.log('access_token ',responseData.data.access_token)
@@ -791,7 +750,9 @@ uploadCoverPhoto = (imageList) => {
       .done()
   }
   ProductListCall =()=> {
-    this.props.productlistAction(this.state.userId,this.state.userAccessToken);
+    this.setState({callUpdate:true},()=>{
+      this.props.productlistAction(this.state.userId,this.state.userAccessToken);
+    });
   }
 
   closeModal= ()=> {
@@ -836,7 +797,7 @@ uploadCoverPhoto = (imageList) => {
     let formData = new FormData()
     formData.append('user_id', this.state.userId)
     formData.append('product_id',productID)
-    console.log('form data==' + JSON.stringify(formData))
+    // console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl =
@@ -858,8 +819,8 @@ uploadCoverPhoto = (imageList) => {
       .then(responseData => {
         if (responseData.code == '200') {
           //  this.props.navigation.navigate('StoryViewScreen')
-          //Toast.show(responseData.message);
-          console.log('response of viewer list',JSON.stringify(responseData));
+          Toast.show(responseData.message);
+          // console.log('response of viewer list',JSON.stringify(responseData));
           this.setState({profilenameViews: true})
           let name=[]
            responseData.data.map((items,index)=>{
@@ -871,15 +832,15 @@ uploadCoverPhoto = (imageList) => {
           // this.DeleteStoryCall();
           // this.SaveProductListData(responseData)
         } else {
-          console.log(responseData.data)
+          // console.log(responseData.data)
           this.hideLoading()
           // alert(responseData.data.password)
         }
         //console.log('Edit profile response object:', responseData)
-        console.log(
-          'Edit profile response object:',
-          JSON.stringify(responseData),
-        )
+        // console.log(
+        //   'Edit profile response object:',
+        //   JSON.stringify(responseData),
+        // )
         // console.log('access_token ', this.state.access_token)
         //   console.log('User Phone Number==' + formData.phone_number)
       })
@@ -947,24 +908,24 @@ uploadCoverPhoto = (imageList) => {
    firebase.links()
      .createDynamicLink(link)
      .then((url) => {
-       console.log('the url',url);
+      //  console.log('the url',url);
        this.onShare(url);
      });
    }
   viewFunc=()=>{
-    console.log('covers',this.state.imagesCoverID);
+    // console.log('covers',this.state.imagesCoverID);
     this.props.navigation.navigate('ViewProfileScreen', {images: this.state.covers,profileScren:'1'});
   }
   addStoryApi = data => {
     this.showLoading()
-    console.log(
-      JSON.stringify({
-        user_id: this.state.userId,
-        upload: data,
-      }),
-    )
+    // console.log(
+    //   JSON.stringify({
+    //     user_id: this.state.userId,
+    //     upload: data,
+    //   }),
+    // )
     var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/add-story'
-    console.log('Add product Url:' + otpUrl)
+    // console.log('Add product Url:' + otpUrl)
     fetch('http://www.cartpedal.com/frontend/web/api-user/add-story', {
       method: 'Post',
       headers: {
@@ -983,16 +944,16 @@ uploadCoverPhoto = (imageList) => {
       .then(responseData => {
         if (responseData.code == '200') {
           // this.props.navigation.navigate('StoryViewScreen')
-          console.log('response object:', responseData)
+          // console.log('response object:', responseData)
           Toast.show(responseData.message)
           this.loggedUserstory()
           // this.SaveProductListData(response)
           this.hideLoading()
         } else {
-          console.log(responseData.data)
+          // console.log(responseData.data)
           // alert(responseData.data.password)
         }
-        console.log('response object:', responseData)
+        // console.log('response object:', responseData)
         // console.log('User user ID==', this.state.userId)
         // console.log('access_token ', this.state.access_token)
         //   console.log('User Phone Number==' + formData.phone_number)
@@ -1005,8 +966,10 @@ uploadCoverPhoto = (imageList) => {
   }
   ListEmpty=()=>{
     return(
-      <View style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
+      <View>
+      {this.state.NoData?<View style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
         <Text style={{textAlign:'center',fontWeight:'bold',fontSize:17}}>No Product!!</Text>
+      </View>:null}
       </View>
     )
   }
@@ -1028,23 +991,41 @@ uploadCoverPhoto = (imageList) => {
         // Toast.show('OPTION1 CLICKED', Toast.LONG)
       }}
       option3Click={() => {
-        console.log('covers value',this.state.covers);
+        // console.log('covers value',this.state.covers);
         this.props.navigation.navigate('UploadCoverPhotoScreen');
       }}
     />
     )
   }
-  componentDidUpdate()  {
+  componentWillReceiveProps(nextProps){
+    console.log('recevie props data',nextProps.productData);
+    if(nextProps.productData){
+      this.setState({productData:nextProps.productData});
+    }
+  }
+  componentDidUpdate(){
+    console.log('product error',this.props.producterror,this.props.productSuccess);
+    if(this.props.producterror && this.state.callUpdate){
+      this.setState({callUpdate:false,NoData:true,productData:[]},()=>{
+        this.hideLoading();
+        }); 
+    }
+    if(this.props.productSuccess && this.state.callUpdate){
+      this.setState({callUpdate:false,productData:this.props.productData},()=>{
+        this.hideLoading();
+        }); 
+    }
     if (this.props.success) {
+      console.log('executing success',this.props.addStorySuccess);
             if(this.props.addStorySuccess){
               this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
             }
    
-    if (this.props.loggedStoriesSuccess && this.props.loggedStoriesData) {
-      this.setState({loggeduserstory_avatar:this.props.loggedStoriesData.data[0].avatar});
-      this.setState({stories:this.props.loggedStoriesData.data[0].stories});
-      this.setState({userStoryName:this.props.loggedStoriesData.data[0].name})
-    }
+    // if (this.props.loggedStoriesSuccess && this.props.loggedStoriesData) {
+    //   this.setState({loggeduserstory_avatar:this.props.loggedStoriesData.data[0].avatar});
+    //   this.setState({stories:this.props.loggedStoriesData.data[0].stories});
+    //   this.setState({userStoryName:this.props.loggedStoriesData.data[0].name})
+    // }
   }
   }
   render () {
@@ -1225,6 +1206,7 @@ uploadCoverPhoto = (imageList) => {
                 keyExtractor={item => item.StoryImage}
                 renderItem={({item}) =>{
                   // console.log('item of story',item.stid);
+                let time=(moment(item.time * 1000).fromNow()).toString();
                   return (
                   <TouchableOpacity
                     style={styles.storyItemBox}
@@ -1248,7 +1230,7 @@ uploadCoverPhoto = (imageList) => {
                       style={styles.ImageViewStyle}
                     />
                     <Text style={styles.storyTextView}>
-                      {moment(item.time * 1000).fromNow()}
+                      {time.length>10?time.substring(0,10)+"..":time}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -1259,6 +1241,7 @@ uploadCoverPhoto = (imageList) => {
             <Modal
               animationType='slide'
               transparent={true}
+              useNativeDriver={true}
               visible={this.state.isEditModalVisible}
               onRequestClose={() => {
                 this.closeModalbox()
@@ -1328,6 +1311,7 @@ uploadCoverPhoto = (imageList) => {
             <Modal
               animationType='slide'
               transparent={true}
+              useNativeDriver={true}
               visible={this.state.isModalVisible}
               onRequestClose={() => this.closeModal()}>
               <View style={styles.centeredView}>
@@ -1373,6 +1357,7 @@ uploadCoverPhoto = (imageList) => {
             <Modal
               animationType='slide'
               transparent={true}
+              useNativeDriver={true}
               visible={this.state.isProfileModalVisible}
               onRequestClose={() => this.closeProfileModal()}>
               <View style={styles.centeredView}>
@@ -1471,6 +1456,7 @@ uploadCoverPhoto = (imageList) => {
             <Modal
               animationType='slide'
               transparent={true}
+              useNativeDriver={true}
               visible={this.state.profilenameViews}
               onRequestClose={() => this.closeModal()}>
               <View style={styles.centeredView}>
@@ -1494,8 +1480,8 @@ uploadCoverPhoto = (imageList) => {
               </View>
             </Modal>
             <FlatList
-              style={{flex: 1}}
-              data={JSON.stringify(this.props.productData)!=JSON.stringify({})?this.props.productData:[]}
+              style={{flex: 1,backgroundColor:'white'}}
+              data={JSON.stringify(this.state.productData)!=JSON.stringify({})?this.state.productData:[]}
               // renderItem={({ item }) => <Item item={item} />}
               keyExtractor={(item,index) => index}
               numColumns={2}
@@ -1597,7 +1583,7 @@ uploadCoverPhoto = (imageList) => {
             />
           </TouchableNativeFeedback>
         </View>
-{/*         
+        
         <View style={styles.TabBox}>
           <View style={styles.tabStyle}>
             <TouchableOpacity
@@ -1639,7 +1625,7 @@ uploadCoverPhoto = (imageList) => {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -1649,7 +1635,7 @@ uploadCoverPhoto = (imageList) => {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -1663,7 +1649,7 @@ uploadCoverPhoto = (imageList) => {
             </TouchableOpacity>
           </View>
         </View>
-       */}
+      
       </SafeAreaView>
     )
   }
@@ -2122,7 +2108,7 @@ const styles = StyleSheet.create({
     marginRight: resp(0),
     position: 'absolute',
     top: 0,
-    right: -20,
+    right: -5,
     width: 28,
     height: 28,
     borderRadius: resp(20),
@@ -2373,9 +2359,9 @@ function mapStateToProps(state) {
   const { isLoading, data, success } = state.signinReducer
   const { data: loggedStoriesData, success: loggedStoriesSuccess } = state.loggedStoriesReducer
    const {success:addStorySuccess} = state.addStoryReducer;
-   const {data:productData,success:productSuccess}=state.productListReducer;
+   const {data:productData,success:productSuccess,isLoading:loadingData,error:producterror}=state.productListReducer;
   return {
-    isLoading, data, success, loggedStoriesData, loggedStoriesSuccess,addStorySuccess,productData,productSuccess
+    isLoading, data, success, loggedStoriesData, loggedStoriesSuccess,producterror,loadingData,addStorySuccess,productData,productSuccess
   }
 }
 
