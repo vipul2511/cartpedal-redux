@@ -9,7 +9,7 @@ import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage'
 import resp from 'rn-responsive-font'
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-
+import {BASE_URL} from '../Component/ApiClient';
 const screenWidth = Dimensions.get('screen').width;
 
 
@@ -21,7 +21,7 @@ export default class ProductDetailScreen extends React.Component {
       
      
         this.state = {
-          baseUrl: 'http://www.cartpedal.com/frontend/web/',
+          baseUrl: `${BASE_URL}`,
           showFullImageView : false,
           viewMore : false,
           quantity:'',
@@ -170,7 +170,7 @@ export default class ProductDetailScreen extends React.Component {
 
       console.log('form data==' + JSON.stringify(formData))
     
-      var AddCartProductUrl ="http://www.cartpedal.com/frontend/web/api-product/add-views"
+      var AddCartProductUrl =`${BASE_URL}api-product/add-views`
     
       console.log('Add Card Url:' + AddCartProductUrl)
       fetch(AddCartProductUrl, {
@@ -237,7 +237,7 @@ export default class ProductDetailScreen extends React.Component {
 
       console.log('form data==' + JSON.stringify(formData))
     
-      var AddCartProductUrl ="http://www.cartpedal.com/frontend/web/api-product/add-cart"
+      var AddCartProductUrl =`${BASE_URL}api-product/add-cart`
     
       console.log('Add Card Url:' + AddCartProductUrl)
       fetch(AddCartProductUrl, {
@@ -291,7 +291,7 @@ export default class ProductDetailScreen extends React.Component {
      
       console.log('form data==' + JSON.stringify(formData));  
   
-      var PalceOderUrl ="http://www.cartpedal.com/frontend/web/api-product/place-order"
+      var PalceOderUrl =`${BASE_URL}api-product/place-order`
       // var PalceOderUrl = "https://www.cartpedal.com/frontend/web/api-product/place-order"
       console.log('placeOder:' + PalceOderUrl)
       fetch(PalceOderUrl, {

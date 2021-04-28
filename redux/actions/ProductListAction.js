@@ -3,13 +3,14 @@ import {
 } from './index.actions';
 import _ from 'lodash'
 import AsyncStorage from '@react-native-community/async-storage';
+import { API_URL } from '../../Config';
 const fcmToken =  AsyncStorage.getItem('@fcmtoken')
 
 export const productlistAction=(userId,userAccessToken)=>{
     return (dispatch)=>{
         dispatch({type:GET_PRODUCT_START})
         var urlProduct =
-      'http://www.cartpedal.com/frontend/web/api-product/product-list?user_id='+userId +'&type=2'
+      `${API_URL}api-product/product-list?user_id='+userId +'&type=2`
       const token = fcmToken ? fcmToken : '1111';
     console.log('urlProduct :' + urlProduct)
     fetch(urlProduct, {

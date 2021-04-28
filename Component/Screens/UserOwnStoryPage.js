@@ -18,7 +18,7 @@ import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Button, Container, Content, Footer, FooterTab, Icon, Item, } from 'native-base';
 import { flatMap } from 'lodash'
-
+import {BASE_URL} from '../Component/ApiClient';
 let width=Dimensions.get('window').width;
 let height=Dimensions.get('window').height;
 class UserStoryPage extends Component{
@@ -96,7 +96,7 @@ class UserStoryPage extends Component{
         console.log('form data==' + JSON.stringify(formData))
     
         // var CartList = this.state.baseUrl + 'api-product/cart-list'
-        var viewStory = "http://www.cartpedal.com/frontend/web/api-user/view-story"
+        var viewStory = `${BASE_URL}api-user/view-story`
         console.log('Add product Url:' + viewStory)
         fetch(viewStory, {
           method: 'Post',

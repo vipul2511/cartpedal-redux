@@ -21,12 +21,8 @@ import UploadCoverPhotoScreen from '../Component/Screens/UploadCoverPhotoScreen'
 import CartScreen from '../Component/Screens/CartScreen'
 import OpenForPublicScreen from '../Component/Screens/OpenForPublicScreen'
 import AddProductScreen from '../Component/Screens/AddProductScreen'
-import HomeScreen from '../Component/Screens/HomeScreen';
 import EditProductScreen from '../Component/Screens/EditProductScreen'
 import ProductDetailScreen from '../Component/Screens/ProductDetailScreen'
-import CartPlaceScreen from '../Component/Screens/CartPlaceScreen'
-import OderPlacedScreen from '../Component/Screens/OderPlacedScreen'
-import OderReceivedScreen from '../Component/Screens/OderReceivedScreen'
 import ShareWithScreen from '../Component/Screens/ShareWithScreen'
 import CartViewScreen from '../Component/Screens/CartViewScreen'
 import OderPlacedViewScreen from '../Component/Screens/OderPlacedViewScreen'
@@ -67,6 +63,7 @@ import ProductMasterUpdate from '../Component/Screens/ProductMaster'
 import NewContactListScreen from '../Component/Screens/NewContactListScreen';
 import ForwardMessageScreen from '../Component/Screens/ForwardMessageScreen';
 import ProductMasterImage from '../Component/Screens/ProductMasterImageSharingPage';
+import ChatScreen from '../Component/Screens/ChatScreen';
 import ChatProfile from '../Component/Screens/chatProfile';
 import ChatGroupListScreen from '../Component/Screens/ChatGroupList';
 import ProvideGroupName from '../Component/Screens/ProvideGroupName';
@@ -134,6 +131,12 @@ export function MainStack() {
       <Stack.Screen name="ReportIssue" component={ReportIssue} />
       <Stack.Screen name="AddMoreShare" component={AddMoreShare} />
       <Stack.Screen name="FliterScreen" component={FliterScreen} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
+      <Stack.Screen name="ChatDetailScreen" component={ChatDetailScreen} />
+      <Stack.Screen name="ChatProfile" component={ChatProfile}  />
+      <Stack.Screen name="ChatGroupListScreen"  component={ChatGroupListScreen}   />
+      <Stack.Screen name="GroupProfile" component={GroupProfile}   />
+      <Stack.Screen  name="NewContactListScreen" component={NewContactListScreen} />
     </Stack.Navigator>
   );
 }

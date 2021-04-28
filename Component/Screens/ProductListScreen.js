@@ -22,7 +22,7 @@ import ImagePicker from 'react-native-image-picker'
 import Spinner from 'react-native-loading-spinner-overlay'
 import {tickIcon } from '../Component/Images';
 // import { NavigationActions, withNavigation } from 'react-navigation';
-
+import {BASE_URL} from '../Component/ApiClient';
 let width=Dimensions.get('window').width;
 class ProductListScreen extends Component {
   constructor (props) {
@@ -41,7 +41,7 @@ class ProductListScreen extends Component {
         userId: '',
         access_token: '',
         productName: '',
-        baseUrl: 'http://www.cartpedal.com/frontend/web/',
+        baseUrl: `${BASE_URL}`,
         isModalVisible: false,
         isEditModalVisible: false,
         profilenameViews: false,
@@ -210,7 +210,7 @@ class ProductListScreen extends Component {
   }
   loggedUserstory = () => {
     // this.showLoading();
-    var urlprofile = `http://www.cartpedal.com/frontend/web/api-user/user-stories?user_id=${this.state.userId}&type=1`
+    var urlprofile = `${BASE_URL}api-user/user-stories?user_id=${this.state.userId}&type=1`
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -257,7 +257,7 @@ class ProductListScreen extends Component {
       JSON.stringify({user_id: this.state.userId, type: 1, upload: ImageData}),
     )
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-user/upload-image'
+      `${BASE_URL}api-user/upload-image`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -308,7 +308,7 @@ class ProductListScreen extends Component {
     console.log('form data==' + JSON.stringify(formData))
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var DeleteStoryURL =
-      'http://www.cartpedal.com/frontend/web/api-user/delete-story'
+      `${BASE_URL}api-user/delete-story`
     console.log('DeleteStory Url:' + DeleteStoryURL)
     fetch(DeleteStoryURL, {
       method: 'Post',
@@ -361,7 +361,7 @@ class ProductListScreen extends Component {
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-user/edit-profile'
+      `${BASE_URL}api-user/edit-profile`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -422,7 +422,7 @@ class ProductListScreen extends Component {
     // this.showLoading();
     let formData = new FormData()
     var urlprofile =
-      'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id=' +
+      `${BASE_URL}api-user/view-profile?user_id=`+
       this.state.userId
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
@@ -495,7 +495,7 @@ class ProductListScreen extends Component {
   ProductListCall =()=> {
     console.log('access item', this.state.userAccessToken)
     var urlProduct =
-      'http://www.cartpedal.com/frontend/web/api-product/product-list?user_id=' +
+      `${BASE_URL}api-product/product-list?user_id=` +
       this.state.userId +
       '&type=0'
     console.log('urlProduct :' + urlProduct)
@@ -562,9 +562,9 @@ class ProductListScreen extends Component {
         upload: data,
       }),
     )
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/add-story'
+    var otpUrl = `${BASE_URL}api-user/add-story`
     console.log('Add product Url:' + otpUrl)
-    fetch('http://www.cartpedal.com/frontend/web/api-user/add-story', {
+    fetch(`${BASE_URL}api-user/add-story`, {
       method: 'Post',
       headers: {
         'Content-Type': 'application/json',

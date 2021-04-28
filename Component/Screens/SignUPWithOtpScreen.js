@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, ScrollView
 import resp from 'rn-responsive-font'
 import OTPTextView from 'react-native-otp-textinput';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {BASE_URL} from '../Component/ApiClient';
 var mobileNumber, otp
 
 console.disableYellowBox = true
@@ -13,7 +13,7 @@ class SignUPWithOtpScreen extends Component {
     this.state = {
       phone_number: '',
       otp: '',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
       fcmToken:''
     }
   }

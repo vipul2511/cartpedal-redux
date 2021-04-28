@@ -4,6 +4,7 @@ import {
 import _ from 'lodash'
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast';
+import { API_URL } from '../../Config';
 const fcmToken = AsyncStorage.getItem('@fcmtoken');
 
 export const addStoryAction=(userId,userAccessToken,data)=>{
@@ -13,9 +14,9 @@ console.log( 'raw data====',JSON.stringify({
   user_id:userId,upload:data
 }));
 const token = fcmToken ? fcmToken : '1111';
-var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/add-story'
+var otpUrl = `${API_URL}api-user/add-story`
 console.log('Add product Url:' + otpUrl)
- fetch('http://www.cartpedal.com/frontend/web/api-user/add-story', {
+ fetch(`${API_URL}api-user/add-story`, {
   method: 'Post',
   headers:{
     'Content-Type': 'application/json',

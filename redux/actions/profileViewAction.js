@@ -3,6 +3,7 @@ import {
 } from './index.actions';
 import _ from 'lodash'
 import AsyncStorage from '@react-native-community/async-storage';
+import { API_URL } from '../../Config';
 const fcmToken =  AsyncStorage.getItem('@fcmtoken')
 
 
@@ -10,7 +11,7 @@ const fcmToken =  AsyncStorage.getItem('@fcmtoken')
 export const profileView = (userId, userAccessToken) => {
     return (dispatch) => {
         dispatch({ type: PROFILE_VIEW_START })
-        var urlprofile = 'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id=' + userId
+        var urlprofile = `${API_URL}api-user/view-profile?user_id=` + userId
     const token = fcmToken ? fcmToken : '1111';
    return  fetch(urlprofile, {
     method: 'GET',

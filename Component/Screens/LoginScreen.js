@@ -14,7 +14,7 @@ import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
 import {signin} from '../../redux/actions';
 import { connect} from 'react-redux'
-
+import {BASE_URL} from '../Component/ApiClient';
 console.disableYellowBox = true
 class LoginScreen extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class LoginScreen extends Component {
       password: '',
       fcmtoken:'',
 
-      baseUrl: 'http://www.cartpedal.com/frontend/web/'
+      baseUrl: `${BASE_URL}`
         // baseUrl: 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/',
     }
   }

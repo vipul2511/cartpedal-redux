@@ -35,7 +35,7 @@ import firebase from 'react-native-firebase';
 import {isEmpty, isNull} from 'lodash';
 import {profileView, storiesAction, loggedStoriesAction,addStoryAction,productlistAction} from '../../redux/actions';
 import { connect} from 'react-redux'
-
+import {BASE_URL} from '../Component/ApiClient';
 //import all the components we are going to use.
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 let width=Dimensions.get('window').width;
@@ -76,7 +76,7 @@ class ProfileScreen extends Component {
         userId: '',
         access_token: '',
         productName: '',
-        baseUrl: 'http://www.cartpedal.com/frontend/web/',
+        baseUrl: `${BASE_URL}`,
         isProfileModalVisible:false,
         isModalVisible: false,
         isEditModalVisible: false,
@@ -178,7 +178,7 @@ class ProfileScreen extends Component {
 uploadCoverPhoto = (imageList) => {
   this.showLoading();
   console.log("raw data",JSON.stringify({user_id:this.state.userId,type:0,upload:imageList}))
-  var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-user/upload-image"
+  var EditProfileUrl = `${BASE_URL}api-user/upload-image`
   console.log('Add product Url:' + EditProfileUrl)
   fetch(EditProfileUrl, {
     method: 'Post',
@@ -215,7 +215,7 @@ uploadCoverPhoto = (imageList) => {
       JSON.stringify({user_id: this.state.userId, type: 0, upload: imageList}),
     )
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-user/upload-image'
+      `${BASE_URL}api-user/upload-image`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -436,7 +436,7 @@ uploadCoverPhoto = (imageList) => {
     // this.props.loggedStoriesAction(this.state.userId,this.state.userAccessToken);
     this.showLoading();
 
-    var urlprofile = `http://www.cartpedal.com/frontend/web/api-user/user-stories?user_id=${this.state.userId}&type=1`
+    var urlprofile = `${BASE_URL}api-user/user-stories?user_id=${this.state.userId}&type=1`
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -507,7 +507,7 @@ uploadCoverPhoto = (imageList) => {
       JSON.stringify({user_id: this.state.userId, type: 1, upload: this.state.newImageArr}),
     )
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-user/upload-image'
+      `${BASE_URL}api-user/upload-image`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -558,7 +558,7 @@ uploadCoverPhoto = (imageList) => {
     // console.log('form data==' + JSON.stringify(formData))
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var DeleteStoryURL =
-      'http://www.cartpedal.com/frontend/web/api-user/delete-story'
+      `${BASE_URL}api-user/delete-story`
     // console.log('DeleteStory Url:' + DeleteStoryURL)
     fetch(DeleteStoryURL, {
       method: 'Post',
@@ -611,7 +611,7 @@ uploadCoverPhoto = (imageList) => {
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-user/edit-profile'
+      `${BASE_URL}api-user/edit-profile`
     // console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -673,7 +673,7 @@ uploadCoverPhoto = (imageList) => {
     // this.showLoading();
     let formData = new FormData()
     var urlprofile =
-      'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id='+this.state.userId
+      `${BASE_URL}api-user/view-profile?user_id=`+this.state.userId
     // console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -801,7 +801,7 @@ uploadCoverPhoto = (imageList) => {
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-product/viewer-list'
+      `${BASE_URL}api-product/viewer-list`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -924,9 +924,9 @@ uploadCoverPhoto = (imageList) => {
     //     upload: data,
     //   }),
     // )
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/add-story'
+    var otpUrl = `${BASE_URL}api-user/add-story`
     // console.log('Add product Url:' + otpUrl)
-    fetch('http://www.cartpedal.com/frontend/web/api-user/add-story', {
+    fetch(`${BASE_URL}api-user/add-story`, {
       method: 'Post',
       headers: {
         'Content-Type': 'application/json',
@@ -999,7 +999,7 @@ uploadCoverPhoto = (imageList) => {
   }
   componentWillReceiveProps(nextProps){
     console.log('recevie props data',nextProps.productData);
-    if(nextProps.productData){
+    if(this.props.productData!==nextProps.productData){
       this.setState({productData:nextProps.productData});
     }
   }
@@ -1625,7 +1625,7 @@ uploadCoverPhoto = (imageList) => {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -1635,7 +1635,7 @@ uploadCoverPhoto = (imageList) => {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

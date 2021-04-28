@@ -16,14 +16,14 @@ import ImageModal from 'react-native-image-modal';
 const screenWidth = Dimensions.get('screen').width;
 let width = Dimensions.get('window').width;
 let height = Dimensions.get('window').height;
-
+import {BASE_URL} from '../Component/ApiClient';
 export default class GroupProfile extends React.Component {
     constructor(props) {
         super(props);
         // console.log('ProductDetails props ======',this.props.route.params.imageURL)
         this.AddCartProductCall = this.AddCartProductCall.bind(this),
         this.state = {
-          baseUrl: 'http://www.cartpedal.com/frontend/web/',
+          baseUrl: `${BASE_URL}`,
           showFullImageView : false,
           viewMore : false,
           quantity:'',
@@ -172,7 +172,7 @@ export default class GroupProfile extends React.Component {
       formData.append('upload',this.state.newImageArr)
       console.log('form data==' + JSON.stringify(formData))
     
-      var AddCartProductUrl ="http://www.cartpedal.com/frontend/web/api-message/update-group"
+      var AddCartProductUrl =`${BASE_URL}api-message/update-group`
     
       console.log('Add Card Url:' + AddCartProductUrl)
       fetch(AddCartProductUrl, {
@@ -227,7 +227,7 @@ export default class GroupProfile extends React.Component {
       formData.append('groupid', this.props.route.params.groupId)
       console.log('form data==' + JSON.stringify(formData))
     
-      var AddCartProductUrl ="http://www.cartpedal.com/frontend/web/api-message/group-details"
+      var AddCartProductUrl =`${BASE_URL}api-message/group-details`
     
       console.log('Add Card Url:' + AddCartProductUrl)
       fetch(AddCartProductUrl, {
@@ -299,7 +299,7 @@ export default class GroupProfile extends React.Component {
   
       // var CartList = this.state.baseUrl + 'api-product/cart-list'
       var EditProfileUrl =
-        'http://www.cartpedal.com/frontend/web/api-user/edit-profile'
+        `${BASE_URL}api-user/edit-profile`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',
@@ -349,7 +349,7 @@ export default class GroupProfile extends React.Component {
       formData.append('type','1')
       console.log('form data==' + JSON.stringify(formData));  
   
-      var PalceOderUrl ="http://www.cartpedal.com/frontend/web/api-message/media-list"
+      var PalceOderUrl =`${BASE_URL}api-message/media-list`
       // var PalceOderUrl = "https://www.cartpedal.com/frontend/web/api-product/place-order"
       console.log('placeOder:' + PalceOderUrl)
       fetch(PalceOderUrl, {
@@ -467,7 +467,7 @@ export default class GroupProfile extends React.Component {
             description:this.state.description}),
       )
       var EditProfileUrl =
-        'http://www.cartpedal.com/frontend/web/api-message/update-group'
+        `${BASE_URL}api-message/update-group`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',

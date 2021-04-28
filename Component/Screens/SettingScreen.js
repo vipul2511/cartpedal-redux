@@ -16,6 +16,7 @@ import resp from 'rn-responsive-font'
 // import { withNavigation } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay'
 import AsyncStorage from '@react-native-community/async-storage'
+import {BASE_URL} from '../Component/ApiClient';
 class SettingScreen extends Component {
   constructor (props) {
     super(props)
@@ -87,7 +88,7 @@ class SettingScreen extends Component {
   ProfileViewCall () {
     let formData = new FormData()
     var urlprofile =
-      'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id=' +this.state.userId
+      `${BASE_URL}api-user/view-profile?user_id=` +this.state.userId
       this.state.userId
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
@@ -437,7 +438,7 @@ class SettingScreen extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -447,7 +448,7 @@ class SettingScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

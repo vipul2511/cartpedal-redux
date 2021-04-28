@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import {BASE_URL} from '../Component/ApiClient';
 class NewContactsListScreen extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +54,7 @@ class NewContactsListScreen extends Component {
 
     this.showLoading();
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-product/contact-list';
+      `${BASE_URL}api-product/contact-list`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'Post',

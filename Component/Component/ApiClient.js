@@ -1,7 +1,7 @@
 import * as ApiClient from './ApiClient';
 
 
-const BASE_URL = 'http://www.cartpedal.com/frontend/web/';
+export const BASE_URL = 'https://www.cartpedal.com/';
 
 const add_product = 'api-product/add-product';
 

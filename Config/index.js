@@ -1,1 +1,1 @@
-export const API_URL = 'http://www.cartpedal.com/frontend/web/api-product/contact-list';
+export const API_URL = `https://www.cartpedal.com/`;

@@ -4,6 +4,7 @@ import { USER_SIGNUP_START, USER_SIGNUP_SUCCESS, USER_SIGNUP_ERROR,
     USER_SIGNUP_CONF_ERROR
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
+import { API_URL } from '../../Config';
 import _ from 'lodash'
 const fcmToken =  AsyncStorage.getItem('@fcmtoken')
 
@@ -12,7 +13,7 @@ export const signUp = (phone) => {
         dispatch({ type: USER_SIGNUP_START })
         let formData = new FormData()
         formData.append('mobile', '+91' + phone)
-        var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/send-otp'
+        var otpUrl = `${API_URL }api-user/send-otp`
         const token = fcmToken ? fcmToken : '1111';
         return fetch(otpUrl, {
             method: 'Post',
@@ -63,7 +64,7 @@ export const signUpConf = (name, phone, email, pass) => {
         formData.append('email', email)
         formData.append('password', pass)
     
-        var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/signup'
+        var otpUrl = `${API_URL }api-user/signup`
         const token = fcmToken ? fcmToken : '1111';
         return fetch(otpUrl, {
             method: 'Post',

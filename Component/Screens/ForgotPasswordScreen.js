@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity, ActivityIndicator,
 import resp from 'rn-responsive-font'
 import { connect } from 'react-redux'
 import { forgotPass } from '../../redux/actions';
+import {BASE_URL} from '../Component/ApiClient';
 console.disableYellowBox = true
 class ForgotPasswordScreen extends Component {
   constructor(props) {
@@ -11,7 +12,7 @@ class ForgotPasswordScreen extends Component {
 
     this.state = {
       phone_number: '',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
       callUpdate: false,
       // baseUrl: 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/',
     }

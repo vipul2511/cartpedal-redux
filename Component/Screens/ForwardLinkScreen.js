@@ -13,7 +13,7 @@ import {
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Fab, Icon} from 'native-base';
-
+import {BASE_URL} from '../Component/ApiClient';
 class ForwardLinkScreen extends Component {
   constructor(props) {
     super(props);
@@ -75,7 +75,7 @@ class ForwardLinkScreen extends Component {
     data.append('msg_type','link')
     console.log('form data',data);
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-message/share-link';
+      `${BASE_URL}api-message/share-link`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'POST',
@@ -132,7 +132,7 @@ class ForwardLinkScreen extends Component {
 
     this.showLoading();
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-product/contact-list';
+      `${BASE_URL}api-product/contact-list`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'Post',

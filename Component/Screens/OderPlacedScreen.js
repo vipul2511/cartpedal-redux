@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase'
-
+import {BASE_URL} from '../Component/ApiClient';
 
 
 class CartPlaceScreen extends Component {
@@ -186,7 +186,7 @@ forwardlink =async(userid)=>{
       formData.append('type', 1)
       console.log('form data==' + JSON.stringify(formData))
      // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var CartList = "http://www.cartpedal.com/frontend/web/api-product/cart-list"
+      var CartList = `${BASE_URL}api-product/cart-list`
       console.log('Add product Url:' + CartList)
       fetch(CartList, {
         method: 'Post',
@@ -262,7 +262,7 @@ forwardlink =async(userid)=>{
       formData.append('block_id',blockID )
       console.log('form data for ask==' + JSON.stringify(formData))
      // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var AskForStautsURL = "http://www.cartpedal.com/frontend/web/api-product/order-status"
+      var AskForStautsURL = `${BASE_URL}api-product/order-status`
       console.log(' AskForStautsURL :' + AskForStautsURL)
       fetch(AskForStautsURL, {
         method: 'Post',
@@ -315,7 +315,7 @@ forwardlink =async(userid)=>{
 
 
   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+    var fav = `${BASE_URL}api-user/block-fav-user`
     console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
@@ -470,7 +470,7 @@ forwardlink =async(userid)=>{
                   <View style={styles.ImageContainer}>
                     <Image
                     source={{uri:item.products[0].image}}
-                      style={{width:95,height:133}}></Image>
+                      style={{width:95,height:133,borderRadius:5}}></Image>
                     <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
                     <Text style={styles.itemPriceStyle}>
                       {'\u20B9'}
@@ -480,7 +480,7 @@ forwardlink =async(userid)=>{
                   {item.products[1]?(<View style={styles.ImageContainer}>
                     <Image
                     source={{uri:item.products[1].image}}
-                      style={{width:95,height:133}}></Image>
+                      style={{width:95,height:133,borderRadius:5}}></Image>
                     <Text style={styles.itemNameStyle}>{item.products[1].name}</Text>
                     <Text style={styles.itemPriceStyle}>
                       {'\u20B9'}
@@ -490,7 +490,7 @@ forwardlink =async(userid)=>{
                   {item.products[2]?(<View style={styles.ImageContainer}>
                     <Image
                     source={{uri:item.products[2].image}}
-                      style={{width:95,height:133}}></Image>
+                      style={{width:95,height:133,borderRadius:5}}></Image>
                     <Text style={styles.itemNameStyle}>{item.products[2].name}</Text>
                     <Text style={styles.itemPriceStyle}>
                       {'\u20B9'}
@@ -942,7 +942,7 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     marginLeft:resp(20),
     flexDirection: 'row',
-    flex: 0.73,
+    flex: 0.85,
      width: resp(0),
     height: resp(40),
   },
@@ -992,7 +992,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   ViewButtonContainer: {
-    width: resp(60),
+    width: resp(75),
     height: resp(24),
     backgroundColor: '#fff',
   },

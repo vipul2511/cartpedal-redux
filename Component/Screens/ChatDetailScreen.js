@@ -31,10 +31,13 @@ import Menu, {MenuItem} from 'react-native-material-menu';
 import Clipboard from '@react-native-community/clipboard';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
-import Swipeable from 'react-native-gesture-handler/Swipeable'
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {connect} from 'react-redux';
+import {ConversationListAction} from '../../redux/actions';
+import _ from 'lodash';
 // import {RNSlidingButton, SlideDirection} from 'rn-sliding-button';
 const audioRecorderPlayer = new AudioRecorderPlayer();
-
+import {BASE_URL} from '../Component/ApiClient';
 import {MessageComponent} from '../Component/MessageComponent';
 import {
   locationPermission,
@@ -203,56 +206,74 @@ class ChatDetailScreen extends React.Component {
   //   console.log('sss', this.state.recievedmsg);
     
   // };
+  componentWillReceiveProps(nextProps){
+    let equalArray=_.isEqual(this.props.conversationData,nextProps.conversationData);
+    if(!equalArray){
+      this.setState({chatList:nextProps.conversationData});
+    }
+  }
+componentDidUpdate(){
+  if(this.props.conversationSuccess && this.state.callUpdate){
+  this.setState({callUpdate:false},()=>{
+    this.setState({chatList:this.props.conversationData, ischatList: true});
+    console.log('conversation data',this.props.conversationData);
+  })
+  }
 
+}
   getConversationList = () => {
-    let type;
-    let formData = new FormData();
-    console.log('group value',this.props.route.params.msg_type);
-     if(this.props.route.params.msg_type=="0"){
-       type="0"
-     }else{
-       console.log('working');
-       type="1"
-     }
-     console.log('value of type',type);
-    formData.append('user_id', this.state.userId);
-    formData.append('toid',this.props.route.params.userid);
-    formData.append('type',this.props.route.params.msg_type)
-    formData.append('msg_type', '0');
-    // formData.append('page', this.state.page);
-    console.log('form data',JSON.stringify(formData));
-
-    fetch('http://www.cartpedal.com/frontend/web/api-message/conversation', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        device_id: '1234',
-        device_token: this.state.fcmToken,
-        device_type: 'android',
-        Authorization: JSON.parse(this.state.userAccessToken),
-      },
-      body: formData,
+    this.setState({callUpdate:true},()=>{
+      this.props.ConversationListAction(this.state.userId,this.props.route.params.msg_type,this.props.route.params.userid,this.state.userAccessToken);
     })
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (responseData.code == '200') {
-          this.setState({chatList: responseData.data, ischatList: true});
-          this.state.chatList.messages.map(function (v, i) {
-            if (v.fattach !== null) {
-              // console.log('asdas', v.fattach.attach);
-            }
-          });
-        } else {
-          // alert(responseData.data);
-          this.setState({chatList:''});
+   
+    // let type;
+    // let formData = new FormData();
+    // console.log('group value',this.props.route.params.msg_type);
+    //  if(this.props.route.params.msg_type=="0"){
+    //    type="0"
+    //  }else{
+    //    console.log('working');
+    //    type="1"
+    //  }
+    //  console.log('value of type',type);
+    // formData.append('user_id', this.state.userId);
+    // formData.append('toid',this.props.route.params.userid);
+    // formData.append('type',this.props.route.params.msg_type)
+    // formData.append('msg_type', '0');
+    // // formData.append('page', this.state.page);
+    // console.log('form data',JSON.stringify(formData));
 
-          console.log('logged user stories' + JSON.stringify(responseData));
-        }
-        console.log('logged user stories' + JSON.stringify(responseData));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // fetch('https://www.cartpedal.com/api-message/conversation', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //     device_id: '1234',
+    //     device_token: this.state.fcmToken,
+    //     device_type: 'android',
+    //     Authorization: JSON.parse(this.state.userAccessToken),
+    //   },
+    //   body: formData,
+    // })
+    //   .then((response) => response.json())
+    //   .then((responseData) => {
+    //     if (responseData.code == '200') {
+    //       this.setState({chatList: responseData.data, ischatList: true});
+    //       this.state.chatList.messages.map(function (v, i) {
+    //         if (v.fattach !== null) {
+    //           // console.log('asdas', v.fattach.attach);
+    //         }
+    //       });
+    //     } else {
+    //       // alert(responseData.data);
+    //       this.setState({chatList:''});
+
+    //       console.log('logged user stories' + JSON.stringify(responseData));
+    //     }
+    //     console.log('logged user stories' + JSON.stringify(responseData));
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   };
 
   sendMessage = () => {
@@ -323,7 +344,7 @@ class ChatDetailScreen extends React.Component {
       type:this.props.route.params.msg_type
     });
     console.log('raw',JSON.stringify(raw));
-    fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    fetch(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -402,7 +423,7 @@ class ChatDetailScreen extends React.Component {
       ],
     };
 
-    fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    fetch(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -479,7 +500,7 @@ class ChatDetailScreen extends React.Component {
       ],
     };
 
-    fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    fetch(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -645,7 +666,7 @@ class ChatDetailScreen extends React.Component {
       ],
     };
 
-    axios('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    axios(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -899,7 +920,7 @@ class ChatDetailScreen extends React.Component {
     }
   
 
-    fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    fetch(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -982,7 +1003,7 @@ class ChatDetailScreen extends React.Component {
       ],
     };
 
-    fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    fetch(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -1087,7 +1108,7 @@ class ChatDetailScreen extends React.Component {
       upload: [],
     });
 
-    fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    fetch(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -1146,7 +1167,7 @@ class ChatDetailScreen extends React.Component {
       formData.append('type',type)
       console.log('form data==' + JSON.stringify(formData))
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var RecentShare = "http://www.cartpedal.com/frontend/web/api-user/call-notification"
+      var RecentShare = `${BASE_URL}api-user/call-notification`
       console.log('Add product Url:' + RecentShare)
       console.log('form data general tab',JSON.stringify(formData));
       fetch(RecentShare, {
@@ -1194,7 +1215,7 @@ class ChatDetailScreen extends React.Component {
     data.append('type',type)
        console.log('message delete',JSON.stringify(data));
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-message/delete-message';
+      `${BASE_URL}api-message/delete-message`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'POST',
@@ -1245,7 +1266,7 @@ class ChatDetailScreen extends React.Component {
     data.append('toid',this.props.route.params.userid );
        console.log('data',JSON.stringify(data))
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-message/clear-all';
+      `${BASE_URL}-message/clear-all`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'POST',
@@ -1341,7 +1362,7 @@ SendReportIssue() {
   console.log('form data==' + JSON.stringify(formData))
  // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
   
-  var otpUrl ='http://www.cartpedal.com/frontend/web/api-user/report-problem'
+  var otpUrl =`${BASE_URL}api-user/report-problem`
   console.log('url:' + otpUrl)
   fetch(otpUrl, {
     method: 'Post',
@@ -2433,8 +2454,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
-export default ChatDetailScreen;
+}); 
+function mapStateToProps(state){
+  const {data:conversationData,success:conversationSuccess,isLoading:conversationLoading,error:conversationError}=state.ConversationListReducer;
+  return{
+    conversationData,conversationSuccess,conversationLoading,conversationError
+  }
+}
+export default connect(mapStateToProps,{ConversationListAction})(ChatDetailScreen);
 
 const newMessage = {
   fattach: null,

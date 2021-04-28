@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from 'react-native-check-box';
 import {signUpConf} from '../../redux/actions';
 import { connect} from 'react-redux'
-
+import {BASE_URL} from '../Component/ApiClient';
 console.disableYellowBox = true
 var mobileNumber, otp;
 class SignUPScreen extends Component {
@@ -29,7 +29,7 @@ class SignUPScreen extends Component {
       email: '',
       fcmToken:'',
       isChecked:'',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
      // baseUrl: 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/',
     }
   }

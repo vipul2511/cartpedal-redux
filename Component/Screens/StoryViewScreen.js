@@ -26,6 +26,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Button, Container, Content, Footer, FooterTab, Icon, Item, } from 'native-base';
 import { flatMap } from 'lodash'
+import {BASE_URL} from '../Component/ApiClient';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 import {
@@ -134,7 +135,7 @@ class StoryViewScreen extends Component{
         upload: [],
       });
       console.log('raw', raw);
-      fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+      fetch(`${BASE_URL}api-message/sent-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain',
@@ -217,7 +218,7 @@ class StoryViewScreen extends Component{
         ],
       };
   
-      fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+      fetch(`${BASE_URL}api-message/sent-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain',
@@ -321,7 +322,7 @@ class StoryViewScreen extends Component{
         reply_id: '0',
         upload: [],
       });
-      fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+      fetch(`${BASE_URL}api-message/sent-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain',
@@ -402,7 +403,7 @@ class StoryViewScreen extends Component{
          ],
        };
    
-       fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+       fetch(`${BASE_URL}api-message/sent-message`, {
          method: 'POST',
          headers: {
            'Content-Type': 'text/plain',
@@ -482,7 +483,7 @@ class StoryViewScreen extends Component{
       ],
     };
 
-    axios('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    axios(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -557,7 +558,7 @@ class StoryViewScreen extends Component{
         ],
       };
   
-      fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+      fetch(`${BASE_URL}api-message/sent-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain',
@@ -637,7 +638,7 @@ class StoryViewScreen extends Component{
         console.log('form data==' + JSON.stringify(formData))
     
         // var CartList = this.state.baseUrl + 'api-product/cart-list'
-        var viewStory = "http://www.cartpedal.com/frontend/web/api-user/view-story"
+        var viewStory = `${BASE_URL}api-user/view-story`
         console.log('Add product Url:' + viewStory)
         fetch(viewStory, {
           method: 'Post',

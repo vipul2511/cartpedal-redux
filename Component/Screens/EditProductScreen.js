@@ -8,7 +8,7 @@ import Toast from 'react-native-simple-toast';
 //import * as ApiClient from '../Component/ApiClient';
 import { Picker } from "native-base";
 
-
+import {BASE_URL} from '../Component/ApiClient';
 //import RNPickerSelect from 'react-native-picker-select';
 const screenWidth = Dimensions.get('screen').width;
 const placeholder = {
@@ -40,7 +40,7 @@ export default class EditProductScreen extends React.Component {
       Details_2: '',
       imageItem: '',
       Description: '',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl:`${BASE_URL}`,
       CategoryList: [],
       ProductUnit: [],
       selected1: 'key1',
@@ -128,7 +128,7 @@ export default class EditProductScreen extends React.Component {
 
     console.log('form data==' + formData)
 
-    let urlProduct = 'http://www.cartpedal.com/frontend/web/api-product/product-category-list'
+    let urlProduct = `${BASE_URL}api-product/product-category-list`
     console.log('urlProduct :' + urlProduct)
     fetch(urlProduct, {
       method: 'GET',
@@ -170,7 +170,7 @@ export default class EditProductScreen extends React.Component {
     let formData = new FormData()
     //console.log('form data==' + formData)
     // var urlProduct = 'https://www.cartpedal.com/frontend/web/api-product/product-list'
-    var urlProductUnit = 'http://www.cartpedal.com/frontend/web/api-product/product-unit'
+    var urlProductUnit = `${BASE_URL}api-product/product-unit`
     console.log('urlProduct :' + urlProductUnit)
     fetch(urlProductUnit, {
       method: 'GET',
@@ -222,9 +222,9 @@ export default class EditProductScreen extends React.Component {
       user_id:this.state.userId,name:this.state.Name,upload:this.state.imageItem,category:this.state.language,unit:this.state.Unit ,price:finalPrice,description:this.state.Description,bunch:this.state.bunch,
       detailone:this.state.Details_1,detailtwo:this.state.Details_2
     }));
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-product/add-product'
+    var otpUrl = `${BASE_URL}api-product/add-product`
     console.log('Add product Url:' + otpUrl)
-     fetch('http://www.cartpedal.com/frontend/web/api-product/add-product', {
+     fetch(`${BASE_URL}api-product/add-product`, {
       method: 'Post',
       headers:{
         'Content-Type': 'application/json',

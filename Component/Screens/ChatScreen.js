@@ -10,7 +10,8 @@ import {
   SafeAreaView,
   ScrollView,
   Platform,
-  TextInput
+  TextInput,
+  Dimensions
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -24,9 +25,15 @@ import Menu, { MenuItem } from 'react-native-material-menu';
 // import firebase from './firebase'
 // import Backend from '../Backend'
 // import AsyncStorage from '@react-native-community/async-storage';
+import {ChatlistAction} from '../../redux/actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Badge, Fab, Icon} from 'native-base';
-
+import NetInfo from "@react-native-community/netinfo";
+import { connect} from 'react-redux'
+import _ from 'lodash';
+import {BASE_URL} from '../Component/ApiClient';
+let width=Dimensions.get('window').width;
+let height=Dimensions.get('window').height;
 const IDs = '123456';
 class ChatScreen extends Component {
   constructor(props) {
@@ -63,11 +70,16 @@ class ChatScreen extends Component {
   }
 
   componentDidMount = () => {
+    this.showLoading();
     this.focusListener = this.props.navigation.addListener('focus', () => {
-      if (this.state.mounted) {
-        this.getChatList(false);
-      }
-    });
+      NetInfo.fetch().then(state => {
+        console.log("Connection type", state.type);
+        console.log("Is connected?", state.isConnected);
+        if(state.isConnected && this.state.mounted){
+          this.getChatList();
+        }
+      });
+  });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({userId: userId});
@@ -92,6 +104,7 @@ class ChatScreen extends Component {
         this.setState({PhoneNumber: JSON.parse(mobile)});
       }
     });
+ 
   };
   showLoading() {
     this.setState({spinner: true});
@@ -106,7 +119,7 @@ class ChatScreen extends Component {
     formData.append('groupid',this.state.Deleteid)
     // console.log('form data==' + JSON.stringify(formData));  
 
-    var PalceOderUrl ="http://www.cartpedal.com/frontend/web/api-message/delete-group"
+    var PalceOderUrl =`${BASE_URL}api-message/delete-group`
     // console.log('placeOder:' + PalceOderUrl)
     fetch(PalceOderUrl, {
       method: 'Post',
@@ -152,44 +165,72 @@ class ChatScreen extends Component {
       })
       .done()
   }
-
-  getChatList = (loading = true) => {
-    if (loading) {
-      this.showLoading();
+  componentWillReceiveProps(nextProps){
+    // console.log('recevie props data',nextProps.chatListData);
+    let equalArray=_.isEqual(this.props.chatListData,nextProps.chatListData);
+    if(!equalArray){
+      this.setState({chatList:nextProps.chatListData,ischatList:true});
     }
-    var urlprofile = `http://www.cartpedal.com/frontend/web/api-message/chat-list?user_id=${this.state.userId}`;
-    // console.log('profileurl :' + urlprofile);
-    fetch(urlprofile, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        device_id: '1234',
-        device_token: this.state.fcmToken,
-        device_type: 'android',
-        Authorization: JSON.parse(this.state.userAccessToken),
-      },
+  }
+ componentDidUpdate(){
+  //  console.log(this.props.chatlistsuccess);
+if(this.props.chatlistsuccess && this.state.callUpdate){
+  this.setState({callUpdate:false},()=>{
+    this.setState({chatList:this.props.chatListData,ischatList:true});
+    this.hideLoading();
+    // console.log('update ',this.props.chatListData);
+  })
+}
+if(this.props.chatlisterror && this.state.callUpdate){
+  this.setState({callUpdate:false},()=>{
+    this.setState({NoData:true,ischatList:false},()=>{
+      this.hideLoading();
     })
-      .then((response) => response.json())
-      .then(async (responseData) => {
-        if (responseData.code == '200') {
-          this.hideLoading();
-          // this.LoginOrNot();
-          await this.setState({chatList: responseData.data, ischatList: true});
-          this.setState({masterlist: responseData.data});
-          // console.log(JSON.stringify(this.state.chatList, null, 2));
-        } else {
-          // alert(responseData.data);
-          this.hideLoading();
-          // console.log('logged user stories' + JSON.stringify(responseData));
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  });
+}
+ }
+  getChatList = (loading = true) => {
+    // if (loading) {
+    //   this.showLoading();
+    // }
+  
+   this.setState({callUpdate:true},()=>{
+    this.props.ChatlistAction(this.state.userId,this.state.userAccessToken);
+   });
+   
+    // var urlprofile = `https://www.cartpedal.com/api-message/chat-list?user_id=${this.state.userId}`;
+    // // console.log('profileurl :' + urlprofile);
+    // fetch(urlprofile, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     device_id: '1234',
+    //     device_token: this.state.fcmToken,
+    //     device_type: 'android',
+    //     Authorization: JSON.parse(this.state.userAccessToken),
+    //   },
+    // })
+    //   .then((response) => response.json())
+    //   .then(async (responseData) => {
+    //     if (responseData.code == '200') {
+    //       this.hideLoading();
+    //       // this.LoginOrNot();
+    //       await this.setState({chatList: responseData.data, ischatList: true});
+    //       this.setState({masterlist: responseData.data});
+    //       // console.log(JSON.stringify(this.state.chatList, null, 2));
+    //     } else {
+    //       // alert(responseData.data);
+    //       this.hideLoading();
+    //       // console.log('logged user stories' + JSON.stringify(responseData));
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   };
   componentWillUnmount() {
     // Backend.closeChat();
-    this.focusListener.remove();
+    // this.focusListener.remove();
   }
   searchFilterFunction = (text) => {
     // Check if searched text is not blank
@@ -251,7 +292,7 @@ class ChatScreen extends Component {
             />
             <TouchableOpacity
               style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>CartPadle</Text>
+              <Text style={styles.TitleStyle}>CartPedal</Text>
             </TouchableOpacity>
           </View>
           {!this.state.exit?(<TouchableOpacity
@@ -584,7 +625,12 @@ class ChatScreen extends Component {
                       </TouchableOpacity>
                     );
                   })
-                : null}
+                : <View> 
+                  {this.state.NoData?
+                  <View style={{marginTop:resp(180),justifyContent:'center',alignItems:'center'}}>
+                    <Text style={{fontWeight:'bold',}}>No Chat Found</Text>
+                    </View>:null}
+                  </View>}
             </View>
           </ScrollView>
         </View>
@@ -876,4 +922,10 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 });
-export default ChatScreen;
+function mapStateToProps(state){
+  const {data:chatListData,success:chatlistsuccess,isLoading:loadingChatList,error:chatlisterror}=state.ChatlistReducer;
+  return{
+    chatListData,chatlistsuccess,loadingChatList,chatlisterror
+  }
+}
+export default connect(mapStateToProps,{ChatlistAction})(ChatScreen);

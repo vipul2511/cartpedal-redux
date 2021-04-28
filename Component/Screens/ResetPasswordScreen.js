@@ -14,7 +14,7 @@ console.disableYellowBox = true
 import Toast from 'react-native-simple-toast';
 import { connect } from 'react-redux'
 import { resetPass } from '../../redux/actions';
-
+import {BASE_URL} from '../Component/ApiClient';
 var otp
 
 class ResetPasswordScreen extends Component {
@@ -24,7 +24,7 @@ class ResetPasswordScreen extends Component {
     this.state = {
       new_password: '',
       confirm_password: '',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
       callUpdate: false,
    //   baseUrl: 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/'
     }

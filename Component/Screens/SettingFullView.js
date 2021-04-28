@@ -12,7 +12,7 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import { TabHeading } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 const screenWidth = Dimensions.get('screen').width;
-
+import {BASE_URL} from '../Component/ApiClient';
 
 export default class SettingFullView extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ export default class SettingFullView extends React.Component {
       
      
         this.state = {
-          baseUrl: 'http://www.cartpedal.com/frontend/web/',
+          baseUrl: `${BASE_URL}`,
           showFullImageView : false,
           viewMore : false,
           quantity:'',
@@ -156,7 +156,7 @@ export default class SettingFullView extends React.Component {
 
       console.log('form data==' + JSON.stringify(formData))
     
-      var AddCartProductUrl ="http://www.cartpedal.com/frontend/web/api-product/add-views"
+      var AddCartProductUrl =`${BASE_URL}api-product/add-views`
     
       console.log('Add Card Url:' + AddCartProductUrl)
       fetch(AddCartProductUrl, {
@@ -216,7 +216,7 @@ export default class SettingFullView extends React.Component {
 
       console.log('form data==' + formData)
     
-      var AddCartProductUrl ="http://www.cartpedal.com/frontend/web/api-product/add-cart"
+      var AddCartProductUrl =`${BASE_URL}api-product/add-cart`
     
       console.log('Add Card Url:' + AddCartProductUrl)
       fetch(AddCartProductUrl, {
@@ -289,7 +289,7 @@ export default class SettingFullView extends React.Component {
   
       // var CartList = this.state.baseUrl + 'api-product/cart-list'
       var EditProfileUrl =
-        'http://www.cartpedal.com/frontend/web/api-user/edit-profile'
+      `${BASE_URL}api-user/edit-profile`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',
@@ -343,7 +343,7 @@ export default class SettingFullView extends React.Component {
      
       console.log('form data==' + JSON.stringify(formData));  
   
-      var PalceOderUrl ="http://www.cartpedal.com/frontend/web/api-product/place-order"
+      var PalceOderUrl =`${BASE_URL}api-product/place-order`
       // var PalceOderUrl = "https://www.cartpedal.com/frontend/web/api-product/place-order"
       console.log('placeOder:' + PalceOderUrl)
       fetch(PalceOderUrl, {
@@ -456,7 +456,7 @@ export default class SettingFullView extends React.Component {
         JSON.stringify({user_id: this.state.userId, type: 1, upload: this.state.newImageArr}),
       )
       var EditProfileUrl =
-        'http://www.cartpedal.com/frontend/web/api-user/upload-image'
+        `${BASE_URL}api-user/upload-image`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',

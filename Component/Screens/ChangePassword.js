@@ -12,7 +12,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import resp from 'rn-responsive-font'
 console.disableYellowBox = true
-
+import {BASE_URL} from '../Component/ApiClient';
 class ChangePassword extends Component {
   constructor(props) {
     super(props)
@@ -23,7 +23,7 @@ class ChangePassword extends Component {
       userAccessToken:'',
       fcmToken:'',
       userId:'',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
     }
   }
   showLoading() {

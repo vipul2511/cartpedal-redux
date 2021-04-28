@@ -19,7 +19,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast'
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import {BASE_URL} from '../Component/ApiClient';
 console.disableYellowBox = true
 
 function Item({ item }) {
@@ -163,9 +163,9 @@ class OpenForPublicScreen extends Component {
     console.log(JSON.stringify({
       user_id:this.state.userId,upload:data
     }));
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/add-story'
+    var otpUrl = `${BASE_URL}api-user/add-story`
     console.log('Add product Url:' + otpUrl)
-     fetch('http://www.cartpedal.com/frontend/web/api-user/add-story', {
+     fetch(`${BASE_URL}api-user/add-story`, {
       method: 'Post',
       headers:{
         'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ class OpenForPublicScreen extends Component {
   }
   loggedUserstory=()=>{
     this.showLoading();
-    var urlprofile = `http://www.cartpedal.com/frontend/web/api-user/user-stories?user_id=${this.state.userId}&type=1`
+    var urlprofile = `${BASE_URL}api-user/user-stories?user_id=${this.state.userId}&type=1`
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -287,7 +287,7 @@ class OpenForPublicScreen extends Component {
   }
   userStories=()=>{
     this.showLoading();
-    var urlprofile = `http://www.cartpedal.com/frontend/web/api-user/user-stories?user_id=${this.state.userId}&type=0`
+    var urlprofile = `${BASE_URL}api-user/user-stories?user_id=${this.state.userId}&type=0`
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -534,7 +534,7 @@ class OpenForPublicScreen extends Component {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -544,7 +544,7 @@ class OpenForPublicScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

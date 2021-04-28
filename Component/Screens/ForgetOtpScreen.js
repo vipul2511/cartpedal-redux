@@ -5,7 +5,7 @@ import OTPTextView from 'react-native-otp-textinput'
 import AsyncStorage from '@react-native-community/async-storage';
 import { forgotPassOTp } from '../../redux/actions';
 import { connect } from 'react-redux'
-
+import {BASE_URL} from '../Component/ApiClient';
 var mobileNumber, otp
 
 console.disableYellowBox = true
@@ -18,7 +18,7 @@ class ForgetOtpScreen extends Component {
       fcmToken:'',
       // edit_otp: '',
       otp: '',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
       callUpdate: false,
      // baseUrl: 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/'
     }

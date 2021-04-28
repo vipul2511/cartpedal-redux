@@ -22,7 +22,7 @@ import ImageSelectDialog from '../Component/ImageSelectDialog';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Toast from 'react-native-simple-toast'
-
+import {BASE_URL} from '../Component/ApiClient';
 const MAX_IMAGE_SIZE = 5;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -115,9 +115,9 @@ class EditImageUpdateProduct extends Component {
         user_id:this.state.userId,product_id:productDetails.product_id,name:productDetails.name,upload:[],imageids:imageID,category:productDetails.categoryid,unit:productDetails.unitid,price:productDetails.price,description:productDetails.description,bunch:productDetails.bunch,
         detailone:productDetails.detailone,detailtwo:productDetails.detailtwo
       }));
-      var otpUrl = 'http://www.cartpedal.com/frontend/web/api-product/edit-product'
+      var otpUrl = `${BASE_URL}api-product/edit-product`
       console.log('Add product Url:' + otpUrl)
-       fetch('http://www.cartpedal.com/frontend/web/api-product/edit-product',{
+       fetch(`${BASE_URL}api-product/edit-product`,{
         method: 'Post',
         headers:{
           'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ class EditImageUpdateProduct extends Component {
     this.showLoading();
     let formData = new FormData()
     var urlprofile =
-      'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id='+this.state.userId
+      `${BASE_URL}api-user/view-profile?user_id=`+this.state.userId
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -243,7 +243,7 @@ class EditImageUpdateProduct extends Component {
     console.log('upload profile pic',this.state.newImageArr);
     this.showLoading();
     console.log("raw data",JSON.stringify({user_id:this.state.userId,type:0,upload:this.state.newImageArr}))
-    var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-user/upload-image"
+    var EditProfileUrl = `${BASE_URL}api-user/upload-image`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',

@@ -5,6 +5,7 @@ import {
     GET_RECENT_UPDATE_PROPS
 } from './index.actions';
 import _ from 'lodash'
+import { API_URL } from '../../Config';
 import AsyncStorage from '@react-native-community/async-storage';
 const fcmToken = AsyncStorage.getItem('@fcmtoken');
 
@@ -17,7 +18,7 @@ export const RecentDataAction = (userId,userAccessToken,newContacts)=> {
     formData.append('public',0)
     formData.append('contact',newContacts)
     console.log('api from redux==' + JSON.stringify(userId,userAccessToken,newContacts))
-    var RecentShare = "http://www.cartpedal.com/frontend/web/api-user/recent-share"
+    var RecentShare = `${API_URL}api-user/recent-share`
     const token = fcmToken ? fcmToken : '1111';
     fetch(RecentShare, {
       method: 'Post',

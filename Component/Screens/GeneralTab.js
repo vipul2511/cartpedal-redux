@@ -27,7 +27,7 @@ import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 let width=Dimensions.get('window').width;
 let height=Dimensions.get('window').height;
-
+import {BASE_URL} from '../Component/ApiClient';
 
 
 class GeneralTab extends Component {
@@ -70,7 +70,7 @@ class GeneralTab extends Component {
     this.showLoading()
     console.log('form data==' + JSON.stringify(numID))
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -184,7 +184,7 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
     console.log('form data==' + JSON.stringify(formData));
 
   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+    var fav = `${BASE_URL}api-user/block-fav-user`
     console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
@@ -239,7 +239,7 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
       console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var RecentShare = "http://www.cartpedal.com/frontend/web/api-user/recent-share"
+      var RecentShare = `${BASE_URL}api-user/recent-share`
       console.log('Add product Url:' + RecentShare)
       console.log('form data general tab',JSON.stringify(formData));
       fetch(RecentShare, {
@@ -323,7 +323,7 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
         console.log('form data==' + JSON.stringify(formData));
     
       // var CartList = this.state.baseUrl + 'api-product/cart-list'
-        var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+        var fav = `${BASE_URL}api-user/block-fav-user`
         console.log('Add product Url:' + fav)
         fetch(fav, {
           method: 'Post',
@@ -408,7 +408,7 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
         console.log('form data==' + JSON.stringify(formData))
        // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
         
-        var otpUrl ='http://www.cartpedal.com/frontend/web/api-user/report-problem'
+        var otpUrl =`${BASE_URL}api-user/report-problem`
         console.log('url:' + otpUrl)
         fetch(otpUrl, {
           method: 'Post',

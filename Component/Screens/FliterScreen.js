@@ -23,8 +23,7 @@ import moment from 'moment'
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import SeeMore from 'react-native-see-more-inline'
 import Spinner from 'react-native-loading-spinner-overlay'
-
-
+import {BASE_URL} from '../Component/ApiClient';
 var radio_props = [
   {label: 'Order Placed', value: 1 },
   {label: 'Order Received', value: 2 }
@@ -55,66 +54,6 @@ class FliterScreen extends Component {
         redIcon: require('../images/Heart_icon.png'),
         whiteIcon: require('../images/dislike.png'),
         pickedImage: require('../images/default_user.png'),
-        data: [
-          {
-            ImagePerson: require('../images/RiyaJainImage.png'),
-            personName: 'Rahul Jain',
-            Description: ' Description is the pattern of narrative',
-            message_icon: require('../images/message_icon.png'),
-            heart_icon: require('../images/Heart_icon.png'),
-            View_all: 'View All',
-            menuButtom: require('../images/more.png'),
-            productImage: require('../images/ProductImage.png'),
-            ItemName: 'Western Wear',
-            ItemPrice: '500',
-            productImage2: require('../images/ProductImage2.png'),
-            ItemName2: 'Foot Wear',
-            ItemPrice2: '300',
-            productImage3: require('../images/ProductImages3.png'),
-            ItemName3: 'Accessories ',
-            ItemPrice3: '500',
-            productImage4: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '300',
-            productImage5: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '300',
-            Cart_itemName: 'Cart Item',
-            Cart_ItemValue: '12',
-            Cart_itemName2: 'Cart Value',
-            Cart_ItemValue2: '20',
-            placeOder_button: 'Place Oder',
-          },
-          {
-            ImagePerson: require('../images/productImage4.png'),
-            personName: 'Gaurav Jain',
-            Description: ' Description is the pattern of narrative',
-            message_icon: require('../images/message_icon.png'),
-            heart_icon: require('../images/Heart_icon.png'),
-            View_all: 'View All',
-            menuButtom: require('../images/more.png'),
-            productImage: require('../images/productImage4.png'),
-            ItemName: 'Western Wear',
-            ItemPrice: '120',
-            productImage2: require('../images/productImage5.png'),
-            ItemName2: 'Foot Wear',
-            ItemPrice2: '216',
-            productImage3: require('../images/productImage5.png'),
-            ItemName3: 'Accessories ',
-            ItemPrice3: '246',
-            productImage4: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '296',
-            productImage5: require('../images/productImage6.png'),
-            ItemName4: 'Ethnic Wear ',
-            ItemPrice4: '300',
-            Cart_itemName: 'Cart Item',
-            Cart_ItemValue: '12',
-            Cart_itemName2: 'Cart Value',
-            Cart_ItemValue2: '20',
-            placeOder_button: 'Place Oder',
-          },
-        ],
       }
   }
   ListEmpty = () => {
@@ -147,7 +86,7 @@ class FliterScreen extends Component {
     console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = 'http://www.cartpedal.com/frontend/web/api-user/block-fav-user'
+    var fav = `${BASE_URL}api-user/block-fav-user`
     console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
@@ -249,7 +188,7 @@ class FliterScreen extends Component {
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var FilterURL =
-      'http://www.cartpedal.com/frontend/web/api-product/cart-list'
+      `${BASE_URL}api-product/cart-list`
     console.log('Filter  Url:' + FilterURL)
     fetch(FilterURL, {
       method: 'Post',
@@ -325,7 +264,7 @@ class FliterScreen extends Component {
   
       console.log('form data for ask==' + JSON.stringify(formData))
      // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var AskForStautsURL = "http://www.cartpedal.com/frontend/web/api-product/order-status"
+      var AskForStautsURL = `${BASE_URL}api-product/order-status`
       console.log(' AskForStautsURL :' + AskForStautsURL)
       fetch(AskForStautsURL, {
         method: 'Post',

@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast'
 import resp from 'rn-responsive-font'
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import {BASE_URL} from '../Component/ApiClient';
 const screenWidth = Dimensions.get('screen').width;
 
 
@@ -123,7 +123,7 @@ export default class ShareWithScreen extends React.Component {
      }
      sendContactToServer=(contact)=>{
    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+      var EditProfileUrl = `${BASE_URL}api-product/contact-list`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',
@@ -162,7 +162,7 @@ export default class ShareWithScreen extends React.Component {
         .done()
      }
      ContactListall() {
-      var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+      var EditProfileUrl = `${BASE_URL}api-product/contact-list`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',
@@ -441,9 +441,9 @@ export default class ShareWithScreen extends React.Component {
         formData.append('product_id',this.state.product_id)
         formData.append('contacts', this.state.nameBox);
         console.log('form data==' + JSON.stringify(formData))
-        var shareUrl = "http://www.cartpedal.com/frontend/web/api-product/product-share"
+        var shareUrl = `${BASE_URL}api-product/product-share`
         // var CartList = this.state.baseUrl + 'api-product/cart-list'
-        var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/edit-product-share"
+        var EditProfileUrl = `${BASE_URL}api-product/edit-product-share`
         let newUrl=sharevalue==0?shareUrl:EditProfileUrl;
         console.log('Add product Url:' + newUrl)
         fetch(newUrl, {

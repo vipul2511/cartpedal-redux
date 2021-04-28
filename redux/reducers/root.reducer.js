@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux';
+import { reducer as network } from 'react-native-offline';
 import signinReducer from './userLoginReducer';
 import forgotPassReducer from './forgotPasswordReducer';
 import forgotPassOtpReducer from './forgotPassOtpReducer';
@@ -11,6 +12,8 @@ import loggedStoriesReducer from './loggedUserStoryReducer';
 import RecentDataReducer from './RecentDataReducer';
 import addStoryReducer from './addStoryReducer';
 import productListReducer from './ProductListReducer';
+import ChatlistReducer from './ChatlistReducer';
+import ConversationListReducer from './ConversationListReducer';
 import {RESET_STORE} from '../actions/index.actions';
 const appReducer= combineReducers({
     signinReducer,
@@ -24,7 +27,10 @@ const appReducer= combineReducers({
     loggedStoriesReducer,
     RecentDataReducer,
     addStoryReducer,
-    productListReducer
+    productListReducer,
+    ChatlistReducer,
+    ConversationListReducer,
+    network
 });
 const rootReducer = (state, action) => {
     if (action.type === RESET_STORE) {

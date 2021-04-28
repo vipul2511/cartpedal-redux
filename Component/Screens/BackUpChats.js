@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import resp from 'rn-responsive-font'
 import AsyncStorage from '@react-native-community/async-storage'
+import {BASE_URL} from '../Component/ApiClient';
 class BackUpChats extends Component {
   constructor (props) {
     super(props)
@@ -55,7 +56,7 @@ class BackUpChats extends Component {
     data.append('toid',0 );
        console.log('data',JSON.stringify(data))
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-message/clear-all';
+      `${BASE_URL}api-message/clear-all`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'POST',
@@ -209,7 +210,7 @@ class BackUpChats extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -219,7 +220,7 @@ class BackUpChats extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

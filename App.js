@@ -220,10 +220,11 @@ messaging.hasPermission()
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { MainStack } from './Routes';
-import { initStore } from './redux/store';
+import  initStore  from './redux/store';
 import { Provider } from 'react-redux';
+import { PersistGate } from "redux-persist/integration/react";
 
-const store = initStore();
+const { store, persistor } = initStore();
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -232,9 +233,11 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
+  <PersistGate loading={null} persistor={persistor}>
       <NavigationContainer>
         <MainStack />
       </NavigationContainer>
+      </PersistGate>
     </Provider>
      
     )

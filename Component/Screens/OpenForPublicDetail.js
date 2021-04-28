@@ -21,7 +21,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 // import { NavigationActions, withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
-
+import {BASE_URL} from '../Component/ApiClient';
 let width=Dimensions.get('window').width;
 let height=Dimensions.get('window').height;
 
@@ -46,87 +46,7 @@ class OpenForPublicDetail extends Component {
       whiteIcon:require('../images/dislike.png'),
       pickedImage:require('../images/default_user.png'),
       avatar:'',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
-      grid_data: [
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          ProdcutName: 'Kurti Patiyala',
-          price: '246',
-          photo: require('../images/itemImages.png'),
-          Shopping_cart: require('../images/shopping-cart-Icon.png'),
-          total_view: '20',
-        },
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          price: '246',
-          ProdcutName: 'Beats by Dre Headset',
-          photo: require('../images/itemImages2.png'),
-          Shopping_cart: require('../images/shopping-cart-Icon.png'),
-          total_view: '20',
-        },
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          price: '246',
-          ProdcutName: 'kurti patiyala',
-          photo: require('../images/ItemImage3.png'),
-          Shopping_cart: require('../images/shopping-cart-Icon.png'),
-          total_view: '20',
-        },
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          price: '246',
-          ProdcutName: 'Beats by Dre Headset',
-          photo: require('../images/itemImage4.png'),
-          Shopping_cart: require('../images/shopping-cart-Icon.png'),
-          total_view: '20',
-        },
-        {
-            MultipleIcon: require('../images/multipleImageIcon.png'),
-            price: '246',
-            ProdcutName: 'kurti patiyala', 
-            photo: require('../images/ItemImage3.png'),
-            Shopping_cart: require('../images/shopping-cart-Icon.png'),
-            total_view: '20',
-          },
-          {
-            MultipleIcon: require('../images/multipleImageIcon.png'),
-            price: '246',
-            ProdcutName: 'Beats by Dre Headset',
-            photo: require('../images/itemImage4.png'),
-            Shopping_cart: require('../images/shopping-cart-Icon.png'),
-            total_view: '20',
-          },
-      ],
-      images: [
-        require('../images/slider_images.png'),
-        'https://cdn.wallpapersafari.com/86/73/JgYos9.jpg',
-        'https://cdn.wallpapersafari.com/86/73/JgYos9.jpg',
-        'https://cdn.wallpapersafari.com/86/73/JgYos9.jpg',
-        'https://cdn.wallpapersafari.com/86/73/JgYos9.jpg',
-      ],
-     
-      data: [
-        {
-          ImagePerson: require('../images/RiyaJainImage.png'),
-          personName: 'Rahul Jain',
-          Description: ' Description is the pattern of narrative',
-          message_icon: require('../images/message_icon.png'),
-          View_all: 'View All',
-          menuButtom: require('../images/more.png'),
-          productImage: require('../images/ProductImage.png'),
-          ItemName: 'Western Wear',
-          ItemPrice: '500',
-          productImage2: require('../images/ProductImage2.png'),
-          ItemName2: 'Foot Wear',
-          ItemPrice2: '300',
-          productImage3: require('../images/ProductImages3.png'),
-          ItemName3: 'Accessories ',
-          ItemPrice3: '500',
-          productImage4: require('../images/productImage6.png'),
-          ItemName4: 'Ethnic Wear ',
-          ItemPrice4: '300',
-        },
-      ],
+      baseUrl: `${BASE_URL}`,
     }
   }
 
@@ -180,7 +100,7 @@ AddFavourite(){
   console.log('form data==' + JSON.stringify(formData));
 
 // var CartList = this.state.baseUrl + 'api-product/cart-list'
-  var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+  var fav = `${BASE_URL}api-user/block-fav-user`
   console.log('Add product Url:' + fav)
   fetch(fav, {
     method: 'Post',
@@ -527,7 +447,7 @@ this.props.navigation.navigate('ForwardLinkScreen', {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -537,7 +457,7 @@ this.props.navigation.navigate('ForwardLinkScreen', {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

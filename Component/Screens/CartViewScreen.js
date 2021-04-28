@@ -25,7 +25,7 @@ import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase'
 let width=Dimensions.get('screen').width;
 let height=Dimensions.get('screen').height;
-
+import {BASE_URL} from '../Component/ApiClient';
 class CartViewScreen extends Component {
     constructor(props) {
        
@@ -57,87 +57,7 @@ class CartViewScreen extends Component {
             about:'',
             redIcon:require('../images/Heart_icon.png'),
             whiteIcon:require('../images/dislike.png'),
-            baseUrl: 'http://www.cartpedal.com/frontend/web/',
-            grid_data: [
-                {
-                    MultipleIcon: require('../images/multipleImageIcon.png'),
-                    ProdcutName: 'Kurti Patiyala',
-                    price: '246',
-                    photo: require('../images/itemImages.png'),
-                    delete_icon: require('../images/delete_icon.png'),
-                    total_view: '20',
-                },
-                {
-                    MultipleIcon: require('../images/multipleImageIcon.png'),
-                    price: '246',
-                    ProdcutName: 'Beats by Dre Headset',
-                    photo: require('../images/itemImages2.png'),
-                    delete_icon: require('../images/delete_icon.png'),
-                    total_view: '20',
-                },
-                {
-                    MultipleIcon: require('../images/multipleImageIcon.png'),
-                    price: '246',
-                    ProdcutName: 'kurti patiyala',
-                    photo: require('../images/ItemImage3.png'),
-                    delete_icon: require('../images/delete_icon.png'),
-                    total_view: '20',
-                },
-                {
-                    MultipleIcon: require('../images/multipleImageIcon.png'),
-                    price: '246',
-                    ProdcutName: 'Beats by Dre Headset',
-                    photo: require('../images/itemImage4.png'),
-                    delete_icon: require('../images/delete_icon.png'),
-                    total_view: '20',
-                },
-                {
-                    MultipleIcon: require('../images/multipleImageIcon.png'),
-                    price: '246',
-                    ProdcutName: 'kurti patiyala',
-                    photo: require('../images/ItemImage3.png'),
-                    delete_icon: require('../images/delete_icon.png'),
-                    total_view: '20',
-                },
-                {
-                    MultipleIcon: require('../images/multipleImageIcon.png'),
-                    price: '246',
-                    ProdcutName: 'Beats by Dre Headset',
-                    photo: require('../images/itemImage4.png'),
-                    delete_icon: require('../images/delete_icon.png'),
-                    total_view: '20',
-                },
-            ],
-            images: [
-                require('../images/slider_images.png'),
-                'https://source.unsplash.com/1024x768/?nature',
-                'https://source.unsplash.com/1024x768/?water',
-                'https://source.unsplash.com/1024x768/?girl',
-                'https://source.unsplash.com/1024x768/?tree',
-            ],
-
-            data: [
-                {
-                    ImagePerson: require('../images/RiyaJainImage.png'),
-                    personName: 'Rahul Jain',
-                    Description: ' Description is the pattern of narrative',
-                    message_icon: require('../images/message_icon.png'),
-                    View_all: 'View All',
-                    menuButtom: require('../images/more.png'),
-                    productImage: require('../images/ProductImage.png'),
-                    ItemName: 'Western Wear',
-                    ItemPrice: '500',
-                    productImage2: require('../images/ProductImage2.png'),
-                    ItemName2: 'Foot Wear',
-                    ItemPrice2: '300',
-                    productImage3: require('../images/ProductImages3.png'),
-                    ItemName3: 'Accessories ',
-                    ItemPrice3: '500',
-                    productImage4: require('../images/productImage6.png'),
-                    ItemName4: 'Ethnic Wear ',
-                    ItemPrice4: '300',
-                },
-            ],
+            baseUrl: `${BASE_URL}`,
         }
     }
     showLoading() {
@@ -197,7 +117,7 @@ class CartViewScreen extends Component {
         console.log('form data==' + JSON.stringify(formData));
     
       // var CartList = this.state.baseUrl + 'api-product/cart-list'
-        var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+        var fav = `${BASE_URL}api-user/block-fav-user`
         console.log('Add product Url:' + fav)
         fetch(fav, {
           method: 'Post',
@@ -301,7 +221,7 @@ class CartViewScreen extends Component {
           console.log('form data==' + JSON.stringify(formData))
     
         // var CartList = this.state.baseUrl + 'api-product/cart-list'
-          var RemoveCartListURL = "http://www.cartpedal.com/frontend/web/api-product/remove-cart-item"
+          var RemoveCartListURL = `${BASE_URL}api-product/remove-cart-item`
           console.log('Add product Url:' + RemoveCartListURL)
           fetch(RemoveCartListURL, {
             method: 'Post',
@@ -819,7 +739,7 @@ class CartViewScreen extends Component {
                             <Text style={styles.bottomActiveTextStyle}>Cart</Text>
                         </TouchableOpacity>
 
-                        {/* <TouchableOpacity
+                        <TouchableOpacity
                             style={styles.tabButtonStyle}
                             onPress={() => {
                                 this.props.navigation.navigate('ChatScreen')
@@ -829,7 +749,7 @@ class CartViewScreen extends Component {
                                 style={styles.StyleChatTab}
                             />
                             <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.tabButtonStyle}
                             onPress={() => {

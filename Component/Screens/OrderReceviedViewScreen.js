@@ -22,6 +22,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
+import {BASE_URL} from '../Component/ApiClient';
 class OrderRecievedViewScreen extends Component {
   constructor(props) {
     super(props)
@@ -41,66 +42,9 @@ class OrderRecievedViewScreen extends Component {
       avatar:'',
       pickedImage:require('../images/default_user.png'),
      // userNo:'',
-     baseUrl: 'http://www.cartpedal.com/frontend/web/',
-      grid_data: [
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          ProdcutName: 'Kurti ',
-          price: '246',
-          photo: require('../images/itemImages.png'),
-          SubTitlePoductName: 'Kurti Patiyala',
-          Qty: ' Qty 50',
-        },
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          price: '246',
-          ProdcutName: 'Beats by Dre Headset',
-          photo: require('../images/itemImages2.png'),
-          SubTitlePoductName: 'Kurti Patiyala',
-          Qty: ' Qty 50',
-        },
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          price: '246',
-          ProdcutName: 'kurti patiyala',
-          photo: require('../images/ItemImage3.png'),
-          SubTitlePoductName: 'Kurti Patiyala',
-          Qty: ' Qty 50',
-        },
-        {
-          MultipleIcon: require('../images/multipleImageIcon.png'),
-          price: '246',
-          ProdcutName: 'Beats by Dre Headset',
-          photo: require('../images/itemImage4.png'),
-          SubTitlePoductName: 'Kurti Patiyala',
-          Qty: ' Qty 50',
-        },
-      ],
+     baseUrl: `${BASE_URL}`,
       images: [
         require('../images/placeholder-image-2.png')
-      ],
-
-      data: [
-        {
-          ImagePerson: require('../images/RiyaJainImage.png'),
-          personName: 'Rahul Jain',
-          Description: ' Description is the pattern of narrative',
-          message_icon: require('../images/message_icon.png'),
-          View_all: 'View All',
-          menuButtom: require('../images/more.png'),
-          productImage: require('../images/ProductImage.png'),
-          ItemName: 'Western Wear',
-          ItemPrice: '500',
-          productImage2: require('../images/ProductImage2.png'),
-          ItemName2: 'Foot Wear',
-          ItemPrice2: '300',
-          productImage3: require('../images/ProductImages3.png'),
-          ItemName3: 'Accessories ',
-          ItemPrice3: '500',
-          productImage4: require('../images/productImage6.png'),
-          ItemName4: 'Ethnic Wear ',
-          ItemPrice4: '300',
-        },
       ],
     }
   }
@@ -123,7 +67,7 @@ class OrderRecievedViewScreen extends Component {
         let arr=[];
         arr.push(this.props.route.params.wholeData);
         this.setState({OderPlaceProduct:arr});
-        console.log('order data',this.state.OderPlaceProduct)
+        console.log('order data',this.props.route.params.wholeData)
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
@@ -141,7 +85,7 @@ class OrderRecievedViewScreen extends Component {
           this.UserProfileCall();
           setTimeout(() => {
             this.hideLoading()
-          }, 3000);
+          }, 2000);
       }else{
         console.log("else is executed");
         this.hideLoading();
@@ -173,7 +117,7 @@ class OrderRecievedViewScreen extends Component {
     console.log('form data==' + JSON.stringify(formData));
 
   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+    var fav = `${BASE_URL}api-user/block-fav-user`
     console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
@@ -276,7 +220,7 @@ forwardlink =async(userid)=>{
       formData.append('type', 2)
       console.log('form data==' + JSON.stringify(formData))
      // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var CartList = "http://www.cartpedal.com/frontend/web/api-product/cart-list"
+      var CartList = `${BASE_URL}api-product/cart-list`
       console.log('Add product Url:' + CartList)
       console.log('token',this.state.userAccessToken);
       fetch(CartList, {
@@ -520,7 +464,7 @@ forwardlink =async(userid)=>{
               numColumns={1}
               renderItem={({ item }) =>{
                 if(item.products.length>0){
-
+                   
                return(
                 <View style={styles.listItem}>
                 <Image source={{uri:item.products[0].image}} style={styles.image} />
@@ -536,9 +480,10 @@ forwardlink =async(userid)=>{
                       {'\u20B9'} {item.products[0].price}
                     </Text>
                     <Text style={styles.QtyStyle}>Qty:{item.products[0].quantity}</Text>
-                    {item.products[0].description?<Text style={styles.QtyStyle}>{item.products[0].description}</Text>:null}
+                    {item.products[0].unit?<Text style={styles.QtyStyle}>{item.products[0].unit}</Text>:null}
                     {item.products[0].detailone?<Text style={styles.QtyStyle}>{item.products[0].detailone}</Text>:null}
                     {item.products[0].detailtwo?<Text style={styles.QtyStyle}>{item.products[0].detailtwo}</Text>:null}
+                    {item.products[0].description?<Text style={styles.QtyStyleDescrp}>{item.products[0].description}</Text>:null}
                
           
           
@@ -630,7 +575,7 @@ forwardlink =async(userid)=>{
               <Text style={styles.bottomActiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -640,7 +585,7 @@ forwardlink =async(userid)=>{
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -796,7 +741,7 @@ const styles = StyleSheet.create({
     width: '45%',
     marginLeft:resp(10),
     flexDirection: 'column',
-   
+   marginTop:resp(20)
    
   },
 
@@ -1124,12 +1069,19 @@ const styles = StyleSheet.create({
     fontSize: resp(14),
   },
   QtyStyle: {
-
     marginLeft: resp(3),
     marginTop: resp(5),
     flexDirection: 'column',
     fontWeight: 'bold',
     fontSize: resp(14),
+  },
+  QtyStyleDescrp:{
+    marginLeft: resp(3),
+    marginTop: resp(5),
+    flexDirection: 'column',
+    fontWeight: 'bold',
+    fontSize: resp(14),
+    marginBottom:10
   },
   box: {
     width: resp(200),

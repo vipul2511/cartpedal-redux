@@ -14,7 +14,8 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Share
+  Share,
+  Dimensions
 } from 'react-native'
 import resp from 'rn-responsive-font'
 import CustomMenuIcon from './CustomMenuIcon'
@@ -24,8 +25,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage'
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase'
-
-
+import {BASE_URL} from '../Component/ApiClient';
+let width=Dimensions.get('window').width;
 class CartPlaceScreen extends Component {
   constructor(props) {
     super(props)
@@ -55,7 +56,7 @@ class CartPlaceScreen extends Component {
         avatar:'',
         redIcon:require('../images/Heart_icon.png'),
         whiteIcon:require('../images/dislike.png'),
-        baseUrl: 'http://www.cartpedal.com/frontend/web/',
+        baseUrl: `${BASE_URL}`,
         
       }
   }
@@ -195,11 +196,8 @@ forwardlink =async(userid)=>{
     return (
 
       <View style={styles.container}>
-        <Text style={{
-          margin: resp(170),
-
+        <Text style={{margin:resp(160)
         }}>{this.state.NoData==true ? 'No Record' : null} </Text>
-
       </View>
     );
   };
@@ -214,7 +212,7 @@ forwardlink =async(userid)=>{
 
 
   //   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-  //   var favouriteProductUrl = "https://www.cartpedal.com/frontend/web/api-product/cart-list"
+  //   var favouriteProductUrl = "${BASE_URL}frontend/web/api-product/cart-list"
   //   console.log('BlockUser Url:' + favouriteProductUrl)
   //   fetch(favouriteProductUrl, {
   //     method: 'Post',
@@ -273,7 +271,7 @@ forwardlink =async(userid)=>{
     console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var CartList = "http://www.cartpedal.com/frontend/web/api-product/cart-list"
+    var CartList = `${BASE_URL}api-product/cart-list`
     console.log('Add product Url:' + CartList)
     fetch(CartList, {
       method: 'Post',
@@ -531,7 +529,7 @@ forwardlink =async(userid)=>{
     console.log('form data==' + JSON.stringify(formData));
 
   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+    var fav = `${BASE_URL}api-user/block-fav-user`
     console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
@@ -786,7 +784,8 @@ forwardlink =async(userid)=>{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
+    // flexDirection: 'column',
+    // width:width,
     backgroundColor: '#fff',
   },
   Profile2Container: {

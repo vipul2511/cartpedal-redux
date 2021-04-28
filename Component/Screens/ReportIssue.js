@@ -6,6 +6,8 @@ import { Picker } from "native-base";
 import AsyncStorage from '@react-native-community/async-storage';
 let width=Dimensions.get('window').width;
 let height=Dimensions.get('window').height;
+import {BASE_URL} from '../Component/ApiClient';
+
 const placeholder = {
     label: 'Please you category*',
     value: null,
@@ -65,7 +67,7 @@ export default class ReportIssue extends Component {
     console.log('form data==' + JSON.stringify(formData))
    // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
     
-    var otpUrl ='http://www.cartpedal.com/frontend/web/api-user/report-problem'
+    var otpUrl =`${BASE_URL}api-user/report-problem`
     console.log('url:' + otpUrl)
     fetch(otpUrl, {
       method: 'Post',

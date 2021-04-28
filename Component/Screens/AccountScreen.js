@@ -17,6 +17,7 @@ import {RFPercentage, RFValue} from 'react-native-responsive-fontsize'
 import resp from 'rn-responsive-font'
 import {color} from 'react-native-reanimated'
 import AsyncStorage from '@react-native-community/async-storage'
+import {BASE_URL} from '../Component/ApiClient';
 class AccountScreen extends Component {
   constructor (props) {
     super(props)
@@ -48,7 +49,7 @@ class AccountScreen extends Component {
   });
 }
   deleteUserApi=()=>{
-    var urlprofile = `http://www.cartpedal.com/frontend/web/api-user/delete-user?user_id=${this.state.userId}`
+    var urlprofile = `${BASE_URL}api-user/delete-user?user_id=${this.state.userId}`
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -232,7 +233,7 @@ class AccountScreen extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -242,7 +243,7 @@ class AccountScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

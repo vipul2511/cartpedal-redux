@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { Picker } from "native-base";
 import Toast from 'react-native-simple-toast';
 import ImagePicker from 'react-native-image-crop-picker';
-
+import {BASE_URL} from '../Component/ApiClient';
 //import * as ApiClient from '../Component/ApiClient';
   
 import _ from 'lodash';
@@ -55,7 +55,7 @@ export default class UpdateProductScreen extends React.Component {
       Unitid:'',
       defaultUnit:'',
       editImg:'',
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
       Share:'',
       CategoryList: [],
       ProductUnit:[],
@@ -126,7 +126,7 @@ export default class UpdateProductScreen extends React.Component {
     console.log('form data==' + JSON.stringify(formData))
 
     var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/remove-share-user"
+    var EditProfileUrl = `${BASE_URL}api-product/remove-share-user`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -218,7 +218,7 @@ export default class UpdateProductScreen extends React.Component {
 
     console.log('form data==' + formData)
    
-    var urlProduct = 'http://www.cartpedal.com/frontend/web/api-product/product-category-list'
+    var urlProduct = `${BASE_URL}api-product/product-category-list`
     console.log('urlProduct :' + urlProduct)
     fetch(urlProduct, {
       method: 'GET',
@@ -324,7 +324,7 @@ export default class UpdateProductScreen extends React.Component {
 
     //console.log('form data==' + formData)
     // var urlProduct = 'https://www.cartpedal.com/frontend/web/api-product/product-list'
-    var urlProductUnit = 'http://www.cartpedal.com/frontend/web/api-product/product-unit'
+    var urlProductUnit = `${BASE_URL}api-product/product-unit`
     console.log('urlProduct :' + urlProductUnit)
     fetch(urlProductUnit, {
       method: 'GET',
@@ -377,9 +377,9 @@ export default class UpdateProductScreen extends React.Component {
       user_id:this.state.userId,product_id:this.state.productId,name:this.state.Name,upload:this.state.newImageArr,imageids:'',category:this.state.Category,unit:this.state.Unitid,price:this.state.price,description:this.state.Description,bunch:this.state.bunch,
       detailone:this.state.Details_1,detailtwo:this.state.Details_2
     }));
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-product/edit-product'
+    var otpUrl = `${BASE_URL}api-product/edit-product`
     console.log('Add product Url:' + otpUrl)
-     fetch('http://www.cartpedal.com/frontend/web/api-product/edit-product',{
+     fetch(`${BASE_URL}api-product/edit-product`,{
       method: 'Post',
       headers:{
         'Content-Type': 'application/json',
@@ -419,7 +419,7 @@ export default class UpdateProductScreen extends React.Component {
   }
   deleteProduct=()=>{
     this.showLoading();
-    var urlProductUnit = `http://www.cartpedal.com/frontend/web/api-product/delete-product?user_id=${this.state.userId}&product_id=${this.state.productId}`
+    var urlProductUnit = `${BASE_URL}api-product/delete-product?user_id=${this.state.userId}&product_id=${this.state.productId}`
     console.log('urlProduct :' + urlProductUnit)
     fetch(urlProductUnit, {
       method: 'GET',
@@ -481,7 +481,7 @@ export default class UpdateProductScreen extends React.Component {
     console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/edit-product-share"
+    var EditProfileUrl = `${BASE_URL}api-product/edit-product-share`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -730,6 +730,7 @@ customButton=()=>{
             <TextInput
               style={styles.DescriptionInputTextView}
               placeholder={'(Maximum 150 characters)'}
+              multiline={true}
               value={this.state.Description}
               onChangeText={this._handleMultiInput('Description')}
               editable={true}
@@ -981,6 +982,7 @@ height:40
     color:'black',
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
+    flexDirection:'row',
     marginTop: 5,
     marginBottom:resp(25),
   },
@@ -1097,7 +1099,7 @@ height:40
   openButtonContainer: {
     marginTop: resp(10),
     flexDirection: 'row',
-    width: resp(92),
+    width: resp(100),
     height: resp(24),
     borderColor: "#06BE7E",
     borderWidth: resp(2),

@@ -22,6 +22,8 @@ import ReadMore from 'react-native-read-more-text'
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
+import {BASE_URL} from '../Component/ApiClient';
+
 let width=Dimensions.get('window').width;
 class FavouriteTab extends Component {
   constructor (props) {
@@ -156,7 +158,7 @@ class FavouriteTab extends Component {
     console.log('form data==' + JSON.stringify(formData));
 
   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+    var fav = `${BASE_URL}api-user/block-fav-user`
     console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
@@ -204,7 +206,7 @@ class FavouriteTab extends Component {
     console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -290,7 +292,7 @@ class FavouriteTab extends Component {
     // console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`
     console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl, {
       method: 'Post',
@@ -355,7 +357,7 @@ class FavouriteTab extends Component {
         console.log('form data==' + JSON.stringify(formData))
   
       // var CartList = this.state.baseUrl + 'api-product/cart-list'
-        var RecentShare = "http://www.cartpedal.com/frontend/web/api-user/recent-share"
+        var RecentShare = `${BASE_URL}api-user/recent-share`
         console.log('Add product Url:' + RecentShare)
         fetch(RecentShare, {
           method: 'Post',
@@ -480,7 +482,7 @@ class FavouriteTab extends Component {
       console.log('form data==' + JSON.stringify(formData))
      // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
       
-      var otpUrl ='http://www.cartpedal.com/frontend/web/api-user/report-problem'
+      var otpUrl =`${BASE_URL}api-user/report-problem`
       console.log('url:' + otpUrl)
       fetch(otpUrl, {
         method: 'Post',
@@ -525,7 +527,7 @@ class FavouriteTab extends Component {
       console.log('form data==' + JSON.stringify(formData));
   
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+      var fav = `${BASE_URL}api-user/block-fav-user`
       console.log('Add product Url:' + fav)
       fetch(fav, {
         method: 'Post',

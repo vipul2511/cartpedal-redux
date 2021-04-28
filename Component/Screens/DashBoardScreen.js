@@ -34,8 +34,8 @@ import {isEmpty, isNull} from 'lodash'
 import Contacts from 'react-native-contacts';
 import {profileView, storiesAction, loggedStoriesAction,RecentDataAction,addStoryAction,resetStore} from '../../redux/actions';
 import { connect} from 'react-redux'
-
-
+import { bindActionCreators } from 'redux'
+import {BASE_URL} from '../Component/ApiClient';
 const width = Dimensions.get('screen').width
 const height = Dimensions.get('screen').height
 console.disableYellowBox = true
@@ -62,7 +62,7 @@ class DashBoardScreen extends Component {
       this.ProfileViewCall = this.ProfileViewCall.bind(this),
       this.state = {
         userName: '',
-        baseUrl: 'http://www.cartpedal.com/frontend/web/',
+        baseUrl: `${BASE_URL}`,
         userId: '',
         spinner: '',
         userAccessToken: '',
@@ -249,7 +249,7 @@ forwardlink =async(userid)=>{
     console.log('form data==' + JSON.stringify(formData));
 
   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = "http://www.cartpedal.com/frontend/web/api-user/block-fav-user"
+    var fav = `${BASE_URL}api-user/block-fav-user`
     console.log('Add product Url:' + fav)
     fetch(fav, {
       method: 'Post',
@@ -295,7 +295,7 @@ forwardlink =async(userid)=>{
     // console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`
     // console.log('Add product Url:' + EditProfileUrl)
     fetch(EditProfileUrl,  {
       method: 'Post',
@@ -438,7 +438,7 @@ if (notificationOpen) {
       reply_id: '0',
       upload: [],
     });
-    fetch('http://www.cartpedal.com/frontend/web/api-message/sent-message', {
+    fetch(`${BASE_URL}api-message/sent-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -521,7 +521,7 @@ if (notificationOpen) {
     // this.showLoading();
     let formData = new FormData()
     var urlprofile =
-      'http://www.cartpedal.com/frontend/web/api-user/view-profile?user_id='+this.state.userId
+      `${BASE_URL}api-user/view-profile?user_id=`+this.state.userId
     console.log('profileurl :' + urlprofile)
     fetch(urlprofile, {
       method: 'GET',
@@ -636,7 +636,7 @@ if (notificationOpen) {
     console.log('form data==' + JSON.stringify(formData))
    // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
     
-    var otpUrl ='http://www.cartpedal.com/frontend/web/api-user/report-problem'
+    var otpUrl =`${BASE_URL}api-user/report-problem`
     console.log('url:' + otpUrl)
     fetch(otpUrl, {
       method: 'Post',
@@ -957,7 +957,7 @@ if (notificationOpen) {
                       <MenuIcon
                         menutext='Menu'
                         menustyle={{
-                          right:5,
+                          right:1,
                           position:'absolute',
                           flexDirection: 'row',
                           justifyContent: 'flex-end',
@@ -1091,7 +1091,7 @@ if (notificationOpen) {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen')
@@ -1101,7 +1101,7 @@ if (notificationOpen) {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -1486,7 +1486,7 @@ const styles = StyleSheet.create({
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
-    flex: 0.48,
+    flex: 0.4,
     alignContent:'flex-end',
     width: resp(0),
     height: resp(45),
@@ -1620,7 +1620,12 @@ const styles = StyleSheet.create({
     fontSize: resp(13),
   },
 })
-
+// function mapDispatchToProps(dispatch){  
+//   console.log('dispatch',dispatch);
+//   return {
+//     actions: bindActionCreators(RecentDataAction, dispatch),
+// };
+// }
 function mapStateToProps(state) {
   const { isLoading, data, success } = state.signinReducer
   const { data: storiesData, success: storiesSuccess } = state.storiesReducer

@@ -22,7 +22,7 @@ export const signin = (phone, password, fcmtoken) => {
         let formData = new FormData()
         formData.append('identity', '+91' + phone)
         formData.append('password', password)
-        var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/login'
+        var otpUrl = `${API_URL}api-user/login`
         // var otpUrl = API_URL + '/api-user/login'
         const token = fcmToken ? fcmToken : '1111';
         return fetch(otpUrl, {
@@ -74,7 +74,7 @@ export const forgotPass = (phone) => {
         dispatch({ type: FORGOT_PASSWORD_START })
     let formData = new FormData()
     formData.append('mobile', '+91' + phone)
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/forgot-password'
+    var otpUrl = `${API_URL}api-user/forgot-password`
     const token = fcmToken ? fcmToken : '1111';
    return fetch(otpUrl, {
       method: 'Post',
@@ -127,7 +127,7 @@ export const forgotPassOTp = (phone, otp) => {
 
         formData.append('mobile', phone)
         formData.append('otp', otp)
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/verify-otp'
+    var otpUrl =`${API_URL}api-user/verify-otp`
     const token = fcmToken ? fcmToken : '1111';
    return fetch(otpUrl, {
       method: 'Post',
@@ -178,7 +178,7 @@ export const resetPass = (pass, otp) => {
         let formData = new FormData()
         formData.append('password', pass)
         formData.append('otp', otp)
-    var otpUrl = 'http://www.cartpedal.com/frontend/web/api-user/reset-password'
+    var otpUrl = `${API_URL}api-user/reset-password`
     const token = fcmToken ? fcmToken : '1111';
    return fetch(otpUrl, {
       method: 'Post',

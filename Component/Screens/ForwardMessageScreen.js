@@ -13,7 +13,7 @@ import {
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Fab, Icon} from 'native-base';
-
+import {BASE_URL} from '../Component/ApiClient';
 class ForwardMessageScreen extends Component {
   constructor(props) {
     super(props);
@@ -60,7 +60,7 @@ class ForwardMessageScreen extends Component {
     data.append('groupids',grpId)
     console.log('form data',JSON.stringify(data));
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-message/forword-message';
+      `${BASE_URL}api-message/forword-message`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'POST',
@@ -116,7 +116,7 @@ class ForwardMessageScreen extends Component {
 
     this.showLoading();
     var EditProfileUrl =
-      'http://www.cartpedal.com/frontend/web/api-product/contact-list';
+      `${BASE_URL}api-product/contact-list`;
     console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'Post',

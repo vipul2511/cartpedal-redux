@@ -15,7 +15,7 @@ import CheckBox from 'react-native-check-box';
 console.disableYellowBox = true
 import {signUp} from '../../redux/actions';
 import { connect} from 'react-redux'
-
+import {BASE_URL} from '../Component/ApiClient';
 class PhoneScreen extends Component {
   constructor(props) {
     super(props)
@@ -24,7 +24,7 @@ class PhoneScreen extends Component {
       isChecked: '',
       fcmToken: '',
       callUpdate: false,
-      baseUrl: 'http://www.cartpedal.com/frontend/web/',
+      baseUrl: `${BASE_URL}`,
     }
   }
 

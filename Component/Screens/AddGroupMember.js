@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast'
 import resp from 'rn-responsive-font'
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import {BASE_URL} from '../Component/ApiClient';
 const screenWidth = Dimensions.get('screen').width;
 
 
@@ -129,7 +129,7 @@ export default class AddGroupMember extends React.Component {
       console.log('form data==' + JSON.stringify(formData))
   
       // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+      var EditProfileUrl = `${BASE_URL}api-product/contact-list`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',
@@ -172,7 +172,7 @@ export default class AddGroupMember extends React.Component {
       console.log('form data==' + JSON.stringify(formData))
   
       // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var EditProfileUrl = "http://www.cartpedal.com/frontend/web/api-product/contact-list"
+      var EditProfileUrl = `${BASE_URL}api-product/contact-list`
       console.log('Add product Url:' + EditProfileUrl)
       fetch(EditProfileUrl, {
         method: 'Post',
