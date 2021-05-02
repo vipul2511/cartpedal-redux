@@ -80,13 +80,15 @@ class ForwardLinkScreen extends Component {
     fetch(EditProfileUrl, {
       method: 'POST',
       headers: {
-        // 'Content-Type': 'text/plain',
+        'Content-Type': 'application/json',
         device_id: '1234',
         device_token:fcmToken,
         device_type: 'android',
         Authorization: JSON.parse(userAccessToken),
       },
-      body: data,
+      body: JSON.stringify({
+        user_id:userId,body:msgids,toids:[{id:toid,type:"0"},{id:grpid,type:"1"}],msg_type:'link'
+      }),
     })
       .then((response) => response.json())
       .then((responseData) => {

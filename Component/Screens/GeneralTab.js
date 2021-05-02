@@ -25,6 +25,7 @@ import MenuIcon from './MenuIcon'
 import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
+import {hp,wp} from '../Component/hightWidthRatio';
 let width=Dimensions.get('window').width;
 let height=Dimensions.get('window').height;
 import {BASE_URL} from '../Component/ApiClient';
@@ -167,9 +168,9 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
 
   ListEmpty = () => {
     return (
-         <View style={styles.container}>
-            <Text style={{ 
-          margin:resp(160)}}>{this.state.NoData?'No Record':null} </Text>
+         <View style={{justifyContent:'center',alignItems:'center'}}>
+            <Text style={{ marginTop:120
+         }}>{this.state.NoData?'No Record':null} </Text>
         </View>
     );
   };
@@ -258,9 +259,10 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
         .then(responseData => {
         this.hideLoading();
           if (responseData.code == '200') {
-            console.log('general Data',JSON.stringify(responseData.data));
+            console.log('general Data',JSON.stringify(responseData));
           //  this.props.navigation.navigate('StoryViewScreen')
          //   Toast.show(responseData.message);
+         if(responseData.data.length>0){
          if(responseData.data[0].avatar==null){
           this.setState({avatar:''})
         }else{
@@ -272,7 +274,9 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
             console.log('fevtert========',responseData.data[0].favourite);
             this.setState({favourite:responseData.data[0].favourite})
           // this.SaveProductListData(responseData)
-
+      }else{
+        this.setState({NoData:true});
+      }
           } else {
             // alert(responseData.data);
             // alert(responseData.data.password)
@@ -355,41 +359,46 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
           })
           .done();
       }
-    link =async()=>{
-     const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-      .android.setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
-      // let url = await firebase.links().getInitialLink();
-      // console.log('incoming url', url);
+    link =async(id)=>{
+      const link = new firebase.links.DynamicLink(
+        'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+          id,
+        'cartpedal.page.link',
+      ).android
+        .setPackageName('com.cart.android')
+        .ios.setBundleId('com.cart.ios');
     
     firebase.links()
       .createDynamicLink(link)
       .then((url) => {
         console.log('the url',url);
-        this.onShare(url);
+        this.onShare('http://'+url);
       });
     }
-    forwardlink =async(userid)=>{
-      const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-       .android.setPackageName('com.cart.android')
-       .ios.setBundleId('com.cart.ios');
-       // let url = await firebase.links().getInitialLink();
-       // console.log('incoming url', url);
-     
-     firebase.links()
-       .createDynamicLink(link)
-       .then((url) => {
-         console.log('the url',url);
-        //  this.sendMessage(url,userid);
-        this.props.navigation.navigate('ForwardLinkScreen', {
-          fcmToken: this.state.fcmToken,
-          PhoneNumber: this.state.PhoneNumber,
-          userId: this.state.userNo,
-          userAccessToken: this.state.userAccessToken,
-          msgids: url,
+    forwardlink = async (userid) => {
+      const link = new firebase.links.DynamicLink(
+        'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+          userid,
+        'cartpedal.page.link',
+      ).android
+        .setPackageName('com.cart.android')
+        .ios.setBundleId('com.cart.ios');
+  
+      firebase
+        .links()
+        .createDynamicLink(link)
+        .then((url) => {
+          console.log('the url', url);
+          //  this.sendMessage(url,userid);
+          this.props.navigation.navigate('ForwardLinkScreen', {
+            fcmToken: this.state.fcmToken,
+            PhoneNumber: this.state.PhoneNumber,
+            userId: this.state.userNo,
+            userAccessToken: this.state.userAccessToken,
+            msgids: 'http://' + url,
+          });
         });
-       });
-     }
+    };
       navigateToSettings = () => {
         // const navigateAction = NavigationActions.navigate({ routeName: 'OpenForPublicDetail' });
         // this.props.navigation.dispatch(navigateAction);
@@ -482,7 +491,7 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
         </View>
         <View style={styles.ProfileInfoContainer}>
           <Text style={styles.PersonNameStyle}>{item.name}</Text> 
-          <View style={{marginLeft: resp(0),width:width*0.8}}>
+          <View style={{marginLeft:resp(0),width:width*0.8}}>
                   {item.about ? (
                     <SeeMore
                       numberOfLines={4}
@@ -533,11 +542,11 @@ AsyncStorage.getItem('@fcmtoken').then((token) => {
               this.blockuser(item.id) 
             }}
             option2Click={() => {
-              this.link()
+              this.link(item.id)
               // Toast.show('CLicked Share Link', Toast.LONG)
             }}
             option3Click={() => {
-              this.forwardlink()
+              this.forwardlink(item.id)
               // Toast.show('CLicked Forward Link', Toast.LONG)
             }}
             option4Click={() => {
@@ -607,17 +616,19 @@ const styles = StyleSheet.create({
   },
 
   ProfileImageContainer: {
-    margin: resp(10),
+    // margin: resp(10),
+    marginLeft:wp(5),
+    marginTop:hp(10),
     flexDirection: 'column',
     flex: 0.2,
     backgroundColor:'white',
-    width: resp(70),
-    height: resp(70),
+    width: wp(70),
+    height: wp(70),
   },
   box: {
     marginTop: resp(5),
-    width: resp(415),
-    height: resp(75),
+    width: wp(415),
+    height: hp(75),
     backgroundColor: 'white',
     flexDirection: 'row',
     shadowColor: 'black',
@@ -629,7 +640,8 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   itemBox: {
-    height: resp(375),
+    height: hp(375),
+    width:width,
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -643,8 +655,8 @@ const styles = StyleSheet.create({
   ProfileImageViewStyle: {
     marginTop: resp(10),
 
-    width: resp(50),
-    height: resp(50),
+    width: wp(50),
+    height: hp(50),
     borderRadius: resp(8),
   },
   RecentTextStyle: {
@@ -660,12 +672,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   ImageContainer: {
-    marginLeft:resp(10),
+    // marginLeft:wp(5),
     marginTop: resp(-15),
     flexDirection: 'column',
-    width: resp(180),
-    height: resp(210),
-    margin: resp(7),
+    width: wp(170),
+    height: hp(190),
+    margin: wp(5),
     borderRadius: resp(5),
   },
  
@@ -681,7 +693,7 @@ const styles = StyleSheet.create({
     margin: resp(0),
     marginTop: resp(15),
     flexDirection: 'column',
-    flex: 0.7,
+    flex: 0.6,
     backgroundColor:'white',
     width: resp(5),
     height: resp(70),
@@ -689,8 +701,7 @@ const styles = StyleSheet.create({
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
-    flex: 0.62,
-   
+    flex: 0.6,
     width: resp(0),
     height: resp(30),
   },

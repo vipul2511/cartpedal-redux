@@ -23,7 +23,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
-
+import {hp,wp} from '../Component/hightWidthRatio';
 let width=Dimensions.get('window').width;
 class FavouriteTab extends Component {
   constructor (props) {
@@ -44,50 +44,7 @@ class FavouriteTab extends Component {
       whiteIcon:require('../images/dislike.png'),
       avatar:'',
       pickedImage:require('../images/default_user.png'),
-      data: [
-        {
-          ImagePerson: require('../images/RiyaJainImage.png'),
-          personName: 'Rahul Jain',
-          Description: ' Description is the pattern of narrative ',
-          heart_icon: require('../images/Heart_icon.png'),
-          message_icon: require('../images/message_icon.png'),
-          View_all: 'View All',
-          menuButtom: require('../images/more.png'),
-          productImage: require('../images/ProductImage.png'),
-          ItemName: 'Western Wear',
-          ItemPrice: '500',
-          productImage2: require('../images/ProductImage2.png'),
-          ItemName2: 'Foot Wear',
-          ItemPrice2: '300',
-          productImage3: require('../images/ProductImages3.png'),
-          ItemName3: 'Accessories ',
-          ItemPrice3: '500',
-          productImage4: require('../images/productImage6.png'),
-          ItemName4: 'Ethnic Wear ',
-          ItemPrice4: '300',
-        },
-        {
-          ImagePerson: require('../images/productImage4.png'),
-          personName: 'Gaurav Jain',
-          Description: ' Description is the pattern of narrative ',
-          heart_icon: require('../images/Heart_icon.png'),
-          message_icon: require('../images/message_icon.png'),
-          View_all: 'View All',
-          menuButtom: require('../images/more.png'),
-          productImage: require('../images/productImage4.png'),
-          ItemName: 'Western Wear',
-          ItemPrice: '120',
-          productImage2: require('../images/productImage5.png'),
-          ItemName2: 'Foot Wear',
-          ItemPrice2: '216',
-          productImage3: require('../images/productImage5.png'),
-          ItemName3: 'Accessories ',
-          ItemPrice3: '246',
-          productImage4: require('../images/productImage6.png'),
-          ItemName4: 'Ethnic Wear ',
-          ItemPrice4: '296',
-        },
-      ],
+      
     }
     console.log('this props',JSON.stringify(this.props));
   }
@@ -132,12 +89,10 @@ class FavouriteTab extends Component {
   ListEmpty = () => {
     return (
        
-        <View style={styles.container}>
-            <Text style={{ 
-          margin:resp(170),
-
-          }}>{this.state.NoData?'No Record':null} </Text>
-        </View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
+      <Text style={{ marginTop:120
+   }}>{this.state.NoData?'No Record':null} </Text>
+  </View>
     );
   };
   actionOnRow (item) {
@@ -432,26 +387,30 @@ class FavouriteTab extends Component {
           alert(error.message);
         }
       };
-    link =async()=>{
-     const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-      .android.setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
-      // let url = await firebase.links().getInitialLink();
-      // console.log('incoming url', url);
-    
-    firebase.links()
-      .createDynamicLink(link)
-      .then((url) => {
-        console.log('the url',url);
-        this.onShare(url);
-      });
-    }
+      link =async(id)=>{
+        const link = new firebase.links.DynamicLink(
+          'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+            id,
+          'cartpedal.page.link',
+        ).android
+          .setPackageName('com.cart.android')
+          .ios.setBundleId('com.cart.ios');
+      
+      firebase.links()
+        .createDynamicLink(link)
+        .then((url) => {
+          console.log('the url',url);
+          this.onShare('http://'+url);
+        });
+      }
     forwardlink =async(userid)=>{
-      const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-       .android.setPackageName('com.cart.android')
-       .ios.setBundleId('com.cart.ios');
-       // let url = await firebase.links().getInitialLink();
-       // console.log('incoming url', url);
+      const link = new firebase.links.DynamicLink(
+        'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+          userid,
+        'cartpedal.page.link',
+      ).android
+        .setPackageName('com.cart.android')
+        .ios.setBundleId('com.cart.ios');
      
      firebase.links()
        .createDynamicLink(link)
@@ -467,7 +426,7 @@ class FavouriteTab extends Component {
         PhoneNumber: numID,
         userId: this.state.userNo,
         userAccessToken: this.state.userAccessToken,
-        msgids: url,
+        msgids: 'http://' + url,
       });
     }
     }));
@@ -654,11 +613,11 @@ class FavouriteTab extends Component {
               this.blockuser(item.id) 
             }}
             option2Click={() => {
-              this.link()
+              this.link(item.id)
               // Toast.show('CLicked Share Link', Toast.LONG)
             }}
             option3Click={() => {
-              this.forwardlink()
+              this.forwardlink(item.id)
               // Toast.show('CLicked Forward Link', Toast.LONG)
             }}
             option4Click={() => {
@@ -733,7 +692,9 @@ const styles = StyleSheet.create({
   },
 
   ProfileImageContainer: {
-    margin: resp(10),
+    // margin: resp(10),
+    marginLeft:wp(5),
+    marginTop:hp(10),
     flexDirection: 'column',
     flex: 0.2,
     backgroundColor:'white',
@@ -755,7 +716,7 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   itemBox: {
-    height: resp(375),
+    height: hp(375),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -767,9 +728,9 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   ProfileImageViewStyle: {
-    margin: resp(10),
-    width: resp(50),
-    height: resp(50),
+    margin: resp(5),
+    width: wp(50),
+    height: hp(50),
     borderRadius: resp(8),
   },
   RecentTextStyle: {
@@ -785,12 +746,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   ImageContainer: {
-    marginLeft:resp(10),
+    // marginLeft:wp(5),
     marginTop: resp(-15),
     flexDirection: 'column',
-    width: resp(180),
-    height: resp(210),
-    margin: resp(7),
+    width: wp(170),
+    height: hp(180),
+    margin: resp(5),
     borderRadius: resp(5),
   },
  
@@ -801,20 +762,20 @@ const styles = StyleSheet.create({
   },
   ProfileInfoContainer: {
     margin: resp(0),
-    marginLeft:resp(10),
-    marginTop: resp(15),
+    marginLeft:wp(10),
+    marginTop: hp(15),
     flexDirection: 'column',
-    flex: 0.7,
+    flex: 0.5,
    
-    width: resp(70),
-    height: resp(70),
+    width: wp(70),
+    height: hp(70),
   },
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
-    flex: 0.62,
+    flex: 0.5,
     width: resp(0),
-    height: resp(30),
+    height: hp(30),
   
   },
  

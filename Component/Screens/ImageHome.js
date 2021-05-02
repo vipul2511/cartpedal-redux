@@ -197,14 +197,15 @@ export default class ImageHome extends React.Component {
     }
   }
   shareProduct = () => {
-    this.props.navigation.navigate('ShareWithScreen');
-    // AsyncStorage.getItem('@product_id').then((id) => {
-    //   if (id) {
-    //     this.props.navigation.navigate('ShareWithScreen');
-    //   } else {
-    //     alert('Please upload the product');
-    //   }
-    // });
+    // this.props.navigation.navigate('ShareWithScreen');
+    AsyncStorage.getItem('@product_id').then((id) => {
+      if (id) {
+        console.log('share product id',id)
+        this.props.navigation.navigate('ShareWithScreen');
+      } else {
+        alert('Please upload the product');
+      }
+    });
   }
   render() {
     console.log("render() --------------->")
@@ -219,7 +220,11 @@ export default class ImageHome extends React.Component {
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}>
+              onPress={() => {
+                AsyncStorage.removeItem('@product_id').then(succ=>{
+                  this.props.navigation.goBack();
+                }); 
+              }}>
               <Image
                 source={require('../images/back_blck_icon.png')}
                 style={styles.backButtonStyle}

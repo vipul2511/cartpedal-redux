@@ -33,7 +33,7 @@ import moment from 'moment'
 import ImageSelectDialog from '../Component/ImageSelectDialog';
 import firebase from 'react-native-firebase';
 import {isEmpty, isNull} from 'lodash';
-import {profileView, storiesAction, loggedStoriesAction,addStoryAction,productlistAction} from '../../redux/actions';
+import {profileView,addStoryAction,productlistAction} from '../../redux/actions';
 import { connect} from 'react-redux'
 import {BASE_URL} from '../Component/ApiClient';
 //import all the components we are going to use.
@@ -131,12 +131,12 @@ class ProfileScreen extends Component {
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
+        this.setState({ userAccessToken: accessToken },()=>{
+          this.ProfileViewCall();
+          this.loggedUserstory();
+          this.ProductListCall();
+        });
         console.log("Edit access token ====" + this.state.userAccessToken);
-        this.ProfileViewCall();
-        this.loggedUserstory();
-        this.ProductListCall();
-
       //  setTimeout(() => {
       //    this.hideLoading();
       //  }, 2000);
@@ -850,28 +850,28 @@ uploadCoverPhoto = (imageList) => {
       })
       .done()
   }
-  forwardlink =async()=>{
-    const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-     .android.setPackageName('com.cart.android')
-     .ios.setBundleId('com.cart.ios');
-     // let url = await firebase.links().getInitialLink();
-     // console.log('incoming url', url);
+  forwardlink =async(userid,name="ProfileScreen")=>{
+    const link = new firebase.links.DynamicLink(
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+
+        userid,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
    
    firebase.links()
      .createDynamicLink(link)
      .then((url) => {
        console.log('the url',url);
-      //  this.sendMessage(url,userid);
       AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
         if(NumberFormat){
           let numID=JSON.parse(NumberFormat)
-        //   this.setState({PhoneNumber:numID})
     this.props.navigation.navigate('ForwardLinkScreen', {
       fcmToken: this.state.fcmtoken,
       PhoneNumber: numID,
       userId: this.state.userId,
       userAccessToken: this.state.userAccessToken,
-      msgids: url,
+      msgids: 'http://' + url,
     });
   }
   }));
@@ -898,20 +898,21 @@ uploadCoverPhoto = (imageList) => {
       alert(error.message);
     }
   };
-  link =async()=>{
-    const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-     .android.setPackageName('com.cart.android')
-     .ios.setBundleId('com.cart.ios');
-     // let url = await firebase.links().getInitialLink();
-     // console.log('incoming url', url);
-   
-   firebase.links()
-     .createDynamicLink(link)
-     .then((url) => {
-      //  console.log('the url',url);
-       this.onShare(url);
-     });
-   }
+  link =async(id,name="ProfileScreen")=>{
+    const link = new firebase.links.DynamicLink(
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+id,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+  
+  firebase.links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url',url);
+      this.onShare('http://'+url);
+    });
+  }
   viewFunc=()=>{
     // console.log('covers',this.state.imagesCoverID);
     this.props.navigation.navigate('ViewProfileScreen', {images: this.state.covers,profileScren:'1'});
@@ -966,9 +967,12 @@ uploadCoverPhoto = (imageList) => {
   }
   ListEmpty=()=>{
     return(
-      <View>
-      {this.state.NoData?<View style={{justifyContent:'center',alignItems:'center',marginTop:20}}>
+      <View >
+      {this.state.NoData?
+      <View style={{width:width,height:height/3,backgroundColor:'white'}}>
+      <View style={{justifyContent:'center',alignItems:'center',marginTop:20,}}>
         <Text style={{textAlign:'center',fontWeight:'bold',fontSize:17}}>No Product!!</Text>
+      </View>
       </View>:null}
       </View>
     )
@@ -998,13 +1002,13 @@ uploadCoverPhoto = (imageList) => {
     )
   }
   componentWillReceiveProps(nextProps){
-    console.log('recevie props data',nextProps.productData);
+    // console.log('recevie props data',nextProps.productData);
     if(this.props.productData!==nextProps.productData){
       this.setState({productData:nextProps.productData});
     }
   }
   componentDidUpdate(){
-    console.log('product error',this.props.producterror,this.props.productSuccess);
+    // console.log('product error',this.props.producterror,this.props.productSuccess);
     if(this.props.producterror && this.state.callUpdate){
       this.setState({callUpdate:false,NoData:true,productData:[]},()=>{
         this.hideLoading();
@@ -1015,18 +1019,12 @@ uploadCoverPhoto = (imageList) => {
         this.hideLoading();
         }); 
     }
-    if (this.props.success) {
-      console.log('executing success',this.props.addStorySuccess);
-            if(this.props.addStorySuccess){
-              this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
-            }
-   
-    // if (this.props.loggedStoriesSuccess && this.props.loggedStoriesData) {
-    //   this.setState({loggeduserstory_avatar:this.props.loggedStoriesData.data[0].avatar});
-    //   this.setState({stories:this.props.loggedStoriesData.data[0].stories});
-    //   this.setState({userStoryName:this.props.loggedStoriesData.data[0].name})
-    // }
-  }
+  //   if (this.props.success) {
+  //     // console.log('executing success',this.props.addStorySuccess);
+  //           if(this.props.addStorySuccess){
+  //             this.props.loggedStoriesAction(this.state.userId, this.state.userAccessToken);
+  //           }
+  // }
   }
   render () {
     return (
@@ -1131,11 +1129,11 @@ uploadCoverPhoto = (imageList) => {
                       color: 'white',
                     }}
                     option1Click={() => {
-                      this.link()
+                      this.link(this.state.userId)
                       // Toast.show('CLicked Shared Link', Toast.LONG)
                     }}
                     option2Click={() => {
-                      this.forwardlink()
+                      this.forwardlink(this.state.userId)
                       // Toast.show('CLicked Forward Link', Toast.LONG)
                     }}
                   />
@@ -1378,23 +1376,24 @@ uploadCoverPhoto = (imageList) => {
                   </Text>
                   <TouchableOpacity
                    onPress={() => {
-                      this.openImageGallery();
+                    this.openCamara();
+                      
                     }}>
-                  <Text style={styles.OptionsProfileModalStyle}> Gallery</Text>
+                  <Text style={styles.OptionsProfileModalStyle}>Camera</Text>
                   </TouchableOpacity>
                   
                  <TouchableOpacity
                   onPress={() => {
-                      this.openCamara();
+                    this.openImageGallery();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> Camera</Text>
+                 <Text style={styles.Options2ProfileModalStyle}>Gallery </Text>
                  </TouchableOpacity>
 
                  <TouchableOpacity
                  onPress={() => {
                       this.customButton();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> View Profile</Text>
+                 <Text style={styles.Options2ProfileModalStyle}>View Profile</Text>
                    </TouchableOpacity>
                 
                   
@@ -1425,16 +1424,17 @@ uploadCoverPhoto = (imageList) => {
                   </Text>
                   <TouchableOpacity
                    onPress={() => {
-                      this.openImageStoryGallery();
+                    this.openCamaraStory();
+                     
                     }}>
-                  <Text style={styles.OptionsProfileModalStyle}> Gallery</Text>
+                  <Text style={styles.OptionsProfileModalStyle}>Camera </Text>
                   </TouchableOpacity>
                   
                  <TouchableOpacity
                   onPress={() => {
-                      this.openCamaraStory();
+                    this.openImageStoryGallery();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> Camera</Text>
+                 <Text style={styles.Options2ProfileModalStyle}>Gallery</Text>
                  </TouchableOpacity>
 
                  {/* <TouchableOpacity
@@ -1550,11 +1550,11 @@ uploadCoverPhoto = (imageList) => {
                                 Toast.show('CLicked Unshow Link', Toast.LONG)
                               }}
                               option2Click={() => {
-                                this.link()
+                                this.link(item.id)
                                 // Toast.show('CLicked Share Link', Toast.LONG)
                               }}
                               option3Click={() => {
-                                this.forwardlink()
+                                this.forwardlink(item.id)
                                 // Toast.show('CLicked Forward Link', Toast.LONG)
                               }}
                               option4Click={() => {
@@ -1876,9 +1876,9 @@ const styles = StyleSheet.create({
   },
   OptionsProfileModalStyle: {
     alignContent:'flex-start',
-   marginTop:resp(30),
+   marginTop:resp(10),
     color: '#000',
-    
+    marginBottom:10,
     width: resp(207),
     fontSize: resp(16),
   },
@@ -1886,7 +1886,7 @@ const styles = StyleSheet.create({
     alignContent:'flex-start',
    marginTop:resp(5),
     color: '#000',
-    
+    marginBottom:10,
     width: resp(207),
     fontSize: resp(16),
   },
@@ -2355,15 +2355,13 @@ const styles = StyleSheet.create({
   },
 })
 function mapStateToProps(state) {
-  console.log('state',JSON.stringify(state.loggedStoriesData));
   const { isLoading, data, success } = state.signinReducer
-  const { data: loggedStoriesData, success: loggedStoriesSuccess } = state.loggedStoriesReducer
    const {success:addStorySuccess} = state.addStoryReducer;
    const {data:productData,success:productSuccess,isLoading:loadingData,error:producterror}=state.productListReducer;
   return {
-    isLoading, data, success, loggedStoriesData, loggedStoriesSuccess,producterror,loadingData,addStorySuccess,productData,productSuccess
+    isLoading, data, success,producterror,loadingData,addStorySuccess,productData,productSuccess
   }
 }
 
-export default connect(mapStateToProps, { profileView, storiesAction, loggedStoriesAction,addStoryAction,productlistAction})(ProfileScreen);
+export default connect(mapStateToProps, { profileView,addStoryAction,productlistAction})(ProfileScreen);
 

@@ -11,7 +11,8 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Share
+  Share,
+  Dimensions
 } from 'react-native'
 import resp from 'rn-responsive-font'
 import CustomMenuIcon from './CustomMenuIcon'
@@ -22,6 +23,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
+import {wp,hp} from '../Component/hightWidthRatio';
+let width=Dimensions.get('window').width;
 class CartPlaceScreen extends Component {
   constructor(props) {
     super(props)
@@ -45,6 +48,7 @@ class CartPlaceScreen extends Component {
         whiteIcon:require('../images/dislike.png'),
         pickedImage:require('../images/default_user.png'),
         avatar:'',
+        acceptText:'Accepted'
       }
   }
 
@@ -115,12 +119,10 @@ class CartPlaceScreen extends Component {
   ListEmpty = () => {
     return (
 
-      <View style={styles.container}>
-        <Text style={{
-          margin: resp(170),
-
-        }}>{this.state.NoData ? 'No Record' : null} </Text>
-      </View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
+      <Text style={{ marginTop:120
+   }}>{this.state.NoData?'No Record':null} </Text>
+  </View>
     );
   };
   CartListCall() {
@@ -180,8 +182,8 @@ class CartPlaceScreen extends Component {
           this.setState({ NoData: true });
         }
 
-        console.log('response object:', responseData)
-        console.log('User user ID==', JSON.stringify(responseData))
+        // console.log('response object:', responseData)
+        // console.log('User user ID==', JSON.stringify(responseData))
       })
       .catch(error => {
         this.hideLoading();
@@ -226,8 +228,8 @@ class CartPlaceScreen extends Component {
           if (responseData.code == '200') {
              //  this.props.navigation.navigate('StoryViewScreen')
              //   Toast.show(responseData.message);
-            
-                alert('Order is Accepted Successfully');
+            //  this.setState({acceptText:'Accepted'});
+                alert('Your order has been accepted successfully');
           } else {
             // alert(responseData.data);
             // alert(responseData.data.password)
@@ -391,7 +393,7 @@ forwardlink =async(userid)=>{
               // console.log('order recevied',JSON.stringify(item));
               return(
                 <View>
-                {item.products[0]?(  <TouchableOpacity style={styles.itemBox} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,wholeData:item })}}>
+                {item.products[0]?(<TouchableOpacity style={styles.itemBox} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,wholeData:item.products })}}>
                 <View style={styles.box}>
                   <View style={styles.ProfileImageContainer}>
                     <TouchableOpacity>
@@ -403,14 +405,14 @@ forwardlink =async(userid)=>{
                   </View>
                   <View style={styles.ProfileInfoContainer}>
                     <Text style={styles.PersonNameStyle}>{item.name}</Text>
-                    {/* <Text style={styles.ProfileDescription}>{item.about}</Text> */}
-                    <View style={{width:resp(520)}}>
+                    <View style={{width:wp(520)}}>
                     {item.about? (<SeeMore style={styles.ProfileDescription} numberOfLines={2}  linkColor="red" seeMoreText="read more" seeLessText="read less">
                         {item.about.substring(0,55)+"..."}
                   </SeeMore>):null}
                   <Text style={{color:'grey',marginBottom:10}}>Order id:{item.orderid}  {item.date},{item.time}</Text>
                   </View>
-                  </View>
+                  </View> 
+                  <View style={{width:width-160}}>
                   <View style={styles.ListMenuContainer}>
                     <TouchableOpacity style={styles.messageButtonContainer} onPress={() => {
                       console.log('id of user',item.id);
@@ -425,7 +427,7 @@ forwardlink =async(userid)=>{
                 source={item.favourite==1?this.state.redIcon:this.state.whiteIcon}
                 style={[styles.heartButtonStyle,{width:item.favourite==1?resp(11):resp(18),height:item.favourite==1?resp(9):resp(18),marginTop:item.favourite==1?resp(4):resp(0)}]}></Image>
             </TouchableOpacity>
-                    <TouchableOpacity style={styles.ViewButtonContainer} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,wholeData:item })}}> 
+                    <TouchableOpacity style={styles.ViewButtonContainer} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,wholeData:item.products})}}> 
                         <Text style={styles.viewButtonStyle}>View All</Text>
                     </TouchableOpacity>
                     <CustomMenuIcon
@@ -433,9 +435,11 @@ forwardlink =async(userid)=>{
                       menutext='Menu'
                       //Menu View Style
                       menustyle={{
-                        marginRight: 5,
+                        justifyContent:'center',
+                        alignItems:'center',
+                        marginBottom:4,
                         flexDirection: 'row',
-                        justifyContent: 'flex-end',
+                        // justifyContent: 'flex-end',
                       }}
                       //Menu Text Style
                       textStyle={{
@@ -452,53 +456,54 @@ forwardlink =async(userid)=>{
                       }}
                     />
                   </View>
+                  </View>
                 </View>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> */}
                   <View style={styles.columnView}>
+                    <View style={{justifyContent:'center',alignItems:'center',flexDirection:'row'}}>
                    <View style={styles.ImageContainer}>
                       <Image
                         source={{ uri: item.products[0].image }}
-                        style={{width:100,height:133,borderRadius:5}}></Image>
+                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
                       <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
                       <Text style={styles.itemPriceStyle}>
                         {'\u20B9'}
                         {item.products[0].price}
                       </Text>
                     </View>
-                    {/* <View style={styles.ImageContainer}>
+                    {item.products[1]?(<View style={styles.ImageContainer}>
                       <Image
-                        source={{ uri: item.products[0].image }}
-                        style={styles.ImageContainer}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
+                        source={{ uri: item.products[1].image }}
+                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
+                      <Text style={styles.itemNameStyle}>{item.products[1].name}</Text>
                       <Text style={styles.itemPriceStyle}>
                         {'\u20B9'}
-                        {item.products[0].price}
+                        {item.products[1].price}
                       </Text>
+                    </View>):null}
+                    {item.products[2]?(<View style={styles.ImageContainer}>
+                      <Image
+                        source={{ uri: item.products[2].image }}
+                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
+                      <Text style={styles.itemNameStyle}>{item.products[2].name}</Text>
+                      <Text style={styles.itemPriceStyle}>
+                        {'\u20B9'}
+                        {item.products[2].price}
+                      </Text>
+                    </View>):null}
+                    {item.products[3]?(<View style={styles.ImageContainer}>
+                      <Image
+                        source={{ uri: item.products[3].image }}
+                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
+                      <Text style={styles.itemNameStyle}>{item.products[3].name}</Text>
+                      <Text style={styles.itemPriceStyle}>
+                        {'\u20B9'}
+                        {item.products[3].price}
+                      </Text>
+                    </View>):null}
                     </View>
-                    <View style={styles.ImageContainer}>
-                      <Image
-                        source={{ uri: item.products[0].image }}
-                        style={styles.ImageContainer}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[0].price}
-                      </Text>
-                    </View>
-                    <View style={styles.ImageContainer}>
-                      <Image
-                        source={{ uri: item.products[0].image }}
-                        style={styles.ImageContainer}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[0].price}
-                      </Text>
-                    </View> */}
                   </View>
-
-
-                </ScrollView>
+                {/* </ScrollView> */}
                 <View style={styles.ItemCountContainer}>
                   <View style={styles.CartValueContainer}>
                     <View style={styles.CartItemContainer}>
@@ -516,7 +521,7 @@ forwardlink =async(userid)=>{
                       this.AskForStautsCall(item.orderid,item.id)
                   }}>
                       <View style={styles.PlacedButtonStyle}>
-                        <Text style={styles.PlaceHolderTextStyle}>Accepted</Text>
+                        <Text style={styles.PlaceHolderTextStyle}>{this.state.acceptText}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -570,8 +575,8 @@ const styles = StyleSheet.create({
 
   PersonNameStyle: {
     marginTop: resp(10),
-    width: resp(80),
-    height: resp(20),
+    // width: resp(80),
+    // height: resp(20),
     color: '#000',
     fontWeight: 'bold',
   },
@@ -590,11 +595,10 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ProfileImageContainer: {
-    margin: resp(10),
     flexDirection: 'column',
-    flex: 0.2,
-    width: resp(70),
-    height: resp(70),
+    // flex: 0.2,
+    width: wp(60),
+    height: hp(60),
     // marginRight:10
   },
   spinnerTextStyle: {
@@ -602,8 +606,8 @@ const styles = StyleSheet.create({
   },
   box: {
     marginTop: resp(5),
-    width: resp(415),
-    height: resp(75),
+    width: width,
+    height: hp(75),
     backgroundColor: 'white',
     flexDirection: 'row',
     shadowColor: 'black',
@@ -615,10 +619,10 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   ItemCountContainer: {
-    marginLeft: resp(20),
-    marginTop: resp(5),
-    width: resp(415),
-    height: resp(75),
+    marginLeft: wp(20),
+    marginTop: hp(5),
+    width: wp(415),
+    height: hp(75),
     flexDirection: 'row',
     shadowColor: 'black',
     shadowOpacity: 0.2,
@@ -630,16 +634,16 @@ const styles = StyleSheet.create({
   },
   CartItemContainer: {
     flex: 0.5,
-    height: resp(22),
-    width: resp(130),
+    height: hp(22),
+    width: wp(130),
     margin: resp(5),
     flexDirection: 'row',
 
   },
   PlacedButtonStyle: {
     marginLeft: resp(40),
-    height: resp(40),
-    width: resp(130),
+    height: hp(40),
+    width: wp(130),
     marginTop: resp(20),
     backgroundColor: '#FFCF33',
 
@@ -698,9 +702,9 @@ const styles = StyleSheet.create({
   PlacedHolderButtonContainer: {
     marginBottom: resp(20),
     margin: resp(5),
-    width: resp(150),
-    height: resp(70),
-    flex: 0.5,
+    width: wp(150),
+    height: hp(70),
+    flex: 0.7,
     flexDirection: 'column',
     shadowColor: 'black',
     shadowOpacity: 0.2,
@@ -711,7 +715,7 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   itemBox: {
-    height: resp(400),
+    height: hp(400),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -725,25 +729,28 @@ const styles = StyleSheet.create({
 
   Profile2ImageViewStyle: {
     margin: resp(10),
-    width: resp(70),
-    height: resp(70),
+    width: wp(70),
+    height: hp(70),
     borderRadius: resp(10),
   },
   ProfileImageViewStyle: {
-    margin: resp(10),
-    width: resp(50),
-    height: resp(50),
+    marginLeft: resp(5),
+    marginTop:wp(15),
+    width: wp(50),
+    height: hp(50),
+    // justifyContent:'center',
+    // alignItems:'center',
     borderRadius: resp(8),
   },
   MenuIconStyle: {
     marginTop: resp(4),
-    width: resp(3.44),
-    height: resp(15.33),
+    width: wp(3.44),
+    height: hp(15.33),
   },
   horizontalLine: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: resp(2),
+    marginTop: hp(2),
   },
   ColumView: {
     flexDirection: 'column',
@@ -753,15 +760,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: resp(2),
-    height: resp(35),
+    height: hp(35),
     backgroundColor: '#F1F0F2',
     width: '100%',
   },
   RecentTextStyle: {
     fontSize: resp(14),
     marginTop: resp(30),
-    marginLeft: resp(10),
-    height: resp(50),
+    marginLeft: wp(10),
+    height: hp(50),
     color: '#8E8E8E',
   },
   margintop: {
@@ -769,8 +776,8 @@ const styles = StyleSheet.create({
   },
   ImageViewStyle: {
     margin: resp(8),
-    width: resp(55),
-    height: resp(55),
+    width: wp(55),
+    height: hp(55),
     borderWidth: 2,
     borderColor: '#F01738',
   },
@@ -855,10 +862,10 @@ const styles = StyleSheet.create({
   ImageContainer: {
     marginTop: resp(-8),
     flexDirection: 'column',
-    width: resp(140),
-    height: resp(133),
-    marginLeft: resp(10),
+    width: wp(90),
+    height: hp(133),
     borderRadius: resp(15),
+    marginLeft:wp(2)
   },
   bottomInactiveTextStyleChart: {
     color: '#887F82',
@@ -901,8 +908,8 @@ const styles = StyleSheet.create({
   StatusAddLargeStyle: {
     marginTop: resp(-20),
     marginLeft: resp(60),
-    width: resp(30),
-    height: resp(30),
+    width: wp(30),
+    height: hp(30),
 
     position: 'absolute', //Here is the trick
     bottom: 0,
@@ -913,16 +920,15 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     flexDirection: 'column',
     flex: 0.6,
-    width: resp(70),
-    height: resp(70),
+    width: wp(70),
+    height: hp(70),
   },
   ProfileInfoContainer: {
-    margin: resp(15),
-    marginTop: resp(15),
+    // margin: resp(15),
+    marginTop: wp(15),
     flexDirection: 'column',
-    flex: 0.68,
-    width: resp(70),
-    height: resp(70),
+    width: wp(70),
+    height: hp(70),
   },
 
   RiyaMenuContainer: {
@@ -934,11 +940,11 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ListMenuContainer: {
-    marginTop: resp(20),
-    marginLeft:resp(20),
+    // marginTop: hp(20),
+    // marginLeft:wp(20),
     flexDirection: 'row',
-    flex: 0.9,
-     width: resp(0),
+    justifyContent:'flex-end',
+    alignItems:'flex-end',
     height: resp(40),
   },
   openButtonStyle: {
@@ -952,10 +958,11 @@ const styles = StyleSheet.create({
     // marginRight: -20,
     fontSize:resp(14),
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: resp(2),
-    marginRight:resp(5)
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    marginBottom:4,
+    marginLeft: wp(2),
+    marginRight:wp(5)
   },
 
   openButtonContainer: {
@@ -991,8 +998,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   ViewButtonContainer: {
-    width: resp(75),
-    height: resp(24),
+    // width: wp(65),
+    // height: hp(24),
     backgroundColor: '#fff',
   },
 
@@ -1060,8 +1067,8 @@ const styles = StyleSheet.create({
   columnView: {
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height:'40%',
+    marginTop:hp(5)
   },
   tabButtonStyle: {
     flex: 0.25,

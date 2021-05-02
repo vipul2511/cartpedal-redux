@@ -30,6 +30,14 @@ class CartScreen extends Component {
     super(props)
     this.state = {}
   }
+  // componentDidMount=()=>{
+    
+  //   if(this.props.route.params){
+  //     if(this.props.route.params.cartValue){
+  //       this.onChangeRefreshTab(Number(this.props.route.params.cartValue))
+  //     }
+  //   }
+  // }
   onChangeRefreshTab=(value)=>{
     console.log('value of i',value);
     if(value==1){

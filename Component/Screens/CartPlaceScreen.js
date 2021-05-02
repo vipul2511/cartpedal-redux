@@ -26,6 +26,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase'
 import {BASE_URL} from '../Component/ApiClient';
+import { hp, wp } from '../Component/hightWidthRatio'
 let width=Dimensions.get('window').width;
 class CartPlaceScreen extends Component {
   constructor(props) {
@@ -103,32 +104,34 @@ class CartPlaceScreen extends Component {
       alert(error.message);
     }
   };
-link =async()=>{
- const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  .android.setPackageName('com.cart.android')
-  .ios.setBundleId('com.cart.ios');
-  // let url = await firebase.links().getInitialLink();
-  // console.log('incoming url', url);
+  link =async(id,name="CartScreen")=>{
+    const link = new firebase.links.DynamicLink(
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${id}&cartValue=1`,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+  
+  firebase.links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url',url);
+      this.onShare('http://'+url);
+    });
+  }
+forwardlink =async(userid,name="CartScreen")=>{
+  const link = new firebase.links.DynamicLink(
+    `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${userid}&cartValue=1`,
+    'cartpedal.page.link',
+  ).android
+    .setPackageName('com.cart.android')
+    .ios.setBundleId('com.cart.ios');
 
-firebase.links()
-  .createDynamicLink(link)
-  .then((url) => {
-    console.log('the url',url);
-    this.onShare(url);
-  });
-}
-forwardlink =async(userid)=>{
-  const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-   .android.setPackageName('com.cart.android')
-   .ios.setBundleId('com.cart.ios');
-   // let url = await firebase.links().getInitialLink();
-   // console.log('incoming url', url);
- 
- firebase.links()
-   .createDynamicLink(link)
-   .then((url) => {
-     console.log('the url',url);
-    //  this.sendMessage(url,userid);
+  firebase
+    .links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url', url);
     AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
       if(NumberFormat){
         let numID=JSON.parse(NumberFormat)
@@ -138,7 +141,7 @@ forwardlink =async(userid)=>{
     PhoneNumber: numID,
     userId: this.state.userNo,
     userAccessToken: this.state.userAccessToken,
-    msgids: url,
+    msgids: 'http://' + url,
   });
 }
 }));
@@ -194,11 +197,10 @@ forwardlink =async(userid)=>{
  
   ListEmpty = () => {
     return (
-
-      <View style={styles.container}>
-        <Text style={{margin:resp(160)
-        }}>{this.state.NoData==true ? 'No Record' : null} </Text>
-      </View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
+      <Text style={{ marginTop:120
+   }}>{this.state.NoData?'No Record':null} </Text>
+  </View>
     );
   };
   // favouriteProduct(item) {
@@ -264,9 +266,21 @@ forwardlink =async(userid)=>{
 
   
   CartListCall() {
+    let userno,fcmtoken,accesstokenid;
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      if (accessToken) {
+        accesstokenid=accessToken;
+        console.log("Edit access token ====" + accessToken);
+        AsyncStorage.getItem('@fcmtoken').then((token) => {
+          if (token) {  
+            fcmtoken=token
+            AsyncStorage.getItem('@user_id').then((userId) => {
+              if (userId) {
+                userno=userId
+        //this.RecentUpdateCall();
     let formData = new FormData()
 
-    formData.append('user_id', this.state.userNo)
+    formData.append('user_id', userno)
     formData.append('type', 0)
     console.log('form data==' + JSON.stringify(formData))
 
@@ -278,9 +292,9 @@ forwardlink =async(userid)=>{
       headers: new Headers({
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
-        device_token: this.state.fcmtoken,
+        device_token: fcmtoken,
         device_type: 'android',
-        Authorization: JSON.parse(this.state.userAccessToken),
+        Authorization: JSON.parse(accesstokenid),
         // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
 
       }),
@@ -348,6 +362,12 @@ forwardlink =async(userid)=>{
         console.error(error)
       })
       .done();
+    }
+  });
+}
+    });
+  }
+});
 
   }
 
@@ -639,11 +659,11 @@ forwardlink =async(userid)=>{
               Toast.show('CLicked Block', Toast.LONG)
             }}
             option2Click={() => {
-              this.link()
+              this.link(item.id)
               // Toast.show('CLicked Share Link', Toast.LONG)
             }}
             option3Click={() => {
-              this.forwardlink()
+              this.forwardlink(item.id)
               // Toast.show('CLicked Forward Link', Toast.LONG)
             }}
           />
@@ -821,7 +841,9 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ProfileImageContainer: {
-    margin: resp(10),
+    // margin: resp(10),
+    marginTop:hp(10),
+    marginRight:wp(10),
     flexDirection: 'column',
     flex: 0.2,
     
@@ -844,8 +866,8 @@ const styles = StyleSheet.create({
   ItemCountContainer: {
     
     marginTop: resp(2),
-    width: resp(415),
-    height: resp(75),
+    width: wp(415),
+    height: hp(75),
     flexDirection: 'row',
     shadowColor: 'black',
     shadowOpacity: 0.2,
@@ -927,9 +949,9 @@ const styles = StyleSheet.create({
   PlacedHolderButtonContainer: {
     marginBottom: resp(20),
     margin: resp(5),
-    width: resp(150),
-    height: resp(65),
-    flex: 0.5,
+    width: wp(150),
+    height: hp(65),
+    flex: 0.4,
     flexDirection: 'column',
     shadowColor: 'black',
     shadowOpacity: 0.2,
@@ -941,7 +963,7 @@ const styles = StyleSheet.create({
   },
   itemBox: {
     flex:1,
-    height: resp(400),
+    height: hp(400),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -1161,7 +1183,7 @@ const styles = StyleSheet.create({
     margin: resp(),
     marginTop: resp(10),
     flexDirection: 'column',
-    flex: 0.8,
+    flex: 0.7,
     marginLeft:resp(10),
     width: resp(70),
     height: resp(70),
@@ -1178,7 +1200,7 @@ const styles = StyleSheet.create({
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
-    flex: 0.73,
+    flex: 0.8,
     
     width: resp(0),
     height: resp(40),

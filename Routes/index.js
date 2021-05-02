@@ -137,6 +137,12 @@ export function MainStack() {
       <Stack.Screen name="ChatGroupListScreen"  component={ChatGroupListScreen}   />
       <Stack.Screen name="GroupProfile" component={GroupProfile}   />
       <Stack.Screen  name="NewContactListScreen" component={NewContactListScreen} />
+      <Stack.Screen name="VideoProcessScreen" component={VideoProcessScreen} />
+      <Stack.Screen name="AddGroupMember" component={AddGroupMember} />
+      <Stack.Screen name="ContactsListScreen" component={ContactsListScreen} />
+      <Stack.Screen name="ViewProfileScreen" component={ViewProfileScreen} />
+      <Stack.Screen name="ForwardMessageScreen" component={ForwardMessageScreen} />
+      <Stack.Screen name="ProvideGroupName" component={ProvideGroupName} />
     </Stack.Navigator>
   );
 }

@@ -125,9 +125,9 @@ forwardlink =async(userid)=>{
       console.log("Edit user id token=" +token);
       if (token) {
         this.setState({ fcmToken: token });
-        let arr=[];
-        arr.push(this.props.route.params.wholeData);
-        this.setState({OderPlaceProduct:arr});
+        // let arr=[];
+        // arr.push(this.props.route.params.wholeData);
+        this.setState({OderPlaceProduct:this.props.route.params.wholeData});
         console.log('order data',this.state.OderPlaceProduct)
       }
     });
@@ -146,7 +146,7 @@ forwardlink =async(userid)=>{
           this.UserProfileCall();
           setTimeout(() => {
             this.hideLoading()
-          }, 3000);
+          }, 2000);
       }else{
         console.log("else is executed");
         this.hideLoading();
@@ -451,10 +451,7 @@ forwardlink =async(userid)=>{
                 />
                 </View>
               </View>
-
             </View>
-
-
             <View style={styles.horizontalLine}>
               <View style={styles.hairline} />
             </View>
@@ -464,27 +461,27 @@ forwardlink =async(userid)=>{
               //renderItem={({ item }) => <Item item={item} />}
               keyExtractor={(item,index) => index}
               numColumns={1}
-              renderItem={({ item }) =>{
+              renderItem={({ item,index }) =>{
                 console.log('details screen',item)
-                if(item.products.length>0){
                return(
-                <View style={styles.listItem}>
-                <Image source={{uri:item.products[0].image}} style={styles.image} />
+                 <>
+                <View style={styles.listItem} key={index}>
+                <Image source={{uri:item.image}} style={styles.image} />
                
                 <View style={styles.columnStyele}>
-                  <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
+                  <Text style={styles.itemNameStyle}>{item.name}</Text>
           
           
-                  <Text style={styles.SubTitlePoductNameSytle}>{item.products[0].category}</Text>
+                  <Text style={styles.SubTitlePoductNameSytle}>{item.category}</Text>
           
                   <View style={styles.itemPriceContainer}>
                     <Text style={styles.itemPriceStyle}>
-                      {'\u20B9'} {item.products[0].price}
+                      {'\u20B9'} {item.price}
                     </Text>
-                    <Text style={styles.QtyStyle}>Qty:{item.products[0].quantity}</Text>
-                    {item.products[0].detailone?<Text style={styles.QtyStyle}>{item.products[0].detailone}</Text>:null}
-                    {item.products[0].detailtwo?<Text style={styles.QtyStyle}>{item.products[0].detailtwo}</Text>:null}
-                    {item.products[0].description?<Text style={styles.QtyStyleDescrp}>{item.products[0].description}</Text>:null}
+                    <Text style={styles.QtyStyle}>Qty:{item.quantity}</Text>
+                    {item.detailone?<Text style={styles.QtyStyle}>{item.detailone}</Text>:null}
+                    {item.detailtwo?<Text style={styles.QtyStyle}>{item.detailtwo}</Text>:null}
+                    {item.description?<Text style={styles.QtyStyleDescrp}>{item.description}</Text>:null}
                   </View>
                 </View>
                 <View style={styles.MenuStyleContanier}>
@@ -507,17 +504,14 @@ forwardlink =async(userid)=>{
                     option2Click={() => {
                       this.forwardlink()
                       // Toast.show('CLicked Forward Link', Toast.LONG)
-          
-                      
                     }}
                   />
                 </View>
-                
-          
-          
               </View>
+              
+              </>
               )}
-                  }
+                  
                   }
             />
           </ScrollView>

@@ -43,6 +43,7 @@ export default class EditProductScreen extends React.Component {
       baseUrl:`${BASE_URL}`,
       CategoryList: [],
       ProductUnit: [],
+       productid:[],
       selected1: 'key1',
       fcmToken:'',
       languages: [],
@@ -53,11 +54,12 @@ export default class EditProductScreen extends React.Component {
  
   }
   componentDidMount() {
+   
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({ userId: userId });
         console.log(" Edit user id ====" + this.state.userId);
-        console.log('props',JSON.stringify(this.props));
+        // console.log('props',JSON.stringify(this.props));
      
       }
     });
@@ -71,6 +73,15 @@ export default class EditProductScreen extends React.Component {
       if(imageData){
         this.setState({imageItem:JSON.parse(imageData)});
         // console.log('image data from back',imageData);
+      }
+    });
+    AsyncStorage.getItem('@product_id').then((id) => {
+      if (id) {
+        console.log('in edit product id',id);
+        this.setState({productid:JSON.parse(id)});
+        // this.props.navigation.navigate('ShareWithScreen');
+      }else{
+        console.log('product id',id);
       }
     });
     AsyncStorage.getItem('@access_token').then((access_token) => {
@@ -126,7 +137,7 @@ export default class EditProductScreen extends React.Component {
   ProductCategoryCall() {
     let formData = new FormData()
 
-    console.log('form data==' + formData)
+    // console.log('form data==' + formData)
 
     let urlProduct = `${BASE_URL}api-product/product-category-list`
     console.log('urlProduct :' + urlProduct)
@@ -154,7 +165,7 @@ export default class EditProductScreen extends React.Component {
           this.setState({ CategoryList: responseData.data })
           //  this.SaveLoginUserData(responseData);
 
-          console.log('response object actagegg:', responseData)
+          // console.log('response object actagegg:', responseData)
 
         } else {
           console.log(responseData.data)
@@ -189,10 +200,10 @@ export default class EditProductScreen extends React.Component {
           // this.LoginOrNot();
           //this.props.navigation.navigate('DashBoardScreen')
           // this.props.navigation.navigate('EditProductScreen')
-          Toast.show(responseData.message);
+          // Toast.show(responseData.message);
           this.setState({ ProductUnit: responseData.data })
           //  this.SaveLoginUserData(responseData);
-          console.log('response object actagegg:', responseData)
+          // console.log('response object actagegg:', responseData)
         } else {
           // alert(responseData.data);
           console.log(responseData.data)
@@ -215,13 +226,13 @@ export default class EditProductScreen extends React.Component {
     let totalPrice=this.state.totalPrice;
     if(totalPrice!==''&&this.state.Unit==7) finalPrice=totalPrice;
     else finalPrice=price;
-    console.log('price',price);
-    console.log('total price',totalPrice);
-    console.log('final price',finalPrice);
-    console.log(JSON.stringify({
-      user_id:this.state.userId,name:this.state.Name,upload:this.state.imageItem,category:this.state.language,unit:this.state.Unit ,price:finalPrice,description:this.state.Description,bunch:this.state.bunch,
-      detailone:this.state.Details_1,detailtwo:this.state.Details_2
-    }));
+    // console.log('price',price);
+    // console.log('total price',totalPrice);
+    // console.log('final price',finalPrice);
+    // console.log(JSON.stringify({
+    //   user_id:this.state.userId,name:this.state.Name,upload:this.state.imageItem,category:this.state.language,unit:this.state.Unit ,price:finalPrice,description:this.state.Description,bunch:this.state.bunch,
+    //   detailone:this.state.Details_1,detailtwo:this.state.Details_2
+    // }));
     var otpUrl = `${BASE_URL}api-product/add-product`
     console.log('Add product Url:' + otpUrl)
      fetch(`${BASE_URL}api-product/add-product`, {
@@ -243,20 +254,22 @@ export default class EditProductScreen extends React.Component {
         if (responseData.code == '200') {
           // this.props.navigation.navigate('StoryViewScreen')
           console.log(' add product response object:', responseData)
-         // Toast.show(responseData.message);
-         console.log('hh',this.props.route.params)
+         Toast.show(responseData.message);
+         console.log('hh',this.state.productid);
+         let productID=this.state.productid;
+         productID.push(responseData.data.id);
          if(this.props.route.params){
           if(this.props.route.params.productMaster=="ProductImage"){
-            AsyncStorage.setItem('@productMasterSave',JSON.stringify(14)).then(suc=>{
+            AsyncStorage.setItem('@productMasterSave',JSON.stringify(responseData.data.id)).then(suc=>{
               this.props.navigation.goBack()
             })
           }else{
-            AsyncStorage.setItem('@product_id',JSON.stringify(responseData.data.id)).then(succ=>{
+            AsyncStorage.setItem('@product_id',JSON.stringify(productID)).then(succ=>{
               this.props.navigation.goBack()
              });
           }
         }else{
-          AsyncStorage.setItem('@product_id',JSON.stringify(responseData.data.id)).then(succ=>{
+          AsyncStorage.setItem('@product_id',JSON.stringify(productID)).then(succ=>{
             this.props.navigation.goBack()
            });
         }
@@ -357,7 +370,7 @@ export default class EditProductScreen extends React.Component {
   }>
     <Picker.Item label="Please select category" value="0" />
     {this.state.CategoryList.map((item,index) =>{
-      console.log('items',item);
+      // console.log('items',item);
    return ( 
     <Picker.Item label={item.title} value={item.id} key={index} />
    ) 
@@ -414,7 +427,7 @@ export default class EditProductScreen extends React.Component {
   }>
     <Picker.Item label="Please select Unit" value="0"  />
     {this.state.ProductUnit.map((item,index) =>{
-      console.log('items',item);
+      // console.log('items',item);
    return ( 
     <Picker.Item label={item.title} value={item.id} key={index} />
    ) 
@@ -457,6 +470,7 @@ export default class EditProductScreen extends React.Component {
             <Text style={styles.DescriptionStyle}>Description </Text>
             <TextInput
               style={styles.inputTextView}
+              multiline={true}
               placeholder={'(Maximum 450 characters)'}
               onChangeText={(text) => this.setState({ Description: text })}
             />

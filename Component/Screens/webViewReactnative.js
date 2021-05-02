@@ -7,13 +7,13 @@ export default class MyWebComponent extends Component {
   constructor(props){
     super(props);
     this.state={
-     link:'http://cartpedal.com/frontend/web/page/privacy'
+     link:'https://cartpedal.com/page/privacy'
     }
   }
   componentDidMount(){
     console.log('props',JSON.stringify(this.props));
-    if(this.props.route.params.screenSide=='Signup') this.setState({link:'http://cartpedal.com/frontend/web/page/terms-condition'})
-    if(this.props.route.params.screenSide=='Signup1') this.setState({link:'http://cartpedal.com/frontend/web/page/privacy'})
+    if(this.props.route.params.screenSide=='Signup') this.setState({link:'https://cartpedal.com/page/terms-condition'})
+    if(this.props.route.params.screenSide=='Signup1') this.setState({link:'https://cartpedal.com/page/privacy'})
   }
   render() {
     return (

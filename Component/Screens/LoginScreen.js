@@ -84,23 +84,37 @@ class LoginScreen extends Component {
 
   }
 
-  async SaveLoginUserData(responseData){
+  async SaveLoginUserData(responseData) {
+    const {params} = this.props.route;
     console.log('>>>>> responseData', responseData);
-    let access_token='Bearer '+responseData.data.access_token
-    let username=responseData.data.fullname;
-    console.log("username from login",username);
+    let access_token = 'Bearer ' + responseData.data.access_token;
+    let username = responseData.data.fullname;
+    console.log('username from login', username);
     console.log(JSON.stringify(access_token));
-    await AsyncStorage.setItem('@user_id',JSON.stringify(responseData.data.userid)).then(succ=>{
-       AsyncStorage.setItem('@access_token',JSON.stringify(access_token)).then(succID=>{
-         AsyncStorage.setItem('@fcmtoken',JSON.stringify(responseData.data.device_token)).then(succToken=>{
-           AsyncStorage.setItem('@user_name', JSON.stringify(username)).then(suuc=>{
-            this.props.navigation.navigate('DashBoardScreen');
+    await AsyncStorage.setItem(
+      '@user_id',
+      JSON.stringify(responseData.data.userid),
+    ).then((succ) => {
+      AsyncStorage.setItem('@access_token', JSON.stringify(access_token)).then(
+        (succID) => {
+          AsyncStorage.setItem(
+            '@fcmtoken',
+            JSON.stringify(responseData.data.device_token),
+          ).then((succToken) => {
+            AsyncStorage.setItem('@user_name', JSON.stringify(username)).then(
+              (suuc) => {
+                if (params) {
+                  const {initialPage, parameters} = params;
+                  this.props.navigation.navigate(initialPage, parameters);
+                } else {
+                  this.props.navigation.navigate('DashBoardScreen');
+                }
+              },
+            );
           });
-         });
-      });
+        },
+      );
     });
-    
-   
   }
 
  

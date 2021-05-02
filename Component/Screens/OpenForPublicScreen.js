@@ -468,7 +468,7 @@ class OpenForPublicScreen extends Component {
                    onPress={() => {
                     this.openCamara();
                     }}>
-                  <Text style={styles.OptionsProfileModalStyle}> Camera</Text>
+                  <Text style={styles.OptionsProfileModalStyle}>Camera</Text>
                   </TouchableOpacity>
                   
                  <TouchableOpacity
@@ -482,7 +482,7 @@ class OpenForPublicScreen extends Component {
                  onPress={() => {
                       this.customButton();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> View Story</Text>
+                 <Text style={styles.Options2ProfileModalStyle}>View Story</Text>
                    </TouchableOpacity>
                 
                   

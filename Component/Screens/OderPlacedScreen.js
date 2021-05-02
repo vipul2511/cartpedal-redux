@@ -22,7 +22,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase'
 import {BASE_URL} from '../Component/ApiClient';
-
+import {wp,hp} from '../Component/hightWidthRatio';
 
 class CartPlaceScreen extends Component {
   constructor(props) {
@@ -154,12 +154,10 @@ forwardlink =async(userid)=>{
   ListEmpty = () => {
     return (
   
-      <View style={styles.container}>
-        <Text style={{
-          margin: resp(170),
-  
-        }}>{this.state.NoData ? 'No Record' : null} </Text>
-      </View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
+      <Text style={{ marginTop:120
+   }}>{this.state.NoData?'No Record':null} </Text>
+  </View>
     );
   };
   GotoNextScreen(item) {
@@ -394,7 +392,7 @@ forwardlink =async(userid)=>{
 
               <TouchableOpacity style={styles.itemBox} onPress={() => {
                 console.log('userData=====',item.name)
-               this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,wholeData:item })
+               this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,wholeData:item.products })
              }}>
               <View style={styles.box}>
                 <View style={styles.ProfileImageContainer}>
@@ -434,7 +432,7 @@ forwardlink =async(userid)=>{
                   <TouchableOpacity
                    onPress={() => {
                      console.log('userData=====',item.name)
-                    this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,wholeData:item })
+                    this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,wholeData:item.products })
                   }}>
                     <View style={styles.ViewButtonContainer}>
                       <Text style={styles.viewButtonStyle}>View All</Text>
@@ -470,7 +468,7 @@ forwardlink =async(userid)=>{
                   <View style={styles.ImageContainer}>
                     <Image
                     source={{uri:item.products[0].image}}
-                      style={{width:95,height:133,borderRadius:5}}></Image>
+                      style={{width:wp(95),height:hp(133),borderRadius:5}}></Image>
                     <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
                     <Text style={styles.itemPriceStyle}>
                       {'\u20B9'}
@@ -480,7 +478,7 @@ forwardlink =async(userid)=>{
                   {item.products[1]?(<View style={styles.ImageContainer}>
                     <Image
                     source={{uri:item.products[1].image}}
-                      style={{width:95,height:133,borderRadius:5}}></Image>
+                      style={{width:wp(95),height:hp(133),borderRadius:5}}></Image>
                     <Text style={styles.itemNameStyle}>{item.products[1].name}</Text>
                     <Text style={styles.itemPriceStyle}>
                       {'\u20B9'}
@@ -490,7 +488,7 @@ forwardlink =async(userid)=>{
                   {item.products[2]?(<View style={styles.ImageContainer}>
                     <Image
                     source={{uri:item.products[2].image}}
-                      style={{width:95,height:133,borderRadius:5}}></Image>
+                      style={{width:wp(95),height:hp(133),borderRadius:5}}></Image>
                     <Text style={styles.itemNameStyle}>{item.products[2].name}</Text>
                     <Text style={styles.itemPriceStyle}>
                       {'\u20B9'}
@@ -593,11 +591,11 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ProfileImageContainer: {
-    margin: resp(10),
+    // margin: resp(10),
     flexDirection: 'column',
     flex: 0.2,
-    width: resp(70),
-    height: resp(70),
+    width: wp(70),
+    height: hp(70),
   },
   spinnerTextStyle: {
     color: '#F01738'
@@ -704,7 +702,7 @@ const styles = StyleSheet.create({
     margin: resp(5),
     width: resp(150),
     height: resp(65),
-    flex:0.5,
+    flex:0.6,
     flexDirection: 'column',
     shadowColor: 'black',
     shadowOpacity: 0.2,
@@ -734,9 +732,11 @@ const styles = StyleSheet.create({
     borderRadius: resp(10),
   },
   ProfileImageViewStyle: {
-    margin: resp(10),
-    width: resp(50),
-    height: resp(50),
+    // margin: resp(10),
+    marginTop:wp(15),
+    marginLeft:wp(5),
+    width: wp(50),
+    height: hp(50),
     borderRadius: resp(8),
   },
   MenuIconStyle: {
@@ -858,10 +858,10 @@ const styles = StyleSheet.create({
   },
   ImageContainer: {
     flexDirection: 'column',
-    width: resp(95),
-    marginTop:resp(10),
-    height: resp(200),
-    marginLeft: resp(20),
+    width: wp(95),
+    marginTop:wp(10),
+    height: hp(200),
+    marginLeft: resp(2),
     borderRadius: resp(5),
   },
   bottomInactiveTextStyleChart: {
@@ -921,10 +921,9 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ProfileInfoContainer: {
-    margin: resp(),
     marginTop: resp(10),
     flexDirection: 'column',
-    flex: 0.8,
+    flex: 0.6,
     marginLeft:resp(15),
     width: resp(70),
     height: resp(70),
@@ -942,7 +941,7 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     marginLeft:resp(20),
     flexDirection: 'row',
-    flex: 0.85,
+    flex: 0.9,
      width: resp(0),
     height: resp(40),
   },

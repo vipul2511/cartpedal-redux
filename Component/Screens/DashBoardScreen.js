@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-
 import {
   StyleSheet,
   View,
@@ -24,8 +23,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-loading-spinner-overlay'
 import ImagePicker from 'react-native-image-crop-picker';
 import ProfileCustomMenuIcon from './ProfileCustomMenuIcon'
-// import firebase from './firebase'
-// import dynamicLinks from '@react-native-firebase/dynamic-links';
 import firebase from 'react-native-firebase'
 import SeeMore from 'react-native-see-more-inline'
 import { DESTROY_SESSION } from "../../redux/actions/types";
@@ -36,6 +33,7 @@ import {profileView, storiesAction, loggedStoriesAction,RecentDataAction,addStor
 import { connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {BASE_URL} from '../Component/ApiClient';
+import {hp,wp} from '../Component/hightWidthRatio';
 const width = Dimensions.get('screen').width
 const height = Dimensions.get('screen').height
 console.disableYellowBox = true
@@ -130,41 +128,45 @@ class DashBoardScreen extends Component {
       alert(error.message);
     }
   };
-link =async()=>{
- const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  .android.setPackageName('com.cart.android')
-  .ios.setBundleId('com.cart.ios');
-  // let url = await firebase.links().getInitialLink();
-  // console.log('incoming url', url);
-
-firebase.links()
-  .createDynamicLink(link)
-  .then((url) => {
-    console.log('the url',url);
-    this.onShare(url);
-  });
-}
-forwardlink =async(userid)=>{
-  const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-   .android.setPackageName('com.cart.android')
-   .ios.setBundleId('com.cart.ios');
-   // let url = await firebase.links().getInitialLink();
-   // console.log('incoming url', url);
- 
- firebase.links()
-   .createDynamicLink(link)
-   .then((url) => {
-     console.log('the url',url);
-    //  this.sendMessage(url,userid);
-    this.props.navigation.navigate('ForwardLinkScreen', {
-      fcmToken: this.state.fcmtoken,
-      PhoneNumber: this.state.phonenumber,
-      userId: this.state.userId,
-      userAccessToken: this.state.userAccessToken,
-      msgids: url,
+  link =async(id,name)=>{
+    const link = new firebase.links.DynamicLink(
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+id,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+  
+  firebase.links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url',url);
+      this.onShare('http://'+url);
     });
-   });
- }
+  }
+  forwardlink = async (userid,name) => {
+    const link = new firebase.links.DynamicLink(
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+
+        userid,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        //  this.sendMessage(url,userid);
+        this.props.navigation.navigate('ForwardLinkScreen', {
+          fcmToken: this.state.fcmtoken,
+          PhoneNumber: this.state.phonenumber,
+          userId: this.state.userId,
+          userAccessToken: this.state.userAccessToken,
+          msgids: 'http://' + url,
+        });
+      });
+  };
   componentWillUnmount () {
     BackHandler.removeEventListener(
       'hardwareBackPress',
@@ -377,13 +379,14 @@ forwardlink =async(userid)=>{
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
-      
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
-        this.showLoading();
-        this.ProfileViewCall();
-        this.userStories();
-        this.loggedUserstory(); 
+        this.setState({ userAccessToken: accessToken },()=>{
+          this.showLoading();
+          this.ProfileViewCall();
+          this.userStories();
+          this.loggedUserstory(); 
+        });
+
       }
     })
 
@@ -472,14 +475,10 @@ if (notificationOpen) {
   }
   ListEmpty = () => {
     return (
-      <View style={styles.container}>
-        <Text
-          style={{
-            margin: resp(170),
-          }}>
-          {this.state.NoData ? 'No Record' : null}{' '}
-        </Text>
-      </View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
+      <Text style={{ marginTop:120
+   }}>{this.state.NoData?'No Record':null} </Text>
+  </View>
     )
   }
  
@@ -742,21 +741,21 @@ if (notificationOpen) {
                     this.openCamara();
                       
                     }}>
-                  <Text style={styles.OptionsProfileModalStyle}>Camera </Text>
+                  <Text style={styles.OptionsProfileModalStyle}>Camera</Text>
                   </TouchableOpacity>
                   
                  <TouchableOpacity
                   onPress={() => {
                     this.openImageGallery();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> Gallery</Text>
+                 <Text style={styles.Options2ProfileModalStyle}>Gallery</Text>
                  </TouchableOpacity>
 
                  <TouchableOpacity
                  onPress={() => {
                       this.customButton();
                     }}>
-                 <Text style={styles.Options2ProfileModalStyle}> View Story</Text>
+                 <Text style={styles.Options2ProfileModalStyle}>View Story</Text>
                    </TouchableOpacity>
                 </View>
               </View>
@@ -819,11 +818,13 @@ if (notificationOpen) {
 
             <View style={styles.hairline} />
 
-            <View style={styles.Profile2Container}>
+            <View style={styles.Profile2Container} 
+            // onPress={()=>{this.props.navigation.navigate('ProfileScreen')}}
+            >
               <View style={styles.Profile2ImageContainer}>
                 <TouchableOpacity
                   onPress={() => {
-                    // this.props.navigation.navigate('ShareWithScreen')
+                    this.props.navigation.navigate('ProfileScreen')
                   }}>
                   <Image
                     source={this.state.avatar!=null?{uri:this.state.avatar}:
@@ -836,7 +837,9 @@ if (notificationOpen) {
                     style={styles.StatusAddLargeStyle}></Image>
                 </TouchableOpacity>
               </View>
-              <View style={styles.Profile2InfoContainer}>
+              <TouchableOpacity style={styles.Profile2InfoContainer} onPress={() => {
+                    this.props.navigation.navigate('ProfileScreen')
+                  }}>
                 <Text style={styles.PersonNameStyle}>
                   {this.state.userName}
                 </Text>
@@ -852,7 +855,7 @@ if (notificationOpen) {
                       </SeeMore>
                   ) : null}
                 </View>
-              </View>
+              </TouchableOpacity>
               <View style={styles.RiyaMenuContainer}>
                 <TouchableOpacity
                   style={styles.openButtonContainer}
@@ -868,8 +871,8 @@ if (notificationOpen) {
                   <CustomMenuIcon
                     menutext='Menu'
                     menustyle={{ 
-                      left:4,
-                      position:'absolute',
+                      // left:4,
+                      // position:'absolute',
                       // flexDirection: 'row',
                       // justifyContent: 'flex-end',
                     }}
@@ -878,11 +881,13 @@ if (notificationOpen) {
                     }}
                     option1Click={() => {
                       // this.BlockUserCall()
-                       this.link()
+                      let name="ProfileScreen";
+                       this.link(this.state.userId,name)
                       // Toast.show('CLicked Shared Link', Toast.LONG)
                     }}
                     option2Click={() => {
-                      this.forwardlink()
+                      let name="DashBoardScreen";
+                      this.forwardlink(this.state.userId,name)
                       // Toast.show('CLicked Forward Link', Toast.LONG)
                     }}
                   />
@@ -957,8 +962,8 @@ if (notificationOpen) {
                       <MenuIcon
                         menutext='Menu'
                         menustyle={{
-                          right:1,
-                          position:'absolute',
+                          // right:15,
+                          // position:'absolute',
                           flexDirection: 'row',
                           justifyContent: 'flex-end',
                         }}
@@ -966,10 +971,12 @@ if (notificationOpen) {
                           color: 'white',
                         }}
                         option1Click={() => {
-                         this.blockuser(item.id) 
+                          let name="DashBoardScreen";
+                         this.blockuser(item.id,name) 
                         }}
                         option2Click={() => {
-                          this.link()
+                          let name="DashBoardScreen";
+                          this.link(item.id,name)
                           // Toast.show('CLicked Shared Link', Toast.LONG)
                         }}
                         option3Click={() => {
@@ -988,7 +995,6 @@ if (notificationOpen) {
                     <View style={styles.columnView}>
                       <View style={styles.ImageContainer}>
                         <Image
-                      
                           source={item.products[0].image?{uri: item.products[0].image}:null}
                           style={styles.Image2Container}></Image>
                         <Text style={styles.itemNameStyle}>
@@ -1036,8 +1042,6 @@ if (notificationOpen) {
                         </Text>
                       </View>):null}
                     </View>
-                    
-
                     <View style={styles.hairline} />
                   </ScrollView>
 
@@ -1150,18 +1154,22 @@ const styles = StyleSheet.create({
     fontSize: resp(12),
   },
   Profile2ImageContainer: {
-    margin: resp(10),
+    // margin: resp(10),
+    marginTop:hp(10),
+    marginLeft:wp(5),
     flexDirection: 'column',
     flex: 0.2,
     width: resp(70),
     height: resp(70),
   },
   ProfileImageContainer: {
-    margin: resp(10),
+    // margin: resp(10),
+    marginTop:hp(10),
+    marginLeft:wp(5),
     flexDirection: 'column',
     flex: 0.2,
-    width: resp(70),
-    height: resp(70),
+    width: wp(70),
+    height: hp(70),
   },
   box: {
     marginTop: 5,
@@ -1178,7 +1186,7 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   itemBox: {
-    height: resp(290),
+    height: hp(290),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -1209,9 +1217,9 @@ const styles = StyleSheet.create({
     borderRadius: resp(10),
   },
   ProfileImageViewStyle: {
-    margin: resp(10),
-    width: resp(50),
-    height: resp(50),
+    // margin: resp(10),
+    width: wp(50),
+    height: hp(50),
     borderRadius: resp(8),
   },
   RecentViewStyle: {
@@ -1236,7 +1244,7 @@ const styles = StyleSheet.create({
     alignContent:'flex-start',
    marginTop:resp(5),
     color: '#000',
-    
+    marginBottom:10,
     width: resp(207),
     fontSize: resp(16),
   },
@@ -1367,30 +1375,30 @@ const styles = StyleSheet.create({
 
   Image2Container: {
     flexDirection: 'column',
-    width: resp(95),
-    height: resp(130),
+    width: wp(90),
+    height: hp(130),
     backgroundColor: 'white',
-
+    marginTop:hp(5),
     borderRadius: resp(5),
   },
   ImageContainer: {
     marginTop: resp(-8),
     flexDirection: 'column',
-    width: resp(95),
-    height: resp(180),
+    width: wp(90),
+    height: hp(180),
     backgroundColor: 'white',
-    marginRight: resp(5),
+    marginRight: resp(3),
     marginBottom:resp(10),
-    marginLeft: resp(0),
+    marginLeft: resp(2),
     borderRadius: resp(5),
   },
   ImageContainer2: {
     marginTop: resp(-8),
     flexDirection: 'column',
-    width: resp(95),
-    height: resp(180),
+    width: wp(90),
+    height: hp(180),
     backgroundColor: 'white',
-    marginRight: resp(5),
+    marginRight: resp(3),
     marginBottom:resp(10),
     borderRadius: resp(5),
   },
@@ -1415,10 +1423,10 @@ const styles = StyleSheet.create({
   },
   OptionsProfileModalStyle: {
     alignContent:'flex-start',
-   marginTop:resp(30),
+   marginTop:resp(10),
     color: '#000',
-    
     width: resp(207),
+    marginBottom:10,
     fontSize: resp(16),
   },
   StyleHomeTab: {
@@ -1457,13 +1465,13 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ProfileInfoContainer: {
-    marginLeft:resp(5),
+    // marginLeft:wp(5),
     backgroundColor:'white',
-    marginTop: resp(15),
+    marginTop: hp(15),
     flexDirection: 'column',
-    flex: 0.8,
-    width: resp(70),
-    height: resp(50),
+    flex: 0.7,
+    width: wp(70),
+    height: hp(50),
   },
   sliderMenuContainer: {
     marginTop: resp(20),
@@ -1477,7 +1485,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#9da1a3',
   },
   RiyaMenuContainer: {
-  flex:0.2,
+  flex:0.22,
     marginTop: resp(5),
     flexDirection: 'row',
     // width: resp(80),
@@ -1486,7 +1494,7 @@ const styles = StyleSheet.create({
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
-    flex: 0.4,
+    flex: 0.47,
     alignContent:'flex-end',
     width: resp(0),
     height: resp(45),
@@ -1587,7 +1595,7 @@ const styles = StyleSheet.create({
   columnView: {
     flexDirection: 'row',
     width: '100%',
-    marginLeft: resp(5),
+    // marginLeft: resp(5),
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',

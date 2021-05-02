@@ -51,6 +51,7 @@ class OpenForProfileScreen extends Component {
       ProfileData:'',
       baseUrl: `${BASE_URL}`,
       images:[require('../images/placeholder-image-2.png')],
+      name:''
     }
   }
   showLoading(){
@@ -67,8 +68,7 @@ class OpenForProfileScreen extends Component {
      AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({ userAccessToken: accessToken });
-        // console.log("Edit access token ====" + accessToken);
-        //this.RecentUpdateCall();
+        
       }
     });
     AsyncStorage.getItem('@fcmtoken').then((token) => {
@@ -167,37 +167,29 @@ class OpenForProfileScreen extends Component {
       alert(error.message);
     }
   };
-  link =async()=>{
-  //   const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  //    .android.setPackageName('com.cart.android')
-  //    .ios.setBundleId('com.cart.ios');
-  //    // let url = await firebase.links().getInitialLink();
-  //    // console.log('incoming url', url);
-   
-  //  firebase.links()
-  //    .createDynamicLink(link)
-  //    .then((url) => {
-  //      console.log('the url',url);
-  //    });
-  // console.log('working')
-     const link = 
-  new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  .android.setPackageName('com.cart.android')
-  .ios.setBundleId('com.cart.ios');
-// console.log('link',JSON.stringify(link));
-firebase.links()
-    .createDynamicLink(link) // <--- (Optional)SHORT or UNGUESSABLE 
+  link =async(id,name="OpenForProfileScreen")=>{
+    const link = new firebase.links.DynamicLink(
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+id,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+  
+  firebase.links()
+    .createDynamicLink(link)
     .then((url) => {
-      // console.log('the url',url);
-      this.onShare(url);
+      console.log('the url',url);
+      this.onShare('http://'+url);
     });
-   }
-   forwardlink =async(userid)=>{
-    const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-     .android.setPackageName('com.cart.android')
-     .ios.setBundleId('com.cart.ios');
-     // let url = await firebase.links().getInitialLink();
-     // console.log('incoming url', url);
+  }
+   forwardlink =async(userid,name="OpenForProfileScreen")=>{
+    const link = new firebase.links.DynamicLink(
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+
+        userid,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
    
    firebase.links()
      .createDynamicLink(link)
@@ -213,7 +205,7 @@ firebase.links()
       PhoneNumber: numID,
       userId: this.state.userNo,
       userAccessToken: this.state.userAccessToken,
-      msgids: url,
+      msgids: 'http://' + url,
     });
     }
     }));
@@ -227,7 +219,7 @@ firebase.links()
     // console.log('props id in params',this.props.route.params.id);
      
     formData.append('profile_id',this.props.route.params.id)
-    // console.log('form data==' + formData)
+    console.log('form data==' + JSON.stringify(formData))
   
     var userProfile = this.state.baseUrl + 'api-user/user-profile'
     // console.log('UserProfile Url:' + userProfile)
@@ -247,6 +239,9 @@ firebase.links()
        this.hideLoading();
         if (responseData.code == '200') {
          // Toast.show(responseData.message);
+         if(responseData.data.length>0){
+           this.setState({name:responseData.data[0].name});
+         }
          if (
           responseData.data[0].covers !== undefined &&
           responseData.data[0].covers.length > 0
@@ -284,11 +279,11 @@ firebase.links()
        
         } else {
           // alert(responseData.data);
-          // console.log(responseData.message)
+          console.log(responseData.message)
         }
       
   
-        //  console.log('response profile data:', JSON.stringify(responseData))
+         console.log('response profile data:', JSON.stringify(responseData))
        
        
       })
@@ -303,13 +298,10 @@ firebase.links()
   }
   ListEmpty = () => {
     return (
-
-      <View style={styles.container}>
-        <Text style={{
-          margin: resp(170),
-
-        }}>{this.state.NoData ? 'No Record' : null} </Text>
-      </View>
+      <View style={{justifyContent:'center',alignItems:'center'}}>
+      <Text style={{ marginTop:120
+   }}>{this.state.NoData?'No Record':null} </Text>
+  </View>
     );
   };
   async SaveUserProfileData(responseData){
@@ -382,7 +374,7 @@ firebase.links()
              
                </View>
               <View style={styles.ProfileInfoContainer}>
-              <Text style={styles.PersonNameStyle}>{this.props.route.params.name}</Text>
+              <Text style={styles.PersonNameStyle}>{this.state.name}</Text>
               <View style={styles.ListMenuContainer2}>
           <TouchableOpacity style={styles.messageButtonContainer} onPress={() => {
                             // console.log('chat screen',this.state.wholeData.id);
@@ -414,10 +406,10 @@ firebase.links()
             }}
             //Click functions for the menu items
             option1Click={() => {
-              this.link()
+              this.link(this.props.route.params.id)
             }}
             option2Click={() => {
-              this.forwardlink()
+              this.forwardlink(this.props.route.params.id)
               // Toast.show('CLicked Forward Link', Toast.LONG)
             }}
           />
@@ -499,10 +491,10 @@ firebase.links()
                             color: 'white',
                           }}
                           option1Click={() => {
-                            Toast.show('CLicked Shared Link', Toast.LONG)
+                            this.link(this.props.route.params.id)
                           }}
                           option2Click={() => {
-                            Toast.show('CLicked Forward Link', Toast.LONG)
+                            this.forwardlink(this.props.route.params.id)
           
                             // this.props.navigation.navigate('BluetoothDeviceList')
                           }}

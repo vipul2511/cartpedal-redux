@@ -8,14 +8,16 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import resp from 'rn-responsive-font';
-// import firebase from 'react-native-firebase'
+import firebase from 'react-native-firebase';
 class SplashScreen extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-         
-        };
+            initialPage: '',
+            deepLink: false,
+            parameters: {},
+          };
     }
 
 
@@ -30,48 +32,139 @@ class SplashScreen extends Component {
     static navigationOptions = {
         title: 'Splash'
     };
+    moveToDeepLink = (url) => {
+        const split1 = url.split('?');
+        if (split1.length > 1) {
+          const split2 = url.split('&');
+          if (split2.length > 1) {
+            const page = split2[1].split('=')[1];
+            if (page === 'OpenForPublicDetail') {
+              const id = split2[2].split('=')[1];
+              this.props.navigation.navigate(page, {id});
+            }else  if (page === 'DashBoardScreen') {
+                const id = split2[2].split('=')[1];
+                this.props.navigation.navigate(page, {id});
+              }else  if (page === 'ProfileScreen') {
+                const id = split2[2].split('=')[1];
+                this.props.navigation.navigate(page, {id});
+              }else  if (page === 'OpenForProfileScreen') {
+                const id = split2[2].split('=')[1];
+                this.props.navigation.navigate(page, {id});
+              }else  if (page === 'CartScreen') {
+                const id = split2[2].split('=')[1];
+                const cartValue = split2[3].split('=')[1];
+                this.props.navigation.navigate(page, {id,cartValue});
+              }
+          }
+        }
+      };
 
-
-    componentDidMount() {
-            
-// firebase.links()
-// .getInitialLink()
-// .then((url) => {
-//     console.log('the get url',url)
-//     if (url) {
-//         console.log('if url',url)
-//         // app opened from a url
-//     } else {
-//         this.props.navigation.addListener('focus', this.load)
-//        // app NOT opened from a url
-//     }
-// });
+    componentDidMount() {     
+        this.unsubscribe = firebase.links().onLink((link) => {
+            this.moveToDeepLink(link);
+          });
+firebase.links()
+.getInitialLink()
+.then((url) => {
+    console.log('the get url',url)
+    if (url) {
+        console.log('if url',url)
+        const split1 = url.split('?');
+          if (split1.length > 1) {
+            const split2 = url.split('&');
+            if (split2.length > 1) {
+              const page = split2[1].split('=')[1];
+              if (page === 'OpenForPublicDetail') {
+                const id = split2[2].split('=')[1];
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                  },
+                });
+              }else if (page === 'DashBoardScreen') {
+                const id = split2[2].split('=')[1];
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                  },
+                });
+              }else if (page === 'ProfileScreen') {
+                const id = split2[2].split('=')[1];
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                  },
+                });
+              }else if (page === 'OpenForProfileScreen') {
+                const id = split2[2].split('=')[1];
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                  },
+                });
+              }else if (page === 'CartScreen') {
+                const id = split2[2].split('=')[1];
+                const cartValue = split2[3].split('=')[1];
+                console.log('split',split2)
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                    cartValue
+                  },
+                });
+              }
+            }
+          }
+    } else {
+        this.props.navigation.addListener('focus', this.load)
+       // app NOT opened from a url
+    }
+});
 this.props.navigation.addListener('focus', this.load)  
     }
 
     componentWillUnmount() {
-
+        this.unsubscribe();
         clearTimeout(this.timeoutHandle); // This is just necessary in the case that the screen is closed before the timeout fires, otherwise it would cause a memory leak that would trigger the transition regardless, breaking the user experience.
     }
 
     load = () => {
-      
-        this.showLoading();
-
-        this.timeoutHandle = setTimeout(() => {
-            // Add your logic for the transition
-
-            AsyncStorage.getItem('@is_login').then((isLogin) => {
-                console.log('login screen',isLogin);
-                if (isLogin == undefined || isLogin == "0") {
-                    this.props.navigation.navigate('LoginScreen')
-                } else if (isLogin == "1") {
-                   this.props.navigation.navigate('DashBoardScreen')
-               }
-           });
-        }, 2000);
-       
-    }
+      this.showLoading();
+      this.timeoutHandle = setTimeout(() => {
+        // Add your logic for the transition
+        AsyncStorage.getItem('@is_login').then(async (isLogin) => {
+          const {deepLink, initialPage, parameters} = this.state;
+          if (isLogin == undefined || isLogin == '0') {
+            if (deepLink) {
+              this.setState({deepLink: false, initialPage: '', parameters: {}});
+              this.props.navigation.navigate('LoginScreen', {
+                initialPage,
+                parameters,
+              });
+            } else {
+              this.props.navigation.navigate('LoginScreen');
+            }
+          } else if (isLogin == '1') {
+            if (deepLink) {
+              this.setState({deepLink: false, initialPage: '', parameters: {}});
+              this.props.navigation.navigate(initialPage, parameters);
+            } else {
+              this.props.navigation.navigate('DashBoardScreen');
+            }
+          }
+        });
+      }, 1000);
+    };
     
 
     render() {

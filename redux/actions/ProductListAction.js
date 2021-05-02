@@ -10,7 +10,7 @@ export const productlistAction=(userId,userAccessToken)=>{
     return (dispatch)=>{
         dispatch({type:GET_PRODUCT_START})
         var urlProduct =
-      `${API_URL}api-product/product-list?user_id='+userId +'&type=2`
+      `${API_URL}api-product/product-list?user_id=${userId}&type=2`
       const token = fcmToken ? fcmToken : '1111';
     console.log('urlProduct :' + urlProduct)
     fetch(urlProduct, {
@@ -25,7 +25,7 @@ export const productlistAction=(userId,userAccessToken)=>{
     })
       .then(response => response.json())
       .then(responseData => {
-        console.log('code', responseData)
+        // console.log('code', responseData)
         if (responseData.code == '200') {
          if(responseData.data!==undefined&&responseData.data.length>0){
             dispatch({

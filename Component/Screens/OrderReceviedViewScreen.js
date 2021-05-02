@@ -64,9 +64,9 @@ class OrderRecievedViewScreen extends Component {
       console.log("Edit user id token=" +token);
       if (token) {
         this.setState({ fcmToken: token });
-        let arr=[];
-        arr.push(this.props.route.params.wholeData);
-        this.setState({OderPlaceProduct:arr});
+        // let arr=[];
+        // arr.push(this.props.route.params.wholeData);
+        this.setState({OderPlaceProduct:this.props.route.params.wholeData});
         console.log('order data',this.props.route.params.wholeData)
       }
     });
@@ -242,7 +242,7 @@ forwardlink =async(userid)=>{
           if (responseData.code == '200') {
           //  this.props.navigation.navigate('StoryViewScreen')
           //  Toast.show(responseData.message);
-            this.setState({OderPlaceProduct:responseData.data})
+            // this.setState({OderPlaceProduct:responseData.data})
            // this.SaveProductListData(responseData)
           } else {
             this.setState({ NoData: true });
@@ -321,7 +321,7 @@ forwardlink =async(userid)=>{
           // alert(responseData.data);
           console.log(responseData.message)
         }
-         console.log('response profile data:', JSON.stringify(responseData));
+        //  console.log('response profile data:', JSON.stringify(responseData));
       })
       .catch(error => {
        this.hideLoading();
@@ -460,32 +460,30 @@ forwardlink =async(userid)=>{
               style={{ flex: 1 }}
               data={this.state.OderPlaceProduct}
               //renderItem={({ item }) => <Item item={item} />}
-              keyExtractor={item => item.email}
+              keyExtractor={({item,index})=> index}
               numColumns={1}
               renderItem={({ item }) =>{
-                if(item.products.length>0){
-                   
+                console.log('item',item);
                return(
                 <View style={styles.listItem}>
-                <Image source={{uri:item.products[0].image}} style={styles.image} />
+                <Image source={{uri:item.image}} style={styles.image} />
                
                 <View style={styles.columnStyele}>
-                  <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
+                  <Text style={styles.itemNameStyle}>{item.name}</Text>
           
           
-                  <Text style={styles.SubTitlePoductNameSytle}>{item.products[0].category}</Text>
+                  <Text style={styles.SubTitlePoductNameSytle}>{item.category}</Text>
           
                   <View style={styles.itemPriceContainer}>
                     <Text style={styles.itemPriceStyle}>
-                      {'\u20B9'} {item.products[0].price}
+                      {'\u20B9'} {item.price}
                     </Text>
-                    <Text style={styles.QtyStyle}>Qty:{item.products[0].quantity}</Text>
-                    {item.products[0].unit?<Text style={styles.QtyStyle}>{item.products[0].unit}</Text>:null}
-                    {item.products[0].detailone?<Text style={styles.QtyStyle}>{item.products[0].detailone}</Text>:null}
-                    {item.products[0].detailtwo?<Text style={styles.QtyStyle}>{item.products[0].detailtwo}</Text>:null}
-                    {item.products[0].description?<Text style={styles.QtyStyleDescrp}>{item.products[0].description}</Text>:null}
-               
-          
+                    <Text style={styles.QtyStyle}>Qty:{item.quantity}</Text>
+                    {item.unit?<Text style={styles.QtyStyle}>{item.unit}</Text>:null}
+                    {item.detailone?<Text style={styles.QtyStyle}>{item.detailone}</Text>:null}
+                    {item.detailtwo?<Text style={styles.QtyStyle}>{item.detailtwo}</Text>:null}
+                    {item.description?<Text style={styles.QtyStyleDescrp}>{item.description}</Text>:null}
+              
           
                   </View>
                 </View>
@@ -519,7 +517,6 @@ forwardlink =async(userid)=>{
           
               </View>
               )}
-                  }
                   }
             />
           </ScrollView>

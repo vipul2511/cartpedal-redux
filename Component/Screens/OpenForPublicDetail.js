@@ -227,26 +227,29 @@ onShare = async (links) => {
     alert(error.message);
   }
 };
-link =async()=>{
-const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-.android.setPackageName('com.cart.android')
-.ios.setBundleId('com.cart.ios');
-// let url = await firebase.links().getInitialLink();
-// console.log('incoming url', url);
+link =async(id,name="OpenForPublicDetail")=>{
+  const link = new firebase.links.DynamicLink(
+    `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+id,
+    'cartpedal.page.link',
+  ).android
+    .setPackageName('com.cart.android')
+    .ios.setBundleId('com.cart.ios');
 
 firebase.links()
-.createDynamicLink(link)
-.then((url) => {
-  console.log('the url',url);
-  this.onShare(url);
-});
+  .createDynamicLink(link)
+  .then((url) => {
+    console.log('the url',url);
+    this.onShare('http://'+url);
+  });
 }
-forwardlink =async()=>{
-const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
- .android.setPackageName('com.cart.android')
- .ios.setBundleId('com.cart.ios');
- // let url = await firebase.links().getInitialLink();
- // console.log('incoming url', url);
+forwardlink =async(userid,name="OpenForPublicDetail")=>{
+  const link = new firebase.links.DynamicLink(
+    `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+
+      userid,
+    'cartpedal.page.link',
+  ).android
+    .setPackageName('com.cart.android')
+    .ios.setBundleId('com.cart.ios');
 
 firebase.links()
  .createDynamicLink(link)
@@ -262,7 +265,7 @@ this.props.navigation.navigate('ForwardLinkScreen', {
   PhoneNumber: numID,
   userId: this.state.userNo,
   userAccessToken: this.state.userAccessToken,
-  msgids: url,
+  msgids: 'http://' + url,
 });
 }
 }));
@@ -389,11 +392,11 @@ this.props.navigation.navigate('ForwardLinkScreen', {
           color: 'white',
           }}
           option1Click={() => {
-            this.link()
+            this.link(item.id)
           
           }}
           option2Click={() => {
-            this.forwardlink()
+            this.forwardlink(item.id)
           
           }}
           />

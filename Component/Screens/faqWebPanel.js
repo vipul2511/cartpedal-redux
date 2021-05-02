@@ -37,7 +37,7 @@ export default class FaqWebPanel extends Component {
             /> */}
           </TouchableOpacity>
         </View>
-    <WebView source={{ uri: 'http://cartpedal.com/frontend/web/page/faq' }} />
+    <WebView source={{ uri: 'https://cartpedal.com/page/faq' }} />
     </View>
     );
   }

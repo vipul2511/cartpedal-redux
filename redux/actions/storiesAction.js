@@ -28,7 +28,7 @@ export const storiesAction = (userId, userAccessToken) => {
         })
             .then(response => response.json())
             .then(responseData => {
-
+//    console.log('story',JSON.stringify(responseData));
                 if (responseData.code == '200') {
                     let item=[];
                     responseData.data.forEach(element => {
