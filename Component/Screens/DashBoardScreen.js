@@ -1,3 +1,6 @@
+/* eslint-disable no-alert */
+/* eslint-disable react/no-did-update-set-state */
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   StyleSheet,
@@ -24,7 +27,7 @@ import SeeMore from 'react-native-see-more-inline';
 import {BackHandler} from 'react-native';
 import Contacts from 'react-native-contacts';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 import {
   profileView,
@@ -49,7 +52,7 @@ class DashBoardScreen extends Component {
         userName: '',
         baseUrl: `${BASE_URL}`,
         userId: '',
-        spinner: '',
+        spinner: false,
         userAccessToken: '',
         isStoryModalVisible: false,
         phonenumber: '',
@@ -77,15 +80,13 @@ class DashBoardScreen extends Component {
     this.setState({spinner: false});
   }
 
-  actionOnRow(item) {
-    console.log('Selected Item :', item);
-  }
+  actionOnRow(item) {}
 
   actionOnViewProfile(item) {
     this.props.navigation.navigate('OpenForProfileScreen');
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBackButtonClick,
@@ -109,7 +110,6 @@ class DashBoardScreen extends Component {
         // dismissed
       }
     } catch (error) {
-      // eslint-disable-next-line no-alert
       alert(error.message);
     }
   };
@@ -127,7 +127,6 @@ class DashBoardScreen extends Component {
       .links()
       .createDynamicLink(link)
       .then((url) => {
-        console.log('the url', url);
         this.onShare(url);
       });
   };
@@ -146,8 +145,6 @@ class DashBoardScreen extends Component {
       .links()
       .createDynamicLink(link)
       .then((url) => {
-        console.log('the url', url);
-        //  this.sendMessage(url,userid);
         this.props.navigation.navigate('ForwardLinkScreen', {
           fcmToken: this.state.fcmtoken,
           PhoneNumber: this.state.phonenumber,
@@ -168,15 +165,13 @@ class DashBoardScreen extends Component {
   handleBackButtonClick() {
     if (this.props.navigation.isFocused()) {
       BackHandler.exitApp();
-      console.log('if excute');
       return true;
     } else {
       this.props.navigation.goBack(null);
-
-      console.log('else excute');
       return true;
     }
   }
+
   async requestReadContactsPermission() {
     try {
       const granted = await request(
@@ -189,7 +184,6 @@ class DashBoardScreen extends Component {
         let phoneName = [];
         let sortData;
         Contacts.getAll().then((contacts) => {
-          // console.log(JSON.stringify(contacts, null, 2));
           contacts.map((item) => {
             if (
               item.phoneNumbers !== undefined &&
@@ -210,11 +204,8 @@ class DashBoardScreen extends Component {
           AsyncStorage.setItem('@Phonecontacts', JSON.stringify(sortData));
         });
       } else {
-        console.log('read contacts permission denied');
       }
-    } catch (err) {
-      console.warn(err);
-    }
+    } catch (err) {}
   }
 
   blockuser = (block_id) => {
@@ -225,7 +216,7 @@ class DashBoardScreen extends Component {
     formData.append('user_id', id);
     formData.append('block_id', block_id);
     formData.append('type', 0);
-    console.log('form data==' + JSON.stringify(formData));
+
     var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',
@@ -250,7 +241,6 @@ class DashBoardScreen extends Component {
       })
       .catch((error) => {
         this.hideLoading();
-        console.error(error);
       })
       .done();
   };
@@ -286,7 +276,6 @@ class DashBoardScreen extends Component {
       })
       .catch((error) => {
         this.hideLoading();
-        console.error('error coming', error);
       })
       .done();
   }
@@ -300,13 +289,9 @@ class DashBoardScreen extends Component {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
       } else {
-        console.log('Camera permission denied');
       }
-    } catch (err) {
-      console.warn(err);
-    }
+    } catch (err) {}
   };
 
   componentDidMount = async () => {
@@ -368,8 +353,6 @@ class DashBoardScreen extends Component {
     }
   };
   sendMessage = (UrlLink, userID) => {
-    // console.log('user id', this.props.route.params.userid);
-    // this.setState({message: '', height: 40});
     var raw = JSON.stringify({
       user_id: this.state.userId,
       toid: userID,
@@ -393,16 +376,10 @@ class DashBoardScreen extends Component {
       .then((responseData) => {
         if (responseData.code === 200) {
           alert('forward link has been sent');
-          // this.setState({visibleReply:true})
-          console.log('asda', responseData);
-        } else {
-          console.log('logged user stories' + JSON.stringify(responseData));
         }
       })
 
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => {});
   };
   addStoryApi = (data) => {
     this.setState({addstoryload: true}, () => {
@@ -443,7 +420,6 @@ class DashBoardScreen extends Component {
   };
 
   componentDidUpdate() {
-    // console.log('add story',this.props.recenterror,this.props.recentData)
     if (this.props.addStorySuccess && this.state.addstoryload) {
       this.setState({addstoryload: false}, () => {
         this.props.loggedStoriesAction(
@@ -453,25 +429,19 @@ class DashBoardScreen extends Component {
         this.hideLoading();
       });
     }
-    // console.log('error of data',this.props.recenterror,this.state.callUpdate)
     if (this.props.recenterror && this.state.callUpdate) {
       this.setState({callUpdate: false, NoData: true}, () => {
         this.hideLoading();
       });
     }
-    // console.log('recent',this.props.recentDataSuccess,'data',this.state.callUpdate);
     if (this.props.recentDataSuccess && this.state.callUpdate) {
-      console.log('entered');
       this.setState({callUpdate: false, spinner: false});
     }
   }
 
   ProfileViewCall = () => {
-    // this.showLoading();
-    let formData = new FormData();
     var urlprofile =
       `${BASE_URL}api-user/view-profile?user_id=` + this.state.userId;
-    console.log('profileurl :' + urlprofile);
     fetch(urlprofile, {
       method: 'GET',
       headers: {
@@ -485,7 +455,6 @@ class DashBoardScreen extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          // console.log(responseData.data.name,responseData.data.avatar)
           if (responseData.data.name !== null) {
             this.setState({userName: responseData.data.name});
           }
@@ -500,15 +469,9 @@ class DashBoardScreen extends Component {
           if (responseData.data.about !== null) {
             this.setState({about: responseData.data.about});
           }
-          console.log(this.state.loggeduserstory_avatar, this.state.avatar);
-        } else {
-          console.log('profile');
-          console.log('profile Data' + responseData);
         }
       })
-      .catch((error) => {
-        console.error(error);
-      })
+      .catch((error) => {})
       .done();
   };
   _renderTruncatedFooter = (handlePress) => {
@@ -540,17 +503,14 @@ class DashBoardScreen extends Component {
   };
   openImageGallery() {
     this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
-    //  this.imageSelectDialog.openGallery()
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
     }).then((image) => {
       this.onImagePick(image);
-      console.log('image pic===', image);
     });
   }
   onImagePick(response) {
-    // let newImage=this.state.newImageArr;
     this.showLoading();
     let imgOjc = {
       path: response.path,
@@ -560,36 +520,25 @@ class DashBoardScreen extends Component {
     };
     let imageArray = [];
     imageArray.push(imgOjc);
-    //this.state.newImageArr.push(imgOjc)
-    //this.setState({newImageArr:imgOjc})
-    console.log('imagepickethe', imageArray);
-    // console.log('image in array in different format',this.state.newImageArr);
-    //  this.uploadProfilePic();
     this.addStoryApi(imageArray);
   }
 
   openCamara() {
     this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
-    // this.imageSelectDialog.openCamera()
     ImagePicker.openCamera({
       cropping: true,
       includeBase64: true,
     }).then((image) => {
       this.onImagePick(image);
-      console.log('pickedImage===', image);
     });
   }
+
   SendReportIssue() {
-    console.log('working send report');
     let formData = new FormData();
     formData.append('user_id', this.state.userId);
     formData.append('reason', 'Report post');
     formData.append('message', 'Something went wrong with this post');
-    console.log('form data==' + JSON.stringify(formData));
-    // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
-
     var otpUrl = `${BASE_URL}api-user/report-problem`;
-    console.log('url:' + otpUrl);
     fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -604,35 +553,24 @@ class DashBoardScreen extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          //   this.props.navigation.navigate('LoginScreen')
-          alert(responseData.data);
-          console.log(responseData);
         } else {
-          alert(responseData.message);
-          console.log(responseData);
         }
       })
-      .catch((error) => {
-        console.error(error);
-      })
-
+      .catch((error) => {})
       .done();
   }
   render() {
-    // const {resetStore}=this.props
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
           visible={this.state.spinner}
           color="#F01738"
-          // textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity
               onPress={() => {
-                // resetStore
                 AsyncStorage.removeItem('@is_login').then((succ) => {
                   this.logOut();
                 });
@@ -650,17 +588,7 @@ class DashBoardScreen extends Component {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('StoryViewScreen');
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
         </View>
         <Modal
           animationType="slide"
@@ -680,7 +608,6 @@ class DashBoardScreen extends Component {
                   style={styles.CloseButtonStyle}
                 />
               </TouchableOpacity>
-
               <Text style={styles.TitleProfileModalStyle}>Choice Option</Text>
               <TouchableOpacity
                 onPress={() => {
@@ -711,9 +638,7 @@ class DashBoardScreen extends Component {
             <View style={{flex: 1, flexDirection: 'row'}}>
               <TouchableOpacity
                 style={styles.storyItemBox}
-                onPress={() => this.openStoryModal()}
-                //this.coverPhotogallery()
-              >
+                onPress={() => this.openStoryModal()}>
                 <Image
                   source={
                     this.state.loggeduserstory_avatar != null
@@ -724,7 +649,8 @@ class DashBoardScreen extends Component {
                 />
                 <Image
                   source={require('../images/status_add_icon.png')}
-                  style={styles.StatusAddStyle}></Image>
+                  style={styles.StatusAddStyle}
+                />
                 <Text style={styles.storyTextView}>Your Story</Text>
               </TouchableOpacity>
               <FlatList
@@ -732,14 +658,15 @@ class DashBoardScreen extends Component {
                 showsHorizontalScrollIndicator={false}
                 style={{flex: 1, flexDirection: 'row'}}
                 data={this.props.storiesData}
-                keyExtractor={(item) => item.StoryImage}
+                keyExtractor={(item, index) => {
+                  return item.id.toString();
+                }}
                 renderItem={({item, index}) => {
                   return (
                     <View>
                       <TouchableOpacity
                         style={styles.storyItemBox}
                         onPress={() => {
-                          console.log(item);
                           this.props.navigation.navigate('StoryViewScreen', {
                             position: index,
                             images: item.avatar,
@@ -765,7 +692,6 @@ class DashBoardScreen extends Component {
                             },
                           ]}
                         />
-
                         <Text style={styles.storyTextView}>
                           {item.name.substring(0, 8) + '..'}
                         </Text>
@@ -775,13 +701,8 @@ class DashBoardScreen extends Component {
                 }}
               />
             </View>
-
             <View style={styles.hairline} />
-
-            <View
-              style={styles.Profile2Container}
-              // onPress={()=>{this.props.navigation.navigate('ProfileScreen')}}
-            >
+            <View style={styles.Profile2Container}>
               <View style={styles.Profile2ImageContainer}>
                 <TouchableOpacity
                   onPress={() => {
@@ -797,7 +718,8 @@ class DashBoardScreen extends Component {
                   />
                   <Image
                     source={require('../images/status_add_largeicon.png')}
-                    style={styles.StatusAddLargeStyle}></Image>
+                    style={styles.StatusAddLargeStyle}
+                  />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -825,9 +747,7 @@ class DashBoardScreen extends Component {
                 <TouchableOpacity
                   style={styles.openButtonContainer}
                   onPress={() => {
-                    // this.props.navigation.navigate('HomeScreen')
                     this.props.navigation.navigate('ProfileScreen');
-                    //  Toast.show('CLicked Share Link', Toast.LONG)
                   }}>
                   <Text style={styles.openButtonStyle}>Open</Text>
                 </TouchableOpacity>
@@ -835,33 +755,21 @@ class DashBoardScreen extends Component {
                 <TouchableOpacity>
                   <CustomMenuIcon
                     menutext="Menu"
-                    menustyle={
-                      {
-                        // left:4,
-                        // position:'absolute',
-                        // flexDirection: 'row',
-                        // justifyContent: 'flex-end',
-                      }
-                    }
                     textStyle={{
                       color: 'white',
                     }}
                     option1Click={() => {
-                      // this.BlockUserCall()
                       let name = 'ProfileScreen';
                       this.link(this.state.userId, name);
-                      // Toast.show('CLicked Shared Link', Toast.LONG)
                     }}
                     option2Click={() => {
                       let name = 'ProfileScreen';
                       this.forwardlink(this.state.userId, name);
-                      // Toast.show('CLicked Forward Link', Toast.LONG)
                     }}
                   />
                 </TouchableOpacity>
               </View>
             </View>
-
             <View style={styles.RecentViewStyle}>
               <Text style={styles.RecentTextStyle}>RECENT UPDATES</Text>
             </View>
@@ -872,9 +780,8 @@ class DashBoardScreen extends Component {
                   ? this.props.recentData
                   : []
               }
-              keyExtractor={(item, index) => index}
+              keyExtractor={(item, index) => index.toString()}
               renderItem={({item, index}) => {
-                // console.log('item of dashboard',item.products[1])
                 return (
                   <TouchableOpacity
                     onPress={() => {
@@ -912,7 +819,6 @@ class DashBoardScreen extends Component {
                             </SeeMore>
                           ) : null}
                         </View>
-                        {/* <Text >{item.about}</Text> */}
                       </View>
                       <View style={styles.ListMenuContainer}>
                         <TouchableOpacity
@@ -931,29 +837,25 @@ class DashBoardScreen extends Component {
                           }}>
                           <Image
                             source={require('../images/message_icon.png')}
-                            style={styles.messageButtonStyle}></Image>
+                            style={styles.messageButtonStyle}
+                          />
                         </TouchableOpacity>
 
                         <TouchableOpacity
                           style={styles.ViewButtonContainer}
                           onPress={() => {
-                            console.log('user id from api', item);
                             this.props.navigation.navigate(
                               'OpenForProfileScreen',
                               {id: item.id, name: item.name},
                             );
-                            //  this.props.navigation.navigate('OpenForPublicDetail')
                           }}>
                           <Text style={styles.viewButtonStyle}>
                             {'View All'}
                           </Text>
                         </TouchableOpacity>
-
                         <MenuIcon
                           menutext="Menu"
                           menustyle={{
-                            // right:15,
-                            // position:'absolute',
                             flexDirection: 'row',
                             justifyContent: 'flex-end',
                           }}
@@ -961,13 +863,11 @@ class DashBoardScreen extends Component {
                             color: 'white',
                           }}
                           option1Click={() => {
-                            let name = 'DashBoardScreen';
-                            this.blockuser(item.id, name);
+                            this.blockuser(item.id);
                           }}
                           option2Click={() => {
                             let name="OpenForProfileScreen";
                             this.link(item.id,name)
-                            // Toast.show('CLicked Shared Link', Toast.LONG)
                           }}
                           option3Click={() => {
                             let name="OpenForProfileScreen";
@@ -990,7 +890,8 @@ class DashBoardScreen extends Component {
                                 ? {uri: item.products[0].image}
                                 : null
                             }
-                            style={styles.Image2Container}></Image>
+                            style={styles.Image2Container}
+                          />
                           <Text style={styles.itemNameStyle}>
                             {item.products[0].name}
                           </Text>
@@ -1007,7 +908,8 @@ class DashBoardScreen extends Component {
                                   ? {uri: item.products[1].image}
                                   : null
                               }
-                              style={styles.Image2Container}></Image>
+                              style={styles.Image2Container}
+                            />
                             <Text style={styles.itemNameStyle}>
                               {item.products[1].name}
                             </Text>
@@ -1025,7 +927,8 @@ class DashBoardScreen extends Component {
                                   ? {uri: item.products[2].image}
                                   : null
                               }
-                              style={styles.Image2Container}></Image>
+                              style={styles.Image2Container}
+                            />
                             <Text style={styles.itemNameStyle}>
                               {item.products[2].name}
                             </Text>
@@ -1043,7 +946,8 @@ class DashBoardScreen extends Component {
                                   ? {uri: item.products[3].image}
                                   : null
                               }
-                              style={styles.Image2Container}></Image>
+                              style={styles.Image2Container}
+                            />
                             <Text style={styles.itemNameStyle}>
                               {item.products[3].name}
                             </Text>
@@ -1107,7 +1011,7 @@ class DashBoardScreen extends Component {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+             {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen');
@@ -1117,7 +1021,7 @@ class DashBoardScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */} 
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -1163,7 +1067,6 @@ const styles = StyleSheet.create({
     fontSize: resp(12),
   },
   Profile2ImageContainer: {
-    // margin: resp(10),
     marginTop: hp(10),
     marginLeft: wp(5),
     flexDirection: 'column',
@@ -1172,7 +1075,6 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ProfileImageContainer: {
-    // margin: resp(10),
     marginTop: hp(10),
     marginLeft: wp(5),
     flexDirection: 'column',
@@ -1206,19 +1108,6 @@ const styles = StyleSheet.create({
     },
     elevation: 0,
   },
-  storyItemBox: {
-    // marginLeft: resp(6),
-    // height: resp(90),
-    // backgroundColor: 'white',
-    // flexDirection: 'column',
-    // shadowColor: 'black',
-    // shadowOpacity: 0.2,
-    // // shadowOffset: {
-    // //   height: 1,
-    // //   width: 1,
-    // // },
-    // elevation: 2,
-  },
   Profile2ImageViewStyle: {
     width: resp(70),
     height: resp(70),
@@ -1226,7 +1115,6 @@ const styles = StyleSheet.create({
     borderRadius: resp(10),
   },
   ProfileImageViewStyle: {
-    // margin: resp(10),
     width: wp(50),
     height: hp(50),
     borderRadius: resp(8),
@@ -1448,7 +1336,7 @@ const styles = StyleSheet.create({
     height: resp(20),
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'absolute', //Here is the trick
+    position: 'absolute',
     bottom: resp(15),
     left: resp(3),
     marginLeft: resp(45),
@@ -1458,7 +1346,7 @@ const styles = StyleSheet.create({
     marginLeft: resp(50),
     width: resp(25),
     height: resp(25),
-    position: 'absolute', //Here is the trick
+    position: 'absolute',
     bottom: resp(-2),
   },
   Profile2InfoContainer: {
@@ -1471,7 +1359,6 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   ProfileInfoContainer: {
-    // marginLeft:wp(5),
     backgroundColor: 'white',
     marginTop: hp(15),
     flexDirection: 'column',
@@ -1494,8 +1381,6 @@ const styles = StyleSheet.create({
     flex: 0.22,
     marginTop: resp(5),
     flexDirection: 'row',
-    // width: resp(80),
-    // height: resp(40),
   },
   ListMenuContainer: {
     marginTop: resp(20),
@@ -1537,7 +1422,6 @@ const styles = StyleSheet.create({
   },
   messageButtonStyle: {
     marginTop: resp(5),
-    color: '#F01738',
     width: resp(9),
     height: resp(9),
     alignSelf: 'center',
@@ -1589,19 +1473,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: resp(60),
-    shadowColor: '#ecf6fb',
     elevation: resp(20),
     shadowColor: 'grey',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute', //Here is the trick
+    position: 'absolute',
     bottom: resp(0),
   },
   columnView: {
     flexDirection: 'row',
     width: '100%',
-    // marginLeft: resp(5),
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
@@ -1633,12 +1515,7 @@ const styles = StyleSheet.create({
     fontSize: resp(13),
   },
 });
-// function mapDispatchToProps(dispatch){
-//   console.log('dispatch',dispatch);
-//   return {
-//     actions: bindActionCreators(RecentDataAction, dispatch),
-// };
-// }
+
 function mapStateToProps(state) {
   const {isLoading, data, success} = state.signinReducer;
   const {data: storiesData, success: storiesSuccess} = state.storiesReducer;
@@ -1652,7 +1529,7 @@ function mapStateToProps(state) {
     isLoading: loadingRecentData,
     error: recenterror,
   } = state.RecentDataReducer;
-  const {success: addStorySuccess, data: addStorydata} = state.addStoryReducer;
+  const {success: addStorySuccess} = state.addStoryReducer;
   return {
     isLoading,
     data,
@@ -1676,5 +1553,3 @@ export default connect(mapStateToProps, {
   RecentDataAction,
   addStoryAction,
 })(DashBoardScreen);
-
-// export default withNavigation(DashBoardScreen)

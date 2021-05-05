@@ -56,6 +56,7 @@ class SplashScreen extends Component {
                 this.props.navigation.navigate(page, {id,cartValue});
               }else  if (page === 'ProductDetailScreen') {
                 const id = split2[2].split('=')[1];
+                
                 this.props.navigation.navigate(page, {id});
               }else  if (page === 'OderPlacedViewScreen') {
                 const id = split2[2].split('=')[1];

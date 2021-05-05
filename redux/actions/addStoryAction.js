@@ -44,7 +44,6 @@ export const addStoryAction = (userId, userAccessToken, data) => {
         }
       })
       .catch((error) => {
-        console.error('error message', error);
         dispatch({
           type: ADD_STORIES_ERROR,
           payload: error,

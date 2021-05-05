@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -8,56 +9,47 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
-  ScrollView
-} from 'react-native'
-import resp from 'rn-responsive-font'
-import AsyncStorage from '@react-native-community/async-storage'
+  ScrollView,
+} from 'react-native';
+import resp from 'rn-responsive-font';
+import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL} from '../Component/ApiClient';
-class BackUpChats extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      fcmToken:'',
-      userAccessToken:'',
-      userId:''
 
-    }
+class BackUpChats extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fcmToken: '',
+      userAccessToken: '',
+      userId: '',
+    };
   }
-  componentDidMount(){
+  componentDidMount() {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
       if (token) {
-        this.setState({ fcmToken: token })
-       
+        this.setState({fcmToken: token});
       }
     });
+
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + accessToken);
-        //this.RecentUpdateCall();
+        this.setState({userAccessToken: accessToken});
       }
     });
-    AsyncStorage.getItem('@user_id').then((userId) => {
-        this.setState({userId:userId})
-      
-  });
 
-   }
+    AsyncStorage.getItem('@user_id').then((userId) => {
+      this.setState({userId: userId});
+    });
+  }
   clearMessages = () => {
     const {fcmToken, userId, userAccessToken} = this.state;
-
-
 
     const data = new FormData();
 
     data.append('user_id', userId);
-    data.append('type','all')
-    data.append('toid',0 );
-       console.log('data',JSON.stringify(data))
-    var EditProfileUrl =
-      `${BASE_URL}api-message/clear-all`;
-    console.log('Add product Url:' + EditProfileUrl);
+    data.append('type', 'all');
+    data.append('toid', 0);
+    var EditProfileUrl = `${BASE_URL}api-message/clear-all`;
     fetch(EditProfileUrl, {
       method: 'POST',
       headers: {
@@ -70,37 +62,21 @@ class BackUpChats extends Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
           this.props.navigation.navigate('SettingScreen');
-        // console.log(JSON.stringify(responseData));
-          //  Toast.show(responseData.message);
-          // this.getConversationList();
         } else {
-          console.log(responseData.data);
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log(
-          'clear response object:',
-          JSON.stringify(responseData),
-        );
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch((error) => {
-        //  this.hideLoading();
-        console.error(error);
-      })
+      .catch((error) => {})
       .finally(() => {});
   };
-  render () {
+
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
-            <TouchableOpacity
-            onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../images/back_blck_icon.png')}
                 style={styles.backButtonStyle}
@@ -108,66 +84,32 @@ class BackUpChats extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.TitleContainer}>
-            {/* <Image
-              source={require('../images/logo_cart_paddle.png')}
-              style={styles.LogoIconStyle}
-            /> */}
             <TouchableOpacity
               style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text style={styles.TitleStyle}>Chats </Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </View>
+          <View style={styles.SearchContainer} />
         </View>
-       
+
         <View style={styles.MainContentBox}>
           <ScrollView>
-       
-            {/* <TouchableOpacity style={styles.Profile2Container}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={this.clearMessages}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity
-                >
-                  <Image
-                    source={require('../images/backup_Chat.png')}
-                    style={styles.Profile2ImageViewStyle}
-                  />
-                 
-                </TouchableOpacity>
-              </View>
-              <View style={styles.Profile2InfoContainer}>
-                <Text style={styles.PersonNameStyle}>Chats backup</Text>
-                <Text style={styles.ProfileDescription}>
-             
-                </Text>
-              </View>
-            
-            </TouchableOpacity> */}
-            <TouchableOpacity style={styles.Profile2Container} onPress={this.clearMessages}>
-              <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity
-                >
+                <TouchableOpacity>
                   <Image
                     source={require('../images/delete_account_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Delete all chats</Text>
-                <Text style={styles.ProfileDescription}>
-              
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
-           
-         
           </ScrollView>
         </View>
         <View style={styles.TabBox}>
@@ -175,7 +117,7 @@ class BackUpChats extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('DashBoardScreen')
+                this.props.navigation.navigate('DashBoardScreen');
               }}>
               <Image
                 source={require('../images/home_inactive_icon.png')}
@@ -187,7 +129,7 @@ class BackUpChats extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('OpenForPublicScreen')
+                this.props.navigation.navigate('OpenForPublicScreen');
               }}>
               <Image
                 source={require('../images/group_inactive_icon.png')}
@@ -201,7 +143,7 @@ class BackUpChats extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('CartScreen')
+                this.props.navigation.navigate('CartScreen');
               }}>
               <Image
                 source={require('../images/cart_bag_inactive_icon.png')}
@@ -210,21 +152,21 @@ class BackUpChats extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('ChatScreen')
+                this.props.navigation.navigate('ChatScreen');
               }}>
               <Image
                 source={require('../images/chat_inactive_icon.png')}
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('SettingScreen')
+                this.props.navigation.navigate('SettingScreen');
               }}>
               <Image
                 source={require('../images/setting_active_icon.png')}
@@ -235,7 +177,7 @@ class BackUpChats extends Component {
           </View>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -245,11 +187,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#F6F9FE',
   },
- 
+
   MainContentBox: {
     flex: 1,
   },
- 
 
   TabBox: {
     flex: 0.1,
@@ -283,7 +224,7 @@ const styles = StyleSheet.create({
     height: resp(42),
     borderRadius: resp(10),
     borderWidth: 2,
-    borderColor:'#F01738'
+    borderColor: '#F01738',
   },
   TitleContainer: {
     flexDirection: 'row',
@@ -321,7 +262,7 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   Profile2Container: {
-    height:resp(70),
+    height: resp(70),
     color: '#fff',
     flexDirection: 'row',
   },
@@ -378,7 +319,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
- 
+
   styleChartTab: {
     marginTop: 9,
     width: 30,
@@ -408,7 +349,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#ecf6fb',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
@@ -423,5 +363,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
   },
-})
+});
 export default BackUpChats;

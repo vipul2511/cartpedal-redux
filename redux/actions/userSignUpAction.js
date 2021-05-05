@@ -115,7 +115,6 @@ export const signUpConf = (name, phone, email, pass) => {
         }
       })
       .catch((error) => {
-        console.log('error : ', error);
         dispatch({
           type: USER_SIGNUP_CONF_ERROR,
           payload: error,

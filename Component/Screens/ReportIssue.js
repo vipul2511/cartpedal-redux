@@ -1,110 +1,103 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View,TouchableOpacity,Image, Dimensions,TextInput } from 'react-native';
-import { WebView } from 'react-native-webview';
-import resp from 'rn-responsive-font' 
-import { Picker } from "native-base";
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-alert */
+import React, {Component} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  TextInput,
+} from 'react-native';
+import resp from 'rn-responsive-font';
+import {Picker} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
-let width=Dimensions.get('window').width;
-let height=Dimensions.get('window').height;
+let width = Dimensions.get('window').width;
 import {BASE_URL} from '../Component/ApiClient';
 
 const placeholder = {
-    label: 'Please you category*',
-    value: null,
-    color: '#9EA0A4',
-  };
-  
+  label: 'Please you category*',
+  value: null,
+  color: '#9EA0A4',
+};
+
 export default class ReportIssue extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-    comment:"",
-    fcmToken:'',
-    userId:'',
-    userAccessToken:'',
-    language:''
-    }
+    this.state = {
+      comment: '',
+      fcmToken: '',
+      userId: '',
+      userAccessToken: '',
+      language: '',
+    };
   }
-  componentDidMount(){
+  componentDidMount() {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-        console.log("Edit user id token=" +token);
-        if (token) {
-          this.setState({ fcmToken:JSON.parse(token) });
-        }
-      });
-      AsyncStorage.getItem('@user_id').then(userId => {
-        if (userId) {
-          this.setState({userId: userId})
-          console.log('Edit user id Dhasbord ====' + this.state.userId)
-         
-        }
-      });
-      AsyncStorage.getItem('@access_token').then((accessToken) => {
-        if (accessToken) {
-          this.setState({ userAccessToken: accessToken });
-          console.log("Edit access token ====" + accessToken);
-        }
-      })
+      if (token) {
+        this.setState({fcmToken: JSON.parse(token)});
+      }
+    });
+    AsyncStorage.getItem('@user_id').then((userId) => {
+      if (userId) {
+        this.setState({userId: userId});
+      }
+    });
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      if (accessToken) {
+        this.setState({userAccessToken: accessToken});
+      }
+    });
   }
-  checkReportIssue=()=>{
-    if(this.state.language=="Others"){
-        if(this.state.comment!==""){
-            console.log('working')
-            this.SendReportIssue()
-        }else{
-            alert('Please enter an Additional comments');
-        }
-    }else{
-      this.SendReportIssue()
+
+  checkReportIssue = () => {
+    if (this.state.language == 'Others') {
+      if (this.state.comment !== '') {
+        this.SendReportIssue();
+      } else {
+        alert('Please enter an Additional comments');
+      }
+    } else {
+      this.SendReportIssue();
     }
-  }
+  };
+
   SendReportIssue() {
-    console.log('working send report')
-    let formData = new FormData()
-    formData.append('user_id', this.state.userId)
-    formData.append('reason',this.state.language)
-    formData.append('message',this.state.comment)
-    console.log('form data==' + JSON.stringify(formData))
-   // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
-    
-    var otpUrl =`${BASE_URL}api-user/report-problem`
-    console.log('url:' + otpUrl)
+    let formData = new FormData();
+    formData.append('user_id', this.state.userId);
+    formData.append('reason', this.state.language);
+    formData.append('message', this.state.comment);
+    var otpUrl = `${BASE_URL}api-user/report-problem`;
     fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
-        device_token:this.state.fcmToken,
+        device_token: this.state.fcmToken,
         device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
-
+      .then((response) => response.json())
+      .then((responseData) => {
         if (responseData.code == '200') {
-        //   this.props.navigation.navigate('LoginScreen')
-        alert(responseData.data)
-             console.log(responseData);
-        } 
-        else {
-            alert(responseData.message);
-          console.log(responseData)
+          alert(responseData.data);
+        } else {
+          alert(responseData.message);
         }
-        
-       
       })
-      .catch(error => {
-        console.error(error)
+      .catch((error) => {
+        console.error(error);
       })
-
-      .done()
+      .done();
   }
+
   render() {
     return (
-      <View style={{flex:1,backgroundColor:'#fff'}}>
-         <View style={styles.headerView}>
+      <View style={{flex: 1, backgroundColor: '#fff'}}>
+        <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
@@ -123,49 +116,72 @@ export default class ReportIssue extends Component {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
         </View>
-        <View style={{flex:0.5}}>
-        <View style={styles.inputTextView}>
-            <Picker 
-            placeholder={placeholder}
-  selectedValue={this.state.language}
-  style={{height: 50, width: width-55}}
-  onValueChange={(itemValue, itemIndex) => {
-    if(itemValue != "0")this.setState({language: itemValue})
-    else alert('Please select correct category');
-  }  
-  }>
-    <Picker.Item label="Please select category *" value="0" />
-    <Picker.Item label={"Cheating and forgery"} value={"Cheating and forgery"}  />
-    <Picker.Item label={"Issues related to prices and goods"} value={"Issues related to prices and goods"}  />
-    <Picker.Item label={"App related issues"} value={"App related issues"}  />
-    <Picker.Item label={"Others"} value={"Others"}  />
-</Picker>
-            </View>
-            <View style={{marginTop:15,justifyContent:'center',alignItems:'center'}}>
-                <TextInput placeholder="Additional comments" 
-                multiline={true}
-                style={{width:350,backgroundColor:'#F4F4F4',height:150,textAlignVertical:'top'}}
-                onChangeText={((text)=>{this.setState({comment:text})})}   />
-            </View>
-            <View>
-                <TouchableOpacity onPress={()=>{this.checkReportIssue()}} style={styles.sendbtn}><Text style={{color:'#fff',fontSize:resp(17)}}>SEND</Text></TouchableOpacity>
-            </View>
-    </View>
-    </View>
+        <View style={{flex: 0.5}}>
+          <View style={styles.inputTextView}>
+            <Picker
+              placeholder={placeholder}
+              selectedValue={this.state.language}
+              style={{height: 50, width: width - 55}}
+              onValueChange={(itemValue, itemIndex) => {
+                if (itemValue != '0') {
+                  this.setState({language: itemValue});
+                } else {
+                  alert('Please select correct category');
+                }
+              }}>
+              <Picker.Item label="Please select category *" value="0" />
+              <Picker.Item
+                label={'Cheating and forgery'}
+                value={'Cheating and forgery'}
+              />
+              <Picker.Item
+                label={'Issues related to prices and goods'}
+                value={'Issues related to prices and goods'}
+              />
+              <Picker.Item
+                label={'App related issues'}
+                value={'App related issues'}
+              />
+              <Picker.Item label={'Others'} value={'Others'} />
+            </Picker>
+          </View>
+          <View
+            style={{
+              marginTop: 15,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <TextInput
+              placeholder="Additional comments"
+              multiline={true}
+              style={{
+                width: 350,
+                backgroundColor: '#F4F4F4',
+                height: 150,
+                textAlignVertical: 'top',
+              }}
+              onChangeText={(text) => {
+                this.setState({comment: text});
+              }}
+            />
+          </View>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                this.checkReportIssue();
+              }}
+              style={styles.sendbtn}>
+              <Text style={{color: '#fff', fontSize: resp(17)}}>SEND</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   headerView: {
     flex: 0.1,
@@ -176,7 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 20,
   },
-  sendbtn:{
+  sendbtn: {
     marginTop: 10,
     width: resp(350),
     height: resp(50),
@@ -192,8 +208,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
     marginTop: 10,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   BackButtonContainer: {
     flex: 0.2,
@@ -234,4 +250,4 @@ const styles = StyleSheet.create({
     width: 25,
     alignSelf: 'flex-end',
   },
-})
+});

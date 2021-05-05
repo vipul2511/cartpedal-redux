@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -12,22 +14,17 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
-  TouchableWithoutFeedback,
   Dimensions,
   ScrollView,
   Share,
-  TouchableHighlight,
 } from 'react-native';
 import resp from 'rn-responsive-font';
-import Toast from 'react-native-simple-toast';
-import ReadMore from 'react-native-read-more-text';
 import MenuIcon from './MenuIcon';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 import {hp, wp} from '../Component/hightWidthRatio';
 let width = Dimensions.get('window').width;
-let height = Dimensions.get('window').height;
 import {BASE_URL} from '../Component/ApiClient';
 
 class GeneralTab extends Component {
@@ -38,7 +35,7 @@ class GeneralTab extends Component {
     this.state = {
       RescentProduct: '',
       NoData: '',
-      spinner: '',
+      spinner: false,
       userNo: '',
       block_id: '',
       userAccessToken: '',
@@ -52,7 +49,6 @@ class GeneralTab extends Component {
       avatar: '',
       pickedImage: require('../images/default_user.png'),
     };
-    console.log('this props', JSON.stringify(this.props));
   }
   showLoading() {
     this.setState({spinner: true});
@@ -66,12 +62,8 @@ class GeneralTab extends Component {
     AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
       if (NumberFormat) {
         let numID = JSON.parse(NumberFormat);
-
         this.showLoading();
-        console.log('form data==' + JSON.stringify(numID));
-        // var CartList = this.state.baseUrl + 'api-product/cart-list'
         var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
-        console.log('Add product Url:' + EditProfileUrl);
         fetch(EditProfileUrl, {
           method: 'Post',
           headers: {
@@ -90,81 +82,64 @@ class GeneralTab extends Component {
         })
           .then((response) => response.json())
           .then((responseData) => {
-            //   this.hideLoading();
             if (responseData.code == '200') {
-              //  Toast.show(responseData.message);
               this.setState({contactList: responseData.data.appcontact});
               let cartPadleContact = [];
-              let nameofCartPadle = [];
               responseData.data.appcontact.map((item) => {
                 cartPadleContact.push(item.mobile);
               });
               let commaNumber = cartPadleContact.join(',');
-              console.log('cart padle', cartPadleContact.join(','));
               this.setState({appContacts: cartPadleContact.join(',')});
               this.RecentShareCall(commaNumber);
             } else {
               this.hideLoading();
-              console.log(responseData.data);
             }
-
-            //console.log('Edit profile response object:', responseData)
-            console.log(
-              'contact list response object:',
-              JSON.stringify(responseData),
-            );
-            // console.log('access_token ', this.state.access_token)
-            //   console.log('User Phone Number==' + formData.phone_number)
           })
           .catch((error) => {
             this.hideLoading();
-            console.error(error);
           })
           .done();
       }
     });
   }
+
   async componentDidMount() {
-    // if(this.props.navigation.isFocused()){
     this.showLoading();
-    console.log('component', this.props);
+
     AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
       if (NumberFormat) {
         let numID = JSON.parse(NumberFormat);
         this.setState({PhoneNumber: numID});
       }
     });
+
     AsyncStorage.getItem('@current_usermobile').then((mobile) => {
       if (mobile) {
         this.setState({currentUserMobile: JSON.parse(mobile)});
-        console.log('mobile number ', this.state.currentUserMobile);
       } else {
-        console.log('no contacts');
       }
     });
+
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({userAccessToken: accessToken});
-        console.log('Edit access token ====' + accessToken);
       }
     });
+
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log('Edit user id token=' + token);
       if (token) {
         this.setState({fcmToken: token});
       }
     });
+
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({userNo: userId});
         this.ContactListall();
-        console.log('Edit user id Dhasbord ====' + userId);
       }
     });
   }
-  _handleTextReady = () => {
-    console.log('ready!');
-  };
+  _handleTextReady = () => {};
 
   ListEmpty = () => {
     return (
@@ -179,15 +154,10 @@ class GeneralTab extends Component {
     this.showLoading();
     let id = this.state.userNo;
     let formData = new FormData();
-
     formData.append('user_id', id);
     formData.append('block_id', block_id);
     formData.append('type', 1);
-    console.log('form data==' + JSON.stringify(formData));
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var fav = `${BASE_URL}api-user/block-fav-user`;
-    console.log('Add product Url:' + fav);
     fetch(fav, {
       method: 'Post',
       headers: new Headers({
@@ -195,7 +165,6 @@ class GeneralTab extends Component {
         device_id: '1111',
         device_token: this.state.fcmtoken,
         device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -205,44 +174,26 @@ class GeneralTab extends Component {
         this.hideLoading();
         if (responseData.code == '200') {
           this.ContactListall();
-          //  this.props.navigation.navigate('StoryViewScreen')
-          // Toast.show(responseData.message);
-          //  this._b.FavouriteListCall
           this.setState({NoData: false}, () => {
             this.ContactListall();
-            //this.props.navigation.navigate('OpenForPublicScreen');
           });
-
-          // this.RecentShareCall();
         } else {
-          // alert(responseData.data);
-          // alert(responseData.data.password)
           this.setState({NoData: true});
         }
-
-        console.log('response object:', responseData);
-        console.log('User user ID==', JSON.stringify(responseData));
       })
       .catch((error) => {
         this.hideLoading();
-        console.error(error);
       })
       .done();
   }
 
   RecentShareCall(contacts) {
     let formData = new FormData();
-
     formData.append('user_id', this.state.userNo);
     formData.append('type', 0);
     formData.append('public', 1);
     formData.append('contact', contacts);
-    console.log('form data==' + JSON.stringify(formData));
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var RecentShare = `${BASE_URL}api-user/recent-share`;
-    console.log('Add product Url:' + RecentShare);
-    console.log('form data general tab', JSON.stringify(formData));
     fetch(RecentShare, {
       method: 'Post',
       headers: new Headers({
@@ -250,7 +201,6 @@ class GeneralTab extends Component {
         device_id: '1111',
         device_token: this.state.fcmtoken,
         device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -259,9 +209,6 @@ class GeneralTab extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          console.log('general Data', JSON.stringify(responseData));
-          //  this.props.navigation.navigate('StoryViewScreen')
-          //   Toast.show(responseData.message);
           if (responseData.data.length > 0) {
             if (responseData.data[0].avatar == null) {
               this.setState({avatar: ''});
@@ -269,32 +216,21 @@ class GeneralTab extends Component {
               this.setState({avatar: responseData.data[0].avatar});
             }
             this.setState({RescentProduct: responseData.data});
-            console.log('value', responseData.data[0].id);
             this.setState({block_id: responseData.data[0].id});
-            console.log('fevtert========', responseData.data[0].favourite);
             this.setState({favourite: responseData.data[0].favourite});
-            // this.SaveProductListData(responseData)
           } else {
             this.setState({NoData: true});
           }
         } else {
-          // alert(responseData.data);
-          // alert(responseData.data.password)
           this.setState({NoData: true});
         }
-
-        console.log('response object:', responseData);
-        console.log('User user ID==', JSON.stringify(responseData));
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
       .catch((error) => {
-        //  this.hideLoading();
         console.error(error);
       })
-
       .done();
   }
+
   onShare = async (links) => {
     try {
       const result = await Share.share({
@@ -323,11 +259,8 @@ class GeneralTab extends Component {
     formData.append('user_id', id);
     formData.append('block_id', block_id);
     formData.append('type', 0);
-    console.log('form data==' + JSON.stringify(formData));
 
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var fav = `${BASE_URL}api-user/block-fav-user`;
-    console.log('Add product Url:' + fav);
     fetch(fav, {
       method: 'Post',
       headers: new Headers({
@@ -335,7 +268,6 @@ class GeneralTab extends Component {
         device_id: '1111',
         device_token: this.state.fcmToken,
         device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -343,14 +275,11 @@ class GeneralTab extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          alert('User is blocked successfully');
           this.ContactListall();
           this.hideLoading();
         } else {
-          //  this.setState({NoData:true});
           this.hideLoading();
         }
-        console.log('User user ID==', JSON.stringify(responseData));
       })
       .catch((error) => {
         this.hideLoading();
@@ -359,7 +288,6 @@ class GeneralTab extends Component {
       .done();
   };
   link = async (id) => {
-
     const link = new firebase.links.DynamicLink(
       'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
         id,
@@ -391,8 +319,6 @@ class GeneralTab extends Component {
       .links()
       .createDynamicLink(link)
       .then((url) => {
-        console.log('the url', url);
-        //  this.sendMessage(url,userid);
         this.props.navigation.navigate('ForwardLinkScreen', {
           fcmToken: this.state.fcmToken,
           PhoneNumber: this.state.PhoneNumber,
@@ -403,8 +329,6 @@ class GeneralTab extends Component {
       });
   };
   navigateToSettings = () => {
-    // const navigateAction = NavigationActions.navigate({ routeName: 'OpenForPublicDetail' });
-    // this.props.navigation.dispatch(navigateAction);
     this.props.navigation.dispatch(
       CommonActions.navigate({
         name: 'OpenForPublicDetail',
@@ -412,16 +336,11 @@ class GeneralTab extends Component {
     );
   };
   SendReportIssue() {
-    console.log('working send report');
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
     formData.append('reason', 'Report post');
     formData.append('message', 'Something went wrong with this post');
-    console.log('form data==' + JSON.stringify(formData));
-    // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
-
     var otpUrl = `${BASE_URL}api-user/report-problem`;
-    console.log('url:' + otpUrl);
     fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -436,12 +355,7 @@ class GeneralTab extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          //   this.props.navigation.navigate('LoginScreen')
-          alert(responseData.data);
-          console.log(responseData);
         } else {
-          alert(responseData.message);
-          console.log(responseData);
         }
       })
       .catch((error) => {
@@ -457,23 +371,18 @@ class GeneralTab extends Component {
         <Spinner
           visible={this.state.spinner}
           color="#F01738"
-          // textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
-        {/* <FavouriteTab
-                  ref={(ref) => this.favouriteTab = ref}
-                  style={{ position: 'absolute', end: 10 }}
-                 
-                /> */}
         <ScrollView>
           <View style={styles.hairline} />
 
           <FlatList
             style={{flex: 1}}
             data={this.state.RescentProduct}
-            keyExtractor={(item) => item.personName}
-            renderItem={({item, index}) => {
-              // console.log('general data',item)
+            keyExtractor={(item) => {
+              return item.username;
+            }}
+            renderItem={({item}) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
@@ -481,7 +390,6 @@ class GeneralTab extends Component {
                       id: item.id,
                       name: item.name,
                     });
-                    // this.navigateToSettings()
                   }}>
                   <View style={styles.itemBox}>
                     <View style={styles.box}>
@@ -513,7 +421,6 @@ class GeneralTab extends Component {
                         <TouchableOpacity
                           style={styles.messageButtonContainer}
                           onPress={() => {
-                            console.log('id of user', item.id);
                             this.props.navigation.navigate('ChatDetailScreen', {
                               userid: item.id,
                               username: item.name,
@@ -526,7 +433,8 @@ class GeneralTab extends Component {
                           }}>
                           <Image
                             source={require('../images/message_icon.png')}
-                            style={styles.messageButtonStyle}></Image>
+                            style={styles.messageButtonStyle}
+                          />
                         </TouchableOpacity>
                         <TouchableOpacity
                           onPress={() => {
@@ -549,7 +457,8 @@ class GeneralTab extends Component {
                                 marginTop:
                                   item.favourite == 1 ? resp(4) : resp(0),
                               },
-                            ]}></Image>
+                            ]}
+                          />
                         </TouchableOpacity>
                         <TouchableOpacity
                           onPress={() => {
@@ -578,11 +487,9 @@ class GeneralTab extends Component {
                           }}
                           option2Click={() => {
                             this.link(item.id);
-                            // Toast.show('CLicked Share Link', Toast.LONG)
                           }}
                           option3Click={() => {
                             this.forwardlink(item.id);
-                            // Toast.show('CLicked Forward Link', Toast.LONG)
                           }}
                           option4Click={() => {
                             this.SendReportIssue();
@@ -601,7 +508,8 @@ class GeneralTab extends Component {
                                 ? {uri: item.products[0].image}
                                 : this.state.pickedImage
                             }
-                            style={styles.ImageContainer}></Image>
+                            style={styles.ImageContainer}
+                          />
                           <Text style={styles.itemNameStyle}>
                             {item.products[0].name}
                           </Text>
@@ -618,7 +526,8 @@ class GeneralTab extends Component {
                                   ? {uri: item.products[1].image}
                                   : this.state.pickedImage
                               }
-                              style={styles.ImageContainer}></Image>
+                              style={styles.ImageContainer}
+                            />
                             <Text style={styles.itemNameStyle}>
                               {item.products[1].name}
                             </Text>
@@ -774,7 +683,6 @@ const styles = StyleSheet.create({
   },
   messageButtonStyle: {
     marginTop: resp(5),
-    // color: '#F01738',
     width: resp(9),
     height: resp(9),
     alignSelf: 'center',
@@ -797,16 +705,17 @@ const styles = StyleSheet.create({
   itemNameStyle: {
     color: '#887F82',
     width: '100%',
-    marginLeft: resp(7),
     fontSize: resp(14),
     marginLeft: resp(10),
   },
+
   heartButtonStyle: {
     borderColor: '#F01738',
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   itemPriceStyle: {
     color: '#000',
     fontWeight: 'bold',

@@ -8,7 +8,6 @@ import {API_URL} from '../../Config';
 const fcmToken = AsyncStorage.getItem('@fcmtoken');
 
 export const ChatlistAction = (userId, userAccesstoken) => {
-  console.log(userId, userAccesstoken);
   return (dispatch) => {
     dispatch({type: CHAT_LIST_START});
     var urlprofile = `${API_URL}api-message/chat-list?user_id=${userId}`;

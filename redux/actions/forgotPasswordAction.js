@@ -36,7 +36,6 @@ export const forgotPasswordWithOtp = (email_mobile, isMobile, hashCode) => {
       return odoo
         .rpc_call(endpoint, params)
         .then((response) => {
-          console.log('>> forgotPasswordWithOtp response', response);
           if (response.success) {
             if (
               _.get(response, 'data.success') &&
@@ -100,7 +99,6 @@ export const submitNewPasswordAfterOtp = (
       return odoo
         .rpc_call(endpoint, params)
         .then((response) => {
-          console.log('>> FORGOT_PASSWORD_AFTER_OTP_START response', response);
           if (response.success) {
             dispatch({
               type: FORGOT_PASSWORD_AFTER_OTP_SUCCESS,

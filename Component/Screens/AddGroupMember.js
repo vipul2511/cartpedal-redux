@@ -1,3 +1,6 @@
+/* eslint-disable no-alert */
+/* eslint-disable react-native/no-inline-styles */
+
 import React from 'react';
 import {
   Dimensions,
@@ -68,37 +71,40 @@ export default class AddGroupMember extends React.Component {
   }
   componentDidMount() {
     this.showLoading();
+
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({fcmtoken: JSON.parse(token)});
         console.log('device fcm token ====' + this.state.fcmtoken);
       }
     });
+
     AsyncStorage.getItem('@groupData').then((groupData) => {
       if (groupData) {
         let groupItem = this.state.groupData;
         if (groupItem !== undefined && groupItem.length > 1) {
           groupItem.concat(JSON.parse(groupData));
           this.setState({groupData: groupItem});
-          console.log(' state groupData', this.state.groupData);
         } else {
           groupItem = JSON.parse(groupData);
           this.setState({groupData: groupItem});
-          console.log(' push groupData', this.state.groupData);
         }
       }
     });
+
     AsyncStorage.getItem('@product_id').then((id) => {
       if (id) {
         this.setState({product_id: id});
       }
     });
+
     AsyncStorage.getItem('@current_usermobile').then((mobile) => {
       if (mobile) {
         this.setState({currentUserMobile: JSON.parse(mobile)});
         console.log('mobile number ', this.state.currentUserMobile);
       }
     });
+
     AsyncStorage.getItem('@Phonecontacts').then((phone) => {
       if (phone) {
         let phoneID = JSON.parse(phone);
@@ -106,37 +112,32 @@ export default class AddGroupMember extends React.Component {
         console.log('phone', phoneID);
       }
     });
+
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({userId: userId});
-        console.log(' Edit user id ====' + this.state.userId);
         // this.ProductListCall()
       }
     });
+
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({userAccessToken: accessToken});
-        console.log('Edit access token ====' + this.state.userAccessToken);
         this.ContactListall();
         this.sendContactToServer();
       }
     });
+
     setTimeout(() => {
       this.hideLoading();
     }, 3000);
   }
   sendContactToServer = (contact) => {
-    //  let item="8290054410,+919772129947,9828544044,+919079947710"
     let formData = new FormData();
-
     formData.append('user_id', this.state.userId);
     formData.append('type', 1);
     formData.append('contacts', this.state.phoneNumber);
-    console.log('form data==' + JSON.stringify(formData));
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
-    console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: {
@@ -160,19 +161,10 @@ export default class AddGroupMember extends React.Component {
           Toast.show(responseData.message);
           let serverContacts = Object.values(responseData.data.contact);
           this.setState({ServercontactList: serverContacts});
-          console.log(serverContacts);
         } else {
-          console.log(responseData.data);
         }
-        console.log(
-          'contact list server object:',
-          JSON.stringify(responseData),
-        );
       })
-      .catch((error) => {
-        //  this.hideLoading();
-        console.error(error);
-      })
+      .catch((error) => {})
       .done();
   };
   ContactListall() {
@@ -181,11 +173,7 @@ export default class AddGroupMember extends React.Component {
     formData.append('user_id', this.state.userId);
     formData.append('type', 0);
     formData.append('contacts', this.state.currentUserMobile);
-    console.log('form data==' + JSON.stringify(formData));
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
-    console.log('Add product Url:' + EditProfileUrl);
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: {
@@ -204,9 +192,7 @@ export default class AddGroupMember extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
-          //  Toast.show(responseData.message);
           this.setState({contactList: responseData.data.appcontact});
           this.setState({masterlist: responseData.data.appcontact});
           let cartPadleContact = [];
@@ -215,29 +201,16 @@ export default class AddGroupMember extends React.Component {
             cartPadleContact.push(item.mobile);
             nameofCartPadle.push(item.name);
           });
-          console.log('cart padle', cartPadleContact);
           this.setState({appContacts: cartPadleContact});
           this.setState({nameAppcontacts: nameofCartPadle});
         } else {
-          console.log(responseData.data);
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log(
-          'contact list response object:',
-          JSON.stringify(responseData),
-        );
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch((error) => {
-        //  this.hideLoading();
-        console.error(error);
-      })
+      .catch((error) => {})
       .done();
   }
+
   boxname = (items, newItem) => {
-    console.log(typeof newItem);
     if (typeof items.name == 'string') {
       console.log('working', newItem);
       let nameArr = this.state.numberArr;
@@ -268,7 +241,6 @@ export default class AddGroupMember extends React.Component {
       let nameSingle = this.state.numberArr.join(',');
       this.setState({nameBox: nameSingle});
     } else {
-      console.log('else executing');
       let nameArr = this.state.numberArr;
       let nameArray = this.state.nameArrState;
       if (this.state.numberArr.includes(newItem)) {
@@ -287,14 +259,13 @@ export default class AddGroupMember extends React.Component {
         nameArray.push(items);
         this.setState({nameArrState: nameArray});
       }
-      // console.log('name arr else',nameArr);
       let nameDisplay = this.state.nameArrState.join(',');
       let nameSingle = this.state.numberArr.join(',');
       this.setState({nameBox: nameSingle});
       this.setState({nameDisplayBox: nameDisplay});
-      // console.log('number box',this.state.nameBox)
     }
   };
+
   selection = (items) => {
     console.log('selection value ', items);
     if (this.state.data.length > 0) {
@@ -311,23 +282,19 @@ export default class AddGroupMember extends React.Component {
       this.setState({boxname: false});
     }
   };
+
   selectItem = (value) => {
-    console.log('value item from contact', value);
     let list = this.state.data;
-    // this.setState({boxname:true});
     if (value.mobile) {
       if (list != null) {
         if (this.state.data.includes(value.mobile)) {
-          console.log('data mobile incude', value.mobile);
           this.setState(
             {data: list.filter((item) => item !== value.mobile)},
             () => {
               this.selection(value);
-              // this.tickIcon(value);
             },
           );
         } else {
-          console.log('data mobile part', value.mobile);
           list.push(value.mobile);
           this.setState({data: list}, () => {
             this.selection(value);
@@ -335,31 +302,27 @@ export default class AddGroupMember extends React.Component {
           });
         }
       } else {
-        console.log('else');
       }
     } else {
       if (this.state.data.includes(value)) {
         console.log('data value', value);
         this.setState({data: list.filter((item) => item !== value)}, () => {
           this.selection(value);
-          // this.tickIcon(value);
         });
       } else {
         console.log('data part', value);
         list.push(value);
         this.setState({data: list}, () => {
           this.selection(value);
-          // this.tickIcon(value);
         });
       }
     }
   };
+
   tickIcon = (items) => {
     let arra = this.state.data;
-    // console.log('arra',arra);
-    // console.log('items',items);
     let found = arra.some((item) => item === items);
-    // console.log('found',found);
+
     if (found) {
       return (
         <View>
@@ -374,13 +337,14 @@ export default class AddGroupMember extends React.Component {
       );
     }
   };
+
   listItem = () => {
     let commentArr = [];
     commentArr.push(displayText);
     setNewArray(commentArr);
   };
+
   rendorContactItem(item, index, separators) {
-    // console.log('conatct',item);
     return (
       <View style={{marginBottom: 10}}>
         <View style={[styles.upperRowStyle]}>
@@ -400,7 +364,6 @@ export default class AddGroupMember extends React.Component {
     );
   }
   rendorContactList(item, index, separators) {
-    // console.log('conatcts',JSON.stringify(item));
     return (
       <View style={{marginBottom: 10}}>
         <View style={[styles.upperRowStyle]}>
@@ -431,45 +394,27 @@ export default class AddGroupMember extends React.Component {
               {this.tickIcon(item)}
             </TouchableOpacity>
           )}
-          {/* <TouchableOpacity
-                onPress={()=>{this.selection(item)}}        
-            >
-                {(item.id!==this.state.clickeduser_id)?
-                <Image source={untickIcon} style={styles.tickIcon} />
-                :<Image source={tickIcon} style={styles.tickIcon} />}
-            </TouchableOpacity> */}
         </View>
       </View>
     );
   }
 
   searchFilterFunction = (text) => {
-    // Check if searched text is not blank
-    console.log('name', text);
     if (text) {
-      // Inserted text is not blank
-      // Filter the masterDataSource
-      // Update FilteredDataSource
       const newData = this.state.contactList.filter(function (item) {
         const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
       this.setState({contactList: newData});
-      //   setFilteredDataSource(newData);
-      //   setSearch(text);
     } else {
-      // Inserted text is blank
-      // Update FilteredDataSource with masterDataSource
-      //   setFilteredDataSource(masterDataSource);
-      //   setSearch(text);
       this.setState({contactList: this.state.masterlist});
     }
   };
+
   CheckTextInput = () => {
     if (this.state.Name !== '') {
       let itemGroup = this.state.groupData;
-      console.log('item group', itemGroup);
       let obj = {
         name: this.state.Name,
         mobile: this.state.nameBox,
@@ -482,28 +427,26 @@ export default class AddGroupMember extends React.Component {
         },
       );
     } else {
-      // this.setState({isEditModalVisible:false});
       alert('Please Enter Group Name');
     }
   };
+
   closeModalbox = () => {
     this.setState({isEditModalVisible: false});
   };
+
   FlatListItemSeparator = () => {
-    return (
-      //Item Separator
-      <View style={styles.listItemSeparatorStyle} />
-    );
+    return <View style={styles.listItemSeparatorStyle} />;
   };
+
   submitGrp = () => {
-    console.log('number array', this.state.numberArr);
-    console.log('length', this.state.numberArr.length);
     if (this.state.numberArr.length > 1) {
       this.setState({isEditModalVisible: true});
     } else {
       alert('Please select atleast 2 contacts to create a group');
     }
   };
+
   render() {
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -608,7 +551,7 @@ export default class AddGroupMember extends React.Component {
               </TouchableOpacity>
 
               <View style={styles.inputView}>
-                <View style={{flexDirection: 'row', marginLeft: 15}}></View>
+                <View style={{flexDirection: 'row', marginLeft: 15}} />
 
                 <TextInput
                   placeholder="Enter Group Name"

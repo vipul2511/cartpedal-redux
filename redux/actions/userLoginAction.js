@@ -68,7 +68,6 @@ export const signin = (phone, password) => {
         }
       })
       .catch((error) => {
-        console.log('error : ', error);
         dispatch({
           type: USER_SIGNIN_ERROR,
           payload: error,
@@ -98,7 +97,7 @@ export const forgotPass = (phone) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: FORGOT_PASSWORD_SUCCESS,
             payload: responseData,

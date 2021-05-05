@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-alert */
+import React, {Component} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,215 +10,193 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
-} from 'react-native'
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import resp from 'rn-responsive-font'
-console.disableYellowBox = true
+import resp from 'rn-responsive-font';
+console.disableYellowBox = true;
 import {BASE_URL} from '../Component/ApiClient';
 class ChangePassword extends Component {
   constructor(props) {
-    super(props)
-    // this.forgetCall = this.forgetCall.bind(this)
+    super(props);
     this.state = {
-        New_password: '',
-      Confirm_password:'',
-      userAccessToken:'',
-      fcmToken:'',
-      userId:'',
+      New_password: '',
+      Confirm_password: '',
+      userAccessToken: '',
+      fcmToken: '',
+      userId: '',
       baseUrl: `${BASE_URL}`,
-    }
+    };
   }
-  showLoading() {
-    this.setState({ loading: true });
-  }
-componentDidMount(){
-  AsyncStorage.getItem('@fcmtoken').then((token) => {
-    console.log("Edit user id token=" +token);
-    if (token) {
-      this.setState({ fcmToken:JSON.parse(token) });
-    }
-  });
-  AsyncStorage.getItem('@user_id').then(userId => {
-    if (userId) {
-      this.setState({userId: userId})
-      console.log('Edit user id Dhasbord ====' + this.state.userId)
-     
-    }
-  });
-  AsyncStorage.getItem('@access_token').then((accessToken) => {
-    if (accessToken) {
-      this.setState({ userAccessToken: accessToken });
-      console.log("Edit access token ====" + accessToken);
-    }
-  })
-   
-}
-  hideLoading() {
-    this.setState({ loading: false });
-  }
-  checkPassword=()=>{
-      if(this.state.New_password===this.state.Confirm_password){
-          alert('Both password are correct');
-      }else{
-          alert('Confirm Password is worng');
-      }
-  }
-  CheckTextInput = () => {
-     if (this.state.New_password === '') {
-      alert('Please Enter New Password')
-    }
-    else if (this.state.Confirm_password==='') {
-        alert('Please Enter Confirm Password')
-      }
-      else if (!this.state.Confirm_password.length>6) {
-        alert('Enter atleast 6 digit Password')
-        console.log('old pass',this.state.New_password);
-        console.log('confirm passwprd',this.state.Confirm_password)
-        console.log('old length',this.state.Confirm_password.length)
-      }
-     else {
-        // this.checkPassword()
-        this.ChangePassword()
-    //   this.forgetCall();
-    //   this.showLoading();
 
-    }
+  showLoading() {
+    this.setState({loading: true});
   }
+
+  componentDidMount() {
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
+      if (token) {
+        this.setState({fcmToken: JSON.parse(token)});
+      }
+    });
+    AsyncStorage.getItem('@user_id').then((userId) => {
+      if (userId) {
+        this.setState({userId: userId});
+      }
+    });
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      if (accessToken) {
+        this.setState({userAccessToken: accessToken});
+      }
+    });
+  }
+
+  hideLoading() {
+    this.setState({loading: false});
+  }
+
+  checkPassword = () => {
+    if (this.state.New_password === this.state.Confirm_password) {
+      alert('Both password are correct');
+    } else {
+      alert('Confirm Password is worng');
+    }
+  };
+  CheckTextInput = () => {
+    if (this.state.New_password === '') {
+      alert('Please Enter New Password');
+    } else if (this.state.Confirm_password === '') {
+      alert('Please Enter Confirm Password');
+    } else if (!this.state.Confirm_password.length > 6) {
+      alert('Enter atleast 6 digit Password');
+    } else {
+      this.ChangePassword();
+    }
+  };
   ChangePassword() {
-    let formData = new FormData()
-    formData.append('user_id', this.state.userId)
-    formData.append('oldpass',this.state.New_password)
-    formData.append('pass',this.state.Confirm_password)
-    formData.append('cpass',this.state.Confirm_password)
-    console.log('form data==' + JSON.stringify(formData))
-   // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
-    
-    var otpUrl = this.state.baseUrl + 'api-user/change-password'
-    console.log('url:' + otpUrl)
+    let formData = new FormData();
+    formData.append('user_id', this.state.userId);
+    formData.append('oldpass', this.state.New_password);
+    formData.append('pass', this.state.Confirm_password);
+    formData.append('cpass', this.state.Confirm_password);
+    var otpUrl = this.state.baseUrl + 'api-user/change-password';
     fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
-        device_token:'1111',
+        device_token: '1111',
         device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
-        this.hideLoading(); 
-
-        if (responseData.code == '200') {
-          this.props.navigation.navigate('LoginScreen')
-             console.log(JSON.stringify(responseData));
-        } 
-        else {
-            alert(responseData.message);
-          console.log(responseData)
-        }
-        
-       
-      })
-      .catch(error => {
+      .then((response) => response.json())
+      .then((responseData) => {
         this.hideLoading();
-        console.error(error)
+        if (responseData.code == '200') {
+          this.props.navigation.navigate('LoginScreen');
+        } else {
+          alert(responseData.message);
+        }
       })
-
-      .done()
+      .catch((error) => {
+        this.hideLoading();
+      })
+      .done();
   }
 
   render() {
     return (
-<ScrollView style={{flex:1,backgroundColor:'#fff'}}>
-      <View style={styles.container}>
-        <View style={styles.headerContainer}>
-
-          <View style={{ flex: .34, backgroundColor: '#F01738', flexDirection: 'row' }}>
-
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}>
-              <Image
-                source={require('../images/back_white.png')}
-                style={styles.MenuHomeIconStyle}
-              />
-            </TouchableOpacity>
-
-          </View>
-
-          <View style={{ flex: .33, backgroundColor: '#F01738' }}>
-
-          </View>
-
-          <View style={{ flex: .33, backgroundColor: '#F01738' }}>
-
-
-          </View>
-
-
-        </View>
-
-
-        <View style={styles.logoContainer}>
-          <Image
-          source={require('../images/logo_cart_paddle.png')}
-           // source={require('../images/Logo_icon2.png')}
-            style={styles.ImageView}
-          />
-          <Text style={styles.CartTextStyle}>Cartpedal</Text>
-        </View>
-       
-        <View style={styles.container3}>
-        <ScrollView>
-          <View style={styles.PhoneBox}>
-          <View >
-            <Text style={{textAlign:'center',fontSize:20,fontWeight:'bold'}}>Change Password</Text>
-            </View>
-            <Text style={styles.UserName}>Old Password</Text>
-            <View style={styles.inputView}>
-              <View style={{ flexDirection: 'row', marginLeft: 15 }}></View>
-
-              <TextInput
-                placeholder=''
-                placeholderTextColor='#000'
-                underlineColorAndroid='transparent'
-                style={styles.input}
-                onChangeText={New_password => this.setState({ New_password })}
-              />
-            </View>
-            <Text style={styles.UserName1}>New Password</Text>
-            <View style={styles.inputView}>
-              <View style={{ flexDirection: 'row', marginLeft: 15 }}></View>
-
-              <TextInput
-                placeholder=''
-                placeholderTextColor='#000'
-                underlineColorAndroid='transparent'
-                style={styles.input}
-                onChangeText={Confirm_password => this.setState({ Confirm_password })}
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.loginButtonStyle}
-              activeOpacity={0.2}
-              onPress={() => {
-                this.CheckTextInput()
+      <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
+        <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <View
+              style={{
+                flex: 0.34,
+                backgroundColor: '#F01738',
+                flexDirection: 'row',
               }}>
-              <Text style={styles.buttonWhiteTextStyle}>Submit</Text>
-            </TouchableOpacity>
-            {this.state.loading && (
-              <View style={styles.loading}>
-                <ActivityIndicator size="large" color="#F01738" />
-              </View>
-            )}
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../images/back_white.png')}
+                  style={styles.MenuHomeIconStyle}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{flex: 0.33, backgroundColor: '#F01738'}} />
+
+            <View style={{flex: 0.33, backgroundColor: '#F01738'}} />
           </View>
-          </ScrollView>
+
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../images/logo_cart_paddle.png')}
+              style={styles.ImageView}
+            />
+            <Text style={styles.CartTextStyle}>Cartpedal</Text>
+          </View>
+
+          <View style={styles.container3}>
+            <ScrollView>
+              <View style={styles.PhoneBox}>
+                <View>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                    }}>
+                    Change Password
+                  </Text>
+                </View>
+                <Text style={styles.UserName}>Old Password</Text>
+                <View style={styles.inputView}>
+                  <View style={{flexDirection: 'row', marginLeft: 15}} />
+
+                  <TextInput
+                    placeholder=""
+                    placeholderTextColor="#000"
+                    underlineColorAndroid="transparent"
+                    style={styles.input}
+                    onChangeText={(New_password) =>
+                      this.setState({New_password})
+                    }
+                  />
+                </View>
+                <Text style={styles.UserName1}>New Password</Text>
+                <View style={styles.inputView}>
+                  <View style={{flexDirection: 'row', marginLeft: 15}} />
+
+                  <TextInput
+                    placeholder=""
+                    placeholderTextColor="#000"
+                    underlineColorAndroid="transparent"
+                    style={styles.input}
+                    onChangeText={(Confirm_password) =>
+                      this.setState({Confirm_password})
+                    }
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.loginButtonStyle}
+                  activeOpacity={0.2}
+                  onPress={() => {
+                    this.CheckTextInput();
+                  }}>
+                  <Text style={styles.buttonWhiteTextStyle}>Submit</Text>
+                </TouchableOpacity>
+                {this.state.loading && (
+                  <View style={styles.loading}>
+                    <ActivityIndicator size="large" color="#F01738" />
+                  </View>
+                )}
+              </View>
+            </ScrollView>
+          </View>
         </View>
-        
-      </View>
-</ScrollView>
-    )
+      </ScrollView>
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -227,7 +207,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#F01738',
   },
-
 
   CartTextStyle: {
     width: resp(204),
@@ -251,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container3: {
-    flex: .6,
+    flex: 0.6,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
@@ -262,13 +241,13 @@ const styles = StyleSheet.create({
     margin: resp(40),
   },
   logoContainer: {
-    flex: .2,
+    flex: 0.2,
     marginBottom: resp(60),
   },
 
   headerContainer: {
     flexDirection: 'row',
-    flex: .2,
+    flex: 0.2,
     backgroundColor: 'white',
   },
   MenuHomeIconStyle: {
@@ -300,7 +279,7 @@ const styles = StyleSheet.create({
     fontSize: resp(14),
     textAlign: 'left',
     opacity: 0.5,
-    marginTop:resp(25)
+    marginTop: resp(25),
   },
   UserName1: {
     color: 'black',
@@ -308,7 +287,7 @@ const styles = StyleSheet.create({
     fontSize: resp(14),
     textAlign: 'left',
     opacity: 0.5,
-    marginTop:resp(10)
+    marginTop: resp(10),
   },
 
   input: {
@@ -319,12 +298,12 @@ const styles = StyleSheet.create({
   },
 
   inputView: {
-    width: '90%',
     marginBottom: 15,
     width: resp(350),
     borderColor: '#F01738',
     borderBottomWidth: 1,
   },
+
   loginButtonStyle: {
     marginTop: 10,
     width: resp(350),
@@ -336,6 +315,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-})
+});
 
-export default ChangePassword
+export default ChangePassword;

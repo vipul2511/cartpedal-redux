@@ -12,7 +12,6 @@ messaging
       messaging
         .getToken()
         .then((token) => {
-          console.log(token, 'TOKEN');
           AsyncStorage.setItem('@fcmtoken', JSON.stringify(token));
         })
         .catch((error) => {
@@ -29,14 +28,9 @@ messaging
   })
   .catch((error) => {});
 
-firebase.notifications().onNotification((notification) => {
-  console.log('uper notification', notification);
-});
+firebase.notifications().onNotification((notification) => {});
 
-firebase.messaging().onMessage(async (m) => {
-  // alert('hello');
-  alert('hello');
-});
+firebase.messaging().onMessage(async (m) => {});
 
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
@@ -44,11 +38,15 @@ import {MainStack} from './Routes';
 import initStore from './redux/store';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
+import {LogBox} from 'react-native';
 
 const {store, persistor} = initStore();
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+  }
+  componentDidMount() {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }
   render() {
     return (

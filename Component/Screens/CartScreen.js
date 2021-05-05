@@ -1,18 +1,10 @@
-import React, {Component} from 'react'
-import {
-  Container,
-  TabHeading,
-  Tab,
-  Tabs,
-  Content,
-  Icon,
-  Button,
-} from 'native-base'
-import CartPlaceScreen from './CartPlaceScreen'
-import OderPlacedScreen from './OderPlacedScreen'
-import OderReceivedScreen from './OderReceivedScreen'
-import AsyncStorage from '@react-native-community/async-storage'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+import {Container, TabHeading, Tab, Tabs} from 'native-base';
+import CartPlaceScreen from './CartPlaceScreen';
+import OderPlacedScreen from './OderPlacedScreen';
+import OderReceivedScreen from './OderReceivedScreen';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -21,36 +13,31 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
-} from 'react-native'
-import resp from 'rn-responsive-font'
-import {Header} from 'react-native/Libraries/NewAppScreen'
+} from 'react-native';
+import resp from 'rn-responsive-font';
 
 class CartScreen extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {}
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
-  // componentDidMount=()=>{
-    
-  //   if(this.props.route.params){
-  //     if(this.props.route.params.cartValue){
-  //       this.onChangeRefreshTab(Number(this.props.route.params.cartValue))
-  //     }
-  //   }
-  // }
-  onChangeRefreshTab=(value)=>{
-    console.log('value of i',value);
-    if(value==1){
-      this.orderPlace.CartListCall() 
+
+  onChangeRefreshTab = (value) => {
+    if (value == 1) {
+      this.orderPlace.CartListCall();
     }
-    if(value==0) this.cartOrder.CartListCall()
-    if(value==2)this.orderReceived.CartListCall();
-   }
-  render () {
+    if (value == 0) {
+      this.cartOrder.CartListCall();
+    }
+    if (value == 2) {
+      this.orderReceived.CartListCall();
+    }
+  };
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}></View>
+          <View style={styles.BackButtonContainer} />
           <View style={styles.TitleContainer}>
             <Image
               source={require('../images/logo_cart_paddle.png')}
@@ -64,54 +51,69 @@ class CartScreen extends Component {
           <TouchableOpacity
             style={styles.SearchContainer}
             onPress={() => {
-              this.props.navigation.navigate('FliterScreen')
+              this.props.navigation.navigate('FliterScreen');
             }}>
             <Text style={styles.FLiterStyle}>Filter</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.MainContentBox}>
-          <Container >
-        
-            <Tabs 
+          <Container>
+            <Tabs
               tabBarUnderlineStyle={{backgroundColor: '#F01738'}}
               tabBarActiveTextColor={'red'}
-              onChangeTab={(i)=>{this.onChangeRefreshTab(i.i)}}
-              tabBarInactiveTextColor='#7F7F7F'>
+              onChangeTab={(i) => {
+                this.onChangeRefreshTab(i.i);
+              }}
+              tabBarInactiveTextColor="#7F7F7F">
               <Tab
                 heading={
                   <TabHeading style={{backgroundColor: '#fff'}}>
-                    <Text style={{fontWeight: 'bold',fontSize:resp(14)}}>Cart </Text>
+                    <Text style={{fontWeight: 'bold', fontSize: resp(14)}}>
+                      Cart{' '}
+                    </Text>
                   </TabHeading>
                 }>
-                <CartPlaceScreen ref={(ref) => this.cartOrder = ref} navigation={this.props.navigation} />
+                <CartPlaceScreen
+                  ref={(ref) => (this.cartOrder = ref)}
+                  navigation={this.props.navigation}
+                />
               </Tab>
               <Tab
                 heading={
                   <TabHeading style={{backgroundColor: '#fff'}}>
-                    <Text style={{fontWeight: 'bold',fontSize:resp(14)}}>Order Placed</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: resp(14)}}>
+                      Order Placed
+                    </Text>
                   </TabHeading>
                 }>
-                <OderPlacedScreen ref={(ref) => this.orderPlace = ref} navigation={this.props.navigation} />
+                <OderPlacedScreen
+                  ref={(ref) => (this.orderPlace = ref)}
+                  navigation={this.props.navigation}
+                />
               </Tab>
               <Tab
                 heading={
                   <TabHeading style={{backgroundColor: '#fff'}}>
-                    <Text style={{fontWeight: 'bold',fontSize:resp(14)}}>Order Received</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: resp(14)}}>
+                      Order Received
+                    </Text>
                   </TabHeading>
                 }>
-                <OderReceivedScreen ref={(ref) => this.orderReceived = ref} navigation={this.props.navigation} />
+                <OderReceivedScreen
+                  ref={(ref) => (this.orderReceived = ref)}
+                  navigation={this.props.navigation}
+                />
               </Tab>
             </Tabs>
           </Container>
-        
         </View>
         <View style={styles.TabBox}>
           <View style={styles.tabStyle}>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('DashBoardScreen')
+                this.props.navigation.navigate('DashBoardScreen');
               }}>
               <Image
                 source={require('../images/home_inactive_icon.png')}
@@ -123,7 +125,7 @@ class CartScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('OpenForPublicScreen')
+                this.props.navigation.navigate('OpenForPublicScreen');
               }}>
               <Image
                 source={require('../images/group_inactive_icon.png')}
@@ -137,7 +139,7 @@ class CartScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('CartScreen')
+                this.props.navigation.navigate('CartScreen');
               }}>
               <Image
                 source={require('../images/cart_bag_active_icon.png')}
@@ -146,21 +148,21 @@ class CartScreen extends Component {
               <Text style={styles.bottomActiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('ChatScreen')
+                this.props.navigation.navigate('ChatScreen');
               }}>
               <Image
                 source={require('../images/chat_inactive_icon.png')}
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('SettingScreen')
+                this.props.navigation.navigate('SettingScreen');
               }}>
               <Image
                 source={require('../images/setting_inactive_icon.png')}
@@ -171,7 +173,7 @@ class CartScreen extends Component {
           </View>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -313,5 +315,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
   },
-})
-export default CartScreen
+});
+
+export default CartScreen;

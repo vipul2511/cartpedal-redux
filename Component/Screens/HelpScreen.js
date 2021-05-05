@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -8,23 +9,22 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
-  ScrollView
-} from 'react-native'
-import resp from 'rn-responsive-font'
+  ScrollView,
+} from 'react-native';
+import resp from 'rn-responsive-font';
 
 class HelpScreen extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {}
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
-  render () {
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
-            <TouchableOpacity
-            onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../images/back_blck_icon.png')}
                 style={styles.backButtonStyle}
@@ -32,114 +32,130 @@ class HelpScreen extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.TitleContainer}>
-          
             <TouchableOpacity
               style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text style={styles.TitleStyle}>Help </Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}>
-         
-          </View>
+          <View style={styles.SearchContainer} />
         </View>
-       
+
         <View style={styles.MainContentBox}>
           <ScrollView>
-       
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('FaqWebPanel')}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('FaqWebPanel');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('FaqWebPanel')}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('FaqWebPanel');
+                  }}>
                   <Image
                     source={require('../images/faq.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>FAQ</Text>
-                <Text style={styles.ProfileDescription}>
-             
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('Contactus')}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('Contactus');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Contactus')}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('Contactus');
+                  }}>
                   <Image
                     source={require('../images/contact_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Contact us</Text>
                 <Text style={styles.ProfileDescription}>
-                Questions? Need help?
+                  Questions? Need help?
                 </Text>
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('MyWebComponent',{screenSide:'abc'})}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('MyWebComponent', {
+                  screenSide: 'abc',
+                });
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('MyWebComponent',{screenSide:'abc'})}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('MyWebComponent', {
+                      screenSide: 'abc',
+                    });
+                  }}>
                   <Image
                     source={require('../images/terms.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Privacy policy</Text>
-                <Text style={styles.ProfileDescription}>
-             
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('MyWebComponent',{screenSide:'Signup'})}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('MyWebComponent', {
+                  screenSide: 'Signup',
+                });
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('MyWebComponent',{screenSide:'Signup'})}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('MyWebComponent', {
+                      screenSide: 'Signup',
+                    });
+                  }}>
                   <Image
                     source={require('../images/terms.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Terms and Conditions</Text>
-                <Text style={styles.ProfileDescription}>
-             
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('AppInfo')}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('AppInfo');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('AppInfo')}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('AppInfo');
+                  }}>
                   <Image
                     source={require('../images/app_info.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>App info</Text>
-                <Text style={styles.ProfileDescription}>
-             
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -148,7 +164,7 @@ class HelpScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('DashBoardScreen')
+                this.props.navigation.navigate('DashBoardScreen');
               }}>
               <Image
                 source={require('../images/home_inactive_icon.png')}
@@ -160,7 +176,7 @@ class HelpScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('OpenForPublicScreen')
+                this.props.navigation.navigate('OpenForPublicScreen');
               }}>
               <Image
                 source={require('../images/group_inactive_icon.png')}
@@ -174,7 +190,7 @@ class HelpScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('CartScreen')
+                this.props.navigation.navigate('CartScreen');
               }}>
               <Image
                 source={require('../images/cart_bag_inactive_icon.png')}
@@ -183,21 +199,21 @@ class HelpScreen extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('ChatScreen')
+                this.props.navigation.navigate('ChatScreen');
               }}>
               <Image
                 source={require('../images/chat_inactive_icon.png')}
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('SettingScreen')
+                this.props.navigation.navigate('SettingScreen');
               }}>
               <Image
                 source={require('../images/setting_active_icon.png')}
@@ -208,7 +224,7 @@ class HelpScreen extends Component {
           </View>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -218,11 +234,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#F6F9FE',
   },
- 
+
   MainContentBox: {
     flex: 1,
   },
- 
 
   TabBox: {
     flex: 0.1,
@@ -256,7 +271,7 @@ const styles = StyleSheet.create({
     height: resp(42),
     borderRadius: resp(10),
     borderWidth: 2,
-    borderColor:'#F01738'
+    borderColor: '#F01738',
   },
   TitleContainer: {
     flexDirection: 'row',
@@ -294,7 +309,7 @@ const styles = StyleSheet.create({
     height: resp(70),
   },
   Profile2Container: {
-    height:resp(70),
+    height: resp(70),
     color: '#fff',
     flexDirection: 'row',
   },
@@ -351,7 +366,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
- 
+
   styleChartTab: {
     marginTop: 9,
     width: 30,
@@ -381,7 +396,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#ecf6fb',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
@@ -396,5 +410,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
   },
-})
+});
 export default HelpScreen;

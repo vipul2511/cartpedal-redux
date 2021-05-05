@@ -1,5 +1,7 @@
-import React, {Component} from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-alert */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -10,87 +12,80 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
-  Alert
-} from 'react-native'
-import resp from 'rn-responsive-font'
-// import { withNavigation } from 'react-navigation';
-import Spinner from 'react-native-loading-spinner-overlay'
-import AsyncStorage from '@react-native-community/async-storage'
+} from 'react-native';
+import resp from 'rn-responsive-font';
+import Spinner from 'react-native-loading-spinner-overlay';
+import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL} from '../Component/ApiClient';
 class SettingScreen extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
-      avatar:null,
-      fcmtoken:'',
-      userId:'',
-      spinner: '',
-      userAccessToken:'',
-      name:'',
+      avatar: null,
+      fcmtoken: '',
+      userId: '',
+      spinner: false,
+      userAccessToken: '',
+      name: '',
       pickedImage: require('../images/default_user.png'),
-      about:''
-    }
+      about: '',
+    };
   }
-  componentDidMount () {
-    this.focusListener = this.props.navigation.addListener("focus", () => {
-    this.showLoading();
-    AsyncStorage.getItem('@fcmtoken').then(token => {
-      if (token) {
-        this.setState({fcmtoken: JSON.parse(token)})
-        console.log('device fcm token ====' + this.state.fcmtoken);
-      }
+
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.showLoading();
+      AsyncStorage.getItem('@fcmtoken').then((token) => {
+        if (token) {
+          this.setState({fcmtoken: JSON.parse(token)});
+        }
+      });
+      AsyncStorage.getItem('@user_id').then((userId) => {
+        if (userId) {
+          this.setState({userId: userId});
+        }
+      });
+      AsyncStorage.getItem('@access_token').then((accessToken) => {
+        if (accessToken) {
+          this.setState({userAccessToken: accessToken});
+          this.ProfileViewCall();
+        }
+      });
     });
-    AsyncStorage.getItem('@user_id').then(userId => {
-      if (userId) {
-        this.setState({userId: userId})
-        console.log('Edit user id Dhasbord ====' + this.state.userId)
-       
-      }
-    });
-    AsyncStorage.getItem('@access_token').then((accessToken) => {
-      if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + accessToken);
-        this.ProfileViewCall();
-      }
-    })
-       });
   }
-  showLoading () {
-    this.setState({spinner: true})
+
+  showLoading() {
+    this.setState({spinner: true});
   }
+
   onShare = async () => {
     try {
       const result = await Share.share({
         message:
           'Lets download cart pedal.Its Best app for show case your product for Buy,Sell,Chat for make your Business Easy. Get it at https://cartpedal.com/ ',
-          url:'https://cartpedal.com/'
+        url: 'https://cartpedal.com/',
       });
 
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // shared with activity type of result.activityType
         } else {
-          // shared
         }
       } else if (result.action === Share.dismissedAction) {
-        // dismissed
       }
     } catch (error) {
       alert(error.message);
     }
   };
-  
 
-  hideLoading () {
-    this.setState({spinner: false})
+  hideLoading() {
+    this.setState({spinner: false});
   }
-  ProfileViewCall () {
-    let formData = new FormData()
+
+  ProfileViewCall() {
+    let formData = new FormData();
     var urlprofile =
-      `${BASE_URL}api-user/view-profile?user_id=` +this.state.userId
-      this.state.userId
-    console.log('profileurl :' + urlprofile)
+      `${BASE_URL}api-user/view-profile?user_id=` + this.state.userId;
+    this.state.userId;
     fetch(urlprofile, {
       method: 'GET',
       headers: {
@@ -101,301 +96,278 @@ class SettingScreen extends Component {
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
-      .then(response => response.json())
-      .then(responseData => {
+      .then((response) => response.json())
+      .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          //  this.hideLoading();
-         // this.LoginOrNot();
-         console.log(responseData)
-          //this.props.navigation.navigate('DashBoardScreen')
-          // this.props.navigation.navigate('EditProductScreen')
-          this.setState({userProfileData: responseData.data})
-          this.setState({TotalprofileView: responseData.data.profileviews})
+          this.setState({userProfileData: responseData.data});
+          this.setState({TotalprofileView: responseData.data.profileviews});
           if (responseData.data.avatar == null) {
-            this.setState({avatar: null})
+            this.setState({avatar: null});
           } else {
-            this.setState({avatar: responseData.data.avatar})
+            this.setState({avatar: responseData.data.avatar});
           }
           if (responseData.data.name !== null) {
-            this.setState({name:responseData.data.name})
+            this.setState({name: responseData.data.name});
           }
           if (responseData.data.about !== null) {
-            this.setState({about: responseData.data.about})
+            this.setState({about: responseData.data.about});
           }
-       //   Toast.show(responseData.message)
-          // this.setState({productList:responseData.data})
-          //  this.SaveLoginUserData(responseData);
-
-          console.log('response profile object:', responseData)
         } else {
-          // alert(responseData.data);
-          // this.hideLoading();
-          console.log("profile");
-          console.log("profile Data"+responseData.data)
-  
         }
-
-        // console.log('User user ID==' + responseData.data.userid)
-        // console.log('access_token ',responseData.data.access_token)
       })
-      .catch(error => {
-      //  this.hideLoading();
-        console.error(error)
+      .catch((error) => {
+        console.error(error);
       })
-
-      .done()
+      .done();
   }
-  openProfile=()=>{
-    if(this.state.avatar!==null){
-    this.props.navigation.navigate('SettingFullView',{imageURL:this.state.avatar,name:this.state.name,about:this.state.about})
-    }else{
-      this.props.navigation.navigate('SettingFullView',{imageURL:'',imageURL:this.state.avatar,name:this.state.name,about:this.state.about})
+
+  openProfile = () => {
+    if (this.state.avatar !== null) {
+      this.props.navigation.navigate('SettingFullView', {
+        imageURL: this.state.avatar,
+        name: this.state.name,
+        about: this.state.about,
+      });
+    } else {
+      this.props.navigation.navigate('SettingFullView', {
+        imageURL: this.state.avatar,
+        name: this.state.name,
+        about: this.state.about,
+      });
     }
-  }
-  render () {
+  };
+
+  render() {
     return (
       <SafeAreaView style={styles.container}>
-         <Spinner
+        <Spinner
           visible={this.state.spinner}
-          color='#F01738'
-          // textContent={'Loading...'}
+          color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
         <View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}>
-           
-          </View>
+          <View style={styles.BackButtonContainer} />
           <View style={styles.TitleContainer}>
-           
             <TouchableOpacity
               style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text style={styles.TitleStyle}>Setting </Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}>
-          
-          </View>
+          <View style={styles.SearchContainer} />
         </View>
-       
+
         <View style={styles.MainContentBox}>
           <ScrollView>
-          <TouchableOpacity style={styles.ImageContainer} onPress={()=>{this.openProfile()}}>
+            <TouchableOpacity
+              style={styles.ImageContainer}
+              onPress={() => {
+                this.openProfile();
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={()=>{this.openProfile()}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.openProfile();
+                  }}>
                   <Image
-                  source={
-                    this.state.avatar == null
-                      ? this.state.pickedImage
-                      : {uri: this.state.avatar}
-                  }
+                    source={
+                      this.state.avatar == null
+                        ? this.state.pickedImage
+                        : {uri: this.state.avatar}
+                    }
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>{this.state.name}</Text>
                 <Text style={styles.ProfileDescription}>
-               {this.state.about}
+                  {this.state.about}
                 </Text>
               </View>
               <View style={styles.ArrowContainer}>
-
-              <Image
-                    source={require('../images/Right_arrow.png')}
-                    style={styles.ArrowStyle}
-                  />
+                <Image
+                  source={require('../images/Right_arrow.png')}
+                  style={styles.ArrowStyle}
+                />
               </View>
             </TouchableOpacity>
             <View style={styles.hairline} />
-            <TouchableOpacity style={styles.Profile2Container}
-            
-            onPress={() => {
-              this.props.navigation.navigate('AccountScreen')
-            }}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('AccountScreen');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity
-                >
+                <TouchableOpacity>
                   <Image
                     source={require('../images/account_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Account</Text>
-                <Text style={styles.ProfileDescription}>
-                 Delete my Account
-                </Text>
+                <Text style={styles.ProfileDescription}>Delete my Account</Text>
               </View>
-            
             </TouchableOpacity>
             <TouchableOpacity style={styles.Profile2Container}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity
-               >
+                <TouchableOpacity>
                   <Image
                     source={require('../images/product_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.Profile2InfoContainer}onPress={() => {
-              this.props.navigation.navigate('ProductListScreen') }}>
+              <TouchableOpacity
+                style={styles.Profile2InfoContainer}
+                onPress={() => {
+                  this.props.navigation.navigate('ProductListScreen');
+                }}>
                 <Text style={styles.PersonNameStyle}>Product Master</Text>
-                <Text style={styles.ProfileDescription}>
-               Save Your Uploads
-                </Text>
+                <Text style={styles.ProfileDescription}>Save Your Uploads</Text>
               </TouchableOpacity>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container}
-             onPress={() => {
-              this.props.navigation.navigate('BackUpChats')
-            }}>
-              <View style={styles.Profile2ImageContainer}>                      
-                <TouchableOpacity
-                >
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('BackUpChats');
+              }}>
+              <View style={styles.Profile2ImageContainer}>
+                <TouchableOpacity>
                   <Image
                     source={require('../images/chats_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Chats</Text>
-                <Text style={styles.ProfileDescription}>
-                Delete All chats
-                </Text>
+                <Text style={styles.ProfileDescription}>Delete All chats</Text>
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container}
-            onPress={() => {
-              this.props.navigation.navigate('NotificationsScreen')
-            }}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('NotificationsScreen');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity
-                >
+                <TouchableOpacity>
                   <Image
                     source={require('../images/bell_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Notifications</Text>
                 <Text style={styles.ProfileDescription}>
-                Notification Tone for message/group
+                  Notification Tone for message/group
                 </Text>
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('ChangePassword')}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('ChangePassword');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ChangePassword')}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('ChangePassword');
+                  }}>
                   <Image
                     source={require('../images/account_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Change Password</Text>
                 <Text style={styles.ProfileDescription}>
-               Change your Password
+                  Change your Password
                 </Text>
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container}
+            <TouchableOpacity
+              style={styles.Profile2Container}
               onPress={() => {
-                this.props.navigation.navigate('HelpScreen')
+                this.props.navigation.navigate('HelpScreen');
               }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity
-                >
+                <TouchableOpacity>
                   <Image
                     source={require('../images/help.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Help</Text>
                 <Text style={styles.ProfileDescription}>
-                faq, contact us, Privacy policy
+                  faq, contact us, Privacy policy
                 </Text>
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={this.onShare}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={this.onShare}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={this.onShare}
-                >
+                <TouchableOpacity onPress={this.onShare}>
                   <Image
                     source={require('../images/contact_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Tell a Friend</Text>
-                <Text style={styles.ProfileDescription}>
-              
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('AdminReport')}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('AdminReport');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity  onPress={()=>{this.props.navigation.navigate('AdminReport')}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('AdminReport');
+                  }}>
                   <Image
                     source={require('../images/contact_icon.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Admin Report</Text>
-                <Text style={styles.ProfileDescription}>
-              
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={()=>{this.props.navigation.navigate('ReportIssue')}}>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('ReportIssue');
+              }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity  onPress={()=>{this.props.navigation.navigate('ReportIssue')}}
-                >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('ReportIssue');
+                  }}>
                   <Image
                     source={require('../images/help.png')}
                     style={styles.Profile2ImageViewStyle}
                   />
-                 
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Report an Issue</Text>
-                <Text style={styles.ProfileDescription}>
-              
-                </Text>
+                <Text style={styles.ProfileDescription} />
               </View>
-            
             </TouchableOpacity>
-           
           </ScrollView>
         </View>
         <View style={styles.TabBox}>
@@ -403,7 +375,7 @@ class SettingScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('DashBoardScreen')
+                this.props.navigation.navigate('DashBoardScreen');
               }}>
               <Image
                 source={require('../images/home_inactive_icon.png')}
@@ -415,7 +387,7 @@ class SettingScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('OpenForPublicScreen')
+                this.props.navigation.navigate('OpenForPublicScreen');
               }}>
               <Image
                 source={require('../images/group_inactive_icon.png')}
@@ -429,7 +401,7 @@ class SettingScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('CartScreen')
+                this.props.navigation.navigate('CartScreen');
               }}>
               <Image
                 source={require('../images/cart_bag_inactive_icon.png')}
@@ -438,21 +410,21 @@ class SettingScreen extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('ChatScreen')
+                this.props.navigation.navigate('ChatScreen');
               }}>
               <Image
                 source={require('../images/chat_inactive_icon.png')}
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('SettingScreen')
+                this.props.navigation.navigate('SettingScreen');
               }}>
               <Image
                 source={require('../images/setting_active_icon.png')}
@@ -463,7 +435,7 @@ class SettingScreen extends Component {
           </View>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -494,15 +466,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     backgroundColor: 'white',
   },
- 
- 
+
   Profile2ImageViewStyle: {
     margin: resp(20),
     width: resp(42),
     height: resp(42),
     borderRadius: resp(10),
     borderWidth: 2,
-    borderColor:'#F01738'
+    borderColor: '#F01738',
   },
   TitleContainer: {
     flexDirection: 'row',
@@ -519,24 +490,24 @@ const styles = StyleSheet.create({
   },
   PersonNameStyle: {
     marginTop: resp(10),
-   
+
     // height: resp(20),
     color: '#000',
-    fontSize:resp(15),
+    fontSize: resp(15),
     fontWeight: 'bold',
   },
- 
+
   ArrowContainer: {
     margin: resp(5),
     marginTop: resp(20),
     flexDirection: 'row',
-    alignContent:'flex-end',
+    alignContent: 'flex-end',
     flex: 0.1,
     height: resp(40),
   },
-  ArrowStyle:{
-    marginTop:resp(15),
-    color:'#0000008A',
+  ArrowStyle: {
+    marginTop: resp(15),
+    color: '#0000008A',
   },
   ProfileDescription: {
     marginRight: resp(-2),
@@ -552,15 +523,15 @@ const styles = StyleSheet.create({
     flex: 0.8,
     width: resp(70),
     // height: resp(70),
-    overflow:"scroll"
+    overflow: 'scroll',
   },
   ImageContainer: {
-    height:resp(100),
+    height: resp(100),
     color: '#fff',
     flexDirection: 'row',
   },
   Profile2Container: {
-    height:resp(70),
+    height: resp(70),
     color: '#fff',
     flexDirection: 'row',
   },
@@ -626,7 +597,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
- 
+
   StyleChatTab: {
     marginTop: 9,
     width: 30,
@@ -662,5 +633,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
   },
-})
+});
 export default SettingScreen;

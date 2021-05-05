@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useMemo, useState} from 'react';
 import {
   View,
@@ -17,8 +18,6 @@ import Slider from 'react-native-slider';
 import {downloadFile, DocumentDirectoryPath} from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import ImageLoad from './ImageLoad';
 import ImageModal from 'react-native-image-modal';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
@@ -87,6 +86,7 @@ export const MessageComponent = ({
       return;
     });
   };
+
   const onStartPlay1 = async (uri) => {
     await audioRecorderPlayer.startPlayer(uri);
     setAudio1({...audio1, playing: true});
@@ -296,14 +296,6 @@ export const MessageComponent = ({
               }}>
               {message.time}
             </Text>
-            {/* <TouchableOpacity >
-          <Text style={{
-              color: '#1A73E8',
-              fontSize: 12,
-              marginLeft: '55%',
-              alignSelf: 'flex-end',
-            }}>Reply</Text>
-            </TouchableOpacity> */}
           </View>
         </View>
       );
@@ -377,7 +369,6 @@ export const MessageComponent = ({
                 paddingLeft: 8,
               }}>
               {message.time}
-              {/* {moment(message.time).format('hh:mm')} */}
             </Text>
             {sending ? (
               <Icon
@@ -478,14 +469,6 @@ export const MessageComponent = ({
               }}>
               {message.time}
             </Text>
-            {/* <TouchableOpacity >
-          <Text style={{
-              color: '#1A73E8',
-              fontSize: 12,
-              marginLeft: '55%',
-              alignSelf: 'flex-end',
-            }}>Reply</Text>
-            </TouchableOpacity> */}
           </View>
         </View>
       );
@@ -555,7 +538,6 @@ export const MessageComponent = ({
                 paddingLeft: 8,
               }}>
               {message.time}
-              {/* {moment(message.time).format('hh:mm')} */}
             </Text>
             {sending ? (
               <Icon
@@ -776,14 +758,6 @@ export const MessageComponent = ({
               }}>
               {message.time}
             </Text>
-            {/* <TouchableOpacity >
-          <Text style={{
-              color: '#1A73E8',
-              fontSize: 12,
-              marginLeft: '55%',
-              alignSelf: 'flex-end',
-            }}>Reply</Text>
-            </TouchableOpacity> */}
           </View>
         </View>
       );
@@ -1067,14 +1041,6 @@ export const MessageComponent = ({
               }}>
               {message.time}
             </Text>
-            {/* <TouchableOpacity >
-          <Text style={{
-              color: '#1A73E8',
-              fontSize: 12,
-              marginLeft: '55%',
-              alignSelf: 'flex-end',
-            }}>Reply</Text>
-            </TouchableOpacity> */}
           </View>
         </View>
       );
@@ -1143,7 +1109,6 @@ export const MessageComponent = ({
                 paddingLeft: 8,
               }}>
               {message.time}
-              {/* {moment(message.time).format('hh:mm')} */}
             </Text>
             {sending ? (
               <Icon
@@ -1241,7 +1206,6 @@ export const MessageComponent = ({
               alignSelf: 'flex-start',
             }}>
             {message.time}
-            {/* {moment(message.time).format('hh:mm')} */}
           </Text>
         </View>
       );
@@ -1308,7 +1272,6 @@ export const MessageComponent = ({
                 paddingLeft: 8,
               }}>
               {message.time}
-              {/* {moment(message.time).format('hh:mm')} */}
             </Text>
             {sending ? (
               <Icon
@@ -1433,8 +1396,6 @@ export const MessageComponent = ({
                 borderRadius: 8,
                 width: 200,
                 alignSelf: 'center',
-                // borderRadius:2,
-                // borderColor:'white'
               }}
               imageBackgroundColor="transparent"
               loadingStyle={{size: 'large', color: 'gray'}}
@@ -1694,7 +1655,6 @@ export const MessageComponent = ({
                   alignSelf: 'flex-start',
                 }}>
                 <Slider
-                  // disabled
                   value={
                     playerRecording == message.id
                       ? audio1.duration === 0
@@ -2109,7 +2069,7 @@ export const MessageComponent = ({
 
   const inList = useMemo(() => {
     return forwardMessageIds.indexOf(message.id) !== -1;
-  }, [forwardMessageIds]);
+  }, [forwardMessageIds, message.id]);
 
   return (
     <TouchableOpacity

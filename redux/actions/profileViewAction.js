@@ -42,7 +42,6 @@ export const profileView = (userId, userAccessToken) => {
         }
       })
       .catch((error) => {
-        console.log('error : ', error);
         dispatch({
           type: PROFILE_VIEW_ERROR,
           payload: error,
