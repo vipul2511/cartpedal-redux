@@ -1,6 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
-
 import {
   StyleSheet,
   View,
@@ -14,6 +14,7 @@ import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Fab, Icon} from 'native-base';
 import {BASE_URL} from '../Component/ApiClient';
+
 class ForwardLinkScreen extends Component {
   constructor(props) {
     super(props);
@@ -21,10 +22,11 @@ class ForwardLinkScreen extends Component {
       list: [],
       spinner: false,
       toids: [],
-      groups:[],
-      groupID:[]
+      groups: [],
+      groupID: [],
     };
   }
+
   showLoading() {
     this.setState({spinner: true});
   }
@@ -42,76 +44,53 @@ class ForwardLinkScreen extends Component {
   }
 
   forwardMessages = () => {
-    // console.log('to id',this.state.toids.substring(1, this.state.toids.length - 1))
-    let id=this.state.toids.map(Number);
+    let id = this.state.toids.map(Number);
     let grpid;
-    let toid=id.join(',');
-    if(this.state.groupID.length>0){
-    let ids=this.state.groupID.map(Number);
-     grpid=ids.join(',');
-    }else{
-      grpid=0
+    let toid = id.join(',');
+    if (this.state.groupID.length > 0) {
+      let ids = this.state.groupID.map(Number);
+      grpid = ids.join(',');
+    } else {
+      grpid = 0;
     }
-    const {
-      fcmToken,
-      userId,
-      userAccessToken,
-      msgids,
-    } = this.props.route.params;
-    // var raw = JSON.stringify({
-    //     user_id: userId,
-    //     toids: [{id:toid,type:0},{id:grpid,type:1}],
-    //     msg_type: 'text',
-    //     body:msgids,
-    //     // reply_id: '0',
-    //     // upload: [],
-    //   });
-    console.log('toids',[{id:toid,type:"0"},{id:grpid,type:"1"}])
+    const {fcmToken, userId, userAccessToken, msgids} = this.props.route.params;
+
     this.showLoading();
     const data = new FormData();
     data.append('user_id', userId);
     data.append('body', msgids);
-    data.append('toids',[{id:toid,type:"0"},{id:grpid,type:"1"}]);
-    data.append('msg_type','link')
-    console.log('form data',data);
-    var EditProfileUrl =
-      `${BASE_URL}api-message/share-link`;
-    console.log('Add product Url:' + EditProfileUrl);
+    data.append('toids', [
+      {id: toid, type: '0'},
+      {id: grpid, type: '1'},
+    ]);
+    data.append('msg_type', 'link');
+    var EditProfileUrl = `${BASE_URL}api-message/share-link`;
     fetch(EditProfileUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
-        device_token:fcmToken,
+        device_token: fcmToken,
         device_type: 'android',
         Authorization: JSON.parse(userAccessToken),
       },
       body: JSON.stringify({
-        user_id:userId,body:msgids,toids:[{id:toid,type:"0"},{id:grpid,type:"1"}],msg_type:'link'
+        user_id: userId,
+        body: msgids,
+        toids: [
+          {id: toid, type: '0'},
+          {id: grpid, type: '1'},
+        ],
+        msg_type: 'link',
       }),
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
-          //  Toast.show(responseData.message);
           this.props.navigation.navigate('ChatScreen');
-        } else {
-          console.log(responseData.data);
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log(
-          'contact list response object:',
-          JSON.stringify(responseData),
-        );
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch((error) => {
-        //  this.hideLoading();
-        console.error(error);
-      })
+      .catch((error) => {})
       .finally(() => {
         this.hideLoading();
       });
@@ -126,16 +105,8 @@ class ForwardLinkScreen extends Component {
       msgids,
     } = this.props.route.params;
 
-    console.log(fcmToken, 'FCM TOKEN');
-    console.log(PhoneNumber, 'phone Number');
-    console.log(userId, 'userID');
-    console.log(userAccessToken, 'user access token');
-    console.log(msgids, 'Message IDS');
-
     this.showLoading();
-    var EditProfileUrl =
-      `${BASE_URL}api-product/contact-list`;
-    console.log('Add product Url:' + EditProfileUrl);
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: {
@@ -154,26 +125,13 @@ class ForwardLinkScreen extends Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
-          //  Toast.show(responseData.message);
-          console.log(JSON.stringify(responseData.data, null, 2));
           this.setState({list: responseData.data.appcontact});
-          this.setState({groups:responseData.data.groups})
+          this.setState({groups: responseData.data.groups});
         } else {
-          console.log(responseData.data);
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log(
-          'contact list response object:',
-          JSON.stringify(responseData),
-        );
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
       .catch((error) => {
-        //  this.hideLoading();
         console.error(error);
       })
       .finally(() => {
@@ -221,11 +179,7 @@ class ForwardLinkScreen extends Component {
               <Text style={styles.TitleStyle}>CartPadle</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}}>
             <Image
               source={require('../images/search.png')}
               style={styles.SearchIconStyle}
@@ -295,7 +249,7 @@ class ForwardLinkScreen extends Component {
                   </TouchableOpacity>
                 );
               })}
-               {this.state.groups.map((v, i) => {
+              {this.state.groups.map((v, i) => {
                 const inList = this.state.toids.indexOf(v.grpid) !== -1;
                 return (
                   <TouchableOpacity
@@ -305,55 +259,57 @@ class ForwardLinkScreen extends Component {
                         this.setState((p) => ({
                           ...p,
                           toids: [...p.toids, v.grpid],
-                          groupID:[...p.groupID,v.grpid]
+                          groupID: [...p.groupID, v.grpid],
                         }));
                       } else {
                         this.setState((p) => ({
                           ...p,
                           toids: p.toids.filter((i) => i !== v.grpid),
-                          groupID:p.groupID.filter((i) => i !== v.grpid)
+                          groupID: p.groupID.filter((i) => i !== v.grpid),
                         }));
                       }
                     }}>
-                      <View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        borderBottomWidth: 1,
-                        color: 'grey',
-                      }}>
+                    <View>
                       <View
                         style={{
-                          alignSelf: 'center',
-                          width: '95%',
                           flexDirection: 'row',
-                          alignItems: 'center',
-                          backgroundColor: inList ? 'lightgrey' : 'white',
+                          justifyContent: 'center',
+                          borderBottomWidth: 1,
+                          color: 'grey',
                         }}>
-                        <View style={{padding: 10}}>
-                          <Image
-                            source={
-                              v.image
-                                ? {uri: v.image}
-                                : require('../images/default_user.png')
-                            }
-                            style={styles.Styleimage}
-                          />
-                        </View>
                         <View
                           style={{
+                            alignSelf: 'center',
+                            width: '95%',
                             flexDirection: 'row',
-                            width: '84%',
                             alignItems: 'center',
-                            justifyContent: 'space-between',
+                            backgroundColor: inList ? 'lightgrey' : 'white',
                           }}>
-                          <View>
-                            <Text style={styles.PersonNameStyle}>{v.name}</Text>
+                          <View style={{padding: 10}}>
+                            <Image
+                              source={
+                                v.image
+                                  ? {uri: v.image}
+                                  : require('../images/default_user.png')
+                              }
+                              style={styles.Styleimage}
+                            />
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              width: '84%',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                            }}>
+                            <View>
+                              <Text style={styles.PersonNameStyle}>
+                                {v.name}
+                              </Text>
+                            </View>
                           </View>
                         </View>
                       </View>
-                    </View>
                     </View>
                   </TouchableOpacity>
                 );
@@ -526,13 +482,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#ecf6fb',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute', //Here is the trick
+    position: 'absolute',
     bottom: 0,
   },
   tabButtonStyle: {

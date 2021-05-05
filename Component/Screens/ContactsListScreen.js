@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
 
@@ -12,7 +13,6 @@ import {
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
-import moment from 'moment';
 import Contacts from 'react-native-contacts';
 
 class ContactsListScreen extends Component {
@@ -315,7 +315,6 @@ const styles = StyleSheet.create({
     height: 60,
     shadowColor: '#ecf6fb',
     elevation: 20,
-    shadowColor: 'grey',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',

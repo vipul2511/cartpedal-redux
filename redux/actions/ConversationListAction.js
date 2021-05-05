@@ -29,7 +29,7 @@ export const ConversationListAction = (userID, type, toid, userAccessToken) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: CONVERSION_LIST_SUCCESS,
             payload: responseData.data,

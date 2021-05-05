@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
 import {
@@ -8,7 +9,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  TextInput
+  TextInput,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -18,9 +19,9 @@ class NewContactsListScreen extends Component {
     super(props);
     this.state = {
       list: [],
-      masterlist:'',
+      masterlist: '',
       spinner: false,
-      showSearch:true,
+      showSearch: true,
     };
   }
   showLoading() {
@@ -46,16 +47,8 @@ class NewContactsListScreen extends Component {
       userId,
       userAccessToken,
     } = this.props.route.params;
-
-    console.log(fcmToken, 'FCM TOKEN');
-    console.log(PhoneNumber, 'phone Number');
-    console.log(userId, 'userID');
-    console.log(userAccessToken, 'user access token');
-
     this.showLoading();
-    var EditProfileUrl =
-      `${BASE_URL}api-product/contact-list`;
-    console.log('Add product Url:' + EditProfileUrl);
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: {
@@ -74,53 +67,35 @@ class NewContactsListScreen extends Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
-          //  Toast.show(responseData.message);
-          console.log(JSON.stringify(responseData.data, null, 2));
-          this.setState({list: responseData.data.appcontact,masterlist:responseData.data.appcontact});
-        } else {
-          console.log(responseData.data);
+          this.setState({
+            list: responseData.data.appcontact,
+            masterlist: responseData.data.appcontact,
+          });
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log(
-          'contact list response object:',
-          JSON.stringify(responseData),
-        );
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch((error) => {
-        //  this.hideLoading();
-        console.error(error);
-      })
+      .catch((error) => {})
       .finally(() => {
         this.hideLoading();
       });
   };
+
   searchFilterFunction = (text) => {
-    // Check if searched text is not blank
-    console.log('name',text);
     if (text) {
-      let combineArray=this.state.list
-      const newData = combineArray.filter(
-        function (item) {
-          const itemData = item.name
-            ? item.name.toUpperCase()
-            : ''.toUpperCase();
-          const textData = text.toUpperCase();
-          return itemData.indexOf(textData) > -1;
+      let combineArray = this.state.list;
+      const newData = combineArray.filter(function (item) {
+        const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
       });
-      this.setState({list:newData});
+      this.setState({list: newData});
     } else {
-    this.setState({list:this.state.masterlist});
-    
+      this.setState({list: this.state.masterlist});
     }
   };
+
   render() {
     const funct = this;
-
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -128,55 +103,61 @@ class NewContactsListScreen extends Component {
           color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
-       {this.state.showSearch?(<View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+        {this.state.showSearch ? (
+          <View style={styles.headerView}>
+            <View style={styles.BackButtonContainer}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.TitleContainer}>
               <Image
-                source={require('../images/back_blck_icon.png')}
-                style={styles.backButtonStyle}
+                source={require('../images/logo_cart_paddle.png')}
+                style={styles.LogoIconStyle}
+              />
+              <TouchableOpacity
+                style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.TitleStyle}>Cartpedal</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.SearchContainer}
+              onPress={() => {
+                this.setState({showSearch: false});
+              }}>
+              <Image
+                source={require('../images/search.png')}
+                style={styles.SearchIconStyle}
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.TitleContainer}>
-            <Image
-              source={require('../images/logo_cart_paddle.png')}
-              style={styles.LogoIconStyle}
-            />
+        ) : (
+          <View style={styles.inputViewStyle}>
             <TouchableOpacity
-              style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>Cartpedal</Text>
+              style={{marginLeft: 2}}
+              onPress={() => {
+                this.setState({showSearch: true});
+              }}>
+              <Image
+                source={require('../images/back_blck_icon.png')}
+                style={styles.backButtonStyle1}
+              />
             </TouchableOpacity>
+            <View style={{backgroundColor: '#00000008'}}>
+              <TextInput
+                placeholder="Search"
+                placeholderTextColor="#BEBEBE"
+                underlineColorAndroid="transparent"
+                style={styles.input}
+                onChangeText={(text) => {
+                  this.searchFilterFunction(text);
+                }}
+              />
+            </View>
           </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              this.setState({showSearch:false})    
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            />
-          </TouchableOpacity>
-        </View>):(
-                    <View style={styles.inputViewStyle}>
-                    <TouchableOpacity style={{marginLeft:2}}
-                     onPress={() => {this.setState({showSearch:true})}}>
-                     <Image
-                       source={require('../images/back_blck_icon.png')}
-                       style={styles.backButtonStyle1}
-                     />
-                   </TouchableOpacity>
-                   <View style={{backgroundColor: '#00000008'}}>
-                            <TextInput
-                                   placeholder="Search"
-                                   placeholderTextColor="#BEBEBE"
-                                   underlineColorAndroid="transparent"
-                                   style={styles.input}
-                                   onChangeText={(text)=>{this.searchFilterFunction(text)}}
-                               />
-                               </View>
-                               </View>
         )}
 
         <View style={styles.MainContentBox}>
@@ -190,57 +171,50 @@ class NewContactsListScreen extends Component {
                         userid: v.id,
                         username: v.name,
                         useravatar: v.avatar,
-                        groupexit:false,
-                        groupId:0,
-                        msg_type:"0"
+                        groupexit: false,
+                        groupId: 0,
+                        msg_type: '0',
                       });
                     }}>
-                    {/* <View
+                    <View
+                      style={{
+                        alignSelf: 'center',
+                        backgroundColor: 'white',
+                        width: '95%',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <View style={{padding: 10}}>
+                        <Image
+                          source={
+                            v.image
+                              ? {uri: v.image}
+                              : require('../images/default_user.png')
+                          }
+                          style={styles.Styleimage}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          flexDirection: 'row',
+                          width: '84%',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}>
+                        <View>
+                          <Text style={styles.PersonNameStyle}>{v.name}</Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'center',
-                        borderBottomWidth: 0.5,
+                        borderBottomWidth: 1,
                         color: 'grey',
-                      }}> */}
-                      <View
-                        style={{
-                          alignSelf: 'center',
-                          backgroundColor: 'white',
-                          width: '95%',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}>
-                        <View style={{padding: 10}}>
-                          <Image
-                            source={
-                              v.image
-                                ? {uri: v.image}
-                                : require('../images/default_user.png')
-                            }
-                            style={styles.Styleimage}
-                          />
-                        </View>
-                        <View
-                          style={{
-                            backgroundColor: 'white',
-                            flexDirection: 'row',
-                            width: '84%',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                          }}>
-                          <View>
-                            <Text style={styles.PersonNameStyle}>{v.name}</Text>
-                          </View>
-                        </View>
-                      {/* </View> */}
-                    </View>
-                    <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            borderBottomWidth: 1,
-                            color: 'grey',
-                          }}></View>
+                      }}
+                    />
                   </TouchableOpacity>
                 );
               })}
@@ -262,25 +236,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: '#00000008',
     backgroundColor: '#fff',
     width: '100%',
     marginTop: resp(20),
-   alignContent:'center',
-   alignSelf:'center',
-},
-backButtonStyle1:{
-  margin: 15,
-  height: 20,
-  width: 20,
-},
-input: {
-  color: '#BEBEBE',
-  width: resp(339),
-  height: 50,
-  fontSize:resp(14),
-alignSelf:'flex-end' 
-},
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+  backButtonStyle1: {
+    margin: 15,
+    height: 20,
+    width: 20,
+  },
+  input: {
+    color: '#BEBEBE',
+    width: resp(339),
+    height: 50,
+    fontSize: resp(14),
+    alignSelf: 'flex-end',
+  },
   MainContentBox: {
     flex: 1,
   },
@@ -436,7 +409,6 @@ alignSelf:'flex-end'
     height: 60,
     shadowColor: '#ecf6fb',
     elevation: 20,
-    shadowColor: 'grey',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',

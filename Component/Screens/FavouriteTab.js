@@ -1,4 +1,5 @@
-import React, {Component} from 'react'
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,114 +8,106 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
-  TouchableWithoutFeedback,
   RefreshControl,
   ScrollView,
   Dimensions,
-   TouchableHighlight,
-   Share
-} from 'react-native'
-import resp from 'rn-responsive-font'
+  Share,
+} from 'react-native';
+import resp from 'rn-responsive-font';
 import SeeMore from 'react-native-see-more-inline';
-import MenuIcon from './MenuIcon'
-import Toast from 'react-native-simple-toast'
-import ReadMore from 'react-native-read-more-text'
+import MenuIcon from './MenuIcon';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
-import {hp,wp} from '../Component/hightWidthRatio';
-let width=Dimensions.get('window').width;
+import {hp, wp} from '../Component/hightWidthRatio';
+let width = Dimensions.get('window').width;
+
 class FavouriteTab extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.FavouriteListCall = this.FavouriteListCall.bind(this);
     this.AddFavourite = this.AddFavourite.bind(this);
     this.state = {
-      FavouiteProduct:'',
-      spinner:'',
-      NoData:'',
-      block_id:'',
-      favourite:'',
-      userAccessToken:'',
+      FavouiteProduct: '',
+      spinner: false,
+      NoData: '',
+      block_id: '',
+      favourite: '',
+      userAccessToken: '',
       refreshing: false,
-      fcmToken:'',
-      userNo:'',
-      redIcon:require('../images/Heart_icon.png'),
-      whiteIcon:require('../images/dislike.png'),
-      avatar:'',
-      pickedImage:require('../images/default_user.png'),
-      
-    }
-    console.log('this props',JSON.stringify(this.props));
+      fcmToken: '',
+      userNo: '',
+      redIcon: require('../images/Heart_icon.png'),
+      whiteIcon: require('../images/dislike.png'),
+      avatar: '',
+      pickedImage: require('../images/default_user.png'),
+    };
+    console.log('this props', JSON.stringify(this.props));
   }
 
   showLoading() {
-    this.setState({ spinner: true });
+    this.setState({spinner: true});
   }
 
   hideLoading() {
-    this.setState({ spinner: false });
+    this.setState({spinner: false});
   }
- 
+
   _onRefresh() {
     this.setState({refreshing: true});
-   this.FavouriteListCall();
+    this.FavouriteListCall();
   }
   async componentDidMount() {
-    // this.focusListener = this.props.navigation.addListener("focus", () => {
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + accessToken);
-        //this.RecentUpdateCall();
+        this.setState({userAccessToken: accessToken});
       }
     });
+
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
       if (token) {
-        this.setState({ fcmToken: token });
+        this.setState({fcmToken: token});
       }
     });
+
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-          this.setState( { userNo: userId });
-          console.log("Edit user id Dhasbord ====" + this.state.userNo);
-          this.FavouriteListCall();
+        this.setState({userNo: userId});
+
+        this.FavouriteListCall();
       }
-  });
-// });
+    });
   }
 
   ListEmpty = () => {
     return (
-       
-      <View style={{justifyContent:'center',alignItems:'center'}}>
-      <Text style={{ marginTop:120
-   }}>{this.state.NoData?'No Record':null} </Text>
-  </View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{marginTop: 120}}>
+          {this.state.NoData ? 'No Record' : null}{' '}
+        </Text>
+      </View>
     );
   };
-  actionOnRow (item) {
-    console.log('Selected Item :', item)
+
+  actionOnRow(item) {
+    console.log('Selected Item :', item);
   }
+
   _handleTextReady = () => {
     console.log('ready!');
-  }
-  AddFavourite(item,index){
-    this.showLoading();
-    let id=this.state.userNo;
-    let block_id=item.id;
-    let formData = new FormData();
-      
-    formData.append('user_id', id);
-    formData.append('block_id',block_id);
-    formData.append('type', 1);
-    console.log('form data==' + JSON.stringify(formData));
+  };
 
-  // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = `${BASE_URL}api-user/block-fav-user`
-    console.log('Add product Url:' + fav)
+  AddFavourite(item) {
+    this.showLoading();
+    let id = this.state.userNo;
+    let block_id = item.id;
+    let formData = new FormData();
+
+    formData.append('user_id', id);
+    formData.append('block_id', block_id);
+    formData.append('type', 1);
+    var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',
       headers: new Headers({
@@ -122,416 +115,344 @@ class FavouriteTab extends Component {
         device_id: '1111',
         device_token: this.state.fcmToken,
         device_type: 'android',
-        Authorization: JSON.parse(this.state.userAccessToken),  
-        // Authorization: 'Bearer k42uBT6HNYRZup8taAw3p5J8HsbUd50wBZ1VLSba'
+        Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
-      this.hideLoading();
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
         if (responseData.code == '200') {
-        //  this.props.navigation.navigate('StoryViewScreen')
-         // Toast.show(responseData.message);
-       this.FavouriteListCall();
-          // this.setState({NoData:true});
-          // this.setState(P)
+          this.FavouriteListCall();
         } else {
-          // alert(responseData.data);
-          // alert(responseData.data.password)
-           this.setState({NoData:true});
+          this.setState({NoData: true});
         }
-
-        console.log('response object:', responseData)
-        console.log('User user ID==', JSON.stringify(responseData))
       })
-      .catch(error => {
-        console.error(error)
+      .catch((error) => {
+        console.error(error);
       })
       .done();
-    
   }
   ContactListall() {
-    this.showLoading()
-    let formData = new FormData()
-
+    this.showLoading();
+    let formData = new FormData();
     formData.append('user_id', this.state.userNo);
     formData.append('type', 0);
     formData.append('contacts', this.state.currentUserMobile);
-    console.log('form data==' + JSON.stringify(formData))
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = `${BASE_URL}api-product/contact-list`
-    console.log('Add product Url:' + EditProfileUrl)
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: new Headers({
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
-        device_token:this.state.fcmToken,
+        device_token: this.state.fcmToken,
         device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,  
         Authorization: JSON.parse(this.state.userAccessToken),
-
       }),
       body: formData,
     })
-
-      .then(response => response.json())
-      .then(responseData => {
-        //   this.hideLoading();
+      .then((response) => response.json())
+      .then((responseData) => {
         if (responseData.code == '200') {
-        //  Toast.show(responseData.message);
-          this.setState({ contactList: responseData.data.appcontact });
-          let cartPadleContact=[]
-          let nameofCartPadle=[]
-          responseData.data.appcontact.map((item)=>{
-          cartPadleContact.push(item.mobile);
-          })
-          let commaNumber=cartPadleContact.join(',');
-            console.log('cart padle',cartPadleContact.join(','));
-          this.setState({appContacts:cartPadleContact.join(',')});
+          this.setState({contactList: responseData.data.appcontact});
+          let cartPadleContact = [];
+          responseData.data.appcontact.map((item) => {
+            cartPadleContact.push(item.mobile);
+          });
+          let commaNumber = cartPadleContact.join(',');
+          this.setState({appContacts: cartPadleContact.join(',')});
           this.RecentShareCall(commaNumber);
         } else {
-          this.hideLoading()
+          this.hideLoading();
           console.log(responseData.data);
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log('contact list response object:', JSON.stringify(responseData))
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch(error => {
-         this.hideLoading();
-        console.error(error)
+      .catch((error) => {
+        this.hideLoading();
+        console.error(error);
       })
-      .done()
+      .done();
   }
 
-  AddProductFav=(item,index)=>{
-   console.log('item',item.id);
-   console.log('index',index);
-   this.AddFavourite(item,index)
-  }
-  data=()=>{
-    this.setState({NoData:true});
-  }
-  FavouriteListCall=()=> {
+  AddProductFav = (item, index) => {
+    this.AddFavourite(item);
+  };
+
+  data = () => {
+    this.setState({NoData: true});
+  };
+
+  FavouriteListCall = () => {
     let acessIDtoken;
     let fcmToken;
     let user_id;
     let phoneNumber;
-    AsyncStorage.getItem('@Phonecontacts').then((mobile)=>{
-      if(mobile){
-        phoneNumber=JSON.parse(mobile);
-        console.log('mobile number ',this.state.currentUserMobile);   
-    AsyncStorage.getItem('@user_id').then((userId) => {
-      if (userId) {
-         user_id=userId;
-         console.log('user id',userId);
-         AsyncStorage.getItem('@access_token').then((accessToken) => {
-          if (accessToken) {
-            acessIDtoken=accessToken;
-            //this.RecentUpdateCall();
-            AsyncStorage.getItem('@fcmtoken').then((token) => {
-              console.log("inside favourite list=" +token);
-              if (token) {
-                fcmToken=token
-                this.showLoading()
-    // let formData = new FormData()
-
-    // formData.append('user_id', user_id);
-    // formData.append('type', 0);
-    // formData.append('contacts', phoneNumber);
-    // console.log('form data==' + JSON.stringify(formData))
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = `${BASE_URL}api-product/contact-list`
-    console.log('Add product Url:' + EditProfileUrl)
-    fetch(EditProfileUrl, {
-      method: 'Post',
-      headers: {
-        'Content-Type': 'application/json',
-        device_id: '1234',
-        device_token: this.state.fcmToken,
-        device_type: 'android',
-        Authorization:JSON.parse(this.state.userAccessToken),
-      },
-      body:JSON.stringify({
-        user_id:this.state.userNo,type:0,lfor:0,contacts:phoneNumber
-      }),
-    })
-
-      .then(response => response.json())
-      .then(responseData => {
-        //   this.hideLoading();
-        if (responseData.code == '200') {
-        //  Toast.show(responseData.message);
-          this.setState({ contactList: responseData.data.appcontact });
-          let cartPadleContact=[]
-          let nameofCartPadle=[]
-          responseData.data.appcontact.map((item)=>{
-          cartPadleContact.push(item.mobile);
-          })
-          let commaNumber=cartPadleContact.join(',');
-            console.log('cart padle',cartPadleContact.join(','));
-          this.setState({appContacts:cartPadleContact.join(',')});
-          this.RecentShare(user_id,commaNumber,fcmToken,acessIDtoken);
-        } else {
-          this.hideLoading()
-          console.log(responseData.data);
-        }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log('contact list response object:', JSON.stringify(responseData))
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
-      })
-      .catch(error => {
-         this.hideLoading();
-        console.error(error)
-      })
-      .done()
+    AsyncStorage.getItem('@Phonecontacts').then((mobile) => {
+      if (mobile) {
+        phoneNumber = JSON.parse(mobile);
+        AsyncStorage.getItem('@user_id').then((userId) => {
+          if (userId) {
+            user_id = userId;
+            console.log('user id', userId);
+            AsyncStorage.getItem('@access_token').then((accessToken) => {
+              if (accessToken) {
+                acessIDtoken = accessToken;
+                AsyncStorage.getItem('@fcmtoken').then((token) => {
+                  console.log('inside favourite list=' + token);
+                  if (token) {
+                    fcmToken = token;
+                    this.showLoading();
+                    var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
+                    fetch(EditProfileUrl, {
+                      method: 'Post',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        device_id: '1234',
+                        device_token: this.state.fcmToken,
+                        device_type: 'android',
+                        Authorization: JSON.parse(this.state.userAccessToken),
+                      },
+                      body: JSON.stringify({
+                        user_id: this.state.userNo,
+                        type: 0,
+                        lfor: 0,
+                        contacts: phoneNumber,
+                      }),
+                    })
+                      .then((response) => response.json())
+                      .then((responseData) => {
+                        //   this.hideLoading();
+                        if (responseData.code == '200') {
+                          //  Toast.show(responseData.message);
+                          this.setState({
+                            contactList: responseData.data.appcontact,
+                          });
+                          let cartPadleContact = [];
+                          responseData.data.appcontact.map((item) => {
+                            cartPadleContact.push(item.mobile);
+                          });
+                          let commaNumber = cartPadleContact.join(',');
+                          console.log('cart padle', cartPadleContact.join(','));
+                          this.setState({
+                            appContacts: cartPadleContact.join(','),
+                          });
+                          this.RecentShare(
+                            user_id,
+                            commaNumber,
+                            fcmToken,
+                            acessIDtoken,
+                          );
+                        } else {
+                          this.hideLoading();
+                        }
+                      })
+                      .catch((error) => {
+                        this.hideLoading();
+                      })
+                      .done();
+                  }
+                });
               }
             });
           }
         });
       }
-  });
-}
-});
-      }
-      RecentShare=(user_id,contacts,fcmToken,acessIDtoken)=>{
-        let formData = new FormData()
-      
-        formData.append('user_id', user_id)
-        formData.append('type', 1)
-        formData.append('public',1)
-        formData.append('contact',contacts)
-        console.log('form data==' + JSON.stringify(formData))
-  
-      // var CartList = this.state.baseUrl + 'api-product/cart-list'
-        var RecentShare = `${BASE_URL}api-user/recent-share`
-        console.log('Add product Url:' + RecentShare)
-        fetch(RecentShare, {
-          method: 'Post',
-          headers: new Headers({
-            'Content-Type': 'multipart/form-data',
-            device_id: '1234',
-            device_token: fcmToken,
-            device_type: 'android',
-            // Authorization: 'Bearer' + this.state.access_token,  
-            Authorization: JSON.parse(acessIDtoken), 
-  
-          }),
-          body: formData,
-        })
-  
-          .then(response => response.json())
-          .then(responseData => {
-           this.hideLoading();
-            if (responseData.code == '200') {
-            //  this.props.navigation.navigate('StoryViewScreen')
-            //  Toast.show(responseData.message);
-            this.setState({avatar:responseData.data[0].avatar});
-              this.setState({FavouiteProduct:responseData.data})
-              this.setState({block_id:responseData.data[0].id});
-              console.log("value",responseData.data[0].id);
-              console.log('fevtert========',responseData.data[0].favourite);
-              this.setState({favourite:responseData.data[0].favourite})
-              this.setState({favourite:responseData.data[0].favourite})
-            // this.SaveProductListData(responseData)
-  
-            } else {
-              // alert(responseData.data);
-              // alert(responseData.data.password)
-              if(responseData.code=='500'){
-                this.setState({FavouiteProduct:''})
-                this.setState({NoData:true});
-                console.log('executed');
-              } 
-             
-            }
-  
-            console.log('response object:', responseData)
-            console.log('Feveroat list prodoct==', JSON.stringify(responseData))
-            // console.log('access_token ', this.state.access_token)
-            //   console.log('User Phone Number==' + formData.phone_number)
-          })
-          .catch(error => {
-          //  this.hideLoading();
-            console.error(error)
-          })
-  
-          .done()
-      }
-      onShare = async (links) => {
-        try {
-          const result = await Share.share({
-            message:
-              `Get the product at ${links}`,
-              url:`${links}`
-          });
-    
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
-            }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
+    });
+  };
+
+  RecentShare = (user_id, contacts, fcmToken, acessIDtoken) => {
+    let formData = new FormData();
+
+    formData.append('user_id', user_id);
+    formData.append('type', 1);
+    formData.append('public', 1);
+    formData.append('contact', contacts);
+
+    var RecentShare = `${BASE_URL}api-user/recent-share`;
+
+    fetch(RecentShare, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1234',
+        device_token: fcmToken,
+        device_type: 'android',
+        Authorization: JSON.parse(acessIDtoken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
+        if (responseData.code == '200') {
+          this.setState({avatar: responseData.data[0].avatar});
+          this.setState({FavouiteProduct: responseData.data});
+          this.setState({block_id: responseData.data[0].id});
+          this.setState({favourite: responseData.data[0].favourite});
+          this.setState({favourite: responseData.data[0].favourite});
+        } else {
+          if (responseData.code == '500') {
+            this.setState({FavouiteProduct: ''});
+            this.setState({NoData: true});
           }
-        } catch (error) {
-          alert(error.message);
         }
-      };
-      link =async(id)=>{
-        const link = new firebase.links.DynamicLink(
-          'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
-            id,
-          'cartpedal.page.link',
-        ).android
-          .setPackageName('com.cart.android')
-          .ios.setBundleId('com.cart.ios');
-      
-      firebase.links()
-        .createDynamicLink(link)
-        .then((url) => {
-          console.log('the url',url);
-          this.onShare('http://'+url);
-        });
-      }
-    forwardlink =async(userid)=>{
-      const link = new firebase.links.DynamicLink(
-        'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
-          userid,
-        'cartpedal.page.link',
-      ).android
-        .setPackageName('com.cart.android')
-        .ios.setBundleId('com.cart.ios');
-     
-     firebase.links()
-       .createDynamicLink(link)
-       .then((url) => {
-         console.log('the url',url);
-        //  this.sendMessage(url,userid);
-        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-          if(NumberFormat){
-            let numID=JSON.parse(NumberFormat)
-          //   this.setState({PhoneNumber:numID})
-      this.props.navigation.navigate('ForwardLinkScreen', {
-        fcmToken: this.state.fcmToken,
-        PhoneNumber: numID,
-        userId: this.state.userNo,
-        userAccessToken: this.state.userAccessToken,
-        msgids: 'http://' + url,
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .done();
+  };
+
+  onShare = async (links) => {
+    try {
+      const result = await Share.share({
+        message: `Get the product at ${links}`,
+        url: `${links}`,
       });
-    }
-    }));
-       });
-     }
-     SendReportIssue() {
-      console.log('working send report')
-      let formData = new FormData()
-      formData.append('user_id', this.state.userNo)
-      formData.append('reason','Report post')
-      formData.append('message','Something went wrong with this post')
-      console.log('form data==' + JSON.stringify(formData))
-     // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
-      
-      var otpUrl =`${BASE_URL}api-user/report-problem`
-      console.log('url:' + otpUrl)
-      fetch(otpUrl, {
-        method: 'Post',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          device_id: '1234',
-          device_token:this.state.fcmToken,
-          device_type: 'android',
-          Authorization: JSON.parse(this.state.userAccessToken),
-        },
-        body: formData,
-      })
-        .then(response => response.json())
-        .then(responseData => {
-    
-          if (responseData.code == '200') {
-          //   this.props.navigation.navigate('LoginScreen')
-          alert(responseData.data)
-               console.log(responseData);
-          } 
-          else {
-              alert(responseData.message);
-            console.log(responseData)
-          }
-          
-         
-        })
-        .catch(error => {
-          console.error(error)
-        })
-    
-        .done()
-    }
-    blockuser=(block_id)=>{
-      this.showLoading();
-      let id=this.state.userNo;
-      let formData = new FormData();
-        
-      formData.append('user_id', id);
-      formData.append('block_id',block_id);
-      formData.append('type', 0);
-      console.log('form data==' + JSON.stringify(formData));
-  
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var fav = `${BASE_URL}api-user/block-fav-user`
-      console.log('Add product Url:' + fav)
-      fetch(fav, {
-        method: 'Post',
-        headers: new Headers({
-          'Content-Type': 'multipart/form-data',
-          device_id: '1111',
-          device_token:this.state.fcmToken,
-          device_type: 'android',
-          // Authorization: 'Bearer' + this.state.access_token,  
-          Authorization:JSON.parse(this.state.userAccessToken), 
-        }),
-        body: formData,
-      })
-        .then(response => response.json())
-        .then(responseData => {
-          if (responseData.code == '200') {
-            alert('User is blocked successfully');
-            this.FavouriteListCall();
-            this.hideLoading();
-          } else {
-            //  this.setState({NoData:true});
-             this.hideLoading();
-          }
-          console.log('User user ID==', JSON.stringify(responseData))
-        })
-        .catch(error => {
-          this.hideLoading();
-          console.error(error)
-        })
-        .done();
-    }
-  render () {
-    return (
-      <SafeAreaView style={styles.container}
-      refreshControl={
-        <RefreshControl
-          refreshing={this.state.refreshing}
-          onRefresh={this._onRefresh.bind(this)}
-        />
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
       }
-      >
-       <Spinner
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  link = async (id) => {
+    const link = new firebase.links.DynamicLink(
+      'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+        id,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        this.onShare('http://' + url);
+      });
+  };
+
+  forwardlink = async (userid) => {
+    const link = new firebase.links.DynamicLink(
+      'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+        userid,
+      'cartpedal.page.link',
+    ).android
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: 'http://' + url,
+            });
+          }
+        });
+      });
+  };
+
+  SendReportIssue() {
+    let formData = new FormData();
+    formData.append('user_id', this.state.userNo);
+    formData.append('reason', 'Report post');
+    formData.append('message', 'Something went wrong with this post');
+    var otpUrl = `${BASE_URL}api-user/report-problem`;
+    fetch(otpUrl, {
+      method: 'Post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        device_id: '1234',
+        device_token: this.state.fcmToken,
+        device_type: 'android',
+        Authorization: JSON.parse(this.state.userAccessToken),
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.code == '200') {
+          alert(responseData.data);
+        } else {
+          alert(responseData.message);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .done();
+  }
+
+  blockuser = (block_id) => {
+    this.showLoading();
+    let id = this.state.userNo;
+    let formData = new FormData();
+
+    formData.append('user_id', id);
+    formData.append('block_id', block_id);
+    formData.append('type', 0);
+
+    var fav = `${BASE_URL}api-user/block-fav-user`;
+
+    fetch(fav, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: 'android',
+        Authorization: JSON.parse(this.state.userAccessToken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.code == '200') {
+          alert('User is blocked successfully');
+          this.FavouriteListCall();
+          this.hideLoading();
+        } else {
+          this.hideLoading();
+        }
+        console.log('User user ID==', JSON.stringify(responseData));
+      })
+      .catch((error) => {
+        this.hideLoading();
+      })
+      .done();
+  };
+
+  render() {
+    return (
+      <SafeAreaView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)}
+          />
+        }>
+        <Spinner
           visible={this.state.spinner}
-          color='#F01738'
-          // textContent={'Loading...'}
+          color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
 
@@ -541,132 +462,176 @@ class FavouriteTab extends Component {
             <FlatList
               style={{flex: 1}}
               data={this.state.FavouiteProduct}
-            //  renderItem={({item}) => <ParsonProfile item={item} />}
-              keyExtractor={item => item.personName}
-              renderItem={({item,index}) =>{
-                console.log('fav0',item);
-                return(
-                <TouchableOpacity style={styles.itemBox} onPress={() => {
-                  this.props.navigation.navigate('OpenForPublicDetail',{id:item.id,name:item.name});
-                }} >
-                  
-                <View style={styles.box}>
-                  <View style={styles.ProfileImageContainer}>
-                  
-                  <Image
-              source={item.avatar==null?(this.state.pickedImage):{uri:item.avatar}}
-              style={styles.ProfileImageViewStyle}
-            />    
-                   
-                  </View>
-                  <View style={styles.ProfileInfoContainer}>
-                    <Text style={styles.PersonNameStyle}>{item.name}</Text>
-                    <View style={{marginLeft: resp(0),width:width*0.8}}>
-                  {item.about ? (
-                    <SeeMore
-                      numberOfLines={4}
-                      linkColor='red'
-                      seeMoreText='read more'
-                      seeLessText='read less'>
-                      {item.about.substring(0,50)+".."}
-                    </SeeMore>
-                  ) : null}
-                </View>
-                  </View>
-                  <View style={styles.ListMenuContainer}>
-                    <TouchableOpacity style={styles.messageButtonContainer} onPress={() => {
-                     console.log('id of user',item.id);
-                     this.props.navigation.navigate('ChatDetailScreen',{userid:item.id,username:item.name,useravatar:item.avatar,groupexit:false,groupId:"0",msg_type:"0",userphone:item.mobile})
-                      }}>
-                        <Image
-                          source={require('../images/message_icon.png')}
-                          style={styles.messageButtonStyle}></Image>
-                    </TouchableOpacity>
-                      <TouchableOpacity style={styles.messageButtonContainer} onPress={()=>{this.AddProductFav(item,index)}}>
-                        <Image
-                          source={item.favourite==1?this.state.redIcon:this.state.whiteIcon}
-                          style={[styles.heartButtonStyle,{width:item.favourite==1?resp(11):resp(18),height:this.state.favourite==1?resp(9):resp(20),marginTop:this.state.favourite==1?resp(4):resp(0)}]}></Image>
-                      </TouchableOpacity>
-                   
-                    <TouchableOpacity
-                     onPress={() => {
-                      this.props.navigation.navigate('OpenForPublicDetail',{id:item.id,name:item.name});
+              keyExtractor={(item) => item.personName}
+              renderItem={({item, index}) => {
+                return (
+                  <TouchableOpacity
+                    style={styles.itemBox}
+                    onPress={() => {
+                      this.props.navigation.navigate('OpenForPublicDetail', {
+                        id: item.id,
+                        name: item.name,
+                      });
                     }}>
-                      <View style={styles.ViewButtonContainer}>
-                        <Text style={styles.viewButtonStyle}>View All</Text>
+                    <View style={styles.box}>
+                      <View style={styles.ProfileImageContainer}>
+                        <Image
+                          source={
+                            item.avatar == null
+                              ? this.state.pickedImage
+                              : {uri: item.avatar}
+                          }
+                          style={styles.ProfileImageViewStyle}
+                        />
                       </View>
-                    </TouchableOpacity>
-          
-                    <MenuIcon
-            menutext='Menu'
-            menustyle={{
-              marginRight: 5,
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              marginTop:3
-            }}
-            textStyle={{
-              
-              color: 'white',
-            }}
-            option1Click={() => {
-              this.blockuser(item.id) 
-            }}
-            option2Click={() => {
-              this.link(item.id)
-              // Toast.show('CLicked Share Link', Toast.LONG)
-            }}
-            option3Click={() => {
-              this.forwardlink(item.id)
-              // Toast.show('CLicked Forward Link', Toast.LONG)
-            }}
-            option4Click={() => {
-              this.SendReportIssue()
-            }}
-          />
-                  </View>
-                </View>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                  <View style={styles.columnView}>
-                    <View style={styles.ImageContainer}>
-                      <Image
-                       source={{uri:item.products[0].image}}
-                        style={styles.ImageContainer}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[0].price}
-                      </Text>
+                      <View style={styles.ProfileInfoContainer}>
+                        <Text style={styles.PersonNameStyle}>{item.name}</Text>
+                        <View style={{marginLeft: resp(0), width: width * 0.8}}>
+                          {item.about ? (
+                            <SeeMore
+                              numberOfLines={4}
+                              linkColor="red"
+                              seeMoreText="read more"
+                              seeLessText="read less">
+                              {item.about.substring(0, 50) + '..'}
+                            </SeeMore>
+                          ) : null}
+                        </View>
+                      </View>
+                      <View style={styles.ListMenuContainer}>
+                        <TouchableOpacity
+                          style={styles.messageButtonContainer}
+                          onPress={() => {
+                            console.log('id of user', item.id);
+                            this.props.navigation.navigate('ChatDetailScreen', {
+                              userid: item.id,
+                              username: item.name,
+                              useravatar: item.avatar,
+                              groupexit: false,
+                              groupId: '0',
+                              msg_type: '0',
+                              userphone: item.mobile,
+                            });
+                          }}>
+                          <Image
+                            source={require('../images/message_icon.png')}
+                            style={styles.messageButtonStyle}
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.messageButtonContainer}
+                          onPress={() => {
+                            this.AddProductFav(item, index);
+                          }}>
+                          <Image
+                            source={
+                              item.favourite == 1
+                                ? this.state.redIcon
+                                : this.state.whiteIcon
+                            }
+                            style={[
+                              styles.heartButtonStyle,
+                              {
+                                width:
+                                  item.favourite == 1 ? resp(11) : resp(18),
+                                height:
+                                  this.state.favourite == 1
+                                    ? resp(9)
+                                    : resp(20),
+                                marginTop:
+                                  this.state.favourite == 1 ? resp(4) : resp(0),
+                              },
+                            ]}
+                          />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.props.navigation.navigate(
+                              'OpenForPublicDetail',
+                              {id: item.id, name: item.name},
+                            );
+                          }}>
+                          <View style={styles.ViewButtonContainer}>
+                            <Text style={styles.viewButtonStyle}>View All</Text>
+                          </View>
+                        </TouchableOpacity>
+
+                        <MenuIcon
+                          menutext="Menu"
+                          menustyle={{
+                            marginRight: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end',
+                            marginTop: 3,
+                          }}
+                          textStyle={{
+                            color: 'white',
+                          }}
+                          option1Click={() => {
+                            this.blockuser(item.id);
+                          }}
+                          option2Click={() => {
+                            this.link(item.id);
+                            // Toast.show('CLicked Share Link', Toast.LONG)
+                          }}
+                          option3Click={() => {
+                            this.forwardlink(item.id);
+                            // Toast.show('CLicked Forward Link', Toast.LONG)
+                          }}
+                          option4Click={() => {
+                            this.SendReportIssue();
+                          }}
+                        />
+                      </View>
                     </View>
-                    {item.products[1]?(<TouchableOpacity style={styles.ImageContainer} >
-            <Image
-              source={{uri:item.products[1].image}}
-              style={styles.ImageContainer}></Image>
-            <Text style={styles.itemNameStyle}>{item.products[1].name}</Text>
-            <Text style={styles.itemPriceStyle}>
-              {'\u20B9'}
-              {item.products[1].price}
-            </Text>
-          </TouchableOpacity>):null }
-                  </View>
-          
-                  <View style={styles.hairline} />
-                </ScrollView>
-          
-                <View style={styles.hairline} />
-              </TouchableOpacity>
-              )}
-                    }
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}>
+                      <View style={styles.columnView}>
+                        <View style={styles.ImageContainer}>
+                          <Image
+                            source={{uri: item.products[0].image}}
+                            style={styles.ImageContainer}
+                          />
+                          <Text style={styles.itemNameStyle}>
+                            {item.products[0].name}
+                          </Text>
+                          <Text style={styles.itemPriceStyle}>
+                            {'\u20B9'}
+                            {item.products[0].price}
+                          </Text>
+                        </View>
+                        {item.products[1] ? (
+                          <TouchableOpacity style={styles.ImageContainer}>
+                            <Image
+                              source={{uri: item.products[1].image}}
+                              style={styles.ImageContainer}
+                            />
+                            <Text style={styles.itemNameStyle}>
+                              {item.products[1].name}
+                            </Text>
+                            <Text style={styles.itemPriceStyle}>
+                              {'\u20B9'}
+                              {item.products[1].price}
+                            </Text>
+                          </TouchableOpacity>
+                        ) : null}
+                      </View>
+
+                      <View style={styles.hairline} />
+                    </ScrollView>
+
+                    <View style={styles.hairline} />
+                  </TouchableOpacity>
+                );
+              }}
               ListEmptyComponent={this.ListEmpty}
             />
-            
           </ScrollView>
-         
         </View>
-       
-        
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -693,11 +658,11 @@ const styles = StyleSheet.create({
 
   ProfileImageContainer: {
     // margin: resp(10),
-    marginLeft:wp(5),
-    marginTop:hp(10),
+    marginLeft: wp(5),
+    marginTop: hp(10),
     flexDirection: 'column',
     flex: 0.2,
-    backgroundColor:'white',
+    backgroundColor: 'white',
     width: resp(70),
     height: resp(70),
   },
@@ -723,7 +688,7 @@ const styles = StyleSheet.create({
     shadowOpacity: resp(0.2),
     shadowOffset: {
       height: resp(1),
-      width:resp(5),
+      width: resp(5),
     },
     elevation: 0,
   },
@@ -754,7 +719,7 @@ const styles = StyleSheet.create({
     margin: resp(5),
     borderRadius: resp(5),
   },
- 
+
   card: {
     marginHorizontal: 0,
     borderColor: 'rgba(0,0,0,0)',
@@ -762,11 +727,11 @@ const styles = StyleSheet.create({
   },
   ProfileInfoContainer: {
     margin: resp(0),
-    marginLeft:wp(10),
+    marginLeft: wp(10),
     marginTop: hp(15),
     flexDirection: 'column',
     flex: 0.5,
-   
+
     width: wp(70),
     height: hp(70),
   },
@@ -776,9 +741,8 @@ const styles = StyleSheet.create({
     flex: 0.5,
     width: resp(0),
     height: hp(30),
-  
   },
- 
+
   viewButtonStyle: {
     color: '#000',
     marginRight: resp(-20),
@@ -788,8 +752,8 @@ const styles = StyleSheet.create({
     marginLeft: resp(4),
   },
 
-  spinnerTextStyle:{
-    color:'#F01738'
+  spinnerTextStyle: {
+    color: '#F01738',
   },
   messageButtonContainer: {
     margin: resp(5),
@@ -812,7 +776,7 @@ const styles = StyleSheet.create({
     width: resp(60),
     height: resp(24),
     backgroundColor: '#fff',
-  }, 
+  },
   columnView: {
     flexDirection: 'row',
     width: '100%',
@@ -820,11 +784,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemNameStyle: {
-    width:'100%',
+    width: '100%',
     color: '#887F82',
-    marginLeft: resp(7),
     fontSize: resp(14),
-    marginLeft:resp(10),
+    marginLeft: resp(10),
   },
   heartButtonStyle: {
     color: '#F01738',

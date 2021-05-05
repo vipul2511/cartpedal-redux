@@ -1,5 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-did-update-set-state */
+/* eslint-disable no-alert */
 /* eslint-disable prettier/prettier */
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,69 +11,55 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
-} from 'react-native'
-import resp from 'rn-responsive-font'
-console.disableYellowBox = true
-import Toast from 'react-native-simple-toast';
-import { connect } from 'react-redux'
-import { resetPass } from '../../redux/actions';
+} from 'react-native';
+import resp from 'rn-responsive-font';
+console.disableYellowBox = true;
+import {connect} from 'react-redux';
+import {resetPass} from '../../redux/actions';
 import {BASE_URL} from '../Component/ApiClient';
-var otp
+var otp;
 
 class ResetPasswordScreen extends Component {
   constructor(props) {
-    super(props)
-    // this.ResetPasswordCall = this.ResetPasswordCall.bind(this);
+    super(props);
     this.state = {
       new_password: '',
       confirm_password: '',
       baseUrl: `${BASE_URL}`,
       callUpdate: false,
-   //   baseUrl: 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/'
-    }
+    };
   }
+
   showLoading() {
-    this.setState({ loading: true });
+    this.setState({loading: true});
   }
 
   hideLoading() {
-    this.setState({ loading: false });
+    this.setState({loading: false});
   }
+
   componentDidMount() {
-    const { navigation } = this.props
-
-    otp = this.props.route.params.otp
-    // otp = navigation.getParam('otp', 'no-otp')
-
-    // this.setState({otp:otp})
-    console.log(" in next screen To print ", otp)
-
+    const {navigation} = this.props;
+    otp = this.props.route.params.otp;
   }
+
   CheckTextInput = () => {
-
-
     if (this.state.new_password === '') {
-      //Check for the Name TextInput
       alert('Please Enter Password');
-
-    }
-    else if (this.state.new_password != this.state.confirm_password) {
+    } else if (this.state.new_password != this.state.confirm_password) {
       alert('Not Match Password');
-    }
-
-
-    else {
+    } else {
       this.setState({callUpdate: true}, () => {
-        this.props.resetPass(this.state.new_password, otp)
-      })
+        this.props.resetPass(this.state.new_password, otp);
+      });
     }
-
   };
+
   componentDidUpdate() {
     if (this.props.success && this.state.callUpdate) {
-      this.setState({ callUpdate: false }, () => {
-        this.props.navigation.replace('LoginScreen')
-      })
+      this.setState({callUpdate: false}, () => {
+        this.props.navigation.replace('LoginScreen');
+      });
     }
   }
 
@@ -78,8 +67,7 @@ class ResetPasswordScreen extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.headerView}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Image
               source={require('../images/back_icon.png')}
               style={styles.MenuHomeIconStyle}
@@ -89,31 +77,33 @@ class ResetPasswordScreen extends Component {
         <View style={styles.MainContainer}>
           <Text style={styles.HeadingText}>Reset Password ?</Text>
 
-          <View style={styles.box}></View>
+          <View style={styles.box} />
           <Text style={styles.UserName}>New Password</Text>
           <View style={styles.inputView1}>
-            <View style={{ flexDirection: 'row', marginLeft: 15 }}></View>
+            <View style={{flexDirection: 'row', marginLeft: 15}} />
 
             <TextInput
-              placeholder=''
-              placeholderTextColor='#000'
-              underlineColorAndroid='transparent'
+              placeholder=""
+              placeholderTextColor="#000"
+              underlineColorAndroid="transparent"
               style={styles.input}
               secureTextEntry={true}
-              onChangeText={confirm_password => this.setState({ confirm_password })}
+              onChangeText={(confirm_password) =>
+                this.setState({confirm_password})
+              }
             />
           </View>
           <Text style={styles.UserName}>Conform Password</Text>
           <View style={styles.inputView1}>
-            <View style={{ flexDirection: 'row', marginLeft: 15 }}></View>
+            <View style={{flexDirection: 'row', marginLeft: 15}} />
 
             <TextInput
-              placeholder=''
-              placeholderTextColor='#000'
-              underlineColorAndroid='transparent'
+              placeholder=""
+              placeholderTextColor="#000"
+              underlineColorAndroid="transparent"
               style={styles.input}
               secureTextEntry={true}
-              onChangeText={new_password => this.setState({ new_password })}
+              onChangeText={(new_password) => this.setState({new_password})}
             />
           </View>
 
@@ -121,25 +111,24 @@ class ResetPasswordScreen extends Component {
             style={styles.loginButtonStyle}
             activeOpacity={0.2}
             onPress={() => {
-              this.CheckTextInput()
+              this.CheckTextInput();
             }}>
             <Text style={styles.buttonWhiteTextStyle}>Submit</Text>
           </TouchableOpacity>
           {this.props.isLoading && (
             <View style={styles.loading}>
               <ActivityIndicator size="large" color="#F01738" />
-
             </View>
           )}
         </View>
       </View>
-    )
+    );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: '#fff',
   },
   box: {
@@ -151,7 +140,6 @@ const styles = StyleSheet.create({
     color: 'white',
     alignContent: 'center',
   },
-
   UserName: {
     color: 'gray',
     width: resp(350),
@@ -184,11 +172,9 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     alignItems: 'flex-start',
-    justifyContent: 'flex-start'
-
+    justifyContent: 'flex-start',
   },
   loading: {
-
     left: 0,
     right: 0,
     top: 0,
@@ -200,7 +186,6 @@ const styles = StyleSheet.create({
   color: {
     color: 'red',
   },
-
   input: {
     color: 'black',
     width: 300,
@@ -208,7 +193,6 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'left',
   },
-
   inputView1: {
     width: '90%',
     marginBottom: 15,
@@ -227,14 +211,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-})
-
+});
 
 function mapStateToProps(state) {
-  const { isLoading, data, success } = state.ResetPassReducer
+  const {isLoading, data, success} = state.ResetPassReducer;
   return {
-    isLoading, data, success
-  }
+    isLoading,
+    data,
+    success,
+  };
 }
 
-export default connect(mapStateToProps, { resetPass })(ResetPasswordScreen);
+export default connect(mapStateToProps, {resetPass})(ResetPasswordScreen);

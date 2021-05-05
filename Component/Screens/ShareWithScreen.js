@@ -1,20 +1,17 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  SectionList,
 } from 'react-native';
-import AppConst from '../Component/AppConst';
-import AppImageSlider from '../Component/AppImageSlider';
 import {
   moreIcon,
   searchIcon,
@@ -23,13 +20,11 @@ import {
   untickIcon,
   submitIcon,
 } from '../Component/Images';
-import AppHeader from '../Component/AppHeader';
-import Menu, {MenuItem} from 'react-native-material-menu';
+import Menu from 'react-native-material-menu';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Thumbnail} from 'native-base';
 import {BASE_URL} from '../Component/ApiClient';
 const screenWidth = Dimensions.get('screen').width;
 
@@ -64,6 +59,7 @@ export default class ShareWithScreen extends React.Component {
         groupData: [],
       });
   }
+
   showLoading() {
     this.setState({spinner: true});
   }
@@ -80,10 +76,9 @@ export default class ShareWithScreen extends React.Component {
           this.setState({fcmtoken: JSON.parse(token)});
         }
       });
-      AsyncStorage.getItem('@product_id').then((id)=>{
-        if(id){
-          console.log('rpoduct id ',JSON.parse(id));
-        this.setState({product_id:JSON.parse(id)});
+      AsyncStorage.getItem('@product_id').then((id) => {
+        if (id) {
+          this.setState({product_id: JSON.parse(id)});
         }
       });
       AsyncStorage.getItem('@groupData').then((groupData) => {
@@ -112,8 +107,6 @@ export default class ShareWithScreen extends React.Component {
       AsyncStorage.getItem('@user_id').then((userId) => {
         if (userId) {
           this.setState({userId: userId});
-
-          // this.ProductListCall()
         }
       });
       AsyncStorage.getItem('@access_token').then((accessToken) => {
@@ -129,8 +122,7 @@ export default class ShareWithScreen extends React.Component {
       }, 3000);
     });
   }
-  sendContactToServer = (contact) => {
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
+  sendContactToServer = () => {
     var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
 
     fetch(EditProfileUrl, {
@@ -151,25 +143,19 @@ export default class ShareWithScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
           Toast.show(responseData.message);
           let serverContacts = Object.values(responseData.data.contact);
           this.setState({ServercontactList: serverContacts});
         } else {
         }
-
-        //
-
-        //
-        //
       })
       .catch((error) => {
-        //  this.hideLoading();
         console.error(error);
       })
       .done();
   };
+
   ContactListall() {
     var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
 
@@ -191,9 +177,7 @@ export default class ShareWithScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
-          //  Toast.show(responseData.message);
           let appNO = responseData.data.appcontact;
 
           let newFormatArray = this.state.groupData.concat(appNO);
@@ -211,45 +195,14 @@ export default class ShareWithScreen extends React.Component {
           this.setState({nameAppcontacts: nameofCartPadle});
         } else {
         }
-
-        //
-
-        //
-        //
       })
       .catch((error) => {
-        //  this.hideLoading();
         console.error(error);
       })
       .done();
   }
-  boxname = (items, newItem) => {
-    // if(typeof items.name =='string'){
-    //
-    // let nameArr=this.state.numberArr;
-    // let nameArray=this.state.nameArrState;
-    // if(this.state.numberArr.includes(newItem)){
-    //   this.setState({numberArr:nameArr.filter(value=>value!==newItem)})
-    // }else{
-    //   nameArr.push(newItem);
-    //   this.setState({numberArr:nameArr});
-    // }
-    // if(this.state.nameArrState.includes(items.name)){
-    //   this.setState({ nameArrState: nameArray.filter(item => item !== items.name)},()=>{
-    //     let nameDisplay=this.state.nameArrState.join(',');
-    //     this.setState({nameDisplayBox:nameDisplay});
-    //   })
-    // }else{
-    //   nameArray.push(items.name);
-    //   this.setState({nameArrState:nameArray},()=>{
-    //     let nameDisplay=this.state.nameArrState.join(',');
-    //     this.setState({nameDisplayBox:nameDisplay});
-    //   });
-    // }
-    // // let nameSingle=this.state.numberArr.join(',');
-    // // this.setState({nameBox:nameSingle});
-    // }else{
 
+  boxname = (items, newItem) => {
     let nameArr = this.state.numberArr;
     let nameArray = this.state.nameArrState;
     if (this.state.numberArr.includes(newItem)) {
@@ -279,15 +232,18 @@ export default class ShareWithScreen extends React.Component {
       });
     }
   };
+
   numberUpdate = () => {
     let nameSingle = this.state.numberArr.join(',');
     this.setState({nameBox: nameSingle});
   };
+
   nameUpdate = () => {
     const arr = this.state.data.map((i) => i.name);
     let nameDisplay = arr.join(',');
     this.setState({nameDisplayBox: nameDisplay});
   };
+
   selection = (items) => {
     if (this.state.data.length > 0) {
       if (items.mobile && items.name) {
@@ -305,15 +261,14 @@ export default class ShareWithScreen extends React.Component {
       });
     }
   };
+
   selectItem = (value) => {
     let list = this.state.data;
-    // this.setState({boxname:true});
     if (value.mobile) {
       if (list != null) {
         if (this.state.data.includes(value)) {
           this.setState({data: list.filter((item) => item !== value)}, () => {
             this.selection(value);
-            // this.tickIcon(value);
           });
         } else {
           this.setState({data: [...list, value]}, () => {
@@ -327,24 +282,20 @@ export default class ShareWithScreen extends React.Component {
       if (this.state.data.includes(value)) {
         this.setState({data: list.filter((item) => item !== value)}, () => {
           this.selection(value);
-          // this.tickIcon(value);
         });
       } else {
         list.push(value);
         this.setState({data: list}, () => {
           this.selection(value);
-          // this.tickIcon(value);
         });
       }
     }
   };
+
   tickIcon = (items) => {
     let arra = this.state.data;
-
-    //
-    //
     let found = arra.some((item) => item == items);
-    //
+
     if (found) {
       return (
         <View>
@@ -359,13 +310,14 @@ export default class ShareWithScreen extends React.Component {
       );
     }
   };
+
   listItem = () => {
     let commentArr = [];
     commentArr.push(displayText);
     setNewArray(commentArr);
   };
-  rendorContactItem(item, index, separators) {
-    //
+
+  rendorContactItem(item) {
     return (
       <View style={{marginBottom: 10}}>
         <View style={[styles.upperRowStyle]}>
@@ -384,8 +336,8 @@ export default class ShareWithScreen extends React.Component {
       </View>
     );
   }
-  rendorContactList(item, index, separators) {
-    //
+
+  rendorContactList(item, index) {
     return (
       <View style={{marginBottom: 10}} key={index}>
         <View style={[styles.upperRowStyle]}>
@@ -418,25 +370,17 @@ export default class ShareWithScreen extends React.Component {
               {this.tickIcon(item)}
             </TouchableOpacity>
           )}
-          {/* <TouchableOpacity
-                onPress={()=>{this.selection(item)}}        
-            >
-                {(item.id!==this.state.clickeduser_id)?
-                <Image source={untickIcon} style={styles.tickIcon} />
-                :<Image source={tickIcon} style={styles.tickIcon} />}
-            </TouchableOpacity> */}
         </View>
       </View>
     );
   }
+
   ShareProductNotRegisteredUser = () => {
     this.showLoading();
     let formData = new FormData();
     formData.append('user_id', this.state.userId);
     formData.append('product_id', this.state.product_id);
     formData.append('contacts', this.state.nameBox);
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var EditProfileUrl = `${BASE_URL}api-product/product-share-msg`;
 
     fetch(EditProfileUrl, {
@@ -446,7 +390,6 @@ export default class ShareWithScreen extends React.Component {
         device_id: '1111',
         device_token: this.state.fcmtoken,
         device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -459,78 +402,71 @@ export default class ShareWithScreen extends React.Component {
           this.props.navigation.navigate('DashBoardScreen');
         } else {
         }
-        //
-
-        //
-        //
       })
       .catch((error) => {
         this.hideLoading();
-        console.error(error);
       })
       .done();
   };
+
   shareProduct = () => {
     let bar = new Promise((resolve, reject) => {
-      console.log(this.state.nameBox,this.state.product_id)
-    this.showLoading();
-    this.state.product_id.forEach(item=>{
-    let formData = new FormData();
-    formData.append('user_id', this.state.userId);
-    formData.append('type', 0);
-    formData.append('product_id', item);
-    formData.append('contacts', this.state.nameBox);
+      this.showLoading();
+      this.state.product_id.forEach((item) => {
+        let formData = new FormData();
+        formData.append('user_id', this.state.userId);
+        formData.append('type', 0);
+        formData.append('product_id', item);
+        formData.append('contacts', this.state.nameBox);
 
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var EditProfileUrl = `${BASE_URL}api-product/product-share`;
+        var EditProfileUrl = `${BASE_URL}api-product/product-share`;
 
-    fetch(EditProfileUrl, {
-      method: 'Post',
-      headers: new Headers({
-        'Content-Type': 'multipart/form-data',
-        device_id: '1111',
-        device_token: this.state.fcmtoken,
-        device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,
-        Authorization: JSON.parse(this.state.userAccessToken),
-      }),
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.hideLoading();
-        if (responseData.code == '200') {
-          AsyncStorage.removeItem('@product_id').then(succ=>{
-            console.log(succ);
-             }); resolve(responseData)
-        } else {
-          if(responseData.message=="Product already shared."){
-            reject(responseData.message);
-           }
-           console.log(responseData.data);
-        }
-        //
-
-        //
-        //
-      })
-      .catch((error) => {
-        this.hideLoading();
-        console.error(error);
-      })
-      .done();
+        fetch(EditProfileUrl, {
+          method: 'Post',
+          headers: new Headers({
+            'Content-Type': 'multipart/form-data',
+            device_id: '1111',
+            device_token: this.state.fcmtoken,
+            device_type: 'android',
+            Authorization: JSON.parse(this.state.userAccessToken),
+          }),
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((responseData) => {
+            this.hideLoading();
+            if (responseData.code == '200') {
+              AsyncStorage.removeItem('@product_id').then((succ) => {
+                console.log(succ);
+              });
+              resolve(responseData);
+            } else {
+              if (responseData.message == 'Product already shared.') {
+                reject(responseData.message);
+              }
+              console.log(responseData.data);
+            }
+          })
+          .catch((error) => {
+            this.hideLoading();
+            console.error(error);
+          })
+          .done();
+      });
     });
-    });
+
     bar.then((responseData) => {
       this.hideLoading();
       Toast.show(responseData.message);
       this.props.navigation.navigate('DashBoardScreen');
-  });
-  bar.catch((error)=>{
-    this.hideLoading();
-   alert(error);
-  })
+    });
+
+    bar.catch((error) => {
+      this.hideLoading();
+      alert(error);
+    });
   };
+
   openForPublic = () => {
     if (!this.state.isAllContactSelect) {
       this.AllContactFun();
@@ -554,20 +490,10 @@ export default class ShareWithScreen extends React.Component {
       if (filteredData.length === 0) {
         this.setState({boxname: false, nameDisplayBox: '', nameBox: ''});
       }
-      // if (filteredData.length > 0) {
-      //   this.setState({boxname: false, nameDisplayBox: ''});
-      // }
-      // data.forEach((itemID) => {
-      //   let filterData = data.filter((value) => value === itemID);
-      //   this.setState({data: filterData});
-      //   if (filterData.length > 0) {
-      //     this.setState({boxname: false});
-      //   }
-      // });
     }
   };
+
   searchFilterFunction = (text) => {
-    // Check if searched text is not blank
     if (text) {
       let combineArray = this.state.contactList.concat(
         this.state.ServercontactList,
@@ -582,14 +508,12 @@ export default class ShareWithScreen extends React.Component {
       this.setState({contactList: this.state.masterlist});
     }
   };
+
   FlatListItemSeparator = () => {
-    return (
-      //Item Separator
-      <View style={styles.listItemSeparatorStyle} />
-    );
+    return <View style={styles.listItemSeparatorStyle} />;
   };
+
   AllContactFun = () => {
-    // console.log(this.state.isAllPublicGrpSelect);
     if (!this.state.isAllPublicGrpSelect) {
       this.openForPublic();
     }
@@ -599,7 +523,6 @@ export default class ShareWithScreen extends React.Component {
     );
     this.setState({isAllContactSelect: !this.state.isAllContactSelect});
     if (this.state.isAllContactSelect == true) {
-      // this.openForPublic();
       this.setState({data: newArrContacts.concat(this.state.appContacts)});
       this.setState({numberArr: newArrContacts});
       this.setState({boxname: true});
@@ -626,24 +549,18 @@ export default class ShareWithScreen extends React.Component {
           this.setState({data: []});
           this.setState({boxname: false, nameDisplayBox: ''});
         }
-        //
-        //
       });
       this.hideLoading();
     }
   };
+
   render() {
-    console.log(this.state.nameDisplayBox, this.state.numberArr);
-    // console.log(this.state.data.length);
-    //  console.log(this.state.contactList);
-    // console.log(this.state.ServercontactList.length);
     const rigthMenu = (
       <View style={{flexDirection: 'row'}}>
         <TouchableOpacity
           style={styles.SearchContainer}
           onPress={() => {
             this.setState({showSearch: false});
-            // this.props.navigation.navigate('SearchBarScreen')
           }}>
           <Image source={searchIcon} style={styles.SearchIconStyle} />
         </TouchableOpacity>
@@ -686,23 +603,21 @@ export default class ShareWithScreen extends React.Component {
         </Menu>
       </View>
     );
+
     return (
       <SafeAreaView style={styles.mainContainer}>
         <Spinner
           visible={this.state.spinner}
           color="#F01738"
-          // textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
-        {/* <View style={[styles.container]}> */}
         {this.state.showSearch ? (
           <View style={styles.headerView}>
-            {/* <View > */}
             <TouchableOpacity
               style={styles.BackButtonContainer}
               onPress={() => {
-                AsyncStorage.removeItem('@product_id').then(succ=>{
+                AsyncStorage.removeItem('@product_id').then(() => {
                   this.props.navigation.goBack();
                 });
               }}>
@@ -711,7 +626,6 @@ export default class ShareWithScreen extends React.Component {
                 style={styles.backButtonStyle}
               />
             </TouchableOpacity>
-            {/* </View> */}
             <View style={styles.TitleContainer}>
               <Image
                 source={require('../images/logo_cart_paddle.png')}
@@ -723,16 +637,6 @@ export default class ShareWithScreen extends React.Component {
               </TouchableOpacity>
             </View>
             {rigthMenu}
-            {/* <TouchableOpacity style={styles.SearchContainer}
-            onPress={() => {    
-              this.setState({showSearch:false})                            
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            />
-          </TouchableOpacity> */}
           </View>
         ) : (
           <View style={styles.inputViewStyle}>
@@ -850,8 +754,6 @@ export default class ShareWithScreen extends React.Component {
             </View>
           </View>
         ) : null}
-
-        {/* </View> */}
       </SafeAreaView>
     );
   }
@@ -863,8 +765,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   container: {
-    // flex:0.2,
-    // marginTop:20,
     backgroundColor: '#e3e3e3',
   },
   input: {

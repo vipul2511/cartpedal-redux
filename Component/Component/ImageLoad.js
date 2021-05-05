@@ -82,7 +82,8 @@ class ImageLoad extends React.Component {
                 placeholderSource
                   ? placeholderSource
                   : require('../images/empty-image.png')
-              }></Image>
+              }
+            />
           </View>
         )}
         {this.props.children && (
@@ -107,8 +108,6 @@ const styles = {
     backgroundColor: '#e9eef1',
     justifyContent: 'center',
     alignItems: 'center',
-    // borderWidth:45,
-    // borderColor:'red'
   },
   imagePlaceholderStyles: {
     width: 100,
@@ -116,8 +115,6 @@ const styles = {
     resizeMode: 'contain',
     justifyContent: 'center',
     alignItems: 'center',
-    // borderWidth:45,
-    // borderColor:'red'
   },
   viewChildrenStyles: {
     top: 0,

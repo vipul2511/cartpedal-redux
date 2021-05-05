@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View,TouchableOpacity,Image, Dimensions } from 'react-native';
-import { WebView } from 'react-native-webview';
-import resp from 'rn-responsive-font' 
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from 'react-native';
+import resp from 'rn-responsive-font';
 
-let width=Dimensions.get('window').width;
-let height=Dimensions.get('window').height;
+let width = Dimensions.get('window').width;
 export default class MyWebComponent extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-
-    }
+    this.state = {};
   }
-  componentDidMount(){
-    
-  }
+  componentDidMount() {}
   render() {
     return (
-      <View style={{flex:1}}>
-         <View style={styles.headerView}>
+      <View style={{flex: 1}}>
+        <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
@@ -37,48 +39,186 @@ export default class MyWebComponent extends Component {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
         </View>
-        <View style={{flexDirection:'row',flex:0.25}}>
-            <View style={{width:resp(width/2-10),height:resp(150),backgroundColor:'#fff',elevation:5,marginTop:10,marginLeft:8,marginRight:5}}>
-               <Text style={{textAlign:'center',fontWeight:'bold',fontSize:resp(18),marginTop:10}}>Total Download</Text>
-               <Text style={{textAlign:'center',fontWeight:'500',fontSize:resp(15),marginTop:20}}>1,000</Text>
-            </View>
-            <View style={{width:resp(width/2-10),height:resp(150),backgroundColor:'#fff',elevation:5,marginTop:10,marginRight:5}}>
-            <Text style={{textAlign:'center',fontWeight:'bold',fontSize:resp(18),marginTop:10}}>Total Top User</Text>
-               <Text style={{textAlign:'center',fontWeight:'500',fontSize:resp(15),marginTop:20}}>500</Text>
-</View>
-</View>
-<View style={{flexDirection:'row',flex:0.25}}>
-            <View style={{width:resp(width/2-10),height:resp(150),backgroundColor:'#fff',elevation:5,marginTop:10,marginLeft:8,marginRight:5}}>
-               <Text style={{textAlign:'center',fontWeight:'bold',fontSize:resp(18),marginTop:10}}>Top Seller</Text>
-               <Text style={{textAlign:'center',fontWeight:'500',fontSize:resp(15),marginTop:20}}>Ravi Kant</Text>
-            </View>
-            <View style={{width:resp(width/2-10),height:resp(150),backgroundColor:'#fff',elevation:5,marginTop:10,marginRight:5}}>
-            <Text style={{textAlign:'center',fontWeight:'bold',fontSize:resp(18),marginTop:10}}>Top Purchasers</Text>
-               <Text style={{textAlign:'center',fontWeight:'500',fontSize:resp(15),marginTop:20}}>Bharat Sharma</Text>
-</View>
-</View>
-<View style={{flexDirection:'row',flex:0.25}}>
-            <View style={{width:resp(width/2-10),height:resp(150),backgroundColor:'#fff',elevation:5,marginTop:10,marginLeft:8,marginRight:5}}>
-               <Text style={{textAlign:'center',fontWeight:'bold',fontSize:resp(18),marginTop:10}}>Most viewed product</Text>
-               <Text style={{textAlign:'center',fontWeight:'500',fontSize:resp(15),marginTop:20}}>Denim jeans</Text>
-            </View>
-            <View style={{width:resp(width/2-10),height:resp(150),backgroundColor:'#fff',elevation:5,marginTop:10,marginRight:5}}>
-            <Text style={{textAlign:'center',fontWeight:'bold',fontSize:resp(18),marginTop:10}}>Most ordered product</Text>
-               <Text style={{textAlign:'center',fontWeight:'500',fontSize:resp(15),marginTop:20}}>T-shirt</Text>
-</View>
-</View>
-    </View>
+        <View style={{flexDirection: 'row', flex: 0.25}}>
+          <View
+            style={{
+              width: resp(width / 2 - 10),
+              height: resp(150),
+              backgroundColor: '#fff',
+              elevation: 5,
+              marginTop: 10,
+              marginLeft: 8,
+              marginRight: 5,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: resp(18),
+                marginTop: 10,
+              }}>
+              Total Download
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: '500',
+                fontSize: resp(15),
+                marginTop: 20,
+              }}>
+              1,000
+            </Text>
+          </View>
+          <View
+            style={{
+              width: resp(width / 2 - 10),
+              height: resp(150),
+              backgroundColor: '#fff',
+              elevation: 5,
+              marginTop: 10,
+              marginRight: 5,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: resp(18),
+                marginTop: 10,
+              }}>
+              Total Top User
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: '500',
+                fontSize: resp(15),
+                marginTop: 20,
+              }}>
+              500
+            </Text>
+          </View>
+        </View>
+        <View style={{flexDirection: 'row', flex: 0.25}}>
+          <View
+            style={{
+              width: resp(width / 2 - 10),
+              height: resp(150),
+              backgroundColor: '#fff',
+              elevation: 5,
+              marginTop: 10,
+              marginLeft: 8,
+              marginRight: 5,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: resp(18),
+                marginTop: 10,
+              }}>
+              Top Seller
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: '500',
+                fontSize: resp(15),
+                marginTop: 20,
+              }}>
+              Ravi Kant
+            </Text>
+          </View>
+          <View
+            style={{
+              width: resp(width / 2 - 10),
+              height: resp(150),
+              backgroundColor: '#fff',
+              elevation: 5,
+              marginTop: 10,
+              marginRight: 5,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: resp(18),
+                marginTop: 10,
+              }}>
+              Top Purchasers
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: '500',
+                fontSize: resp(15),
+                marginTop: 20,
+              }}>
+              Bharat Sharma
+            </Text>
+          </View>
+        </View>
+        <View style={{flexDirection: 'row', flex: 0.25}}>
+          <View
+            style={{
+              width: resp(width / 2 - 10),
+              height: resp(150),
+              backgroundColor: '#fff',
+              elevation: 5,
+              marginTop: 10,
+              marginLeft: 8,
+              marginRight: 5,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: resp(18),
+                marginTop: 10,
+              }}>
+              Most viewed product
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: '500',
+                fontSize: resp(15),
+                marginTop: 20,
+              }}>
+              Denim jeans
+            </Text>
+          </View>
+          <View
+            style={{
+              width: resp(width / 2 - 10),
+              height: resp(150),
+              backgroundColor: '#fff',
+              elevation: 5,
+              marginTop: 10,
+              marginRight: 5,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: resp(18),
+                marginTop: 10,
+              }}>
+              Most ordered product
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: '500',
+                fontSize: resp(15),
+                marginTop: 20,
+              }}>
+              T-shirt
+            </Text>
+          </View>
+        </View>
+      </View>
     );
   }
 }
@@ -131,4 +271,4 @@ const styles = StyleSheet.create({
     width: 25,
     alignSelf: 'flex-end',
   },
-})
+});

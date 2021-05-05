@@ -1,1 +1,1 @@
-export const API_URL = `https://www.cartpedal.com/`;
+export const API_URL = 'https://www.cartpedal.com/';

@@ -27,7 +27,7 @@ export default class NotifService {
     PushNotification.createChannel(
       {
         channelId: 'default-channel-id', // (required)
-        channelName: `Default channel`, // (required)
+        channelName: 'Default channel', // (required)
         channelDescription: 'A default channel', // (optional) default: undefined.
         soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
         importance: 4, // (optional) default: 4. Int value of the Android notification importance
@@ -39,7 +39,7 @@ export default class NotifService {
     PushNotification.createChannel(
       {
         channelId: 'sound-channel-id', // (required)
-        channelName: `Sound channel`, // (required)
+        channelName: 'Sound channel', // (required)
         channelDescription: 'A sound channel', // (optional) default: undefined.
         soundName: 'sample.mp3', // (optional) See `soundName` parameter of `localNotification` function
         importance: 4, // (optional) default: 4. Int value of the Android notification importance

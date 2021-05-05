@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
 
@@ -11,29 +12,22 @@ import {
   ScrollView,
   Platform,
   TextInput,
-  Dimensions
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment';
 import ImageModal from 'react-native-image-modal';
 import requestCameraAndAudioPermission from './permission';
-import { moreIcon, searchIcon,contactIcon,tickIcon,untickIcon,submitIcon } from '../Component/Images';
-import Menu, { MenuItem } from 'react-native-material-menu';
-// import {ScrollView} from 'react-native-gesture-handler'
-// import firebase from './firebase'
-// import Backend from '../Backend'
-// import AsyncStorage from '@react-native-community/async-storage';
+import {moreIcon} from '../Component/Images';
+import Menu from 'react-native-material-menu';
+
 import {ChatlistAction} from '../../redux/actions';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Badge, Fab, Icon} from 'native-base';
-import NetInfo from "@react-native-community/netinfo";
-import { connect} from 'react-redux'
+import {Fab, Icon} from 'native-base';
+import NetInfo from '@react-native-community/netinfo';
+import {connect} from 'react-redux';
 import _ from 'lodash';
 import {BASE_URL} from '../Component/ApiClient';
-let width=Dimensions.get('window').width;
-let height=Dimensions.get('window').height;
-const IDs = '123456';
 class ChatScreen extends Component {
   constructor(props) {
     super(props);
@@ -45,24 +39,22 @@ class ChatScreen extends Component {
       userAccessToken: '',
       chatList: '',
       ischatList: false,
-      spinner: '',
+      spinner: false,
       fcmToken: '',
       PhoneNumber: '',
       mounted: false,
-      showSearch:true,
-      masterlist:'',
-      exit:false,
+      showSearch: true,
+      masterlist: '',
+      exit: false,
       list: [],
-      Deleteid:'',
+      Deleteid: '',
       toids: [],
     };
     if (Platform.OS === 'android') {
-      //Request required permissions from Android
       requestCameraAndAudioPermission().then((_) => {
         console.log('requested!');
       });
     }
-    // this.handleBackButtonClicks= this.handleBackButtonClicks.bind(this);
   }
   showLoading() {
     this.setState({spinner: true});
@@ -71,22 +63,18 @@ class ChatScreen extends Component {
   componentDidMount = () => {
     this.showLoading();
     this.focusListener = this.props.navigation.addListener('focus', () => {
-      NetInfo.fetch().then(state => {
-        console.log("Connection type", state.type);
-        console.log("Is connected?", state.isConnected);
-        if(state.isConnected && this.state.mounted){
+      NetInfo.fetch().then((state) => {
+        if (state.isConnected && this.state.mounted) {
           this.getChatList();
         }
       });
-  });
+    });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({userId: userId});
-        // console.log('Edit user id Dhasbord ====' + this.state.userId);
       }
     });
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      // console.log('FCM TOKEN' + token);
       if (token) {
         this.setState({fcmToken: token});
       }
@@ -94,7 +82,6 @@ class ChatScreen extends Component {
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({userAccessToken: accessToken, mounted: true});
-        console.log('Edit access token ====' + accessToken);
         this.getChatList();
       }
     });
@@ -103,8 +90,8 @@ class ChatScreen extends Component {
         this.setState({PhoneNumber: JSON.parse(mobile)});
       }
     });
- 
   };
+
   showLoading() {
     this.setState({spinner: true});
   }
@@ -112,14 +99,12 @@ class ChatScreen extends Component {
   hideLoading() {
     this.setState({spinner: false});
   }
+
   DeleteGroupChat = () => {
     let formData = new FormData();
     formData.append('user_id', this.state.userId);
-    formData.append('groupid',this.state.Deleteid)
-    // console.log('form data==' + JSON.stringify(formData));  
-
-    var PalceOderUrl =`${BASE_URL}api-message/delete-group`
-    // console.log('placeOder:' + PalceOderUrl)
+    formData.append('groupid', this.state.Deleteid);
+    var PalceOderUrl = `${BASE_URL}api-message/delete-group`;
     fetch(PalceOderUrl, {
       method: 'Post',
       headers: new Headers({
@@ -127,132 +112,69 @@ class ChatScreen extends Component {
         device_id: '1234',
         device_token: this.state.fcmToken,
         device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,  
         Authorization: JSON.parse(this.state.userAccessToken),
-
       }),
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
+      .then((response) => response.json())
+      .then((responseData) => {
         if (responseData.code == '200 ') {
-          //  this.props.navigation.navigate('StoryViewScreen')
-          this.setState({exit:false});
-        this.getChatList()
-          // this.props.navigation.navigate('DashBoardScreen');
-          // this.setState({CartListProduct:responseData.data})
-          // this.SaveProductListData(responseData)
-          }
-        // else if (responseData.code == '500') {
-        //   //Toast.show(responseData.message)
-        // }
-
-        else {
-          // alert(responseData.data);
-          // alert(responseData.data.password)
-
+          this.setState({exit: false});
+          this.getChatList();
+        } else {
         }
-
-        // console.log('response object:', responseData)
-        // console.log('User user ID==', JSON.stringify(responseData))
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch(error => {
+      .catch((error) => {
         this.hideLoading();
-        console.error(error)
       })
-      .done()
-  }
-  componentWillReceiveProps(nextProps){
-    // console.log('recevie props data',nextProps.chatListData);
-    let equalArray=_.isEqual(this.props.chatListData,nextProps.chatListData);
-    if(!equalArray){
-      this.setState({chatList:nextProps.chatListData,ischatList:true});
+      .done();
+  };
+  componentWillReceiveProps(nextProps) {
+    let equalArray = _.isEqual(this.props.chatListData, nextProps.chatListData);
+    if (!equalArray) {
+      this.setState({chatList: nextProps.chatListData, ischatList: true});
     }
   }
- componentDidUpdate(){
-  //  console.log(this.props.chatlistsuccess);
-if(this.props.chatlistsuccess && this.state.callUpdate){
-  this.setState({callUpdate:false},()=>{
-    this.setState({chatList:this.props.chatListData,ischatList:true});
-    this.hideLoading();
-    // console.log('update ',this.props.chatListData);
-  })
-}
-if(this.props.chatlisterror && this.state.callUpdate){
-  this.setState({callUpdate:false},()=>{
-    this.setState({NoData:true,ischatList:false},()=>{
-      this.hideLoading();
-    })
-  });
-}
- }
-  getChatList = (loading = true) => {
-    // if (loading) {
-    //   this.showLoading();
-    // }
-  
-   this.setState({callUpdate:true},()=>{
-    this.props.ChatlistAction(this.state.userId,this.state.userAccessToken);
-   });
-   
-    // var urlprofile = `https://www.cartpedal.com/api-message/chat-list?user_id=${this.state.userId}`;
-    // // console.log('profileurl :' + urlprofile);
-    // fetch(urlprofile, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     device_id: '1234',
-    //     device_token: this.state.fcmToken,
-    //     device_type: 'android',
-    //     Authorization: JSON.parse(this.state.userAccessToken),
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then(async (responseData) => {
-    //     if (responseData.code == '200') {
-    //       this.hideLoading();
-    //       // this.LoginOrNot();
-    //       await this.setState({chatList: responseData.data, ischatList: true});
-    //       this.setState({masterlist: responseData.data});
-    //       // console.log(JSON.stringify(this.state.chatList, null, 2));
-    //     } else {
-    //       // alert(responseData.data);
-    //       this.hideLoading();
-    //       // console.log('logged user stories' + JSON.stringify(responseData));
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-  };
-  componentWillUnmount() {
-    // Backend.closeChat();
-    // this.focusListener.remove();
-  }
-  searchFilterFunction = (text) => {
-    // Check if searched text is not blank
-    console.log('name',text);
-    if (text) {
-      let combineArray=this.state.chatList
-      const newData = combineArray.filter(
-        function (item) {
-          const itemData = item.name
-            ? item.name.toUpperCase()
-            : ''.toUpperCase();
-          const textData = text.toUpperCase();
-          return itemData.indexOf(textData) > -1;
+  componentDidUpdate() {
+    //  console.log(this.props.chatlistsuccess);
+    if (this.props.chatlistsuccess && this.state.callUpdate) {
+      this.setState({callUpdate: false}, () => {
+        this.setState({chatList: this.props.chatListData, ischatList: true});
+        this.hideLoading();
       });
-      this.setState({chatList:newData});
+    }
+    if (this.props.chatlisterror && this.state.callUpdate) {
+      this.setState({callUpdate: false}, () => {
+        this.setState({NoData: true, ischatList: false}, () => {
+          this.hideLoading();
+        });
+      });
+    }
+  }
+  getChatList = () => {
+    this.setState({callUpdate: true}, () => {
+      this.props.ChatlistAction(this.state.userId, this.state.userAccessToken);
+    });
+  };
+
+  componentWillUnmount() {}
+
+  searchFilterFunction = (text) => {
+    if (text) {
+      let combineArray = this.state.chatList;
+      const newData = combineArray.filter(function (item) {
+        const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      this.setState({chatList: newData});
     } else {
-    this.setState({chatList:this.state.masterlist});
-    
+      this.setState({chatList: this.state.masterlist});
     }
   };
+
   render() {
     const funct = this;
-    //  console.log('date in render ',JSON.stringify(moment().format("DD-MM-YYYY")))
     return (
       <SafeAreaView style={styles.container}>
         <Fab
@@ -272,171 +194,211 @@ if(this.props.chatlisterror && this.state.callUpdate){
         <Spinner
           visible={this.state.spinner}
           color="#F01738"
-          // textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
-         {this.state.showSearch?(<View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+        {this.state.showSearch ? (
+          <View style={styles.headerView}>
+            <View style={styles.BackButtonContainer}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.TitleContainer}>
+              <Image
+                source={require('../images/logo_cart_paddle.png')}
+                style={styles.LogoIconStyle}
+              />
+              <TouchableOpacity
+                style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.TitleStyle}>CartPedal</Text>
+              </TouchableOpacity>
+            </View>
+            {!this.state.exit ? (
+              <TouchableOpacity
+                style={styles.SearchContainer}
+                onPress={() => {
+                  this.setState({showSearch: false});
+                }}>
+                <Image
+                  source={require('../images/search.png')}
+                  style={styles.SearchIconStyle}
+                />
+              </TouchableOpacity>
+            ) : (
+              <Icon
+                type="MaterialCommunityIcons"
+                name="delete"
+                style={{fontSize: 25}}
+                onPress={this.DeleteGroupChat}
+              />
+            )}
+            {!this.state.exit ? (
+              <TouchableOpacity
+                onPress={() => {
+                  this._menu.show();
+                }}>
+                <Image source={moreIcon} style={styles.moreMenuIcon} />
+              </TouchableOpacity>
+            ) : null}
+
+            <Menu ref={(ref) => (this._menu = ref)}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  marginStart: 10,
+                  marginEnd: 10,
+                  marginTop: 20,
+                  marginBottom: 10,
+                }}
+                onPress={() => {
+                  this._menu.hide();
+                  this.props.navigation.navigate('ChatGroupListScreen', {
+                    userId: this.state.userId,
+                    PhoneNumber: this.state.PhoneNumber,
+                    fcmToken: this.state.fcmToken,
+                    userAccessToken: this.state.userAccessToken,
+                  });
+                }}>
+                {'Create New Group'}
+              </Text>
+              <Text
+                style={{
+                  marginStart: 10,
+                  marginEnd: 10,
+                  marginBottom: 20,
+                  fontSize: 13,
+                }}
+                onPress={() => {
+                  this._menu.hide();
+                  this.props.navigation.navigate('ChatGroupListScreen', {
+                    userId: this.state.userId,
+                    PhoneNumber: this.state.PhoneNumber,
+                    fcmToken: this.state.fcmToken,
+                    userAccessToken: this.state.userAccessToken,
+                  });
+                }}>
+                {'(for your personol use)'}
+              </Text>
+            </Menu>
+          </View>
+        ) : (
+          <View style={styles.inputViewStyle}>
+            <TouchableOpacity
+              style={{marginLeft: 2}}
+              onPress={() => {
+                this.setState({showSearch: true});
+              }}>
               <Image
                 source={require('../images/back_blck_icon.png')}
-                style={styles.backButtonStyle}
+                style={styles.backButtonStyle1}
               />
             </TouchableOpacity>
+            <View style={{backgroundColor: '#00000008'}}>
+              <TextInput
+                placeholder="Search"
+                placeholderTextColor="#BEBEBE"
+                underlineColorAndroid="transparent"
+                style={styles.input}
+                onChangeText={(text) => {
+                  this.searchFilterFunction(text);
+                }}
+              />
+            </View>
           </View>
-          <View style={styles.TitleContainer}>
-            <Image
-              source={require('../images/logo_cart_paddle.png')}
-              style={styles.LogoIconStyle}
-            />
-            <TouchableOpacity
-              style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>CartPedal</Text>
-            </TouchableOpacity>
-          </View>
-          {!this.state.exit?(<TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              this.setState({showSearch:false})    
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            />
-          </TouchableOpacity>):<Icon type="MaterialCommunityIcons" name="delete" style={{fontSize:25}} onPress={this.DeleteGroupChat}  />}
-         {!this.state.exit? <TouchableOpacity 
-            onPress={() => {this._menu.show()}}
-          >
-              <Image source={moreIcon} style={styles.moreMenuIcon} />
-          </TouchableOpacity>:null}
-
-          <Menu
-            ref={(ref) => this._menu = ref }>
-            <Text style={{fontSize:16,fontWeight:'bold', marginStart:10,marginEnd:10,marginTop:20,marginBottom:10}} onPress={() => {
-              this._menu.hide()
-              this.props.navigation.navigate('ChatGroupListScreen', {
-                userId: this.state.userId,
-                PhoneNumber: this.state.PhoneNumber,
-                fcmToken: this.state.fcmToken,
-                userAccessToken: this.state.userAccessToken,
-              })}}>{'Create New Group'}</Text>
-            <Text  style={{marginStart:10,marginEnd:10,marginBottom:20,fontSize:13}}  onPress={() => {
-              this._menu.hide()
-              this.props.navigation.navigate('ChatGroupListScreen', {
-                userId: this.state.userId,
-                PhoneNumber: this.state.PhoneNumber,
-                fcmToken: this.state.fcmToken,
-                userAccessToken: this.state.userAccessToken,
-              });}}>{'(for your personol use)'}</Text>
-        </Menu>
-        </View>):(
-                    <View style={styles.inputViewStyle}>
-           
-                    <TouchableOpacity style={{marginLeft:2}}
-                     onPress={() => {this.setState({showSearch:true})}}>
-                     <Image
-                       source={require('../images/back_blck_icon.png')}
-                       style={styles.backButtonStyle1}
-                     />
-                   </TouchableOpacity>
-                   <View style={{backgroundColor: '#00000008'}}>
-                            <TextInput
-                                   placeholder="Search"
-                                   placeholderTextColor="#BEBEBE"
-                                   underlineColorAndroid="transparent"
-                                   style={styles.input}
-                                   onChangeText={(text)=>{this.searchFilterFunction(text)}}
-                               />
-                               </View>
-                               </View>
         )}
 
         <View style={styles.MainContentBox}>
           <ScrollView>
-            {/* <TouchableOpacity onPress={()=>{console.log(this.state.toids)}}><Text>delte</Text></TouchableOpacity> */}
             <View>
-              {this.state.ischatList
-                ? this.state.chatList.map(function (v, i) {
+              {this.state.ischatList ? (
+                this.state.chatList.map(function (v) {
                   const inList = funct.state.Deleteid;
-                  // console.log('v value',v.date);
-                    return (
-                      <TouchableOpacity
-                        onLongPress={()=>{funct.setState({exit:v.exit,Deleteid:v.id})}}
-                        onPress={() => {
-                          funct.props.navigation.navigate('ChatDetailScreen', {
-                            userid: v.id,
-                            username: v.name,
-                            useravatar: v.avatar,
-                            userabout:v.about,
-                            userphone:v.mobile,
-                            msg_type:v.msg_type,
-                            groupId:v.id,
-                            groupexit:v.lastmsg.group_id!==0?v.exit:''
-                          });
+
+                  return (
+                    <TouchableOpacity
+                      onLongPress={() => {
+                        funct.setState({exit: v.exit, Deleteid: v.id});
+                      }}
+                      onPress={() => {
+                        funct.props.navigation.navigate('ChatDetailScreen', {
+                          userid: v.id,
+                          username: v.name,
+                          useravatar: v.avatar,
+                          userabout: v.about,
+                          userphone: v.mobile,
+                          msg_type: v.msg_type,
+                          groupId: v.id,
+                          groupexit: v.lastmsg.group_id !== 0 ? v.exit : '',
+                        });
+                      }}>
+                      <View
+                        style={{
+                          alignSelf: 'center',
+                          backgroundColor:
+                            inList == v.id ? 'lightgrey' : 'white',
+                          width: '100%',
+                          flexDirection: 'row',
+                          alignItems: 'center',
                         }}>
-                        {/* <View
+                        <View style={{padding: 10}}>
+                          <ImageModal
+                            imageBackgroundColor="transparent"
+                            borderRadius={8}
+                            style={styles.Styleimage}
+                            source={
+                              v.avatar
+                                ? {uri: v.avatar}
+                                : require('../images/default_user.png')
+                            }
+                          />
+                        </View>
+                        <View
                           style={{
+                            backgroundColor:
+                              inList == v.id ? 'lightgrey' : 'white',
                             flexDirection: 'row',
-                            justifyContent: 'center',
-                            borderBottomWidth: 0.5,
-                            color: 'grey',
-                          }}> */}
-                          <View
-                            style={{
-                              alignSelf: 'center',
-                              backgroundColor: inList==v.id ? 'lightgrey' : 'white',
-                              width: '100%',
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                            }}>
-                            <View style={{padding: 10}}>
-                              <ImageModal
-                                imageBackgroundColor="transparent"
-                                borderRadius={8}
-                                style={styles.Styleimage}
-                                source={
-                                  v.avatar
-                                    ? {uri: v.avatar}
-                                    : require('../images/default_user.png')
-                                }
-                              />
-                            </View>
-                            <View
-                              style={{
-                                backgroundColor: inList==v.id ? 'lightgrey' : 'white',
-                                flexDirection: 'row',
-                                width: '84%',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                              }}>
-                              <View>
-                                <Text style={styles.PersonNameStyle}>
-                                  {v.name}
-                                </Text>
-                                
-                                {!v.is_delete?v.lastmsg?.txt_type === 'text' && (
+                            width: '84%',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}>
+                          <View>
+                            <Text style={styles.PersonNameStyle}>{v.name}</Text>
+
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'text' && (
                                   <Text style={styles.PersonNameStyle1}>
                                     {v.lastmsg?.body}
                                   </Text>
-                                ):null}
-                                  {!v.is_delete?v.lastmsg?.txt_type === 'ask_status' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'ask_status' && (
                                   <Text style={styles.PersonNameStyle1}>
                                     {v.lastmsg?.body}
                                   </Text>
-                                ):null}
-                                {!v.is_delete?v.lastmsg?.txt_type === 'accept' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'accept' && (
                                   <Text style={styles.PersonNameStyle1}>
                                     {v.lastmsg?.body}
                                   </Text>
-                                ):null}
-                                {!v.is_delete?v.lastmsg?.txt_type === 'link' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'link' && (
                                   <Text style={styles.PersonNameStyle1}>
                                     {v.lastmsg?.body}
                                   </Text>
-                                ):null}
-                
-                                {!v.is_delete?v.lastmsg?.txt_type === 'location' && (
+                                )
+                              : null}
+
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'location' && (
                                   <View
                                     style={{
                                       flexDirection: 'row',
@@ -459,8 +421,10 @@ if(this.props.chatlisterror && this.state.callUpdate){
                                       Location
                                     </Text>
                                   </View>
-                                ):null}
-                                {!v.is_delete?v.lastmsg?.txt_type === 'file' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'file' && (
                                   <View
                                     style={{
                                       flexDirection: 'row',
@@ -483,8 +447,10 @@ if(this.props.chatlisterror && this.state.callUpdate){
                                       Document
                                     </Text>
                                   </View>
-                                ):null}
-                                {!v.is_delete?v.lastmsg?.txt_type === 'image' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'image' && (
                                   <View
                                     style={{
                                       flexDirection: 'row',
@@ -507,8 +473,10 @@ if(this.props.chatlisterror && this.state.callUpdate){
                                       Photo
                                     </Text>
                                   </View>
-                                ):null}
-                                {!v.is_delete?v.lastmsg?.txt_type === 'video' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'video' && (
                                   <View
                                     style={{
                                       flexDirection: 'row',
@@ -531,8 +499,10 @@ if(this.props.chatlisterror && this.state.callUpdate){
                                       Video
                                     </Text>
                                   </View>
-                                ):null}
-                                {!v.is_delete?v.lastmsg?.txt_type === 'audio' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'audio' && (
                                   <View
                                     style={{
                                       flexDirection: 'row',
@@ -555,8 +525,10 @@ if(this.props.chatlisterror && this.state.callUpdate){
                                       Audio
                                     </Text>
                                   </View>
-                                ):null}
-                                {!v.is_delete?v.lastmsg?.txt_type === 'contact' && (
+                                )
+                              : null}
+                            {!v.is_delete
+                              ? v.lastmsg?.txt_type === 'contact' && (
                                   <View
                                     style={{
                                       flexDirection: 'row',
@@ -579,57 +551,61 @@ if(this.props.chatlisterror && this.state.callUpdate){
                                       Contact
                                     </Text>
                                   </View>
-                                ):null}
-                              </View>
-                              <View>
-                                <Text
-                                  style={[
-                                    styles.PersonNameStyle1,
-                                    {marginTop: 0},
-                                  ]}>
-                                    {v.date==moment().format("DD-MM-YYYY")?v.time:v.date}
-                                  {/* {moment(v.lastmsg?.created_at).format(
-                                    'hh:mm a',
-                                  )} */}
-                                </Text>
-                                {v.unread !== '0' && (
-                                  <View
-                                    style={{
-                                      backgroundColor: 'red',
-                                      height: 24,
-                                      width: 24,
-                                      borderRadius: 12,
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      marginTop: 8,
-                                      alignSelf: 'flex-end',
-                                      marginRight: '28%',
-                                    }}>
-                                    <Text style={{color: 'white'}}>
-                                      {v.unread}
-                                    </Text>
-                                  </View>
-                                )}
-                              </View>
-                            </View>
+                                )
+                              : null}
                           </View>
-                        {/* </View> */}
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            borderBottomWidth: 1,
-                            color: 'grey',
-                          }}></View>
-                      </TouchableOpacity>
-                    );
-                  })
-                : <View> 
-                  {this.state.NoData?
-                  <View style={{marginTop:resp(180),justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{fontWeight:'bold',}}>No Chat Found</Text>
-                    </View>:null}
-                  </View>}
+                          <View>
+                            <Text
+                              style={[styles.PersonNameStyle1, {marginTop: 0}]}>
+                              {v.date == moment().format('DD-MM-YYYY')
+                                ? v.time
+                                : v.date}
+                            </Text>
+                            {v.unread !== '0' && (
+                              <View
+                                style={{
+                                  backgroundColor: 'red',
+                                  height: 24,
+                                  width: 24,
+                                  borderRadius: 12,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  marginTop: 8,
+                                  alignSelf: 'flex-end',
+                                  marginRight: '28%',
+                                }}>
+                                <Text style={{color: 'white'}}>{v.unread}</Text>
+                              </View>
+                            )}
+                          </View>
+                        </View>
+                      </View>
+
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          borderBottomWidth: 1,
+                          color: 'grey',
+                        }}
+                      />
+                    </TouchableOpacity>
+                  );
+                })
+              ) : (
+                <View>
+                  {this.state.NoData ? (
+                    <View
+                      style={{
+                        marginTop: resp(180),
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={{fontWeight: 'bold'}}>No Chat Found</Text>
+                    </View>
+                  ) : null}
+                </View>
+              )}
             </View>
           </ScrollView>
         </View>
@@ -713,34 +689,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: '#00000008',
+
     backgroundColor: '#fff',
     width: '100%',
     marginTop: resp(20),
-   alignContent:'center',
-   alignSelf:'center',
-},
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
   MainContentBox: {
     flex: 1,
   },
-  backButtonStyle1:{
+  backButtonStyle1: {
     margin: 15,
     height: 20,
     width: 20,
   },
   moreMenuIcon: {
-    height : 25,
-    width : 30,
-    resizeMode:'contain',
-    // marginLeft:55,
-    // position:'absolute'
-},
+    height: 25,
+    width: 30,
+    resizeMode: 'contain',
+  },
   input: {
     color: '#BEBEBE',
     width: resp(339),
     height: 50,
-    fontSize:resp(14),
-  alignSelf:'flex-end' 
+    fontSize: resp(14),
+    alignSelf: 'flex-end',
   },
   row: {
     color: '#000',
@@ -894,7 +868,7 @@ const styles = StyleSheet.create({
     height: 60,
     shadowColor: '#ecf6fb',
     elevation: 20,
-    shadowColor: 'grey',
+
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -921,10 +895,18 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 });
-function mapStateToProps(state){
-  const {data:chatListData,success:chatlistsuccess,isLoading:loadingChatList,error:chatlisterror}=state.ChatlistReducer;
-  return{
-    chatListData,chatlistsuccess,loadingChatList,chatlisterror
-  }
+function mapStateToProps(state) {
+  const {
+    data: chatListData,
+    success: chatlistsuccess,
+    isLoading: loadingChatList,
+    error: chatlisterror,
+  } = state.ChatlistReducer;
+  return {
+    chatListData,
+    chatlistsuccess,
+    loadingChatList,
+    chatlisterror,
+  };
 }
-export default connect(mapStateToProps,{ChatlistAction})(ChatScreen);
+export default connect(mapStateToProps, {ChatlistAction})(ChatScreen);

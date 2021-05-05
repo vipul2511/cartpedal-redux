@@ -1,93 +1,89 @@
-import React, {Component} from 'react'
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
 
-console.disableYellowBox = true
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
   View,
   Text,
   FlatList,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   Image,
   TextInput,
   SafeAreaView,
-  ScrollView
-} from 'react-native'
-import resp from 'rn-responsive-font'
-import CustomMenuIcon from './CustomMenuIcon'
-import Toast from 'react-native-simple-toast'
-import DatePicker from 'react-native-datepicker'
-import AsyncStorage from '@react-native-community/async-storage'
-import moment from 'moment'
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-import SeeMore from 'react-native-see-more-inline'
-import Spinner from 'react-native-loading-spinner-overlay'
+  ScrollView,
+} from 'react-native';
+import resp from 'rn-responsive-font';
+import CustomMenuIcon from './CustomMenuIcon';
+import Toast from 'react-native-simple-toast';
+import DatePicker from 'react-native-datepicker';
+import AsyncStorage from '@react-native-community/async-storage';
+import RadioForm from 'react-native-simple-radio-button';
+import SeeMore from 'react-native-see-more-inline';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {BASE_URL} from '../Component/ApiClient';
+
 var radio_props = [
-  {label: 'Order Placed', value: 1 },
-  {label: 'Order Received', value: 2 }
+  {label: 'Order Placed', value: 1},
+  {label: 'Order Received', value: 2},
 ];
 
 class FliterScreen extends Component {
-  constructor (props) {
-    super(props)
-  
-      this.AddFavourite = this.AddFavourite.bind(this),
-      this.FilerDataCall = this.FilerDataCall.bind(this),
-      this.AskForStautsCall = this.AskForStautsCall.bind(this);
-      this.state = {
-        Start_Date: '',
-        End_Date: '',
-        userId: '',
-        NoData: 'dfg',
-        block_id: '',
-        avatar: '',
-        about: '',
-        oderId: '',
-        fcmToken:'',
-        CartListProduct: '',
-        typeValue:1,
-        userAccessToken: '',
-        spinner: '',
-        favourite: '',
-        redIcon: require('../images/Heart_icon.png'),
-        whiteIcon: require('../images/dislike.png'),
-        pickedImage: require('../images/default_user.png'),
-      }
+  constructor(props) {
+    super(props);
+
+    (this.AddFavourite = this.AddFavourite.bind(this)),
+      (this.FilerDataCall = this.FilerDataCall.bind(this)),
+      (this.AskForStautsCall = this.AskForStautsCall.bind(this));
+    this.state = {
+      Start_Date: '',
+      End_Date: '',
+      userId: '',
+      NoData: 'dfg',
+      block_id: '',
+      avatar: '',
+      about: '',
+      oderId: '',
+      fcmToken: '',
+      CartListProduct: '',
+      typeValue: 1,
+      userAccessToken: '',
+      spinner: false,
+      favourite: '',
+      redIcon: require('../images/Heart_icon.png'),
+      whiteIcon: require('../images/dislike.png'),
+      pickedImage: require('../images/default_user.png'),
+    };
   }
+
   ListEmpty = () => {
     return (
       <View style={styles.container}>
-        <Text
-          style={{color:'#000',
-            margin: resp(170),
-          }}>
+        <Text style={{color: '#000', margin: resp(170)}}>
           {this.state.NoData ? 'No Record' : null}{' '}
         </Text>
       </View>
-    )
-  }
-  showLoading () {
-    this.setState({spinner: true})
+    );
+  };
+
+  showLoading() {
+    this.setState({spinner: true});
   }
 
-  hideLoading () {
-    this.setState({spinner: false})
+  hideLoading() {
+    this.setState({spinner: false});
   }
-  AddFavourite (block_id) {
-    this.showLoading()
-    let id = this.state.userId
-    let formData = new FormData()
 
-    formData.append('user_id', id)
-    formData.append('block_id', block_id)
-    formData.append('type', 1)
-    console.log('form data==' + JSON.stringify(formData))
+  AddFavourite(block_id) {
+    this.showLoading();
+    let id = this.state.userId;
+    let formData = new FormData();
 
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = `${BASE_URL}api-user/block-fav-user`
-    console.log('Add product Url:' + fav)
+    formData.append('user_id', id);
+    formData.append('block_id', block_id);
+    formData.append('type', 1);
+    var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',
       headers: new Headers({
@@ -100,96 +96,58 @@ class FliterScreen extends Component {
       }),
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
-        this.hideLoading()
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
         if (responseData.code == '200') {
-          //  this.props.navigation.navigate('StoryViewScreen')
-          //  Toast.show(responseData.message)
-          // this.RecentShareCall();
           this.FilerDataCall();
-        
         } else {
-          // alert(responseData.data);
-          // alert(responseData.data.password)
-         
         }
-        console.log('response object:', responseData)
-        console.log('User user ID==', JSON.stringify(responseData))
       })
-      .catch(error => {
-        this.hideLoading()
-        console.error(error)
+      .catch((error) => {
+        this.hideLoading();
       })
-      .done()
+      .done();
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
       if (token) {
-        this.setState({ fcmToken: token });
+        this.setState({fcmToken: token});
       }
     });
-    AsyncStorage.getItem('@user_id').then(userId => {
+    AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-        this.setState({userId: userId})
-        console.log('Edit user id Dhasbord ====' + this.state.userId)
+        this.setState({userId: userId});
       }
-    })
-    AsyncStorage.getItem('@access_token').then(accessToken => {
+    });
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({userAccessToken: accessToken})
-        console.log('Edit access token ====' + accessToken)
-        //this.RecentUpdateCall();
-        
+        this.setState({userAccessToken: accessToken});
       }
-    })
+    });
   }
 
-  
   CheckTextInput = () => {
-    console.log('startDate=====',this.state.Start_Date)
-    console.log('end Date=====',this.state.End_Date)
-    console.log('orderID=====',this.state.oderId)
-    console.log('type=====',this.state.typeValue)
-    if(this.state.Start_Date!==''&& this.state.End_Date!=='')
-    {
-      console.log('if statement exucute')
-      this.FilerDataCall()
-     
-      this.showLoading()
+    if (this.state.Start_Date !== '' && this.state.End_Date !== '') {
+      this.FilerDataCall();
+      this.showLoading();
+    } else if (this.state.oderId !== '') {
+      this.FilerDataCall();
+      this.showLoading();
+    } else {
+      alert('Please Enter Search Date or OrderID ');
     }
-    else if(this.state.oderId!=='' ){
+  };
 
-      console.log('if else statement exucute')
-       this.FilerDataCall()
-       this.showLoading()
-      
-    }
-    else{
-      console.log('else statement exucute')
-      alert('Please Enter Search Date or OrderID ')
-          
-          
-    }
-  }
- 
-  FilerDataCall () {
-  
-    let formData = new FormData()
-   
-    formData.append('user_id', this.state.userId)
-    formData.append('type', this.state.typeValue)
-    formData.append('sdate', this.state.Start_Date),
-      formData.append('edate', this.state.End_Date),
-      formData.append('order_id', this.state.oderId)
-    console.log('form data==' + JSON.stringify(formData))
-
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var FilterURL =
-      `${BASE_URL}api-product/cart-list`
-    console.log('Filter  Url:' + FilterURL)
+  FilerDataCall() {
+    let formData = new FormData();
+    formData.append('user_id', this.state.userId);
+    formData.append('type', this.state.typeValue);
+    formData.append('sdate', this.state.Start_Date);
+    formData.append('edate', this.state.End_Date);
+    formData.append('order_id', this.state.oderId);
+    var FilterURL = `${BASE_URL}api-product/cart-list`;
     fetch(FilterURL, {
       method: 'Post',
       headers: new Headers({
@@ -198,458 +156,423 @@ class FliterScreen extends Component {
         device_token: this.state.fcmToken,
         device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
-        // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
       }),
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
-        this.hideLoading()
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
         if (responseData.code == '200') {
-          //  this.props.navigation.navigate('StoryViewScreen')
-          //  Toast.show(responseData.message);
-            this.setState({Start_Date:''});
-            this.setState({End_Date:''});
+          this.setState({Start_Date: ''});
+          this.setState({End_Date: ''});
           if (responseData.data !== undefined && responseData.data.length > 0) {
-            console.log('if executed')
-            console.log('Filter Data', responseData.data)
-            this.setState({CartListProduct: responseData.data})
-            this.setState({block_id: responseData.data[0].id})
-            console.log('fevtert========', responseData.data[0].favourite)
-            this.setState({favourite: responseData.data[0].favourite})
-           
-            // this.SaveUserName(responseData)
-
+            this.setState({CartListProduct: responseData.data});
+            this.setState({block_id: responseData.data[0].id});
+            this.setState({favourite: responseData.data[0].favourite});
             if (responseData.data[0].avatar == null) {
-              this.setState({avatar: ''})
+              this.setState({avatar: ''});
             } else {
-              this.setState({avatar: responseData.data[0].avatar})
+              this.setState({avatar: responseData.data[0].avatar});
             }
           } else {
-            console.log('else executed')
-          
-            this.setState({CartListProduct: ''})
-            this.setState({NoData: true})
+            this.setState({CartListProduct: ''});
+            this.setState({NoData: true});
           }
-
-          console.log('total lenght', responseData.data.length)
-          this.setState({totalDataLength: responseData.data.length})
-
-          // this.SaveProductListData(responseData)
+          this.setState({totalDataLength: responseData.data.length});
         } else {
-          this.setState({Start_Date:''});
-          this.setState({End_Date:''});
-          console.log(responseData.message)
-         
-          console.log(responseData.message)
+          this.setState({Start_Date: ''});
+          this.setState({End_Date: ''});
         }
-
-        console.log('response object:', responseData)
-        console.log('User user ID==', JSON.stringify(responseData))
       })
-      .catch(error => {
-        this.hideLoading()
-        console.error(error)
+      .catch((error) => {
+        this.hideLoading();
       })
-      .done()
+      .done();
   }
-  AskForStautsCall(blockID,orderID,type) {
-    let formData = new FormData()
-      
-      formData.append('user_id', this.state.userId)
-      formData.append('type', type)
-      formData.append('order_id', orderID)
-      formData.append('block_id', blockID)
-  
-  
-      console.log('form data for ask==' + JSON.stringify(formData))
-     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var AskForStautsURL = `${BASE_URL}api-product/order-status`
-      console.log(' AskForStautsURL :' + AskForStautsURL)
-      fetch(AskForStautsURL, {
-        method: 'Post',
-        headers: new Headers({
-          'Content-Type': 'multipart/form-data',
-          device_id: '1111',
-          device_token:this.state.fcmToken,
-          device_type: 'android',
-          Authorization: JSON.parse(this.state.userAccessToken),  
-          // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
-  
-        }),
-        body: formData,
+  AskForStautsCall(blockID, orderID, type) {
+    let formData = new FormData();
+
+    formData.append('user_id', this.state.userId);
+    formData.append('type', type);
+    formData.append('order_id', orderID);
+    formData.append('block_id', blockID);
+
+    var AskForStautsURL = `${BASE_URL}api-product/order-status`;
+    fetch(AskForStautsURL, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: 'android',
+        Authorization: JSON.parse(this.state.userAccessToken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
+        if (responseData.code == '200') {
+          this.setState({OderRecevieProduct: responseData.data});
+        } else {
+          this.setState({NoData: true});
+        }
       })
-  
-        .then(response => response.json())
-        .then(responseData => {
-          this.hideLoading();
-          if (responseData.code == '200') {
-             //  this.props.navigation.navigate('StoryViewScreen')
-             //   Toast.show(responseData.message);
-               this.setState({OderRecevieProduct:responseData.data});
-             // console.log("value",responseData.data[0].id);
-              // this.setState({block_id:responseData.data[0].id});
-              // console.log('fevtert========',responseData.data[0].favourite);
-              // this.setState({favourite:responseData.data[0].favourite})
-          //   if(responseData.data[0].avatar==null){
-          //     this.setState({avatar:''})
-          //   }else{
-          //     this.setState({avatar:responseData.data[0].avatar});
-          //   }
-          //  // this.SaveProductListData(responseData)
-          //  this.addQuantity(responseData.data);
-          } else {
-            // alert(responseData.data);
-            // alert(responseData.data.password)
-            this.setState({ NoData: true });
-          }
-  
-          console.log('response object ask for:', responseData)
-           console.log('User user ID==', JSON.stringify(responseData))
-          //  console.log('response ID:', responseData.data[0].id)
-          // console.log('access_token ', this.state.access_token)
-          //   console.log('User Phone Number==' + formData.phone_number)
-        })
-        .catch(error => {
-         this.hideLoading();
-          console.error(error)
-        })
-  
-        .done()
-  
+      .catch((error) => {
+        this.hideLoading();
+      })
+
+      .done();
   }
 
-  async SaveUserName (responseData) {
+  async SaveUserName(responseData) {
     await AsyncStorage.setItem(
       '@user_profileName',
       JSON.stringify(responseData.data[0].username),
-    )
+    );
     console.log(
       'userNameCartPalace==',
       JSON.stringify(responseData.data[0].username),
-    )
+    );
   }
 
-  render () {
+  render() {
     return (
       <SafeAreaView style={styles.container}>
-          <ScrollView>
-        <Spinner
-          visible={this.state.spinner}
-          color='#F01738'
-          // textContent={'Loading...'}
-          textStyle={styles.spinnerTextStyle}
-        />
-        <View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}></View>
-          <View style={styles.TitleContainer}>
-            {/* <Image
-                            source={require('../images/logo_cart_paddle.png')}
-                            style={styles.LogoIconStyle}
-                        /> */}
+        <ScrollView>
+          <Spinner
+            visible={this.state.spinner}
+            color="#F01738"
+            textStyle={styles.spinnerTextStyle}
+          />
+          <View style={styles.headerView}>
+            <View style={styles.BackButtonContainer} />
+            <View style={styles.TitleContainer}>
+              <TouchableOpacity
+                style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.TitleStyle}>Filter</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>Filter</Text>
+              style={styles.CrossContainer}
+              onPress={() => this.props.navigation.goBack()}>
+              <Image
+                source={require('../images/cross_iocn.png')}
+                style={styles.CrossIconStyle}
+              />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.CrossContainer}
-            onPress={() => this.props.navigation.goBack()}>
-            <Image
-              source={require('../images/cross_iocn.png')}
-              style={styles.CrossIconStyle}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.hairline} />
-        
-        <View style={styles.SearchContainer}>
-          <View style={styles.CalendarContainer}>
-            <View style={styles.StartDateContainer}>
-              {/* <Text style={styles.StartDateTextStyle}>Start Date</Text>
-                            <Image
-                                source={require('../images/calendar_icon.png')}
-                                style={styles.CalnderIconStyle}
-                            /> */}
+          <View style={styles.hairline} />
 
-              <DatePicker
-                style={{
-                  width: 150,
-                  marginLeft: resp(30),
-                  backgroundColor: '#00000008',
-                }}
-                date={this.state.Start_Date}
-                mode='date'
-                placeholder='Start Date'
-                format='DD/MM/YYYY'
-                confirmBtnText='Confirm'
-                cancelBtnText='Cancel'
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                  },
-                  // ... You can check the source to find the other keys.
-                }}
-                onDateChange={date => {
-                  this.setState({Start_Date: date})
-                }}
-              />
-            </View>
-            <View style={styles.EndDateContainer}>
-              {/* <Text style={styles.StartDateTextStyle}>End Date</Text>
-              <Image
-                source={require('../images/calendar_icon.png')}
-                style={styles.CalnderIconStyle}
-              /> */}
-              <DatePicker
-                style={{
-                  width: 150,
-                  marginLeft: resp(30),
-                  backgroundColor: '#00000008',
-                }}
-                date={this.state.End_Date}
-                mode='date'
-                placeholder='End Date'
-                format='DD/MM/YYYY'
-                confirmBtnText='Confirm'
-                cancelBtnText='Cancel'
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    right: 10,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                  },
-                  // ... You can check the source to find the other keys.
-                }}
-                onDateChange={date => {
-                  this.setState({End_Date: date})
-                }}
-              />
-            </View>
-          </View>
-          <Text style={styles.OrTextStyle}>Or</Text>
-
-          <View style={styles.inputViewStyle}>
-            <View style={{flexDirection: 'row', marginLeft: 10}}></View>
-
-            <TextInput
-              placeholder='Enter your order id'
-              placeholderTextColor='#BEBEBE'
-              underlineColorAndroid='transparent'
-              style={styles.input}
-              onChangeText={oderId => this.setState({oderId})}
-            />
-          </View>
-          <View style={styles.RadioButtonStyle}>
-           <RadioForm
-            formHorizontal={true}
-             animation={true}
-            radio_props={radio_props}
-           initial={0}
-           labelStyle={{marginRight: 15 }}
-            selectedButtonColor={'#F01738'}
-           buttonSize={10}
-            buttonColor={'#F01738'}
-           
-            onPress={(value) => {this.setState({typeValue:value})}}
-         />
-         </View>
-          <TouchableOpacity
-            style={styles.loginButtonStyle}
-            activeOpacity={0.2}
-            onPress={() => {
-              this.CheckTextInput()
-            }}>
-            <Text style={styles.buttonWhiteTextStyle}>SEARCH</Text>
-          </TouchableOpacity>
-         
-        </View>
-     
-
-        <View style={styles.MainContentBox}>
-          <FlatList
-            style={{flex: 0.85}}
-            data={this.state.CartListProduct}
-            // renderItem={({ item }) => <ParsonProfile item={item} />}
-            keyExtractor={item => item.personName}
-            renderItem={({item}) =>{
-              if(item.products.length>0){
-            return (
-              <View style={styles.itemBox}>
-                <View style={styles.box}>
-                  <View style={styles.ProfileImageContainer}>
-                    <TouchableOpacity>
-                      <Image
-                        source={
-                          item.avatar == null
-                            ? this.state.pickedImage
-                            : {uri: item.avatar}
-                        }
-                        style={styles.ProfileImageViewStyle}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.ProfileInfoContainer}>
-                    <Text style={styles.PersonNameStyle}>{item.name}</Text>
-                    {/* <Text style={styles.ProfileDescription}>{item.Description}</Text> */}
-                    <View style={{marginLeft: 0,marginTop:5, width: 350}}>
-                      {item.about ? (
-                        <SeeMore
-                          numberOfLines={1}
-                          linkColor='red'
-                          seeMoreText='read more'
-                          seeLessText='read less'>
-                          {item.about}
-                        </SeeMore>
-                      ) : null}
-                    </View>
-                  </View>
-                  <View style={styles.ListMenuContainer}>
-                    <TouchableOpacity style={styles.messageButtonContainer} onPress={() => {
-            console.log('id of user',item.id);
-            this.props.navigation.navigate('ChatDetailScreen',{userid:item.id, username:item.name,useravatar:item.avatar, groupexit:false,groupId:0})
-                      }} >
-                                <Image
-                          source={require('../images/message_icon.png')}
-                          style={styles.messageButtonStyle}></Image>
-                                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={()=>{this.AddFavourite(item.id)}}
-                      style={styles.messageButtonContainer}>
-                      <Image
-                        source={
-                          item.favourite == 1
-                            ? this.state.redIcon
-                            : this.state.whiteIcon
-                        }
-                        style={[
-                          styles.heartButtonStyle,
-                          {
-                            width: item.favourite == 1 ? resp(11) : resp(18),
-                            height: item.favourite == 1 ? resp(9) : resp(18),
-                            marginTop: item.favourite == 1 ? resp(4) : resp(0),
-                          },
-                        ]}></Image>
-                    </TouchableOpacity>
-                   {this.state.typeValue==1? (<TouchableOpacity onPress={() => {
-                     console.log('userData=====',item.name)
-                    this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name })
-                  }}>
-                      <View style={styles.ViewButtonContainer}>
-                        <Text style={styles.viewButtonStyle}>View all</Text>
-                      </View>
-                    </TouchableOpacity>):( <TouchableOpacity onPress={() => {
-                    //  console.log('userData=====',item.name)
-                    // this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name })
-                  }}>
-                      <View style={styles.ViewButtonContainer}>
-                        <Text style={styles.viewButtonStyle}>View all</Text>
-                      </View>
-                    </TouchableOpacity>)}
-
-                    <CustomMenuIcon
-                      //Menu Text
-                      menutext='Menu'
-                      //Menu View Style
-                      menustyle={{
-                        marginRight: 5,
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                      }}
-                      //Menu Text Style
-                      textStyle={{
-                        color: 'white',
-                      }}
-                      //Click functions for the menu items
-                      option1Click={() => {
-                        Toast.show('CLicked Shared Link', Toast.LONG)
-                      }}
-                      option2Click={() => {
-                        Toast.show('CLicked Forward Link', Toast.LONG)
-                      }}
-                    />
-                  </View>
-                </View>
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}>
-                  <View style={styles.columnView}>
-                    <View style={styles.ImageContainer}>
-                      <Image
-                        source={{uri: item.products[0].image}}
-                        style={{width: 120, height: 133}}></Image>
-                      <Text style={styles.itemNameStyle}>
-                        {item.products[0].name}
-                      </Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[0].price}
-                      </Text>
-                    </View>
-                  </View>
-                </ScrollView>
-                <View style={styles.ItemCountContainer}>
-                  <View style={styles.CartValueContainer}>
-                    <View style={styles.CartItemContainer}>
-                      <Text style={styles.CartItemTextStyle}>Cart Item</Text>
-                      <Text style={styles.CartValueTextStyle}>
-                        {item.cartitem}
-                      </Text>
-                    </View>
-                    <View style={styles.CartItemContainer}>
-                      <Text style={styles.CartItemTextStyle}>Cart Value</Text>
-                      <Text style={styles.CartValueTextStyle}>
-                        {item.cartvalue}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.PlacedHolderButtonContainer}>
-                   {this.state.typeValue==1? (<TouchableOpacity
-                      style={styles.PlacedButtonStyle}
-                      onPress={() => {
-                        let type=0
-                        this.AskForStautsCall(item.id,item.orderid,type)
-                    }}
-                      >
-                      <Text style={styles.PlaceHolderTextStyle}>
-                        Ask for Status
-                      </Text>
-                    </TouchableOpacity>):(<TouchableOpacity
-                      style={styles.PlacedButtonStyle}
-                      onPress={() => {
-                        let type=1;
-                        this.AskForStautsCall(item.id,item.orderid,type)
-                    }}
-                      >
-                      <Text style={styles.PlaceHolderTextStyle}>
-                        Accepted
-                      </Text>
-                    </TouchableOpacity>)}
-                  </View>
-                </View>
-
-                <View style={styles.hairline} />
+          <View style={styles.SearchContainer}>
+            <View style={styles.CalendarContainer}>
+              <View style={styles.StartDateContainer}>
+                <DatePicker
+                  style={{
+                    width: 150,
+                    marginLeft: resp(30),
+                    backgroundColor: '#00000008',
+                  }}
+                  date={this.state.Start_Date}
+                  mode="date"
+                  placeholder="Start Date"
+                  format="DD/MM/YYYY"
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  customStyles={{
+                    dateIcon: {
+                      position: 'absolute',
+                      left: 0,
+                      top: 4,
+                      marginLeft: 0,
+                    },
+                    dateInput: {
+                      marginLeft: 36,
+                    },
+                  }}
+                  onDateChange={(date) => {
+                    this.setState({Start_Date: date});
+                  }}
+                />
               </View>
-            )}
-                    }
-                  }
-            ListEmptyComponent={this.ListEmpty}
-          />
-        </View>
+              <View style={styles.EndDateContainer}>
+                <DatePicker
+                  style={{
+                    width: 150,
+                    marginLeft: resp(30),
+                    backgroundColor: '#00000008',
+                  }}
+                  date={this.state.End_Date}
+                  mode="date"
+                  placeholder="End Date"
+                  format="DD/MM/YYYY"
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  customStyles={{
+                    dateIcon: {
+                      position: 'absolute',
+                      left: 0,
+                      top: 4,
+                      right: 10,
+                      marginLeft: 0,
+                    },
+                    dateInput: {
+                      marginLeft: 36,
+                    },
+                  }}
+                  onDateChange={(date) => {
+                    this.setState({End_Date: date});
+                  }}
+                />
+              </View>
+            </View>
+            <Text style={styles.OrTextStyle}>Or</Text>
+            <View style={styles.inputViewStyle}>
+              <View style={{flexDirection: 'row', marginLeft: 10}} />
+              <TextInput
+                placeholder="Enter your order id"
+                placeholderTextColor="#BEBEBE"
+                underlineColorAndroid="transparent"
+                style={styles.input}
+                onChangeText={(oderId) => this.setState({oderId})}
+              />
+            </View>
+            <View style={styles.RadioButtonStyle}>
+              <RadioForm
+                formHorizontal={true}
+                animation={true}
+                radio_props={radio_props}
+                initial={0}
+                labelStyle={{marginRight: 15}}
+                selectedButtonColor={'#F01738'}
+                buttonSize={10}
+                buttonColor={'#F01738'}
+                onPress={(value) => {
+                  this.setState({typeValue: value});
+                }}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.loginButtonStyle}
+              activeOpacity={0.2}
+              onPress={() => {
+                this.CheckTextInput();
+              }}>
+              <Text style={styles.buttonWhiteTextStyle}>SEARCH</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.MainContentBox}>
+            <FlatList
+              style={{flex: 0.85}}
+              data={this.state.CartListProduct}
+              keyExtractor={(item) => item.personName}
+              renderItem={({item}) => {
+                if (item.products.length > 0) {
+                  return (
+                    <View style={styles.itemBox}>
+                      <View style={styles.box}>
+                        <View style={styles.ProfileImageContainer}>
+                          <TouchableOpacity>
+                            <Image
+                              source={
+                                item.avatar == null
+                                  ? this.state.pickedImage
+                                  : {uri: item.avatar}
+                              }
+                              style={styles.ProfileImageViewStyle}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.ProfileInfoContainer}>
+                          <Text style={styles.PersonNameStyle}>
+                            {item.name}
+                          </Text>
+                          <View
+                            style={{marginLeft: 0, marginTop: 5, width: 350}}>
+                            {item.about ? (
+                              <SeeMore
+                                numberOfLines={1}
+                                linkColor="red"
+                                seeMoreText="read more"
+                                seeLessText="read less">
+                                {item.about}
+                              </SeeMore>
+                            ) : null}
+                          </View>
+                        </View>
+                        <View style={styles.ListMenuContainer}>
+                          <TouchableOpacity
+                            style={styles.messageButtonContainer}
+                            onPress={() => {
+                              this.props.navigation.navigate(
+                                'ChatDetailScreen',
+                                {
+                                  userid: item.id,
+                                  username: item.name,
+                                  useravatar: item.avatar,
+                                  groupexit: false,
+                                  groupId: 0,
+                                },
+                              );
+                            }}>
+                            <Image
+                              source={require('../images/message_icon.png')}
+                              style={styles.messageButtonStyle}
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.AddFavourite(item.id);
+                            }}
+                            style={styles.messageButtonContainer}>
+                            <Image
+                              source={
+                                item.favourite == 1
+                                  ? this.state.redIcon
+                                  : this.state.whiteIcon
+                              }
+                              style={[
+                                styles.heartButtonStyle,
+                                {
+                                  width:
+                                    item.favourite == 1 ? resp(11) : resp(18),
+                                  height:
+                                    item.favourite == 1 ? resp(9) : resp(18),
+                                  marginTop:
+                                    item.favourite == 1 ? resp(4) : resp(0),
+                                },
+                              ]}
+                            />
+                          </TouchableOpacity>
+                          {this.state.typeValue == 1 ? (
+                            <TouchableOpacity
+                              onPress={() => {
+                                console.log('userData=====', item.name);
+                                this.props.navigation.navigate(
+                                  'OderPlacedViewScreen',
+                                  {id: item.id, name: item.name},
+                                );
+                              }}>
+                              <View style={styles.ViewButtonContainer}>
+                                <Text style={styles.viewButtonStyle}>
+                                  View all
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity onPress={() => {}}>
+                              <View style={styles.ViewButtonContainer}>
+                                <Text style={styles.viewButtonStyle}>
+                                  View all
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          )}
+
+                          <CustomMenuIcon
+                            menutext="Menu"
+                            menustyle={{
+                              marginRight: 5,
+                              flexDirection: 'row',
+                              justifyContent: 'flex-end',
+                            }}
+                            textStyle={{
+                              color: 'white',
+                            }}
+                            option1Click={() => {
+                              Toast.show('CLicked Shared Link', Toast.LONG);
+                            }}
+                            option2Click={() => {
+                              Toast.show('CLicked Forward Link', Toast.LONG);
+                            }}
+                          />
+                        </View>
+                      </View>
+                      <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}>
+                        <View style={styles.columnView}>
+                          <View style={styles.ImageContainer}>
+                            <Image
+                              source={{uri: item.products[0].image}}
+                              style={{width: 120, height: 133}}
+                            />
+                            <Text style={styles.itemNameStyle}>
+                              {item.products[0].name}
+                            </Text>
+                            <Text style={styles.itemPriceStyle}>
+                              {'\u20B9'}
+                              {item.products[0].price}
+                            </Text>
+                          </View>
+                        </View>
+                      </ScrollView>
+                      <View style={styles.ItemCountContainer}>
+                        <View style={styles.CartValueContainer}>
+                          <View style={styles.CartItemContainer}>
+                            <Text style={styles.CartItemTextStyle}>
+                              Cart Item
+                            </Text>
+                            <Text style={styles.CartValueTextStyle}>
+                              {item.cartitem}
+                            </Text>
+                          </View>
+                          <View style={styles.CartItemContainer}>
+                            <Text style={styles.CartItemTextStyle}>
+                              Cart Value
+                            </Text>
+                            <Text style={styles.CartValueTextStyle}>
+                              {item.cartvalue}
+                            </Text>
+                          </View>
+                        </View>
+                        <View style={styles.PlacedHolderButtonContainer}>
+                          {this.state.typeValue == 1 ? (
+                            <TouchableOpacity
+                              style={styles.PlacedButtonStyle}
+                              onPress={() => {
+                                let type = 0;
+                                this.AskForStautsCall(
+                                  item.id,
+                                  item.orderid,
+                                  type,
+                                );
+                              }}>
+                              <Text style={styles.PlaceHolderTextStyle}>
+                                Ask for Status
+                              </Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              style={styles.PlacedButtonStyle}
+                              onPress={() => {
+                                let type = 1;
+                                this.AskForStautsCall(
+                                  item.id,
+                                  item.orderid,
+                                  type,
+                                );
+                              }}>
+                              <Text style={styles.PlaceHolderTextStyle}>
+                                Accepted
+                              </Text>
+                            </TouchableOpacity>
+                          )}
+                        </View>
+                      </View>
+
+                      <View style={styles.hairline} />
+                    </View>
+                  );
+                }
+              }}
+              ListEmptyComponent={this.ListEmpty}
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -659,7 +582,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerView: {
-   height:60,
+    height: 60,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -678,12 +601,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  RadioButtonStyle:{
-   marginTop:resp(15),
-   marginHorizontal:resp(30),
-   marginBottom:resp(-10),
-    alignContent:'center',
-    alignSelf:'center',
+  RadioButtonStyle: {
+    marginTop: resp(15),
+    marginHorizontal: resp(30),
+    marginBottom: resp(-10),
+    alignContent: 'center',
+    alignSelf: 'center',
   },
   LogoIconStyle: {
     margin: 5,
@@ -723,7 +646,7 @@ const styles = StyleSheet.create({
   },
   SearchContainer: {
     flex: 0.4,
-   
+
     flexDirection: 'column',
   },
   spinnerTextStyle: {
@@ -831,7 +754,6 @@ const styles = StyleSheet.create({
   },
   MainContentBox: {
     flex: 0.6,
-    
   },
   itemBox: {
     height: resp(350),
@@ -846,11 +768,10 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   box: {
-
     marginTop: resp(5),
     width: resp(415),
     height: resp(75),
-   
+
     flexDirection: 'row',
     shadowColor: 'black',
     shadowOpacity: 0.2,
@@ -878,7 +799,7 @@ const styles = StyleSheet.create({
     margin: resp(),
     marginTop: resp(5),
     flexDirection: 'column',
-   
+
     flex: 0.7,
     width: resp(70),
     height: resp(70),
@@ -1017,5 +938,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#2B2B2B',
   },
-})
-export default FliterScreen
+});
+export default FliterScreen;

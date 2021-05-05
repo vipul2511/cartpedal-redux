@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View,TouchableOpacity,Image } from 'react-native';
-import { WebView } from 'react-native-webview';
-import resp from 'rn-responsive-font' 
-// ...
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {WebView} from 'react-native-webview';
+import resp from 'rn-responsive-font';
+
 export default class FaqWebPanel extends Component {
   render() {
     return (
-      <View style={{flex:1}}>
-         <View style={styles.headerView}>
+      <View style={{flex: 1}}>
+        <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
@@ -26,22 +27,14 @@ export default class FaqWebPanel extends Component {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
         </View>
-    <WebView source={{ uri: 'https://cartpedal.com/page/faq' }} />
-    </View>
+        <WebView source={{uri: 'https://cartpedal.com/page/faq'}} />
+      </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   headerView: {
     flex: 0.1,
@@ -91,4 +84,4 @@ const styles = StyleSheet.create({
     width: 25,
     alignSelf: 'flex-end',
   },
-})
+});

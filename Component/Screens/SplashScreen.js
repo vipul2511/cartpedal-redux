@@ -1,12 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  ActivityIndicator,
-  Platform,
-} from 'react-native';
+import {StyleSheet, View, Text, Image, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import resp from 'rn-responsive-font';
 import firebase from 'react-native-firebase';
@@ -127,21 +121,19 @@ class SplashScreen extends Component {
           }
         } else {
           this.props.navigation.addListener('focus', this.load);
-          // app NOT opened from a url
         }
       });
     this.props.navigation.addListener('focus', this.load);
   }
 
   componentWillUnmount() {
-    // this.unsubscribe();
-    clearTimeout(this.timeoutHandle); // This is just necessary in the case that the screen is closed before the timeout fires, otherwise it would cause a memory leak that would trigger the transition regardless, breaking the user experience.
+    this.unsubscribe();
+    clearTimeout(this.timeoutHandle);
   }
 
   load = () => {
     this.showLoading();
     this.timeoutHandle = setTimeout(() => {
-      // Add your logic for the transition
       AsyncStorage.getItem('@is_login').then(async (isLogin) => {
         const {deepLink, initialPage, parameters} = this.state;
         if (isLogin == undefined || isLogin == '0') {

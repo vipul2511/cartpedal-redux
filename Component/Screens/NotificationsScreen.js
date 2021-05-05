@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -9,32 +10,34 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Linking
-} from 'react-native'
-import resp from 'rn-responsive-font'
+  Linking,
+} from 'react-native';
+import resp from 'rn-responsive-font';
 
 class NotificationsScreen extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {}
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
-  NotificationOpen=async()=>{
-     try{
-       let extras=[{ "android.provider.extra.APP_PACKAGE": "in.cartpedal" }]
-      await Linking.sendIntent('android.settings.NOTIFICATION_SETTINGS', extras)
-     }catch(e){
-       alert(e.message);
-     }
-  }
+  NotificationOpen = async () => {
+    try {
+      let extras = [{'android.provider.extra.APP_PACKAGE': 'in.cartpedal'}];
+      await Linking.sendIntent(
+        'android.settings.NOTIFICATION_SETTINGS',
+        extras,
+      );
+    } catch (e) {
+      alert(e.message);
+    }
+  };
 
-  render () {
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
-            <TouchableOpacity
-            onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../images/back_blck_icon.png')}
                 style={styles.backButtonStyle}
@@ -42,48 +45,36 @@ class NotificationsScreen extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.TitleContainer}>
-            {/* <Image
-              source={require('../images/logo_cart_paddle.png')}
-              style={styles.LogoIconStyle}
-            /> */}
-            <TouchableOpacity 
+            <TouchableOpacity
               style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text style={styles.TitleStyle}>Notifications </Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </View>
+          <View style={styles.SearchContainer} />
         </View>
-       
+
         <View style={styles.MainContentBox}>
           <ScrollView>
-       
-            <TouchableOpacity style={styles.Profile2Container} onPress={this.NotificationOpen}>
-             
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={this.NotificationOpen}>
               <View style={styles.Profile2InfoContainer}>
-                <Text style={styles.PersonNameStyle}>Notification Tone for Message</Text>
-                <Text style={styles.ProfileDescription}>
-                   System Default
+                <Text style={styles.PersonNameStyle}>
+                  Notification Tone for Message
                 </Text>
+                <Text style={styles.ProfileDescription}>System Default</Text>
               </View>
-            
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Profile2Container} onPress={this.NotificationOpen}>
-             
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={this.NotificationOpen}>
               <View style={styles.Profile2InfoContainer}>
-                <Text style={styles.PersonNameStyle}>Notification Tone for Group</Text>
-                <Text style={styles.ProfileDescription}>
-                System Default
+                <Text style={styles.PersonNameStyle}>
+                  Notification Tone for Group
                 </Text>
+                <Text style={styles.ProfileDescription}>System Default</Text>
               </View>
-            
             </TouchableOpacity>
-           
-         
           </ScrollView>
         </View>
         <View style={styles.TabBox}>
@@ -91,7 +82,7 @@ class NotificationsScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('DashBoardScreen')
+                this.props.navigation.navigate('DashBoardScreen');
               }}>
               <Image
                 source={require('../images/home_inactive_icon.png')}
@@ -103,7 +94,7 @@ class NotificationsScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('OpenForPublicScreen')
+                this.props.navigation.navigate('OpenForPublicScreen');
               }}>
               <Image
                 source={require('../images/group_inactive_icon.png')}
@@ -117,7 +108,7 @@ class NotificationsScreen extends Component {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('CartScreen')
+                this.props.navigation.navigate('CartScreen');
               }}>
               <Image
                 source={require('../images/cart_bag_inactive_icon.png')}
@@ -126,21 +117,21 @@ class NotificationsScreen extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('ChatScreen')
+                this.props.navigation.navigate('ChatScreen');
               }}>
               <Image
                 source={require('../images/chat_inactive_icon.png')}
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('SettingScreen')
+                this.props.navigation.navigate('SettingScreen');
               }}>
               <Image
                 source={require('../images/setting_active_icon.png')}
@@ -151,7 +142,7 @@ class NotificationsScreen extends Component {
           </View>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -161,12 +152,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#F6F9FE',
   },
- 
+
   MainContentBox: {
     flex: 1,
   },
- 
- 
+
   TabBox: {
     flex: 0.1,
     color: '#000',
@@ -213,7 +203,7 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
   },
- 
+
   ProfileDescription: {
     marginRight: resp(-2),
     width: resp(260),
@@ -224,15 +214,14 @@ const styles = StyleSheet.create({
   Profile2InfoContainer: {
     color: '#fff',
     marginTop: resp(15),
-    alignContent:"center",
+    alignContent: 'center',
     flexDirection: 'column',
-    marginLeft:resp(20),
+    marginLeft: resp(20),
     width: resp(70),
     height: resp(70),
   },
   Profile2Container: {
-   
-    height:resp(70),
+    height: resp(70),
     color: '#fff',
     flexDirection: 'row',
   },
@@ -250,7 +239,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 5,
   },
- 
+
   bottomActiveTextStyle: {
     color: '#FB3954',
     fontSize: resp(10),
@@ -258,7 +247,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
- 
   bottomInactiveTextStyle: {
     color: '#887F82',
     fontSize: resp(10),
@@ -322,7 +310,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#ecf6fb',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
@@ -337,5 +324,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
   },
-})
+});
 export default NotificationsScreen;

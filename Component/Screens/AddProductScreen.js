@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -10,63 +11,33 @@ import {
   Image,
   TouchableWithoutFeedback,
   SafeAreaView,
-  ScrollView
+  ScrollView,
 } from 'react-native';
-import resp from 'rn-responsive-font'
-//import ImagePicker from "react-native-customized-image-picker";
-import ImagePicker from 'react-native-image-picker'
-
-//import ImagePicker from 'react-native-image-crop-picker';
+import resp from 'rn-responsive-font';
+import ImagePicker from 'react-native-image-picker';
 
 class AddProductScreen extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       pickedImage: null,
-    }
+    };
   }
-  
-  pickImageHandler=()=>{
-    ImagePicker.openPicker({multiple: true},
-      ).then(images => {
-        for (i = 0; i < images.length; i++) {
-            this.state.pickedImage.push(images[i].pickedImage)//image[i].data=>base64 string
-           
-    }
-    
-   } )
-  }
-  // pickImageHandler = () => {
-  //   ImagePicker.showImagePicker(
-  //     {title: 'Pick an Image', maxWidth: 800, maxHeight: 600},
 
-      // res => {
-      //   if (res.didCancel) {
-      //     console.log('User cancelled!')
-      //   } else if (res.error) {
-      //     console.log('Error', res.error)
-      //   } else {
-      //     this.setState({
-      //       pickedImage: {uri: res.uri},
-      //     })
-      //     console.log('dfgh' + res.uri)
-      //   }
-      // },
-  //   )
-    // .then(image=>{
-    //   for (i = 0; i < image.length; i++) {
-    //     this.state.images.push(image[i].data)//image[i].data=>base64 string
-    // }
-    // })
-  // }
+  pickImageHandler = () => {
+    ImagePicker.openPicker({multiple: true}).then((images) => {
+      for (let i = 0; i < images.length; i++) {
+        this.state.pickedImage.push(images[i].pickedImage); //image[i].data=>base64 string
+      }
+    });
+  };
 
-  render () {
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
-            <TouchableOpacity
-               onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../images/back_blck_icon.png')}
                 style={styles.backButtonStyle}
@@ -83,7 +54,7 @@ class AddProductScreen extends Component {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}></View>
+          <View style={styles.SearchContainer} />
         </View>
 
         <View style={styles.MainContentBox}>
@@ -99,7 +70,7 @@ class AddProductScreen extends Component {
               showsHorizontalScrollIndicator={false}
               style={{flex: 1, flexDirection: 'row'}}
               data={this.state.data1}
-              keyExtractor={item => item.StoryImage}
+              keyExtractor={(item) => item.StoryImage}
               renderItem={({item}) => (
                 <TouchableWithoutFeedback
                   onPress={() => this.actionOnRow(item)}>
@@ -116,7 +87,8 @@ class AddProductScreen extends Component {
               />
               <Image
                 source={require('../images/close_icon.png')}
-                style={styles.CloseIconStyle}></Image>
+                style={styles.CloseIconStyle}
+              />
 
               <TouchableOpacity>
                 <View style={styles.CheckMarkContainer}>
@@ -142,7 +114,7 @@ class AddProductScreen extends Component {
           </ScrollView>
         </View>
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -272,5 +244,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
   },
-})
-export default AddProductScreen
+});
+export default AddProductScreen;

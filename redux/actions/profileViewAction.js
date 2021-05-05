@@ -23,7 +23,7 @@ export const profileView = (userId, userAccessToken) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: PROFILE_VIEW_SUCCESS,
             payload: responseData,
@@ -42,7 +42,6 @@ export const profileView = (userId, userAccessToken) => {
         }
       })
       .catch((error) => {
-        console.log('error : ', error);
         dispatch({
           type: PROFILE_VIEW_ERROR,
           payload: error,
