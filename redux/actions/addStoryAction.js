@@ -28,7 +28,7 @@ export const addStoryAction = (userId, userAccessToken, data) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           Toast.show(responseData.message);
           dispatch({
             type: ADD_STORIES_SUCCESS,

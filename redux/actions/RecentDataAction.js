@@ -30,7 +30,7 @@ export const RecentDataAction = (userId, userAccessToken, newContacts) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: GET_RECENT_SUCCESS,
             payload: responseData.data,

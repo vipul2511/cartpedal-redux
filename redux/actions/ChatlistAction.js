@@ -25,7 +25,7 @@ export const ChatlistAction = (userId, userAccesstoken) => {
     })
       .then((response) => response.json())
       .then(async (responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: CHAT_LIST_SUCCESS,
             payload: responseData.data,

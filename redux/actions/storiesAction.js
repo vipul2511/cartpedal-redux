@@ -27,7 +27,7 @@ export const storiesAction = (userId, userAccessToken) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           let item = [];
           responseData.data.forEach((element) => {
             if (element.stories[0].viewer !== 1) {
@@ -76,7 +76,7 @@ export const loggedStoriesAction = (userId, userAccessToken) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: GET_LOGGED_STORIES_SUCCESS,
             payload: responseData,

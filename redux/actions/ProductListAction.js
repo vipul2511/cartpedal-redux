@@ -24,7 +24,7 @@ export const productlistAction = (userId, userAccessToken) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           if (responseData.data !== undefined && responseData.data.length > 0) {
             dispatch({
               type: GET_PRODUCT_SUCCESS,

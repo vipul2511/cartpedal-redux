@@ -41,7 +41,7 @@ class OderPlacedViewScreen extends Component {
       whiteIcon:require('../images/dislike.png'),
       avatar:'',
       pickedImage:require('../images/default_user.png'),
-     // userNo:'',
+     userNo:'',
      baseUrl: `${BASE_URL}`,  
       images: [
         require('../images/placeholder-image-2.png')
@@ -77,32 +77,37 @@ class OderPlacedViewScreen extends Component {
       alert(error.message);
     }
   };
-link =async()=>{
- const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  .android.setPackageName('com.cart.android')
-  .ios.setBundleId('com.cart.ios');
-  // let url = await firebase.links().getInitialLink();
-  // console.log('incoming url', url);
+  link =async(id,name)=>{
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
+      'https://cartpedal.page.link',
+    ).android
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
+  
+  firebase.links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url',url);
+      this.onShare('http://'+url);
+    });
+  }
+forwardlink =async(userid,name)=>{
+  const link = new firebase.links.DynamicLink(
+    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
+      userid,
+      'https://cartpedal.page.link',
+  ).android
+  .setPackageName('in.cartpedal')
+  .ios.setBundleId('com.ios.cartpadle')
+  .ios.setAppStoreId('1539321365');
 
-firebase.links()
-  .createDynamicLink(link)
-  .then((url) => {
-    console.log('the url',url);
-    this.onShare(url);
-  });
-}
-forwardlink =async(userid)=>{
-  const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-   .android.setPackageName('com.cart.android')
-   .ios.setBundleId('com.cart.ios');
-   // let url = await firebase.links().getInitialLink();
-   // console.log('incoming url', url);
- 
- firebase.links()
-   .createDynamicLink(link)
-   .then((url) => {
-     console.log('the url',url);
-    //  this.sendMessage(url,userid);
+  firebase
+    .links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url', url);
     AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
       if(NumberFormat){
         let numID=JSON.parse(NumberFormat)
@@ -112,7 +117,7 @@ forwardlink =async(userid)=>{
     PhoneNumber: numID,
     userId: this.state.userNo,
     userAccessToken: this.state.userAccessToken,
-    msgids: url,
+    msgids:  url,
   });
 }
 }));
@@ -127,8 +132,8 @@ forwardlink =async(userid)=>{
         this.setState({ fcmToken: token });
         // let arr=[];
         // arr.push(this.props.route.params.wholeData);
-        this.setState({OderPlaceProduct:this.props.route.params.wholeData});
-        console.log('order data',this.state.OderPlaceProduct)
+        // this.setState({OderPlaceProduct:this.props.route.params.wholeData});
+        // console.log('order data',this.state.OderPlaceProduct)
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
@@ -142,7 +147,7 @@ forwardlink =async(userid)=>{
       if (userId) {
           this.setState({ userNo: userId });
           console.log(" id from login  user id ====" + userId);
-          // this.CartListCall();
+          this.CartListCall();
           this.UserProfileCall();
           setTimeout(() => {
             this.hideLoading()
@@ -213,57 +218,51 @@ forwardlink =async(userid)=>{
       })
       .done();
   }
-  // CartListCall() {
-  //   let formData = new FormData()
-  //     formData.append('user_id', this.state.userNo)
-  //     formData.append('type', 1)
-  //     console.log('form data==' + JSON.stringify(formData))
-  //    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-  //     var CartList = "https://www.cartpedal.com/api-product/cart-list"
-  //     console.log('Add product Url:' + CartList)
-  //     console.log('token',this.state.userAccessToken);
-  //     fetch(CartList, {
-  //       method: 'Post',
-  //       headers: new Headers({
-  //         'Content-Type': 'multipart/form-data',
-  //         device_id: '1111',
-  //         device_token: this.state.fcmToken,
-  //         device_type: 'android',
-  //         Authorization: JSON.parse(this.state.userAccessToken),  
-  //         // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
-  //       }),
-  //       body: formData,
-  //     })
+  CartListCall() {
+    let formData = new FormData()
+      formData.append('user_id', this.state.userNo)
+      formData.append('type', 1)
+      formData.append('order_id',this.props.route.params.order_id)
+      console.log('form data==' + JSON.stringify(formData))
+     // var CartList = this.state.baseUrl + 'api-product/cart-list'
+      var CartList = "https://www.cartpedal.com/api-product/cart-list"
+      console.log('Add product Url:' + CartList)
+      console.log('token',this.state.userAccessToken);
+      fetch(CartList, {
+        method: 'Post',
+        headers: new Headers({
+          'Content-Type': 'multipart/form-data',
+          device_id: '1111',
+          device_token: this.state.fcmToken,
+          device_type: 'android',
+          Authorization: JSON.parse(this.state.userAccessToken),  
+          // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
+        }),
+        body: formData,
+      })
   
-  //       .then(response => response.json())
-  //       .then(responseData => {
-  //         // this.hideLoading();
-  //         if (responseData.code == '200') {
-  //         //  this.props.navigation.navigate('StoryViewScreen')
-  //         //  Toast.show(responseData.message);
-  //         console.log('product',responseData.data)
-  //           // this.setState({OderPlaceProduct:responseData.data})
-  //          // this.SaveProductListData(responseData)
-  //         } else {
-  //           this.setState({ NoData: true });
-  //           // alert(responseData.data);
-  //           // alert(responseData.data.password)
+        .then(response => response.json())
+        .then(responseData => {
+          // this.hideLoading();
+          if (responseData.code == '200') {
+          //  this.props.navigation.navigate('StoryViewScreen')
+          //  Toast.show(responseData.message);
+          this.setState({OderPlaceProduct:responseData.data[0].products});
+          console.log('product',responseData.data)
+          } else {
+            this.setState({ NoData: true });
+          }
+          console.log('response object:', responseData)
+           console.log('User user ID==', JSON.stringify(responseData))
+        })
+        .catch(error => {
+          // this.hideLoading();
+          console.error(error)
+        })
   
-  //         }
+        .done()
   
-  //         console.log('response object:', responseData)
-  //          console.log('User user ID==', JSON.stringify(responseData))
-  //         // console.log('access_token ', this.state.access_token)
-  //         //   console.log('User Phone Number==' + formData.phone_number)
-  //       })
-  //       .catch(error => {
-  //         // this.hideLoading();
-  //         console.error(error)
-  //       })
-  
-  //       .done()
-  
-  // }
+  }
   UserProfileCall() {
     let formData = new FormData()
   
@@ -423,32 +422,27 @@ forwardlink =async(userid)=>{
             </TouchableOpacity>
 
                 <View style={styles.MenuStyleContanier}>
-                <MenuIcon
-                  //Menu Text
-                  menutext='Menu'
-                  //Menu View Style
+                <CustomMenuIcon
+                    menutext='Menu'
+                   
+                    //Menu View Style
                   menustyle={{
                     marginRight: 5,
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
                   }}
-                  //Menu Text Style
-                  textStyle={{
-                    color: 'white',
-                  }}
-                  //Click functions for the menu items
-                  option1Click={() => {
-                    Toast.show('CLicked Block', Toast.LONG)
-                  }}
-                  option2Click={() => {
-                    this.link()
-                    // Toast.show('CLicked Shared Link', Toast.LONG)
-                  }}
-                  option3Click={() => {
-                    this.forwardlink()
-                    // Toast.show('CLicked Forward Link', Toast.LONG)
-                  }}
-                />
+                    textStyle={{
+                      color: 'white',
+                    }}
+                    option1Click={() => {
+                      let name="OderPlacedViewScreen"
+                      this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                    }}
+                    option2Click={() => {
+                      let name="OderPlacedViewScreen"
+                      this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
+                    }}
+                  />
                 </View>
               </View>
             </View>
@@ -498,12 +492,12 @@ forwardlink =async(userid)=>{
                       color: 'white',
                     }}
                     option1Click={() => {
-                      this.link()
-                      // Toast.show('CLicked Shared Link', Toast.LONG)
+                      let name="OderPlacedViewScreen"
+                      this.link(this.props.route.params.id,name,this.props.route.params.order_id)
                     }}
                     option2Click={() => {
-                      this.forwardlink()
-                      // Toast.show('CLicked Forward Link', Toast.LONG)
+                      let name="OderPlacedViewScreen"
+                      this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
                     }}
                   />
                 </View>

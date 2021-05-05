@@ -850,14 +850,15 @@ uploadCoverPhoto = (imageList) => {
       })
       .done()
   }
-  forwardlink =async(userid,name="ProfileScreen")=>{
+  forwardlink =async(userid,name)=>{
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
         userid,
-      'cartpedal.page.link',
+        'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
    
    firebase.links()
      .createDynamicLink(link)
@@ -871,7 +872,7 @@ uploadCoverPhoto = (imageList) => {
       PhoneNumber: numID,
       userId: this.state.userId,
       userAccessToken: this.state.userAccessToken,
-      msgids: 'http://' + url,
+      msgids: url,
     });
   }
   }));
@@ -898,19 +899,20 @@ uploadCoverPhoto = (imageList) => {
       alert(error.message);
     }
   };
-  link =async(id,name="ProfileScreen")=>{
+  link =async(id,name)=>{
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+id,
-      'cartpedal.page.link',
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
+      'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
   
   firebase.links()
     .createDynamicLink(link)
     .then((url) => {
       console.log('the url',url);
-      this.onShare('http://'+url);
+      this.onShare(url);
     });
   }
   viewFunc=()=>{
@@ -1129,12 +1131,12 @@ uploadCoverPhoto = (imageList) => {
                       color: 'white',
                     }}
                     option1Click={() => {
-                      this.link(this.state.userId)
-                      // Toast.show('CLicked Shared Link', Toast.LONG)
+                      let name="ProfileScreen"
+                      this.link(this.state.userId,name)
                     }}
                     option2Click={() => {
-                      this.forwardlink(this.state.userId)
-                      // Toast.show('CLicked Forward Link', Toast.LONG)
+                      let name="ProfileScreen"
+                      this.forwardlink(this.state.userId,name)
                     }}
                   />
                 </TouchableOpacity>
@@ -1550,11 +1552,12 @@ uploadCoverPhoto = (imageList) => {
                                 Toast.show('CLicked Unshow Link', Toast.LONG)
                               }}
                               option2Click={() => {
-                                this.link(item.id)
-                                // Toast.show('CLicked Share Link', Toast.LONG)
+                                let name="ProductDetailScreen";
+                                this.link(item.product_id,name)
                               }}
                               option3Click={() => {
-                                this.forwardlink(item.id)
+                                let name="ProductDetailScreen";
+                                this.forwardlink(item.product_id,name)
                                 // Toast.show('CLicked Forward Link', Toast.LONG)
                               }}
                               option4Click={() => {

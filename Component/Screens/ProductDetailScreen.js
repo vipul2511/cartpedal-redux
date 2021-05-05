@@ -75,29 +75,26 @@ export default class ProductDetailScreen extends React.Component {
           this.setState({ userAccessToken: accessToken });
           console.log("Edit access token ====" + accessToken);
           //this.RecentUpdateCall();
-          let imageURl=this.state.imageList;
-          // let nameId=this.props.route.params.name
-          // this.setState({userNameProduct:nameId})
-          let item=this.props.route.params.imageURL;
-          item.map((items,index)=>{
-            imageURl.push(items.image)
-          });
-          this.setState({imageList:imageURl});
-          console.log('image URl',imageURl)
+          // let imageURl=this.state.imageList;
+          // // let nameId=this.props.route.params.name
+          // // this.setState({userNameProduct:nameId})
+          // let item=this.props.route.params.imageURL;
+          // item.map((items,index)=>{
+          //   imageURl.push(items.image)
+          // });
+          // this.setState({imageList:imageURl});
+          // console.log('image URl',imageURl)
         }
       });
       AsyncStorage.getItem('@user_id').then((userId) => {
-        console.log("Product data",JSON.stringify(this.props.route.params.whole_data));
-        console.log('seller id',this.props.route.params.seller_id);
-        this.setState({itemOfProduct:this.props.route.params.whole_data});
-        // this.setState({name:this.props.route.params.whole_data.name});
-        //  this.setState({seller_id:this.props.route.params.seller_id});
-        this.setState({price:this.props.route.params.whole_data.price});
+        // console.log("Product data",JSON.stringify(this.props.route.params.whole_data));
+        // console.log('seller id',this.props.route.params.seller_id);
+        // this.setState({itemOfProduct:this.props.route.params.whole_data});
+        // // this.setState({name:this.props.route.params.whole_data.name});
+        // //  this.setState({seller_id:this.props.route.params.seller_id});
+        // this.setState({price:this.props.route.params.whole_data.price});
         if (userId) {
             this.setState({ userNo: userId });
-            let price_items=this.state.price*this.state.currentQuantity;
-          let finalPrice= (Math.round(price_items * 100) / 100).toFixed(2);
-           this.setState({totalPrice:finalPrice});
             console.log(" id from login  user id ====" + userId);
         }else{
           console.log("else is executed");
@@ -165,8 +162,8 @@ export default class ProductDetailScreen extends React.Component {
       let formData = new FormData()
     
       formData.append('user_id', this.state.userNo)
-    
-      formData.append('product_id',  this.state.itemOfProduct.id)
+      // this.props.route.params.id
+      formData.append('product_id',this.props.route.params.id)
 
       console.log('form data==' + JSON.stringify(formData))
     
@@ -187,18 +184,24 @@ export default class ProductDetailScreen extends React.Component {
       })
         .then(response => response.json())
         .then(responseData => {
-        
           if (responseData.code == '200') {
             let nameId=responseData.data.name
-            this.setState({userNameProduct:nameId})
-            this.setState({itemOfProduct:responseData.data});
-            this.setState({name:responseData.data.name});
-             this.setState({seller_id:responseData.data.seller_id});
-            this.setState({price:responseData.data.price});
-          // Toast.show(responseData.message);
-            // this.props.navigation.navigate('CartScreen');
-            //this.setState({ProfileData:responseData.data})
-            // alert(responseData.message);
+            this.setState({userNameProduct:nameId,itemOfProduct:responseData.data,name:responseData.data.name,seller_id:responseData.data.seller_id,price:responseData.data.price})
+            // this.setState({itemOfProduct:responseData.data});
+            // this.setState({name:responseData.data.name});
+            //  this.setState({seller_id:responseData.data.seller_id});
+            // this.setState({price:responseData.data.price});
+            let imageURl=[];
+            let price_items=responseData.data.price*this.state.currentQuantity;
+            let finalPrice= (Math.round(price_items * 100) / 100).toFixed(2);
+             this.setState({totalPrice:finalPrice});
+            if(responseData.data.image.length>0){
+              let item=responseData.data.image;
+              item.map((items,index)=>{
+                imageURl.push(items.file_url)
+              });
+              this.setState({imageList:imageURl});
+            }
             this.setState({nextId:responseData.data.prev})
         console.log(JSON.stringify(responseData));
     
@@ -230,7 +233,7 @@ export default class ProductDetailScreen extends React.Component {
     
       formData.append('user_id', this.state.userNo)
     
-      formData.append('product_id',  this.state.itemOfProduct.id)
+      formData.append('product_id',this.props.route.params.id)
       formData.append('quantity', this.state.currentQuantity)
       formData.append('price',  this.state.price)
       formData.append('seller_id',this.state.seller_id)
@@ -285,7 +288,7 @@ export default class ProductDetailScreen extends React.Component {
       formData.append('user_id', this.state.userNo);
       formData.append('seller_id', this.state.seller_id);
       formData.append('type',1)
-      formData.append('product_id',  this.state.itemOfProduct.id)
+      formData.append('product_id',this.props.route.params.id)
       formData.append('quantity', this.state.currentQuantity)
       formData.append('price',  this.state.price)
      

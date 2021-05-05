@@ -29,7 +29,7 @@ export const signUp = (phone) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: USER_SIGNUP_SUCCESS,
             payload: responseData,
@@ -78,7 +78,7 @@ export const signUpConf = (name, phone, email, pass) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: USER_SIGNUP_CONF_SUCCESS,
             payload: responseData,

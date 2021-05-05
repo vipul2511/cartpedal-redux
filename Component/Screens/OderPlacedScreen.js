@@ -84,32 +84,35 @@ class CartPlaceScreen extends Component {
       alert(error.message);
     }
   };
-link =async()=>{
- const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  .android.setPackageName('com.cart.android')
-  .ios.setBundleId('com.cart.ios');
-  // let url = await firebase.links().getInitialLink();
-  // console.log('incoming url', url);
+  link =async(id,name,orderID)=>{
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
+    ).android
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
+  firebase.links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url',url);
+      this.onShare(url);
+    });
+  }
+  forwardlink =async(userid,name,orderID)=>{
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
+    ).android
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
 
-firebase.links()
-  .createDynamicLink(link)
-  .then((url) => {
-    console.log('the url',url);
-    this.onShare(url);
-  });
-}
-forwardlink =async(userid)=>{
-  const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-   .android.setPackageName('com.cart.android')
-   .ios.setBundleId('com.cart.ios');
-   // let url = await firebase.links().getInitialLink();
-   // console.log('incoming url', url);
- 
- firebase.links()
-   .createDynamicLink(link)
-   .then((url) => {
-     console.log('the url',url);
-    //  this.sendMessage(url,userid);
+  firebase
+    .links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url', url);
     AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
       if(NumberFormat){
         let numID=JSON.parse(NumberFormat)
@@ -182,6 +185,7 @@ forwardlink =async(userid)=>{
       
       formData.append('user_id',userNo)
       formData.append('type', 1)
+      // formData.append('order_id','CRTPDL08')
       console.log('form data==' + JSON.stringify(formData))
      // var CartList = this.state.baseUrl + 'api-product/cart-list'
       var CartList = `${BASE_URL}api-product/cart-list`
@@ -392,7 +396,7 @@ forwardlink =async(userid)=>{
 
               <TouchableOpacity style={styles.itemBox} onPress={() => {
                 console.log('userData=====',item.name)
-               this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,wholeData:item.products })
+               this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,order_id:item.orderid })
              }}>
               <View style={styles.box}>
                 <View style={styles.ProfileImageContainer}>
@@ -432,7 +436,7 @@ forwardlink =async(userid)=>{
                   <TouchableOpacity
                    onPress={() => {
                      console.log('userData=====',item.name)
-                    this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,wholeData:item.products })
+                    this.props.navigation.navigate('OderPlacedViewScreen',{ id: item.id, name: item.name,order_id:item.orderid })
                   }}>
                     <View style={styles.ViewButtonContainer}>
                       <Text style={styles.viewButtonStyle}>View All</Text>
@@ -453,11 +457,13 @@ forwardlink =async(userid)=>{
                     }}
                     //Click functions for the menu items
                     option1Click={() => {
-                      this.link()
+                      let name="OderPlacedViewScreen"
+                      this.link(item.id,name,item.orderid)
                       // Toast.show('CLicked Shared Link', Toast.LONG)
                     }}
                     option2Click={() => {
-                      this.forwardlink()
+                      let name="OderPlacedViewScreen"
+                      this.forwardlink(item.id,name,item.orderid)
                       // Toast.show('CLicked Forward Link', Toast.LONG)
                     }}
                   />
