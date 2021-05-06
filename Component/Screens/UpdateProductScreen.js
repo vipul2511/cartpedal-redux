@@ -713,7 +713,6 @@ export default class UpdateProductScreen extends React.Component {
                 numColumns={2}
                 ListEmptyComponent={this.ListEmpty}
                 renderItem={({item}) => {
-                  console.log('shared item data', item);
                   let name = item.name;
                   if (name.length > 8) {
                     name = name.substring(0, 8);
@@ -892,6 +891,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
     marginTop: 5,
+    height: 40,
   },
   ProfilemodalViewStyle: {
     width: 300,
@@ -1010,6 +1010,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 1,
     color: 'black',
+    height: 40,
   },
   container2: {
     flex: 1,

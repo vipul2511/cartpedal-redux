@@ -516,6 +516,10 @@ export default class ProductMasterUpdate extends React.Component {
 
             <View style={styles.inputTextView}>
               <Picker
+                placeholder={
+                  this.state.Category ? this.state.Category : 'Select Category'
+                }
+                placeholderStyle={{color: 'black'}}
                 selectedValue={this.state.Category}
                 style={{height: 50, width: screenWidth - 55}}
                 onValueChange={(itemValue, itemIndex) => {
@@ -552,6 +556,8 @@ export default class ProductMasterUpdate extends React.Component {
             />
             <View style={styles.inputTextView}>
               <Picker
+                placeholder={this.state.Unit ? this.state.Unit : 'Select Unit'}
+                placeholderStyle={{color: 'black'}}
                 selectedValue={this.state.Unit}
                 style={{height: 50, width: screenWidth - 55}}
                 onValueChange={(itemValue, itemIndex) => {
@@ -738,6 +744,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
     marginTop: 5,
+    height: 40,
   },
   ProfilemodalViewStyle: {
     width: 300,
@@ -853,8 +860,9 @@ const styles = StyleSheet.create({
     fontSize: 17,
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
-    marginTop: 1,
+    marginTop: 5,
     color: 'black',
+    height: 40,
   },
   container2: {
     flex: 1,

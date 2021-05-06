@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-alert */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
 
@@ -10,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  TouchableWithoutFeedback,
   ScrollView,
   SafeAreaView,
   Dimensions,
@@ -22,13 +21,15 @@ import Modal from 'react-native-modal';
 import MenuIcon from './MenuIcon';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
+import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 let width = Dimensions.get('screen').width;
+let height = Dimensions.get('screen').height;
 import {BASE_URL} from '../Component/ApiClient';
-
 class CartViewScreen extends Component {
   constructor(props) {
     super(props);
+    // this.CartListCall = this.CartListCall.bind(this),
     (this.UserProfileCall = this.UserProfileCall.bind(this)),
       (this.removeProductCall = this.removeProductCall.bind(this));
     this.AddFavourite = this.AddFavourite.bind(this);
@@ -46,7 +47,7 @@ class CartViewScreen extends Component {
       sellerID: '',
       Seller_ID: '',
       userAccessToken: '',
-      spinner: false,
+      spinner: '',
       favourite: '',
       removeSellerID: '',
       fcmToken: '',
@@ -71,24 +72,23 @@ class CartViewScreen extends Component {
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({userAccessToken: accessToken});
-        let productItem = this.props.route.params.cartProduct.products;
-        let removeID = this.props.route.params.cartProduct.id;
-        this.setState({CartListProduct: productItem});
-        this.setState({removeSellerID: removeID});
+        this.setState({removeSellerID: this.props.route.params.id});
       }
     });
-
     AsyncStorage.getItem('@fcmtoken').then((token) => {
+      console.log('Edit user id token=' + token);
       if (token) {
         this.setState({fcmToken: token});
       }
     });
-
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({userNo: userId});
+        console.log(' id from login  user id ====' + userId);
+        this.CartListCall();
         this.UserProfileCall();
       } else {
+        console.log('else is executed');
         this.hideLoading();
       }
     });
@@ -103,9 +103,11 @@ class CartViewScreen extends Component {
     formData.append('user_id', id);
     formData.append('block_id', block_id);
     formData.append('type', 1);
+    console.log('form data==' + JSON.stringify(formData));
 
+    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var fav = `${BASE_URL}api-user/block-fav-user`;
-
+    console.log('Add product Url:' + fav);
     fetch(fav, {
       method: 'Post',
       headers: new Headers({
@@ -113,6 +115,7 @@ class CartViewScreen extends Component {
         device_id: '1111',
         device_token: this.state.fcmtoken,
         device_type: 'android',
+        // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -121,14 +124,65 @@ class CartViewScreen extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
+          //  this.props.navigation.navigate('StoryViewScreen')
+          // Toast.show(responseData.message);
+          //   this.CartListCall();
           this.UserProfileCall();
         } else {
+          // alert(responseData.data);
+          // alert(responseData.data.password)
           this.setState({NoData: true});
         }
+        // console.log('response object:', responseData)
+        // console.log('User user ID==', JSON.stringify(responseData))
       })
       .catch((error) => {
         this.hideLoading();
+        console.error(error);
       })
+      .done();
+  }
+  CartListCall() {
+    let formData = new FormData();
+    formData.append('user_id', this.state.userNo);
+    formData.append('type', 0);
+    formData.append('order_id', this.props.route.params.order_id);
+    console.log('form data==' + JSON.stringify(formData));
+    // var CartList = this.state.baseUrl + 'api-product/cart-list'
+    var CartList = 'https://www.cartpedal.com/api-product/cart-list';
+    console.log('Add product Url:' + CartList);
+    console.log('token', this.state.userAccessToken);
+    fetch(CartList, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: 'android',
+        Authorization: JSON.parse(this.state.userAccessToken),
+        // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        // this.hideLoading();
+        if (responseData.code == '200') {
+          //  this.props.navigation.navigate('StoryViewScreen')
+          //  Toast.show(responseData.message);
+          this.setState({CartListProduct: responseData.data[0].products});
+          console.log('product', responseData.data);
+        } else {
+          this.setState({NoData: true});
+        }
+        console.log('response object:', responseData);
+        console.log('User user ID==', JSON.stringify(responseData));
+      })
+      .catch((error) => {
+        // this.hideLoading();
+        console.error(error);
+      })
+
       .done();
   }
 
@@ -140,7 +194,11 @@ class CartViewScreen extends Component {
     formData.append('product_id', this.state.productID);
     formData.append('seller_id', this.state.removeSellerID);
 
+    console.log('form data==' + JSON.stringify(formData));
+
+    // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var RemoveCartListURL = `${BASE_URL}api-product/remove-cart-item`;
+    console.log('Add product Url:' + RemoveCartListURL);
     fetch(RemoveCartListURL, {
       method: 'Post',
       headers: new Headers({
@@ -148,6 +206,7 @@ class CartViewScreen extends Component {
         device_id: '1111',
         device_token: this.state.fcmtoken,
         device_type: 'android',
+        // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -156,25 +215,47 @@ class CartViewScreen extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
+          //  this.props.navigation.navigate('StoryViewScreen')
+          // Toast.show(responseData.message);
+          // this.setState({CartListProduct:responseData.data})
           let item = this.state.CartListProduct;
           let filterData = item.filter(
             (items) => items.id !== this.state.productID,
           );
+          console.log('filterData', filterData);
           this.setState({CartListProduct: filterData});
+          // this.props.navigation.navigate('CartScreen')
+
+          // this.SaveProductListData(responseData)
         } else {
+          // alert(responseData.data);
+          // alert(responseData.data.password)
         }
+
+        console.log('response objectRemoveProduct:', responseData);
+        console.log('User user ID==', JSON.stringify(responseData));
+        // console.log('access_token ', this.state.access_token)
+        //   console.log('User Phone Number==' + formData.phone_number)
       })
       .catch((error) => {
         this.hideLoading();
+        console.error(error);
       })
+
       .done();
   }
-
   UserProfileCall() {
     let formData = new FormData();
+
     formData.append('user_id', +this.state.userNo);
+    console.log('user id in from Data', this.state.userNo);
+    console.log('props id in params', this.props.route.params.id);
+
     formData.append('profile_id', this.props.route.params.id);
+    console.log('form data==' + formData);
+
     var userProfile = this.state.baseUrl + 'api-user/user-profile';
+    console.log('UserProfile Url:' + userProfile);
     fetch(userProfile, {
       method: 'Post',
       headers: {
@@ -190,9 +271,17 @@ class CartViewScreen extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
+          // Toast.show(responseData.message);
+
+          //   this.setState({CartListProduct:responseData.data});
+          console.log('profileData:==', this.state.ProfileData.username);
           this.setState({nameOfuser: responseData.data[0].name});
+          console.log('name of user in cart view', responseData.data[0].name);
           this.setState({about: responseData.data[0].about});
+          console.log('profileData:==', this.state.about);
+          console.log('value', responseData.data[0].id);
           this.setState({block_id: responseData.data[0].id});
+          console.log('fevtert========', responseData.data[0].favourite);
           this.setState({favourite: responseData.data[0].favourite});
           if (responseData.data[0].avatar == null) {
             this.setState({avatar: ''});
@@ -200,82 +289,92 @@ class CartViewScreen extends Component {
             this.setState({avatar: responseData.data[0].avatar});
           }
         } else {
+          // alert(responseData.data);
+          console.log(responseData.message);
         }
+        //  console.log('response profile data:', JSON.stringify(responseData));
       })
       .catch((error) => {
         this.hideLoading();
+        console.error(error);
       })
+
       .done();
   }
-
   onShare = async (links) => {
     try {
       const result = await Share.share({
         message: `Get the product at ${links}`,
         url: `${links}`,
       });
+
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
+          // shared with activity type of result.activityType
         } else {
+          // shared
         }
       } else if (result.action === Share.dismissedAction) {
+        // dismissed
       }
     } catch (error) {
       alert(error.message);
     }
   };
-
-  link =async(id,name,orderID)=>{
+  link = async (id, name, orderID) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
-      'https://cartpedal.page.link',
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
+      'cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      console.log('the url',url);
-      this.onShare(url);
-    });
-  }
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
 
-  forwardlink =async(userid,name,orderID)=>{
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        this.onShare('http://' + url);
+      });
+  };
+  forwardlink = async (userid, name, orderID) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
-      'https://cartpedal.page.link',
+      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
+      'cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
- firebase.links()
-   .createDynamicLink(link)
-   .then((url) => {
-     console.log('the url',url);
-    //  this.sendMessage(url,userid);
-    AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-        if(NumberFormat){
-          let numID=JSON.parse(NumberFormat)
-        //   this.setState({PhoneNumber:numID})
-    this.props.navigation.navigate('ForwardLinkScreen', {
-      fcmToken: this.state.fcmToken,
-      PhoneNumber: numID,
-      userId: this.state.userNo,
-      userAccessToken: this.state.userAccessToken,
-      msgids: url,
-    });
-}
-}));
-   });
- }
-
+      .setPackageName('com.cart.android')
+      .ios.setBundleId('com.cart.ios');
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        //  this.sendMessage(url,userid);
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            //   this.setState({PhoneNumber:numID})
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: 'http://' + url,
+            });
+          }
+        });
+      });
+  };
   PlaceOderCall() {
     let formData = new FormData();
+
     formData.append('user_id', this.state.userNo);
     formData.append('seller_id', {0: '14'});
+    console.log('form data==' + JSON.stringify(formData));
+
     var PalceOderUrl = this.state.baseUrl + 'api-product/place-order';
+    // var PalceOderUrl = "https://www.cartpedal.com/frontend/web/api-product/place-order"
+    console.log('placeOder:' + PalceOderUrl);
     fetch(PalceOderUrl, {
       method: 'Post',
       headers: new Headers({
@@ -283,6 +382,7 @@ class CartViewScreen extends Component {
         device_id: '11111',
         device_token: this.state.fcmtoken,
         device_type: 'android',
+        // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -291,21 +391,33 @@ class CartViewScreen extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200 ') {
+          //  this.props.navigation.navigate('StoryViewScreen')
+          // Toast.show(responseData.message);
+          // this.setState({CartListProduct:responseData.data})
+          // this.SaveProductListData(responseData)
         } else if (responseData.done == '500') {
+          //  Toast.show(responseData.message)
         } else {
+          // alert(responseData.data);
+          // alert(responseData.data.password)
         }
+
+        console.log('response object:', responseData);
+        console.log('User user ID==', JSON.stringify(responseData));
+        // console.log('access_token ', this.state.access_token)
+        //   console.log('User Phone Number==' + formData.phone_number)
       })
       .catch((error) => {
         this.hideLoading();
+        console.error(error);
       })
+
       .done();
   }
-
   OpenDeleteModalBox(productId) {
     this.setState({productID: productId});
     this.setState({isModalVisible: !this.state.isModalVisible});
   }
-
   closeModal = () => {
     this.setState({isModalVisible: false});
   };
@@ -316,6 +428,7 @@ class CartViewScreen extends Component {
         <Spinner
           visible={this.state.spinner}
           color="#F01738"
+          //   textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
         <View style={styles.headerView}>
@@ -337,7 +450,16 @@ class CartViewScreen extends Component {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
+          <TouchableOpacity
+            style={styles.SearchContainer}
+            onPress={() => {
+              // this.props.navigation.navigate('SearchBarScreen')
+            }}>
+            {/* <Image
+                            source={require('../images/search.png')}
+                            style={styles.SearchIconStyle}
+                        /> */}
+          </TouchableOpacity>
         </View>
 
         <View style={styles.MainContentBox}>
@@ -362,8 +484,7 @@ class CartViewScreen extends Component {
                   />
                   <Image
                     source={require('../images/status_add_largeicon.png')}
-                    style={styles.StatusAddLargeStyle}
-                  />
+                    style={styles.StatusAddLargeStyle}></Image>
                 </TouchableOpacity>
               </View>
               <View style={styles.Profile2InfoContainer}>
@@ -391,10 +512,11 @@ class CartViewScreen extends Component {
                       groupId: 0,
                     });
                   }}>
+                  {/* <View > */}
                   <Image
                     source={require('../images/message_icon.png')}
-                    style={styles.messageButtonStyle}
-                  />
+                    style={styles.messageButtonStyle}></Image>
+                  {/* </View> */}
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={this.AddFavourite}
@@ -413,30 +535,43 @@ class CartViewScreen extends Component {
                         marginTop:
                           this.state.favourite == 1 ? resp(3) : resp(0),
                       },
-                    ]}
-                  />
+                    ]}></Image>
                 </TouchableOpacity>
 
                 <MenuIcon
+                  //Menu Text
                   menutext="Menu"
+                  //Menu View Style
                   menustyle={{
                     marginRight: 5,
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
                   }}
+                  //Menu Text Style
                   textStyle={{
                     color: 'white',
                   }}
+                  //Click functions for the menu items
                   option1Click={() => {
                     Toast.show('CLicked Block', Toast.LONG);
                   }}
                   option2Click={() => {
-                    let name="CartViewScreen"
-                    this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                    let name = 'CartViewScreen';
+                    this.link(
+                      this.props.route.params.id,
+                      name,
+                      this.props.route.params.order_id,
+                    );
+                    // Toast.show('CLicked Shared Link', Toast.LONG)
                   }}
                   option3Click={() => {
-                    let name="CartViewScreen"
-                    this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id) 
+                    let name = 'CartViewScreen';
+                    this.forwardlink(
+                      this.props.route.params.id,
+                      name,
+                      this.props.route.params.order_id,
+                    );
+                    // Toast.show('CLicked Forward Link', Toast.LONG)
                   }}
                 />
               </View>
@@ -448,9 +583,12 @@ class CartViewScreen extends Component {
             <FlatList
               style={{flex: 1}}
               data={this.state.CartListProduct}
+              //  renderItem={({ item }) => <Item item={item} />}
               keyExtractor={(item, index) => index}
               numColumns={2}
               renderItem={({item, index}) => {
+                console.log('item of cart view screen', JSON.stringify(item));
+                console.log('item of index', index);
                 return (
                   <TouchableOpacity
                     style={styles.listItem}
@@ -462,9 +600,15 @@ class CartViewScreen extends Component {
                       });
                     }}>
                     <Image source={{uri: item.image}} style={styles.image} />
+                    {/* {item.image[5]?( <View style={styles.MultipleOptionContainer}>
+                                    <Image
+                                        source={require('../images/multipleImageIcon.png')}
+                                        style={styles.MultipleIconStyle}></Image>
+                                </View>):null} */}
                     <View>
                       <Text style={styles.itemNameStyle}>{item.name}</Text>
                     </View>
+
                     <View style={styles.box}>
                       <View style={styles.itemPriceContainer}>
                         <Text style={styles.itemPriceStyle}>
@@ -481,8 +625,7 @@ class CartViewScreen extends Component {
                         }}>
                         <Image
                           source={require('../images/delete_icon.png')}
-                          style={styles.deleteButtonStyle}
-                        />
+                          style={styles.deleteButtonStyle}></Image>
                       </TouchableOpacity>
 
                       <View style={styles.ListMenuContainer2}>
@@ -498,12 +641,23 @@ class CartViewScreen extends Component {
                               color: 'white',
                             }}
                             option1Click={() => {
-                              let name="CartViewScreen"
-                              this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                              let name = 'CartViewScreen';
+                              this.link(
+                                this.props.route.params.id,
+                                name,
+                                this.props.route.params.order_id,
+                              );
                             }}
                             option2Click={() => {
-                              let name="CartViewScreen"
-                              this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
+                              let name = 'CartViewScreen';
+                              this.forwardlink(
+                                this.props.route.params.id,
+                                name,
+                                this.props.route.params.order_id,
+                              );
+                              // Toast.show('CLicked Forward Link', Toast.LONG)
+
+                              // this.props.navigation.navigate('BluetoothDeviceList')
                             }}
                           />
                         </TouchableOpacity>
@@ -533,6 +687,10 @@ class CartViewScreen extends Component {
                 </TouchableOpacity>
 
                 <View style={styles.DeleteContainer}>
+                  {/* <Image
+                      source={require('../images/modal_delete.png')}
+                      style={styles.DeleteButtonStyle}
+                    /> */}
                   <Text style={styles.DeleteStutsStyle}>Remove Product</Text>
                 </View>
                 <Text style={styles.DeleteStutsDiscraptionStyle}>
@@ -540,7 +698,7 @@ class CartViewScreen extends Component {
                 </Text>
 
                 <View style={styles.DeleteButton2Container}>
-                  <View style={styles.EmptyButtonCOntainer} />
+                  <View style={styles.EmptyButtonCOntainer}></View>
                   <TouchableOpacity
                     style={styles.YesButtonContainer}
                     onPress={() => this.removeProductCall()}>
@@ -596,7 +754,7 @@ class CartViewScreen extends Component {
               <Text style={styles.bottomActiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen');
@@ -606,7 +764,7 @@ class CartViewScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -842,7 +1000,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-
+    shadowColor: '#ecf6fb',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
@@ -1037,6 +1195,7 @@ const styles = StyleSheet.create({
     height: resp(100),
   },
   TotalProfileTextStyle: {
+    height: resp(25),
     marginLeft: resp(38),
     width: resp(35),
     height: resp(25),
@@ -1140,6 +1299,7 @@ const styles = StyleSheet.create({
     width: resp(13.85),
     height: resp(13.85),
     position: 'absolute', //Here is the trick
+    bottom: 0,
     bottom: 60,
     left: 20,
     backgroundColor: '#fff',

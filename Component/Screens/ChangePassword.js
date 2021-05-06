@@ -10,6 +10,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import resp from 'rn-responsive-font';
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
   },
   MenuHomeIconStyle: {
     marginLeft: resp(10),
-    marginTop: resp(20),
+    marginTop: Platform.OS === 'android' ? resp(20) : resp(40),
     height: resp(30),
     width: resp(26),
     alignItems: 'flex-start',

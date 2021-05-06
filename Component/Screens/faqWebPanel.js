@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Platform,
+} from 'react-native';
 import {WebView} from 'react-native-webview';
 import resp from 'rn-responsive-font';
 
@@ -44,6 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     elevation: 20,
+    marginTop: Platform.OS === 'android' ? 0 : 24,
   },
   BackButtonContainer: {
     flex: 0.2,

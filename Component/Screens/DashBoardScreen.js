@@ -35,6 +35,7 @@ import {
   loggedStoriesAction,
   RecentDataAction,
   addStoryAction,
+  resetStore,
 } from '../../redux/actions';
 import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
@@ -491,6 +492,7 @@ class DashBoardScreen extends Component {
   logOut = () => {
     AsyncStorage.removeItem('@user_id').then((succss) => {
       AsyncStorage.removeItem('@access_token').then((resul) => {
+        this.props.resetStore();
         this.props.navigation.navigate('LoginScreen');
       });
     });
@@ -866,12 +868,12 @@ class DashBoardScreen extends Component {
                             this.blockuser(item.id);
                           }}
                           option2Click={() => {
-                            let name="OpenForProfileScreen";
-                            this.link(item.id,name)
+                            let name = 'OpenForProfileScreen';
+                            this.link(item.id, name);
                           }}
                           option3Click={() => {
-                            let name="OpenForProfileScreen";
-                            this.forwardlink(item.id,name)
+                            let name = 'OpenForProfileScreen';
+                            this.forwardlink(item.id, name);
                           }}
                           option4Click={() => {
                             this.SendReportIssue();
@@ -1011,7 +1013,7 @@ class DashBoardScreen extends Component {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-             {/* <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen');
@@ -1021,7 +1023,7 @@ class DashBoardScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */} 
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -1552,4 +1554,5 @@ export default connect(mapStateToProps, {
   loggedStoriesAction,
   RecentDataAction,
   addStoryAction,
+  resetStore,
 })(DashBoardScreen);

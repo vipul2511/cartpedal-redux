@@ -4,7 +4,9 @@ import React from 'react';
 import {
   Dimensions,
   Image,
+  Platform,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -46,6 +48,7 @@ export default class ProductDetailScreen extends React.Component {
         itemOfProduct: '',
         nextId: '',
         myText: '',
+        bunch: '',
       });
     this.doubleClick = false;
     this.hidden = false;
@@ -146,7 +149,7 @@ export default class ProductDetailScreen extends React.Component {
   addViewAPI = () => {
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
-    formData.append('product_id', this.state.itemOfProduct.id);
+    formData.append('product_id', this.props.route.params.id);
     var AddCartProductUrl = `${BASE_URL}api-product/add-views`;
     fetch(AddCartProductUrl, {
       method: 'Post',
@@ -162,21 +165,30 @@ export default class ProductDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          let nameId=responseData.data.name
-          this.setState({userNameProduct:nameId,itemOfProduct:responseData.data,name:responseData.data.name,seller_id:responseData.data.seller_id,price:responseData.data.price})
-          let imageURl=[];
-          let price_items=responseData.data.price*this.state.currentQuantity;
-          let finalPrice= (Math.round(price_items * 100) / 100).toFixed(2);
-           this.setState({totalPrice:finalPrice});
-          if(responseData.data.image.length>0){
-            let item=responseData.data.image;
-            item.map((items,index)=>{
-              imageURl.push(items.file_url)
+          let nameId = responseData.data.name;
+          this.setState({
+            userNameProduct: nameId,
+            itemOfProduct: responseData.data,
+            name: responseData.data.name,
+            seller_id: responseData.data.seller_id,
+            price: responseData.data.price,
+          });
+          let imageURl = [];
+          let price_items =
+            responseData.data.price * this.state.currentQuantity;
+          let finalPrice = (Math.round(price_items * 100) / 100).toFixed(2);
+          this.setState({totalPrice: finalPrice});
+          if (responseData.data.bunch)
+            this.setState({bunch: responseData.data.bunch});
+          if (responseData.data.image.length > 0) {
+            let item = responseData.data.image;
+            item.map((items, index) => {
+              imageURl.push(items.file_url);
             });
-            this.setState({imageList:imageURl});
+            this.setState({imageList: imageURl});
           }
-          this.setState({nextId:responseData.data.prev})
-      console.log(JSON.stringify(responseData));
+          this.setState({nextId: responseData.data.prev});
+          // console.log(JSON.stringify(responseData));
         } else {
         }
       })
@@ -301,11 +313,11 @@ export default class ProductDetailScreen extends React.Component {
             <View style={{flexDirection: 'row', marginStart: 30}}>
               <Text style={styles.detailTextStyle}>
                 {AppConst.rupeeSym}
-                {this.state.price},
+                {this.state.price} ,
               </Text>
               <Text style={styles.detailTextStyle}>
-                Bunch Price {this.state.price} x {this.state.currentQuantity} ={' '}
-                {AppConst.rupeeSym}
+                {this.state.bunch} Bunch Price {this.state.price} x{' '}
+                {this.state.currentQuantity} = {AppConst.rupeeSym}
                 {this.state.totalPrice}
               </Text>
             </View>
@@ -346,8 +358,14 @@ export default class ProductDetailScreen extends React.Component {
             </View>
 
             <Collapsible collapsed={!this.state.viewMore}>
-              <View style={{height: 50, backgroundColor: '#fff'}}>
-                <Text style={{color: 'black', marginLeft: 30, marginTop: 10}}>
+              <View style={{height: 'auto', backgroundColor: '#fff'}}>
+                <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                  {this.state.itemOfProduct.detailone}
+                </Text>
+                <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                  {this.state.itemOfProduct.detailtwo}
+                </Text>
+                <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
                   {this.state.itemOfProduct.description}
                 </Text>
               </View>
@@ -379,7 +397,11 @@ export default class ProductDetailScreen extends React.Component {
         ) : null}
         <TouchableOpacity
           onPress={() => this.props.navigation.goBack()}
-          style={{position: 'absolute', start: 20, top: 30}}>
+          style={{
+            position: 'absolute',
+            start: 20,
+            top: Platform.OS === 'android' ? 30 : 60,
+          }}>
           <Image
             source={require('../images/back_blck_icon.png')}
             style={styles.backIcon}
@@ -470,6 +492,7 @@ const styles = StyleSheet.create({
     height: 20,
     width: 35,
     resizeMode: 'contain',
+    tintColor: Colors.themeRed,
   },
   addLessIcon: {
     height: 20,

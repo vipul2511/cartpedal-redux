@@ -12,6 +12,7 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import CustomMenuIcon from './CustomMenuIcon';
@@ -76,50 +77,51 @@ class CartPlaceScreen extends Component {
       alert(error.message);
     }
   };
-  link =async(id,name,orderID)=>{
+  link = async (id, name, orderID) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      this.onShare(url);
-    });
-  }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        this.onShare(url);
+      });
+  };
 
-  forwardlink =async(userid,name,orderID)=>{
+  forwardlink = async (userid, name, orderID) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
-  firebase
-    .links()
-    .createDynamicLink(link)
-    .then((url) => {
-      console.log('the url', url);
-    AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-      if(NumberFormat){
-        let numID=JSON.parse(NumberFormat)
-      //   this.setState({PhoneNumber:numID})
-  this.props.navigation.navigate('ForwardLinkScreen', {
-    fcmToken: this.state.fcmToken,
-    PhoneNumber: numID,
-    userId: this.state.userNo,
-    userAccessToken: this.state.userAccessToken,
-    msgids: url,
-  });
-}
-}));
-   });
- }
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            //   this.setState({PhoneNumber:numID})
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
 
   async componentDidMount() {
     AsyncStorage.getItem('@access_token').then((accessToken) => {
@@ -359,7 +361,6 @@ class CartPlaceScreen extends Component {
                         <TouchableOpacity
                           style={styles.messageButtonContainer}
                           onPress={() => {
-                            console.log('id of user', item.id);
                             this.props.navigation.navigate('ChatDetailScreen', {
                               userid: item.id,
                               username: item.name,
@@ -427,12 +428,12 @@ class CartPlaceScreen extends Component {
                             color: 'white',
                           }}
                           option1Click={() => {
-                            let name="OderPlacedViewScreen"
-                            this.link(item.id,name,item.orderid)
+                            let name = 'OderPlacedViewScreen';
+                            this.link(item.id, name, item.orderid);
                           }}
                           option2Click={() => {
-                            let name="OderPlacedViewScreen"
-                            this.forwardlink(item.id,name,item.orderid)
+                            let name = 'OderPlacedViewScreen';
+                            this.forwardlink(item.id, name, item.orderid);
                           }}
                         />
                       </View>
@@ -445,8 +446,8 @@ class CartPlaceScreen extends Component {
                           <Image
                             source={{uri: item.products[0].image}}
                             style={{
-                              width: wp(95),
-                              height: hp(133),
+                              width: resp(95),
+                              height: resp(160),
                               borderRadius: 5,
                             }}
                           />
@@ -617,12 +618,7 @@ const styles = StyleSheet.create({
     height: resp(75),
     backgroundColor: 'white',
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
   ItemCountContainer: {
@@ -631,12 +627,6 @@ const styles = StyleSheet.create({
     width: resp(415),
     height: resp(75),
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
     elevation: 0,
     marginBottom: 10,
   },
@@ -696,12 +686,7 @@ const styles = StyleSheet.create({
     height: 65,
     flex: 0.5,
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
   PlacedHolderButtonContainer: {
@@ -711,12 +696,7 @@ const styles = StyleSheet.create({
     height: resp(65),
     flex: 0.6,
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
   itemBox: {
@@ -949,7 +929,7 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     marginLeft: resp(20),
     flexDirection: 'row',
-    flex: 0.9,
+    flex: 0.6,
     width: resp(0),
     height: resp(40),
   },
@@ -1072,7 +1052,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: resp(25),
+    marginTop: Platform.OS === 'android' ? resp(48) : resp(80),
   },
   tabButtonStyle: {
     flex: 0.25,

@@ -141,50 +141,53 @@ class OpenForProfileScreen extends Component {
     }
   };
 
-  link =async(id,name)=>{
+  link = async (id, name) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
+        id,
       'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      console.log('the url',url);
-      this.onShare(url);
-    });
-  }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
-  forwardlink =async(userid,name)=>{
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        this.onShare(url);
+      });
+  };
+
+  forwardlink = async (userid, name) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         userid,
-        'https://cartpedal.page.link',
+      'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-   
-   firebase.links()
-     .createDynamicLink(link)
-     .then((url) => {
-      AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-        if(NumberFormat){
-          let numID=JSON.parse(NumberFormat)
-    this.props.navigation.navigate('ForwardLinkScreen', {
-      fcmToken: this.state.fcmToken,
-      PhoneNumber: numID,
-      userId: this.state.userNo,
-      userAccessToken: this.state.userAccessToken,
-      msgids: url,
-    });
-    }
-    }));
-     });
-   }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
   UserProfileCall() {
     let formData = new FormData();
 
@@ -375,23 +378,23 @@ class OpenForProfileScreen extends Component {
                     color: 'white',
                   }}
                   option1Click={() => {
-                    let name="OpenForProfileScreen"
-                    this.link(this.props.route.params.id,name)
+                    let name = 'OpenForProfileScreen';
+                    this.link(this.props.route.params.id, name);
                   }}
                   option2Click={() => {
-                    let name="OpenForProfileScreen"
-                    this.forwardlink(this.props.route.params.id,name)
+                    let name = 'OpenForProfileScreen';
+                    this.forwardlink(this.props.route.params.id, name);
                   }}
                 />
               </View>
             </View>
             <View style={styles.PersonInfoContainer}>
               <View style={styles.card}>
-                <View style={{width: width - 30}}>
+                <View style={{width: width}}>
                   {this.state.about ? (
                     <SeeMore
                       style={styles.PersonDescriptionStyle}
-                      numberOfLines={1}
+                      numberOfLines={2}
                       linkColor="red"
                       seeMoreText="read more"
                       seeLessText="read less">
@@ -418,10 +421,7 @@ class OpenForProfileScreen extends Component {
                     style={styles.listItem}
                     onPress={() => {
                       this.props.navigation.navigate('ProductDetailScreen', {
-                        whole_data: item,
-                        seller_id: this.state.wholeData.id,
-                        imageURL: item.image,
-                        name: this.props.route.params.name,
+                        id: item.id,
                       });
                     }}>
                     <Image
@@ -472,10 +472,7 @@ class OpenForProfileScreen extends Component {
                           this.props.navigation.navigate(
                             'ProductDetailScreen',
                             {
-                              whole_data: item,
-                              seller_id: this.state.wholeData.id,
-                              imageURL: item.image,
-                              name: this.props.route.params.name,
+                              id: item.id,
                             },
                           );
                         }}>
@@ -498,12 +495,15 @@ class OpenForProfileScreen extends Component {
                               color: 'white',
                             }}
                             option1Click={() => {
-                              let name="ProductDetailScreen"
-                              this.link(this.props.route.params.id,name)
+                              let name = 'ProductDetailScreen';
+                              this.link(this.props.route.params.id, name);
                             }}
                             option2Click={() => {
-                              let name="ProductDetailScreen"
-                              this.forwardlink(this.props.route.params.id,name)
+                              let name = 'ProductDetailScreen';
+                              this.forwardlink(
+                                this.props.route.params.id,
+                                name,
+                              );
                             }}
                           />
                         </TouchableOpacity>
@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
   PersonInfoContainer: {
     flexDirection: 'column',
 
-    width: resp(400),
+    width: width,
     backgroundColor: 'white',
     height: resp(66),
   },
@@ -841,6 +841,7 @@ const styles = StyleSheet.create({
   PersonDescriptionStyle: {
     marginTop: resp(-2),
     marginLeft: resp(30),
+    flexDirection: 'row',
     fontSize: resp(12),
     width: resp(334),
     height: resp(44),

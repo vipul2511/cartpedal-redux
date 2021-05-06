@@ -637,34 +637,35 @@ class ProfileScreen extends Component {
       .done();
   };
 
-  forwardlink =async(userid,name)=>{
+  forwardlink = async (userid, name) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         userid,
-        'https://cartpedal.page.link',
+      'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-   
-   firebase.links()
-     .createDynamicLink(link)
-     .then((url) => {
-       console.log('the url',url);
-      AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-        if(NumberFormat){
-          let numID=JSON.parse(NumberFormat)
-    this.props.navigation.navigate('ForwardLinkScreen', {
-      fcmToken: this.state.fcmtoken,
-      PhoneNumber: numID,
-      userId: this.state.userId,
-      userAccessToken: this.state.userAccessToken,
-      msgids: url,
-    });
-  }
-  }));
-     });
-   }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmtoken,
+              PhoneNumber: numID,
+              userId: this.state.userId,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
 
   onShare = async (links) => {
     try {
@@ -684,22 +685,24 @@ class ProfileScreen extends Component {
     }
   };
 
-  link =async(id,name)=>{
+  link = async (id, name) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
+        id,
       'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      console.log('the url',url);
-      this.onShare(url);
-    });
-  }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        this.onShare(url);
+      });
+  };
   viewFunc = () => {
     this.props.navigation.navigate('ViewProfileScreen', {
       images: this.state.covers,
@@ -911,12 +914,12 @@ class ProfileScreen extends Component {
                       color: 'white',
                     }}
                     option1Click={() => {
-                      let name="ProfileScreen"
-                      this.link(this.state.userId,name)
+                      let name = 'ProfileScreen';
+                      this.link(this.state.userId, name);
                     }}
                     option2Click={() => {
-                      let name="ProfileScreen"
-                      this.forwardlink(this.state.userId,name)
+                      let name = 'ProfileScreen';
+                      this.forwardlink(this.state.userId, name);
                     }}
                   />
                 </TouchableOpacity>
@@ -1325,12 +1328,12 @@ class ProfileScreen extends Component {
                                 Toast.show('CLicked Unshow Link', Toast.LONG);
                               }}
                               option2Click={() => {
-                                let name="ProductDetailScreen";
-                                this.link(item.product_id,name)
+                                let name = 'ProductDetailScreen';
+                                this.link(item.product_id, name);
                               }}
                               option3Click={() => {
-                                let name="ProductDetailScreen";
-                                this.forwardlink(item.product_id,name)
+                                let name = 'ProductDetailScreen';
+                                this.forwardlink(item.product_id, name);
                               }}
                               option4Click={() => {
                                 this.props.navigation.navigate(

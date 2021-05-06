@@ -15,12 +15,9 @@ export default class ImageSelectDialogs extends Component {
     this._menu.hide();
   };
 
-  componentWillUnmount() {
-    console.log('props', JSON.stringify(this.props));
-  }
+  componentWillUnmount() {}
 
   openCamera() {
-    this.hideMenu();
     ImagePicker.openCamera({
       width: 300,
       height: 400,
@@ -28,13 +25,13 @@ export default class ImageSelectDialogs extends Component {
       includeBase64: true,
     })
       .then((image) => {
+        this.hideMenu();
         this.onImagePick(image);
       })
       .catch((error) => {});
   }
 
   openCameraCoverPhoto() {
-    this.hideMenu();
     ImagePicker.openCamera({
       width: 420,
       height: 220,
@@ -42,14 +39,13 @@ export default class ImageSelectDialogs extends Component {
       includeBase64: true,
     })
       .then((image) => {
+        this.hideMenu();
         this.onImagePick(image);
-        console.log('picimage===', image);
       })
       .catch((error) => {});
   }
 
   openGalleryCoverPhoto() {
-    this.hideMenu();
     ImagePicker.openPicker({
       width: 420,
       height: 220,
@@ -57,14 +53,13 @@ export default class ImageSelectDialogs extends Component {
       includeBase64: true,
     })
       .then((image) => {
+        this.hideMenu();
         this.onImagePick(image);
-        console.log('pickimage==', image);
       })
       .catch((error) => {});
   }
 
   openGallery() {
-    this.hideMenu();
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -72,8 +67,8 @@ export default class ImageSelectDialogs extends Component {
       includeBase64: true,
     })
       .then((image) => {
+        this.hideMenu();
         this.onImagePick(image);
-        console.log('pickimage==', image);
       })
       .catch((error) => {
         firebase.crashlytics().recordError(error);

@@ -309,11 +309,11 @@ class GeneralTab extends Component {
     const link = new firebase.links.DynamicLink(
       'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
         userid,
-        'https://cartpedal.page.link',
+      'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
     firebase
       .links()
@@ -324,7 +324,7 @@ class GeneralTab extends Component {
           PhoneNumber: this.state.PhoneNumber,
           userId: this.state.userNo,
           userAccessToken: this.state.userAccessToken,
-          msgids:url,
+          msgids: url,
         });
       });
   };
@@ -538,7 +538,6 @@ class GeneralTab extends Component {
                           </View>
                         ) : null}
                       </View>
-                      <View style={styles.hairline} />
                     </ScrollView>
                     <View style={styles.hairline} />
                   </View>
@@ -591,26 +590,12 @@ const styles = StyleSheet.create({
     height: hp(75),
     backgroundColor: 'white',
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: resp(2),
-      width: resp(5),
-    },
-    elevation: 0,
   },
   itemBox: {
     height: hp(375),
     width: width,
     backgroundColor: 'white',
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: resp(1),
-      width: resp(5),
-    },
-    elevation: 0,
   },
   ProfileImageViewStyle: {
     marginTop: resp(10),
