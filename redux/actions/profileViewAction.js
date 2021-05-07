@@ -5,12 +5,13 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
 
 export const profileView = (userId, userAccessToken) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: PROFILE_VIEW_START});
     var urlprofile = `${API_URL}api-user/view-profile?user_id=` + userId;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+
     return fetch(urlprofile, {
       method: 'GET',
       headers: {

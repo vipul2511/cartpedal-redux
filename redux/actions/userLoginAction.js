@@ -24,7 +24,7 @@ export const signin = (phone, password) => {
     formData.append('password', password);
     var otpUrl = `${API_URL}api-user/login`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -85,7 +85,7 @@ export const forgotPass = (phone) => {
     formData.append('mobile', '+91' + phone);
     var otpUrl = `${API_URL}api-user/forgot-password`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -133,7 +133,7 @@ export const forgotPassOTp = (phone, otp) => {
     formData.append('otp', otp);
     var otpUrl = `${API_URL}api-user/verify-otp`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -180,7 +180,7 @@ export const resetPass = (pass, otp) => {
     formData.append('otp', otp);
     var otpUrl = `${API_URL}api-user/reset-password`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -218,3 +218,8 @@ export const resetPass = (pass, otp) => {
       .done();
   };
 };
+
+const T_149 =
+  'dpXx4N5NSJeVe-A5ZsZ37T:APA91bFnDWIHx3lQPaHDNNaRfx0tCuN0pMPu8W5uo469678TerFiXUdLy09Cos4ab1PqIV3Pav6i7Vso-4LN5QXAc2NBeIGzNlEicv_X8Trj2poXH-enjeflk1jE5qzLlzyPGe7Ut3zW';
+const T_156 =
+  'fGeP6RibTYmVSCQcDvOEaa:APA91bGSegPWl-Mb85nlsaykGIF74a-f9cZMbKWb-uRfj7Llin3W-Hx31i2275ghwXUx4Q0L_9KF1tWueB-m5CaE2MfSAKdCTJAJ6ZvL6LRai9ZKVhXk2yxaAlrBhQsqJ72LiLkNzpEo';

@@ -8,15 +8,17 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
 
 export const signUp = (phone) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: USER_SIGNUP_START});
     let formData = new FormData();
     formData.append('mobile', '+91' + phone);
     var otpUrl = `${API_URL}api-user/send-otp`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
+
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -57,7 +59,7 @@ export const signUp = (phone) => {
 };
 
 export const signUpConf = (name, phone, email, pass) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: USER_SIGNUP_CONF_START});
     let formData = new FormData();
     formData.append('name', name);
@@ -65,7 +67,9 @@ export const signUpConf = (name, phone, email, pass) => {
     formData.append('email', email);
     formData.append('password', pass);
     var otpUrl = `${API_URL}api-user/signup`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {

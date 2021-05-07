@@ -5,10 +5,9 @@ import {
 } from './index.actions';
 import {API_URL} from '../../Config';
 import AsyncStorage from '@react-native-community/async-storage';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
 
 export const RecentDataAction = (userId, userAccessToken, newContacts) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: GET_RECENT_START});
     let formData = new FormData();
     formData.append('user_id', userId);
@@ -16,7 +15,9 @@ export const RecentDataAction = (userId, userAccessToken, newContacts) => {
     formData.append('public', 0);
     formData.append('contact', newContacts);
     var RecentShare = `${API_URL}api-user/recent-share`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     fetch(RecentShare, {
       method: 'Post',
       headers: new Headers({
