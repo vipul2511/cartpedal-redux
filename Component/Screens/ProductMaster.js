@@ -13,6 +13,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform
 } from 'react-native';
 import AppConst from '../Component/AppConst';
 import AppImageSlider from '../Component/AppImageSlider';
@@ -124,7 +125,7 @@ export default class ProductMasterUpdate extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       }),
       body: formData,
@@ -181,7 +182,7 @@ export default class ProductMasterUpdate extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
     })
@@ -232,7 +233,7 @@ export default class ProductMasterUpdate extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
     })
@@ -256,7 +257,7 @@ export default class ProductMasterUpdate extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
       body: JSON.stringify({
@@ -298,7 +299,7 @@ export default class ProductMasterUpdate extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
     })
@@ -376,7 +377,7 @@ export default class ProductMasterUpdate extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       }),
       body: formData,

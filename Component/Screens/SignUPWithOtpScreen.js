@@ -53,8 +53,8 @@ class SignUPWithOtpScreen extends Component {
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
-        device_token: '1111',
-        device_type: 'android',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
       },
       body: formData,
     })

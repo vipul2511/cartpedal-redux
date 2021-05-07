@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform
 } from 'react-native';
 import AppConst from '../Component/AppConst';
 import AppImageSlider from '../Component/AppImageSlider';
@@ -155,7 +156,7 @@ export default class CartDetailsScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
@@ -185,7 +186,7 @@ export default class CartDetailsScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -226,7 +227,7 @@ export default class CartDetailsScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,

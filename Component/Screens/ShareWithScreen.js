@@ -11,6 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform
 } from 'react-native';
 import {
   moreIcon,
@@ -131,7 +132,7 @@ export default class ShareWithScreen extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -165,7 +166,7 @@ export default class ShareWithScreen extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -389,7 +390,7 @@ export default class ShareWithScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -427,7 +428,7 @@ export default class ShareWithScreen extends React.Component {
             'Content-Type': 'multipart/form-data',
             device_id: '1111',
             device_token: this.state.fcmtoken,
-            device_type: 'android',
+            device_type: Platform.OS,
             Authorization: JSON.parse(this.state.userAccessToken),
           }),
           body: formData,

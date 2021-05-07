@@ -9,6 +9,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -62,7 +63,7 @@ class ForwardMessageScreen extends Component {
       headers: {
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: data,
@@ -98,7 +99,7 @@ class ForwardMessageScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: JSON.stringify({

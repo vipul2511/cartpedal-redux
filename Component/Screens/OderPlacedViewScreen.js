@@ -14,6 +14,7 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
@@ -177,7 +178,7 @@ class OderPlacedViewScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -208,7 +209,7 @@ class OderPlacedViewScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,

@@ -12,6 +12,7 @@ import {
   SafeAreaView,
   Share,
   Dimensions,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import CustomMenuIcon from './CustomMenuIcon';
@@ -124,7 +125,7 @@ class CartPlaceScreen extends Component {
               'Content-Type': 'multipart/form-data',
               device_id: '1111',
               device_token: fcmToken,
-              device_type: 'android',
+              device_type: Platform.OS,
               Authorization: JSON.parse(userAccessToken),
             }),
             body: formData,
@@ -176,7 +177,7 @@ class CartPlaceScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -209,7 +210,7 @@ class CartPlaceScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,

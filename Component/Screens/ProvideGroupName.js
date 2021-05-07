@@ -13,6 +13,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -115,7 +116,7 @@ export default class SettingFullView extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
@@ -157,7 +158,7 @@ export default class SettingFullView extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
@@ -205,7 +206,7 @@ export default class SettingFullView extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -240,8 +241,8 @@ export default class SettingFullView extends React.Component {
       headers: new Headers({
         'Content-Type': 'multipart/form-data',
         device_id: '11111',
-        device_token: '1111',
-        device_type: 'android',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
         // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
@@ -319,7 +320,7 @@ export default class SettingFullView extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({

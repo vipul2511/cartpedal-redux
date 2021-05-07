@@ -17,6 +17,7 @@ import {
   Dimensions,
   ScrollView,
   Share,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import MenuIcon from './MenuIcon';
@@ -70,7 +71,7 @@ class GeneralTab extends Component {
             'Content-Type': 'application/json',
             device_id: '1234',
             device_token: this.state.fcmToken,
-            device_type: 'android',
+            device_type: Platform.OS,
             Authorization: JSON.parse(this.state.userAccessToken),
           },
           body: JSON.stringify({
@@ -164,7 +165,7 @@ class GeneralTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -200,7 +201,7 @@ class GeneralTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -267,7 +268,7 @@ class GeneralTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -347,7 +348,7 @@ class GeneralTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,

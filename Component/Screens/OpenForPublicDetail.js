@@ -13,6 +13,7 @@ import {
   Dimensions,
   ScrollView,
   Share,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import CustomMenuIcon from './CustomMenuIcon';
@@ -90,8 +91,8 @@ class OpenForPublicDetail extends Component {
       headers: new Headers({
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
-        device_token: '1111',
-        device_type: 'android',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -125,8 +126,8 @@ class OpenForPublicDetail extends Component {
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
-        device_token: '1111',
-        device_type: 'android',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,

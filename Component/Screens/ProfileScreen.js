@@ -17,6 +17,7 @@ import {
   Dimensions,
   Share,
   ScrollView,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import ProfileCustomMenuIcon from './ProfileCustomMenuIcon';
@@ -142,7 +143,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -175,7 +176,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -335,7 +336,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -366,7 +367,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -404,7 +405,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -439,7 +440,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -488,7 +489,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -606,7 +607,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -714,7 +715,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({

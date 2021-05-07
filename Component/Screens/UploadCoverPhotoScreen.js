@@ -12,6 +12,7 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 
@@ -86,7 +87,7 @@ class UploadCoverPhotoScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -144,7 +145,7 @@ class UploadCoverPhotoScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -186,7 +187,7 @@ class UploadCoverPhotoScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({

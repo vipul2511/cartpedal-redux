@@ -14,6 +14,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform
 } from 'react-native';
 import {contactIcon, tickIcon, untickIcon} from '../Component/Images';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -139,7 +140,7 @@ export default class AddGroupMember extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -176,7 +177,7 @@ export default class AddGroupMember extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -435,7 +436,7 @@ export default class AddGroupMember extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({

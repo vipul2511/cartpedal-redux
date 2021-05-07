@@ -12,6 +12,7 @@ import {
   ScrollView,
   Dimensions,
   Share,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import SeeMore from 'react-native-see-more-inline';
@@ -114,7 +115,7 @@ class FavouriteTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -146,7 +147,7 @@ class FavouriteTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -208,7 +209,7 @@ class FavouriteTab extends Component {
                         'Content-Type': 'application/json',
                         device_id: '1234',
                         device_token: this.state.fcmToken,
-                        device_type: 'android',
+                        device_type: Platform.OS,
                         Authorization: JSON.parse(this.state.userAccessToken),
                       },
                       body: JSON.stringify({
@@ -275,7 +276,7 @@ class FavouriteTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(acessIDtoken),
       }),
       body: formData,
@@ -382,7 +383,7 @@ class FavouriteTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
@@ -418,7 +419,7 @@ class FavouriteTab extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,

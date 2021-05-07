@@ -10,6 +10,7 @@ import {
   FlatList,
   SafeAreaView,
   Modal,
+  Platform
 } from 'react-native';
 import {Container, TabHeading, Tab, Tabs} from 'native-base';
 import resp from 'rn-responsive-font';
@@ -164,7 +165,7 @@ class OpenForPublicScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -229,7 +230,7 @@ class OpenForPublicScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -260,7 +261,7 @@ class OpenForPublicScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
