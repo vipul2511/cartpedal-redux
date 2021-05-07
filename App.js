@@ -1,8 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage';
-
 import firebase from 'react-native-firebase';
-import {pushNotifications} from './Component/Screens/services';
-pushNotifications.configure();
+// import {pushNotifications} from './Component/Screens/services';
+// pushNotifications.configure();
+
+if (Platform.OS === 'android') {
+  const channel = new firebase.notifications.Android.Channel(
+    'test-channel',
+    'Test Channel',
+    firebase.notifications.Android.Importance.Max,
+  ).setDescription('My apps test channel');
+  firebase.notifications().android.createChannel(channel);
+}
+
 const messaging = firebase.messaging();
 
 messaging
@@ -12,6 +21,7 @@ messaging
       messaging
         .getToken()
         .then((token) => {
+          console.log(token, 'TOKEN');
           AsyncStorage.setItem('@fcmtoken', JSON.stringify(token));
         })
         .catch((error) => {
@@ -28,9 +38,30 @@ messaging
   })
   .catch((error) => {});
 
-firebase.notifications().onNotification((notification) => {});
+const getInitial = async () => {
+  const notificationOpen = await firebase
+    .notifications()
+    .getInitialNotification();
 
-firebase.messaging().onMessage(async (m) => {});
+  if (notificationOpen) {
+    //const {title, body} = notificationOpen.notification;
+    console.log(notificationOpen.notification.data);
+  }
+};
+
+getInitial();
+
+firebase.notifications().onNotification((notification) => {
+  console.log(notification.data);
+});
+
+firebase.messaging().onMessage(async (m) => {
+  console.log(m.data);
+});
+
+firebase.notifications().onNotificationOpened(async (m) => {
+  console.log(m.notification.data, 'ON OPEN');
+});
 
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
@@ -38,7 +69,8 @@ import {MainStack} from './Routes';
 import initStore from './redux/store';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
-import {LogBox} from 'react-native';
+import {LogBox, Platform} from 'react-native';
+// import {GiftedChatDemo} from './Component/Screens/GiftedChatDemo';
 
 const {store, persistor} = initStore();
 export default class App extends React.Component {
@@ -54,6 +86,7 @@ export default class App extends React.Component {
         <PersistGate loading={null} persistor={persistor}>
           <NavigationContainer>
             <MainStack />
+            {/* <GiftedChatDemo /> */}
           </NavigationContainer>
         </PersistGate>
       </Provider>

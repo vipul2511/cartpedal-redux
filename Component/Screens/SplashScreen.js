@@ -24,6 +24,7 @@ class SplashScreen extends Component {
   static navigationOptions = {
     title: 'Splash',
   };
+
   moveToDeepLink = (url) => {
     const split1 = url.split('?');
     if (split1.length > 1) {
@@ -142,7 +143,6 @@ class SplashScreen extends Component {
               } else if (page === 'OderPlacedViewScreen') {
                 const id = split2[2].split('=')[1];
                 const order_id = split2[3].split('=')[1];
-                console.log('split', split2);
                 this.setState({
                   deepLink: true,
                   initialPage: page,
@@ -154,7 +154,6 @@ class SplashScreen extends Component {
               } else if (page === 'OrderRecievedViewScreen') {
                 const id = split2[2].split('=')[1];
                 const order_id = split2[3].split('=')[1];
-                console.log('split', split2);
                 this.setState({
                   deepLink: true,
                   initialPage: page,
@@ -180,7 +179,6 @@ class SplashScreen extends Component {
           }
         } else {
           this.props.navigation.addListener('focus', this.load);
-          // app NOT opened from a url
         }
       });
     this.props.navigation.addListener('focus', this.load);
@@ -194,7 +192,6 @@ class SplashScreen extends Component {
   load = () => {
     this.showLoading();
     this.timeoutHandle = setTimeout(() => {
-      // Add your logic for the transition
       AsyncStorage.getItem('@is_login').then(async (isLogin) => {
         const {deepLink, initialPage, parameters} = this.state;
         if (isLogin == undefined || isLogin == '0') {
