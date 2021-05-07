@@ -193,12 +193,11 @@ class FavouriteTab extends Component {
         AsyncStorage.getItem('@user_id').then((userId) => {
           if (userId) {
             user_id = userId;
-            console.log('user id', userId);
+
             AsyncStorage.getItem('@access_token').then((accessToken) => {
               if (accessToken) {
                 acessIDtoken = accessToken;
                 AsyncStorage.getItem('@fcmtoken').then((token) => {
-                  console.log('inside favourite list=' + token);
                   if (token) {
                     fcmToken = token;
                     this.showLoading();
@@ -324,50 +323,52 @@ class FavouriteTab extends Component {
     }
   };
 
-  link =async(id)=>{
+  link = async (id) => {
     const link = new firebase.links.DynamicLink(
       'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
         id,
       'cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      this.onShare(url);
-    });
-  }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
-  forwardlink =async(userid)=>{
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        this.onShare(url);
+      });
+  };
+
+  forwardlink = async (userid) => {
     const link = new firebase.links.DynamicLink(
       'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
         userid,
       'cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-   
-   firebase.links()
-     .createDynamicLink(link)
-     .then((url) => {
-      AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-        if(NumberFormat){
-          let numID=JSON.parse(NumberFormat)
-    this.props.navigation.navigate('ForwardLinkScreen', {
-      fcmToken: this.state.fcmToken,
-      PhoneNumber: numID,
-      userId: this.state.userNo,
-      userAccessToken: this.state.userAccessToken,
-      msgids:url,
-    });
-  }
-  }));
-     });
-   }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
 
   SendReportIssue() {
     let formData = new FormData();
@@ -616,7 +617,7 @@ class FavouriteTab extends Component {
                         ) : null}
                       </View>
 
-                      <View style={styles.hairline} />
+                      {/* <View style={styles.hairline} /> */}
                     </ScrollView>
 
                     <View style={styles.hairline} />
@@ -669,12 +670,7 @@ const styles = StyleSheet.create({
     height: resp(75),
     backgroundColor: 'white',
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
   itemBox: {
@@ -773,6 +769,7 @@ const styles = StyleSheet.create({
     width: resp(60),
     height: resp(24),
     backgroundColor: '#fff',
+    marginTop: 4,
   },
   columnView: {
     flexDirection: 'row',

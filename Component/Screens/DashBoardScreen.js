@@ -1,6 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react-native/no-inline-styles */
+
 import React, {Component} from 'react';
 import {
   StyleSheet,
@@ -868,12 +869,12 @@ class DashBoardScreen extends Component {
                             this.blockuser(item.id);
                           }}
                           option2Click={() => {
-                            let name="OpenForProfileScreen";
-                            this.link(item.id,name)
+                            let name = 'OpenForProfileScreen';
+                            this.link(item.id, name);
                           }}
                           option3Click={() => {
-                            let name="OpenForProfileScreen";
-                            this.forwardlink(item.id,name)
+                            let name = 'OpenForProfileScreen';
+                            this.forwardlink(item.id, name);
                           }}
                           option4Click={() => {
                             this.SendReportIssue();
@@ -1013,7 +1014,7 @@ class DashBoardScreen extends Component {
               <Text style={styles.bottomInactiveTextStyleChart}>Cart</Text>
             </TouchableOpacity>
 
-             {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen');
@@ -1023,12 +1024,11 @@ class DashBoardScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */} 
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('SettingScreen');
-                // this.props.navigation.navigate('AudioPlayer')
               }}>
               <Image
                 source={require('../images/setting_inactive_icon.png')}

@@ -42,8 +42,7 @@ class CustomMenuIcon extends Component {
                   uri:
                     'https://raw.githubusercontent.com/AboutReact/sampleresource/master/menu_icon.png',
                 }}
-                tintColor={'black'}
-                style={{width: 20, height: 20}}
+                style={{width: 20, height: 20, tintColor: 'black'}}
               />
             </TouchableOpacity>
           }>

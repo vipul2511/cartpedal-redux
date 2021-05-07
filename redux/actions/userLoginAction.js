@@ -14,16 +14,16 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
+import {Platform} from 'react-native';
 
 export const signin = (phone, password) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: USER_SIGNIN_START});
     let formData = new FormData();
     formData.append('identity', '+91' + phone);
     formData.append('password', password);
     var otpUrl = `${API_URL}api-user/login`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(otpUrl, {
       method: 'Post',
@@ -31,7 +31,7 @@ export const signin = (phone, password) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
@@ -79,11 +79,12 @@ export const signin = (phone, password) => {
 };
 
 export const forgotPass = (phone) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: FORGOT_PASSWORD_START});
     let formData = new FormData();
     formData.append('mobile', '+91' + phone);
     var otpUrl = `${API_URL}api-user/forgot-password`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(otpUrl, {
       method: 'Post',
@@ -124,13 +125,14 @@ export const forgotPass = (phone) => {
 };
 
 export const forgotPassOTp = (phone, otp) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: FORGOT_PASSWORD_OTP_START});
     let formData = new FormData();
 
     formData.append('mobile', phone);
     formData.append('otp', otp);
     var otpUrl = `${API_URL}api-user/verify-otp`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(otpUrl, {
       method: 'Post',
@@ -171,12 +173,13 @@ export const forgotPassOTp = (phone, otp) => {
 };
 
 export const resetPass = (pass, otp) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: RESET_PASSWORD_START});
     let formData = new FormData();
     formData.append('password', pass);
     formData.append('otp', otp);
     var otpUrl = `${API_URL}api-user/reset-password`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(otpUrl, {
       method: 'Post',

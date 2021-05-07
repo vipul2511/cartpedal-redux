@@ -1,7 +1,7 @@
 /* eslint-disable radix */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 console.disableYellowBox = true;
 import {
@@ -22,8 +22,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
-import { BASE_URL } from '../Component/ApiClient';
-import { hp, wp } from '../Component/hightWidthRatio';
+import {BASE_URL} from '../Component/ApiClient';
+import {hp, wp} from '../Component/hightWidthRatio';
 class CartPlaceScreen extends Component {
   constructor(props) {
     super(props);
@@ -55,11 +55,11 @@ class CartPlaceScreen extends Component {
   }
 
   showLoading() {
-    this.setState({ spinner: true });
+    this.setState({spinner: true});
   }
 
   hideLoading() {
-    this.setState({ spinner: false });
+    this.setState({spinner: false});
   }
 
   GotoNextScreen(item) {
@@ -70,7 +70,7 @@ class CartPlaceScreen extends Component {
     this.PlaceOderCall();
   }
 
-  actionOnRow(item) { }
+  actionOnRow(item) {}
 
   onShare = async (links) => {
     try {
@@ -98,13 +98,14 @@ class CartPlaceScreen extends Component {
       .ios.setBundleId('com.ios.cartpadle')
       .ios.setAppStoreId('1539321365');
 
-    firebase.links()
+    firebase
+      .links()
       .createDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
         this.onShare(url);
       });
-  }
+  };
 
   forwardlink = async (userid, name, orderID) => {
     const link = new firebase.links.DynamicLink(
@@ -120,9 +121,9 @@ class CartPlaceScreen extends Component {
       .createDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
-        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat => {
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
           if (NumberFormat) {
-            let numID = JSON.parse(NumberFormat)
+            let numID = JSON.parse(NumberFormat);
             //   this.setState({PhoneNumber:numID})
             this.props.navigation.navigate('ForwardLinkScreen', {
               fcmToken: this.state.fcmToken,
@@ -132,25 +133,28 @@ class CartPlaceScreen extends Component {
               msgids: url,
             });
           }
-        }));
+        });
       });
-  }
+  };
 
   async componentDidMount() {
+    this.props.navigation.addListener('focus', () => {
+      this.CartListCall();
+    });
     this.showLoading();
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
+        this.setState({userAccessToken: accessToken});
       }
     });
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
-        this.setState({ fcmToken: token });
+        this.setState({fcmToken: token});
       }
     });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-        this.setState({ userNo: userId });
+        this.setState({userNo: userId});
         this.CartListCall();
       } else {
         this.hideLoading();
@@ -168,8 +172,8 @@ class CartPlaceScreen extends Component {
 
   ListEmpty = () => {
     return (
-      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ marginTop: 120 }}>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{marginTop: 120}}>
           {this.state.NoData ? 'No Record' : null}{' '}
         </Text>
       </View>
@@ -209,9 +213,9 @@ class CartPlaceScreen extends Component {
                         responseData.data !== undefined &&
                         responseData.data.length > 0
                       ) {
-                        this.setState({ ButtomTab: true });
-                        this.setState({ CartListProduct: responseData.data });
-                        this.setState({ block_id: responseData.data[0].id });
+                        this.setState({ButtomTab: true});
+                        this.setState({CartListProduct: responseData.data});
+                        this.setState({block_id: responseData.data[0].id});
                         this.setState({
                           itemOfProduct: responseData.data[0].products[0].id,
                         });
@@ -227,14 +231,14 @@ class CartPlaceScreen extends Component {
                         });
                         this.SaveUserName(responseData);
                         if (responseData.data[0].avatar == null) {
-                          this.setState({ avatar: '' });
+                          this.setState({avatar: ''});
                           this.hideLoading();
                         } else {
                           this.hideLoading();
                         }
                       } else {
-                        this.setState({ NoData: true });
-                        this.setState({ CartListProduct: '' });
+                        this.setState({NoData: true});
+                        this.setState({CartListProduct: ''});
                         this.hideLoading();
                       }
                       this.setState({
@@ -243,7 +247,7 @@ class CartPlaceScreen extends Component {
                       this.addQuantity(responseData.data);
                     } else {
                       this.hideLoading();
-                      this.setState({ NoData: true });
+                      this.setState({NoData: true});
                     }
                   })
                   .catch((error) => {
@@ -290,7 +294,7 @@ class CartPlaceScreen extends Component {
           let newArr = this.state.CartListProduct.filter(
             (word) => word.id !== seller_id,
           );
-          this.setState({ CartListProduct: newArr });
+          this.setState({CartListProduct: newArr});
           this.addQuantity(newArr);
         } else if (responseData.done == '500') {
         } else {
@@ -312,8 +316,8 @@ class CartPlaceScreen extends Component {
         cart_quantity = cart_quantity + item.cartitem;
         total_price = total_price + item.cartvalue;
       });
-      this.setState({ quantity: cart_quantity });
-      this.setState({ total_price: total_price });
+      this.setState({quantity: cart_quantity});
+      this.setState({total_price: total_price});
     }
   };
 
@@ -353,10 +357,10 @@ class CartPlaceScreen extends Component {
         .then((responseData) => {
           this.hideLoading();
           if (responseData.code == '200 ') {
-            this.setState({ CartListProduct: '' });
-            this.setState({ quantity: '0' });
-            this.setState({ total_price: '0' });
-            this.setState({ NoData: true });
+            this.setState({CartListProduct: ''});
+            this.setState({quantity: '0'});
+            this.setState({total_price: '0'});
+            this.setState({NoData: true});
           } else if (responseData.done == '500') {
           } else {
           }
@@ -397,7 +401,7 @@ class CartPlaceScreen extends Component {
         if (responseData.code == '200') {
           this.CartListCall();
         } else {
-          this.setState({ NoData: true });
+          this.setState({NoData: true});
         }
       })
       .catch((error) => {
@@ -410,14 +414,16 @@ class CartPlaceScreen extends Component {
     await AsyncStorage.setItem('@user_id', responseData.data.userid.toString());
   }
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({item}) => {
     return (
       <TouchableOpacity
         style={styles.itemBox}
         onPress={() => {
           console.log('user data from api', item);
           this.props.navigation.navigate('CartViewScreen', {
-            id: item.id, name: item.name,order_id:item.id
+            id: item.id,
+            name: item.name,
+            order_id: item.id,
           });
         }}>
         <View>
@@ -428,7 +434,7 @@ class CartPlaceScreen extends Component {
                   source={
                     item.avatar == null
                       ? this.state.pickedImage
-                      : { uri: item.avatar }
+                      : {uri: item.avatar}
                   }
                   style={styles.ProfileImageViewStyle}
                 />
@@ -436,7 +442,7 @@ class CartPlaceScreen extends Component {
             </View>
             <View style={styles.ProfileInfoContainer}>
               <Text style={styles.PersonNameStyle}>{item.name}</Text>
-              <View style={{ width: resp(500) }}>
+              <View style={{width: resp(500)}}>
                 {item.about ? (
                   <SeeMore
                     style={styles.ProfileDescription}
@@ -492,7 +498,9 @@ class CartPlaceScreen extends Component {
                 onPress={() => {
                   console.log('user data from api', item);
                   this.props.navigation.navigate('CartViewScreen', {
-                    id: item.id, name: item.name,order_id:item.id
+                    id: item.id,
+                    name: item.name,
+                    order_id: item.id,
                   });
                 }}>
                 <View style={styles.ViewButtonContainer}>
@@ -514,12 +522,12 @@ class CartPlaceScreen extends Component {
                   Toast.show('CLicked Block', Toast.LONG);
                 }}
                 option2Click={() => {
-                  let name="CartViewScreen"
-                  this.link(item.id,name,item.id)
+                  let name = 'CartViewScreen';
+                  this.link(item.id, name, item.id);
                 }}
                 option3Click={() => {
-                  let name="CartViewScreen"
-                  this.forwardlink(item.id,name,item.id)
+                  let name = 'CartViewScreen';
+                  this.forwardlink(item.id, name, item.id);
                 }}
               />
             </View>
@@ -528,7 +536,7 @@ class CartPlaceScreen extends Component {
             <View style={styles.columnView}>
               <View style={styles.ImageContainer}>
                 <Image
-                  source={{ uri: item.products[0].image }}
+                  source={{uri: item.products[0].image}}
                   style={{
                     width: 95,
                     height: 133,
@@ -546,7 +554,7 @@ class CartPlaceScreen extends Component {
               {item.products[1] ? (
                 <View style={styles.ImageContainer1}>
                   <Image
-                    source={{ uri: item.products[1].image }}
+                    source={{uri: item.products[1].image}}
                     style={{
                       width: 95,
                       height: 133,
@@ -565,7 +573,7 @@ class CartPlaceScreen extends Component {
               {item.products[2] ? (
                 <View style={styles.ImageContainer1}>
                   <Image
-                    source={{ uri: item.products[2].image }}
+                    source={{uri: item.products[2].image}}
                     style={{
                       width: 95,
                       height: 133,
@@ -584,7 +592,7 @@ class CartPlaceScreen extends Component {
               {item.products[3] ? (
                 <View style={styles.ImageContainer1}>
                   <Image
-                    source={{ uri: item.products[3].image }}
+                    source={{uri: item.products[3].image}}
                     style={{
                       width: 95,
                       height: 133,
@@ -648,7 +656,7 @@ class CartPlaceScreen extends Component {
           <View style={styles.hairline} />
 
           <FlatList
-            style={{ flex: 0.85 }}
+            style={{flex: 0.85}}
             data={this.state.CartListProduct}
             keyExtractor={(item) => item.personName}
             renderItem={this._renderItem}
@@ -732,12 +740,6 @@ const styles = StyleSheet.create({
     width: resp(415),
     height: resp(75),
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: resp(2),
-      width: resp(5),
-    },
     elevation: 0,
   },
   ItemCountContainer: {
@@ -745,12 +747,6 @@ const styles = StyleSheet.create({
     width: wp(415),
     height: hp(75),
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: resp(2),
-      width: resp(5),
-    },
     elevation: 0,
   },
   CartItemContainer: {
@@ -805,13 +801,6 @@ const styles = StyleSheet.create({
     height: resp(70),
     flex: 0.5,
     flexDirection: 'column',
-    shadowColor: 'black',
-    backgroundColor: 'white',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
     elevation: 0,
   },
   PlacedHolderButtonContainer: {
@@ -821,12 +810,6 @@ const styles = StyleSheet.create({
     height: hp(65),
     flex: 0.4,
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
     elevation: 0,
   },
   itemBox: {

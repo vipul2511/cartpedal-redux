@@ -8,14 +8,14 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
-
+import {Platform} from 'react-native';
 export const signUp = (phone) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: USER_SIGNUP_START});
     let formData = new FormData();
     formData.append('mobile', '+91' + phone);
     var otpUrl = `${API_URL}api-user/send-otp`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(otpUrl, {
       method: 'Post',
@@ -23,7 +23,7 @@ export const signUp = (phone) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type:  Platform.OS,
       },
       body: formData,
     })
@@ -57,7 +57,7 @@ export const signUp = (phone) => {
 };
 
 export const signUpConf = (name, phone, email, pass) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: USER_SIGNUP_CONF_START});
     let formData = new FormData();
     formData.append('name', name);
@@ -65,6 +65,7 @@ export const signUpConf = (name, phone, email, pass) => {
     formData.append('email', email);
     formData.append('password', pass);
     var otpUrl = `${API_URL}api-user/signup`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(otpUrl, {
       method: 'Post',
@@ -72,7 +73,7 @@ export const signUpConf = (name, phone, email, pass) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type:  Platform.OS,
       },
       body: formData,
     })

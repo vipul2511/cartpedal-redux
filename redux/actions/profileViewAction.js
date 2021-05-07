@@ -5,19 +5,21 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
+import {Platform} from 'react-native';
 
 export const profileView = (userId, userAccessToken) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: PROFILE_VIEW_START});
     var urlprofile = `${API_URL}api-user/view-profile?user_id=` + userId;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+    const token = fcmToken ? fcmToken : '1111';
     return fetch(urlprofile, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
-        device_token: fcmToken,
-        device_type: 'android',
+        device_token: token,
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
     })

@@ -22,11 +22,6 @@ import {Picker} from 'native-base';
 import {BASE_URL} from '../Component/ApiClient';
 
 const screenWidth = Dimensions.get('screen').width;
-const placeholder = {
-  label: 'Please you category',
-  value: null,
-  color: '#9EA0A4',
-};
 
 export default class EditProductScreen extends React.Component {
   constructor(props) {
@@ -321,7 +316,7 @@ export default class EditProductScreen extends React.Component {
             </View>
             <View style={styles.inputTextView}>
               <Picker
-                placeholder={placeholder}
+                placeholder="Please select category"
                 selectedValue={this.state.language}
                 style={{height: 50, width: screenWidth - 55}}
                 onValueChange={(itemValue, itemIndex) => {
@@ -360,7 +355,7 @@ export default class EditProductScreen extends React.Component {
             />
             <View style={styles.inputTextView}>
               <Picker
-                placeholder={placeholder}
+                placeholder="Please select unit"
                 selectedValue={this.state.Unit}
                 style={{height: 50, width: screenWidth - 55}}
                 onValueChange={(itemValue, itemIndex) => {
@@ -467,7 +462,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
-    marginTop: 10,
+    height: 48,
   },
   TextView: {
     fontSize: 16,
@@ -482,6 +477,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
     marginTop: 1,
+    height: 48,
   },
   container2: {
     flex: 1,

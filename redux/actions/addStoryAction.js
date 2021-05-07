@@ -6,11 +6,12 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast';
 import {API_URL} from '../../Config';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
+import {Platform} from 'react-native';
 
 export const addStoryAction = (userId, userAccessToken, data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: ADD_STORIES_START});
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     fetch(`${API_URL}api-user/add-story`, {
       method: 'Post',
@@ -18,7 +19,7 @@ export const addStoryAction = (userId, userAccessToken, data) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: JSON.stringify({

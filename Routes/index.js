@@ -164,8 +164,8 @@ export function MainStack() {
       <Stack.Screen name="ReportIssue" component={ReportIssue} />
       <Stack.Screen name="AddMoreShare" component={AddMoreShare} />
       <Stack.Screen name="FliterScreen" component={FliterScreen} />
-      {/* <Stack.Screen name="ChatScreen" component={ChatScreen} />
-      <Stack.Screen name="ChatDetailScreen" component={ChatDetailScreen} /> */}
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
+      <Stack.Screen name="ChatDetailScreen" component={ChatDetailScreen} />
       <Stack.Screen name="ChatProfile" component={ChatProfile} />
       <Stack.Screen
         name="ChatGroupListScreen"

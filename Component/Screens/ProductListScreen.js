@@ -1149,16 +1149,6 @@ const styles = StyleSheet.create({
   },
   storyItemBox: {
     marginLeft: 10,
-    // height: resp(90),
-    // backgroundColor: 'white',
-    // flexDirection: 'column',
-    // shadowColor: 'black',
-    // shadowOpacity: 0.2,
-    // shadowOffset: {
-    //   height: 1,
-    //   width: 5,
-    // },
-    // elevation: 2,
   },
 
   ImageViewStyle: {
@@ -1244,12 +1234,7 @@ const styles = StyleSheet.create({
     marginLeft: resp(17),
     backgroundColor: 'white',
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
   priceContainer: {

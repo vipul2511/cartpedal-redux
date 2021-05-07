@@ -5,12 +5,14 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
+import {Platform} from 'react-native';
 const fcmToken = AsyncStorage.getItem('@fcmtoken');
 
 export const ChatlistAction = (userId, userAccesstoken) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: CHAT_LIST_START});
     var urlprofile = `${API_URL}api-message/chat-list?user_id=${userId}`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     fetch(urlprofile, {
       method: 'GET',
@@ -18,7 +20,7 @@ export const ChatlistAction = (userId, userAccesstoken) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccesstoken),
       },
     })

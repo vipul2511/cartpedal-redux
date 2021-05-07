@@ -43,7 +43,6 @@ class LoginScreen extends Component {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({fcmtoken: JSON.parse(token)});
-        console.log('device fcm token ====' + this.state.fcmtoken);
       }
     });
   }
@@ -60,6 +59,7 @@ class LoginScreen extends Component {
   hideLoading() {
     this.setState({loading: false});
   }
+
   CheckTextInput = () => {
     if (this.state.phone_number === '') {
       // eslint-disable-next-line no-alert
@@ -77,6 +77,7 @@ class LoginScreen extends Component {
       });
     }
   };
+
   componentDidUpdate() {
     if (this.props.success && this.state.callUpdate) {
       // eslint-disable-next-line react/no-did-update-set-state
@@ -208,6 +209,7 @@ class LoginScreen extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

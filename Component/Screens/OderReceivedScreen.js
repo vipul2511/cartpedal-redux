@@ -255,49 +255,50 @@ class CartPlaceScreen extends Component {
     }
   };
 
-  link =async(id,name,orderID)=>{
+  link = async (id, name, orderID) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      this.onShare(url);
-    });
-  }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
-  forwardlink =async(userid,name,orderID)=>{
-    const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
-      'https://cartpedal.page.link',
-    ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
     firebase
       .links()
       .createDynamicLink(link)
       .then((url) => {
-      AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-        if(NumberFormat){
-          let numID=JSON.parse(NumberFormat)
-    this.props.navigation.navigate('ForwardLinkScreen', {
-      fcmToken: this.state.fcmToken,
-      PhoneNumber: numID,
-      userId: this.state.userNo,
-      userAccessToken: this.state.userAccessToken,
-      msgids:  url,
-    });
-  }
-  }));
-     });
-   }
+        this.onShare(url);
+      });
+  };
+
+  forwardlink = async (userid, name, orderID) => {
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
+    ).android
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
 
   render() {
     return (
@@ -441,12 +442,12 @@ class CartPlaceScreen extends Component {
                                 color: 'white',
                               }}
                               option1Click={() => {
-                                let name="OrderRecievedViewScreen"
-                                this.link(item.id,name,item.orderid)
+                                let name = 'OrderRecievedViewScreen';
+                                this.link(item.id, name, item.orderid);
                               }}
                               option2Click={() => {
-                                let name="OrderRecievedViewScreen"
-                                this.forwardlink(item.id,name,item.orderid)
+                                let name = 'OrderRecievedViewScreen';
+                                this.forwardlink(item.id, name, item.orderid);
                               }}
                             />
                           </View>
@@ -653,12 +654,7 @@ const styles = StyleSheet.create({
     height: hp(75),
     backgroundColor: 'white',
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
 
@@ -668,12 +664,7 @@ const styles = StyleSheet.create({
     width: wp(415),
     height: hp(75),
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
 
@@ -733,12 +724,7 @@ const styles = StyleSheet.create({
     height: resp(65),
     flex: 0.5,
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
 
@@ -749,12 +735,7 @@ const styles = StyleSheet.create({
     height: hp(70),
     flex: 0.7,
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
 

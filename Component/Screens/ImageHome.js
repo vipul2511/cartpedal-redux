@@ -1,25 +1,19 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {Component} from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   Dimensions,
   View,
   Text,
   FlatList,
-  Modal,
   StyleSheet,
   StatusBar,
   Image,
   ScrollView,
   TouchableOpacity,
-  YellowBox,
 } from 'react-native';
-import AppConst from '../Component/AppConst';
-import AppHeader from '../Component/AppHeader';
 import AppImageSlider from '../Component/AppImageSlider';
 import {
-  backIcon,
-  logo,
   closeIcon,
   tickIcon,
   addIcon,
@@ -31,7 +25,6 @@ import {
 import ImageSelectDialog from '../Component/ImageSelectDialog';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Toast from 'react-native-simple-toast';
 import resp from 'rn-responsive-font';
 const MAX_IMAGE_SIZE = 5;
 const MAX_INNER_IMAGE_SIZE = 5;
@@ -118,7 +111,6 @@ export default class ImageHome extends React.Component {
   }
 
   onImageSelect(index) {
-    console.log('index number ', index);
     this.setState({selectedImageIndex: index});
     this.setState({showTick: index});
   }
@@ -134,7 +126,6 @@ export default class ImageHome extends React.Component {
   removeInnerImage(index) {
     if (this.state.imageList[this.state.selectedImageIndex].length == 1) {
       this.removeImageFromList(this.state.selectedImageIndex);
-      console.log('imageselecter====', this.state.selectedImageIndex);
     } else {
       this.state.imageList[this.state.selectedImageIndex].splice(index, 1);
     }

@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import resp from 'rn-responsive-font';
 
 class AppInfo extends Component {
@@ -72,6 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     elevation: 20,
+    marginTop: Platform.OS === 'android' ? 0 : 24,
   },
   BackButtonContainer: {
     flex: 0.2,

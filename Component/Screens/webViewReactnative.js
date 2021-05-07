@@ -3,7 +3,14 @@
 /* eslint-disable react/no-did-mount-set-state */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Platform,
+} from 'react-native';
 import {WebView} from 'react-native-webview';
 import resp from 'rn-responsive-font';
 export default class MyWebComponent extends Component {
@@ -14,7 +21,6 @@ export default class MyWebComponent extends Component {
     };
   }
   componentDidMount() {
-    console.log('props', JSON.stringify(this.props));
     if (this.props.route.params.screenSide == 'Signup') {
       this.setState({link: 'https://cartpedal.com/page/terms-condition'});
     }
@@ -63,6 +69,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     elevation: 20,
+    marginTop: Platform.OS === 'android' ? 0 : 24,
   },
   BackButtonContainer: {
     flex: 0.2,

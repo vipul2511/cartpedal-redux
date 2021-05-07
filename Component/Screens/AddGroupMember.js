@@ -75,7 +75,6 @@ export default class AddGroupMember extends React.Component {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({fcmtoken: JSON.parse(token)});
-        console.log('device fcm token ====' + this.state.fcmtoken);
       }
     });
 

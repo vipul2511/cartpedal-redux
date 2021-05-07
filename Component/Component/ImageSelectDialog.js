@@ -12,6 +12,7 @@ export default class ImageSelectDialog extends Component {
   showMenu = () => {
     this._menu.show();
   };
+
   hideMenu = () => {
     this._menu.hide();
   };
@@ -19,14 +20,13 @@ export default class ImageSelectDialog extends Component {
   componentWillUnmount() {}
 
   openCamera() {
-    this.hideMenu();
     ImagePicker.openCamera({
       cropping: true,
       includeBase64: true,
     })
       .then((image) => {
+        this.hideMenu();
         this.onImagePick(image);
-        console.log('picimage===', image);
       })
       .catch((error) => {
         alert('eror', error);
@@ -34,20 +34,18 @@ export default class ImageSelectDialog extends Component {
   }
 
   openCameraCoverPhoto() {
-    this.hideMenu();
     ImagePicker.openCamera({
       width: 420,
       height: 220,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.hideMenu();
       this.onImagePick(image);
-      console.log('picimage===', image);
     });
   }
 
   openGalleryCoverPhoto() {
-    this.hideMenu();
     ImagePicker.openPicker({
       width: 420,
       height: 220,
@@ -55,22 +53,24 @@ export default class ImageSelectDialog extends Component {
       includeBase64: true,
     })
       .then((image) => {
+        this.hideMenu();
         this.onImagePick(image);
       })
       .catch((error) => {});
   }
 
   openGallery() {
-    this.hideMenu();
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
     })
       .then((image) => {
+        this.hideMenu();
         this.onImagePick(image);
-        console.log('pickimage==', image);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   onImagePick(response) {

@@ -8,12 +8,12 @@ import {
 } from './index.actions';
 import {API_URL} from '../../Config';
 import AsyncStorage from '@react-native-community/async-storage';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
-
+import {Platform} from 'react-native';
 export const storiesAction = (userId, userAccessToken) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: GET_STORIES_START});
     var urlprofile = `${API_URL}api-user/user-stories?user_id=${userId}&type=0`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(urlprofile, {
       method: 'GET',
@@ -21,7 +21,7 @@ export const storiesAction = (userId, userAccessToken) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
     })
@@ -60,9 +60,10 @@ export const storiesAction = (userId, userAccessToken) => {
 };
 
 export const loggedStoriesAction = (userId, userAccessToken) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: GET_LOGGED_STORIES_START});
     var urlprofile = `${API_URL}api-user/user-stories?user_id=${userId}&type=1`;
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
     const token = fcmToken ? fcmToken : '1111';
     return fetch(urlprofile, {
       method: 'GET',
@@ -70,7 +71,7 @@ export const loggedStoriesAction = (userId, userAccessToken) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
     })
