@@ -387,11 +387,11 @@ class OpenForProfileScreen extends Component {
             </View>
             <View style={styles.PersonInfoContainer}>
               <View style={styles.card}>
-                <View style={{width: width - 30}}>
+                <View style={{width: width}}>
                   {this.state.about ? (
                     <SeeMore
                       style={styles.PersonDescriptionStyle}
-                      numberOfLines={1}
+                      numberOfLines={2}
                       linkColor="red"
                       seeMoreText="read more"
                       seeLessText="read less">
@@ -418,10 +418,7 @@ class OpenForProfileScreen extends Component {
                     style={styles.listItem}
                     onPress={() => {
                       this.props.navigation.navigate('ProductDetailScreen', {
-                        whole_data: item,
-                        seller_id: this.state.wholeData.id,
-                        imageURL: item.image,
-                        name: this.props.route.params.name,
+                        id:item.id
                       });
                     }}>
                     <Image
@@ -472,10 +469,7 @@ class OpenForProfileScreen extends Component {
                           this.props.navigation.navigate(
                             'ProductDetailScreen',
                             {
-                              whole_data: item,
-                              seller_id: this.state.wholeData.id,
-                              imageURL: item.image,
-                              name: this.props.route.params.name,
+                              id:item.id
                             },
                           );
                         }}>
@@ -824,7 +818,7 @@ const styles = StyleSheet.create({
   PersonInfoContainer: {
     flexDirection: 'column',
 
-    width: resp(400),
+    width:width,
     backgroundColor: 'white',
     height: resp(66),
   },
@@ -841,6 +835,7 @@ const styles = StyleSheet.create({
   PersonDescriptionStyle: {
     marginTop: resp(-2),
     marginLeft: resp(30),
+    flexDirection:'row',
     fontSize: resp(12),
     width: resp(334),
     height: resp(44),

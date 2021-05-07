@@ -9,6 +9,7 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
+  BackHandler
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -20,6 +21,7 @@ console.disableYellowBox = true;
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       phone_number: '',
       password: '',
@@ -31,7 +33,12 @@ class LoginScreen extends Component {
   showLoading() {
     this.setState({loading: true});
   }
-
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
   componentDidMount() {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
@@ -39,6 +46,16 @@ class LoginScreen extends Component {
         console.log('device fcm token ====' + this.state.fcmtoken);
       }
     });
+  }
+
+  handleBackButtonClick() {
+    if (this.props.navigation.isFocused()) {
+      BackHandler.exitApp();
+      return true;
+    } else {
+      this.props.navigation.goBack(null);
+      return true;
+    }
   }
   hideLoading() {
     this.setState({loading: false});
@@ -67,6 +84,12 @@ class LoginScreen extends Component {
         this.LoginOrNot();
       });
     }
+  }
+  UNSAFE_componentWillMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
   }
 
   LoginOrNot = async () => {

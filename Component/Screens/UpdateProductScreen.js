@@ -219,8 +219,6 @@ export default class UpdateProductScreen extends React.Component {
   openCamara() {
     this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openCamera({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
@@ -247,8 +245,6 @@ export default class UpdateProductScreen extends React.Component {
   openImageGallery() {
     this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
@@ -419,7 +415,6 @@ export default class UpdateProductScreen extends React.Component {
             (items) => items.mobile !== contactNumber,
           );
           this.setState({sharedPeople: filterData});
-          console.log('filter data', filterData);
         } else {
           alert;
         }
@@ -564,7 +559,6 @@ export default class UpdateProductScreen extends React.Component {
                 selectedValue={this.state.Category}
                 style={{height: 50, width: screenWidth - 55}}
                 onValueChange={(itemValue) => {
-                  console.log('item value', itemValue);
                   if (itemValue != '0') {
                     this.setState({Category: itemValue});
                   } else {
@@ -621,7 +615,6 @@ export default class UpdateProductScreen extends React.Component {
                   value={'0'}
                 />
                 {this.state.ProductUnit.map((item, index) => {
-                  console.log('items', item);
                   return (
                     <Picker.Item
                       label={item.title}
@@ -713,7 +706,6 @@ export default class UpdateProductScreen extends React.Component {
                 numColumns={2}
                 ListEmptyComponent={this.ListEmpty}
                 renderItem={({item}) => {
-                  console.log('shared item data', item);
                   let name = item.name;
                   if (name.length > 8) {
                     name = name.substring(0, 8);

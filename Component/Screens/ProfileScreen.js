@@ -248,8 +248,6 @@ class ProfileScreen extends Component {
   openImageGallery() {
     this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
@@ -302,8 +300,6 @@ class ProfileScreen extends Component {
   openCamara() {
     this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openCamera({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {

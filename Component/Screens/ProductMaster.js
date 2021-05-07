@@ -422,13 +422,21 @@ export default class ProductMasterUpdate extends React.Component {
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
         <View style={[styles.container, {backgroundColor: '#fff'}]}>
-          <TouchableOpacity
+        <TouchableOpacity
             style={styles.editImageBox}
+            onPress={() => this.props.navigation.goBack()}>
+            <Image
+              style={styles.editImage}
+              source={require('../images/back_blck_icon.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.editImageBox1}
             onPress={() => {
               this.setState({isProfileModalVisible: true});
             }}>
             <Image
-              style={styles.editImage}
+              style={styles.editImage1}
               source={require('../images/edit_product.png')}
             />
           </TouchableOpacity>
@@ -713,6 +721,23 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   editImage: {
+    width: 20,
+    height: 20,
+  },
+  editImageBox1: {
+    top: 10,
+    width: 40,
+    height: 40,
+    backgroundColor: '#fff',
+    borderRadius: 150,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    left: 60,
+    zIndex: 1,
+  },
+  editImage1: {
     width: 40,
     height: 40,
   },

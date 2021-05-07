@@ -10,7 +10,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import resp from 'rn-responsive-font';
 import firebase from 'react-native-firebase';
 class SplashScreen extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -19,8 +18,6 @@ class SplashScreen extends Component {
             parameters: {},
           };
     }
-
-
     showLoading() {
         this.setState({ loading: true });
     }
@@ -83,7 +80,6 @@ class SplashScreen extends Component {
 firebase.links()
 .getInitialLink()
 .then((url) => {
-    console.log('the get url',url)
     if (url) {
         console.log('if url',url)
         const split1 = url.split('?');

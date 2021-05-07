@@ -21,8 +21,6 @@ export default class ImageSelectDialog extends Component {
   openCamera() {
     this.hideMenu();
     ImagePicker.openCamera({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     })
@@ -65,8 +63,6 @@ export default class ImageSelectDialog extends Component {
   openGallery() {
     this.hideMenu();
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     })

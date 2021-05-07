@@ -5,6 +5,7 @@ import {
   Dimensions,
   Image,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -46,6 +47,7 @@ export default class ProductDetailScreen extends React.Component {
         itemOfProduct: '',
         nextId: '',
         myText: '',
+        bunch:''
       });
     this.doubleClick = false;
     this.hidden = false;
@@ -146,7 +148,7 @@ export default class ProductDetailScreen extends React.Component {
   addViewAPI = () => {
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
-    formData.append('product_id', this.state.itemOfProduct.id);
+    formData.append('product_id', this.props.route.params.id);
     var AddCartProductUrl = `${BASE_URL}api-product/add-views`;
     fetch(AddCartProductUrl, {
       method: 'Post',
@@ -168,6 +170,7 @@ export default class ProductDetailScreen extends React.Component {
           let price_items=responseData.data.price*this.state.currentQuantity;
           let finalPrice= (Math.round(price_items * 100) / 100).toFixed(2);
            this.setState({totalPrice:finalPrice});
+           if(responseData.data.bunch) this.setState({bunch:responseData.data.bunch})
           if(responseData.data.image.length>0){
             let item=responseData.data.image;
             item.map((items,index)=>{
@@ -176,7 +179,7 @@ export default class ProductDetailScreen extends React.Component {
             this.setState({imageList:imageURl});
           }
           this.setState({nextId:responseData.data.prev})
-      console.log(JSON.stringify(responseData));
+      // console.log(JSON.stringify(responseData));
         } else {
         }
       })
@@ -301,10 +304,10 @@ export default class ProductDetailScreen extends React.Component {
             <View style={{flexDirection: 'row', marginStart: 30}}>
               <Text style={styles.detailTextStyle}>
                 {AppConst.rupeeSym}
-                {this.state.price},
+                {this.state.price} ,
               </Text>
               <Text style={styles.detailTextStyle}>
-                Bunch Price {this.state.price} x {this.state.currentQuantity} ={' '}
+                {this.state.bunch} Bunch Price {this.state.price} x {this.state.currentQuantity} ={' '}
                 {AppConst.rupeeSym}
                 {this.state.totalPrice}
               </Text>
@@ -346,8 +349,10 @@ export default class ProductDetailScreen extends React.Component {
             </View>
 
             <Collapsible collapsed={!this.state.viewMore}>
-              <View style={{height: 50, backgroundColor: '#fff'}}>
-                <Text style={{color: 'black', marginLeft: 30, marginTop: 10}}>
+              <View style={{height: 'auto', backgroundColor: '#fff'}}>
+                <Text style={{color: 'black', marginLeft: 30, marginTop:5}}>{this.state.itemOfProduct.detailone}</Text>
+                <Text style={{color: 'black', marginLeft: 30, marginTop:5}}>{this.state.itemOfProduct.detailtwo}</Text>
+                <Text style={{color: 'black', marginLeft: 30, marginTop:5 }}>
                   {this.state.itemOfProduct.description}
                 </Text>
               </View>

@@ -35,6 +35,7 @@ import {
   loggedStoriesAction,
   RecentDataAction,
   addStoryAction,
+  resetStore,
 } from '../../redux/actions';
 import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
@@ -491,6 +492,7 @@ class DashBoardScreen extends Component {
   logOut = () => {
     AsyncStorage.removeItem('@user_id').then((succss) => {
       AsyncStorage.removeItem('@access_token').then((resul) => {
+        this.props.resetStore();
         this.props.navigation.navigate('LoginScreen');
       });
     });
@@ -693,7 +695,7 @@ class DashBoardScreen extends Component {
                           ]}
                         />
                         <Text style={styles.storyTextView}>
-                          {item.name.substring(0, 8) + '..'}
+                          {item.name.length>8?item.name.substring(0, 8) + '..':item.name}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -1552,4 +1554,5 @@ export default connect(mapStateToProps, {
   loggedStoriesAction,
   RecentDataAction,
   addStoryAction,
+  resetStore,
 })(DashBoardScreen);
