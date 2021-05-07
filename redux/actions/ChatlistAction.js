@@ -5,6 +5,7 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
+import {Platform} from 'react-native';
 
 export const ChatlistAction = (userId, userAccesstoken) => {
   return async (dispatch) => {
@@ -18,7 +19,7 @@ export const ChatlistAction = (userId, userAccesstoken) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccesstoken),
       },
     })

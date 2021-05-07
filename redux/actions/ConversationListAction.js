@@ -5,6 +5,7 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
+import {Platform} from 'react-native';
 
 export const ConversationListAction = (userID, type, toid, userAccessToken) => {
   return async (dispatch) => {
@@ -23,7 +24,7 @@ export const ConversationListAction = (userID, type, toid, userAccessToken) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: formData,

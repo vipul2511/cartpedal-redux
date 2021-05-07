@@ -8,6 +8,7 @@ import {
 } from './index.actions';
 import {API_URL} from '../../Config';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Platform} from 'react-native';
 
 export const storiesAction = (userId, userAccessToken) => {
   return async (dispatch) => {
@@ -22,7 +23,7 @@ export const storiesAction = (userId, userAccessToken) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
     })
@@ -73,7 +74,7 @@ export const loggedStoriesAction = (userId, userAccessToken) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
     })

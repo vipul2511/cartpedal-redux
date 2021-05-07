@@ -5,6 +5,7 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
+import {Platform} from 'react-native';
 
 export const profileView = (userId, userAccessToken) => {
   return async (dispatch) => {
@@ -18,7 +19,7 @@ export const profileView = (userId, userAccessToken) => {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
     })

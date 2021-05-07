@@ -5,6 +5,7 @@ import {
 } from './index.actions';
 import {API_URL} from '../../Config';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Platform} from 'react-native';
 
 export const RecentDataAction = (userId, userAccessToken, newContacts) => {
   return async (dispatch) => {
@@ -24,7 +25,7 @@ export const RecentDataAction = (userId, userAccessToken, newContacts) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       }),
       body: formData,

@@ -8,6 +8,7 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
+import {Platform} from 'react-native';
 
 export const signUp = (phone) => {
   return async (dispatch) => {
@@ -25,7 +26,7 @@ export const signUp = (phone) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
@@ -76,7 +77,7 @@ export const signUpConf = (name, phone, email, pass) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
