@@ -4,6 +4,7 @@
 
 import React from 'react';
 import {Container, Icon, View} from 'native-base';
+import {GiftedChat, Bubble, Send} from 'react-native-gifted-chat';
 import {
   ScrollView,
   Image,
@@ -15,6 +16,7 @@ import {
   Modal,
   PermissionsAndroid,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
@@ -1193,229 +1195,230 @@ class ChatDetailScreen extends React.Component {
   };
   render() {
     return (
-      <Container style={{backgroundColor: '#F1F0F2'}}>
-        {this.state.imageshow ? (
-          <View style={{flex: 1}}>
-            <View
-              style={{
-                width: '100%',
-                height: '10%',
-                backgroundColor: '#FFFFFF',
-                zIndex: 2,
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
+      <SafeAreaView style={{flex: 1}}>
+        <Container style={{backgroundColor: '#F1F0F2'}}>
+          {this.state.imageshow ? (
+            <View style={{flex: 1}}>
               <View
                 style={{
-                  flexDirection: 'row',
                   width: '100%',
-                  justifyContent: 'space-between',
+                  height: '10%',
+                  backgroundColor: '#FFFFFF',
+                  zIndex: 2,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <View style={styles.BackButtonContainer}>
-                  <TouchableOpacity
-                    onPress={() => this.props.navigation.goBack()}>
-                    <Image
-                      source={require('../images/back_blck_icon.png')}
-                      style={styles.backButtonStyle}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <View style={styles.BackButtonContainer}>
+                    <TouchableOpacity
+                      onPress={() => this.props.navigation.goBack()}>
+                      <Image
+                        source={require('../images/back_blck_icon.png')}
+                        style={styles.backButtonStyle}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.TitleContainer}>
+                    <ImageModal
+                      imageBackgroundColor="transparent"
+                      source={
+                        this.props.route.params.useravatar
+                          ? {uri: this.props.route.params.useravatar}
+                          : require('../images/default_user.png')
+                      }
+                      style={styles.LogoIconStyle}
                     />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.TitleContainer}>
-                  <ImageModal
-                    imageBackgroundColor="transparent"
-                    source={
-                      this.props.route.params.useravatar
-                        ? {uri: this.props.route.params.useravatar}
-                        : require('../images/default_user.png')
-                    }
-                    style={styles.LogoIconStyle}
-                  />
 
-                  <TouchableOpacity
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingLeft: 4,
-                    }}
-                    onPress={this.openProfile}>
-                    <Text
-                      style={[
-                        styles.TitleStyle,
-                        {textAlign: 'left', fontSize: resp(15)},
-                      ]}>
-                      {this.props.route.params.username}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {this.state.selectedMode ? (
-                    <>
-                      <Icon
-                        name="reply"
-                        type="Entypo"
-                        onPress={() => {
-                          this.replytype();
-                          // this.replyTo();
-                        }}
-                        style={{
-                          color: '#2B2B2B',
-                          fontSize: 18,
-                          marginRight: 15,
-                        }}
-                      />
-                      <Icon
-                        name="delete"
-                        type="MaterialCommunityIcons"
-                        onPress={() => {
-                          this.setState({deletemodal: true});
-                          // this.deleteMessages()
-                        }}
-                        style={{
-                          color: '#2B2B2B',
-                          fontSize: 18,
-                          marginRight: 15,
-                        }}
-                      />
-                      <Icon
-                        name="content-copy"
-                        type="MaterialCommunityIcons"
-                        onPress={() => {
-                          this.copyToClipboard();
-                        }}
-                        style={{
-                          color: '#2B2B2B',
-                          fontSize: 18,
-                          marginRight: 15,
-                        }}
-                      />
-                      <Icon
-                        name="forward"
-                        type="Entypo"
-                        onPress={() => {
-                          const msgids = JSON.stringify(
-                            this.state.forwardMessageIds,
-                          );
-                          this.setState({
-                            selectedMode: false,
-                            forwardMessageIds: [],
-                          });
-                          this.props.navigation.navigate(
-                            'ForwardMessageScreen',
-                            {
-                              fcmToken: this.state.fcmToken,
-                              PhoneNumber: this.state.PhoneNumber,
-                              userId: this.state.userId,
-                              userAccessToken: this.state.userAccessToken,
-                              msgids: msgids.substring(1, msgids.length - 1),
-                            },
-                          );
-                        }}
-                        style={{
-                          color: '#2B2B2B',
-                          fontSize: 18,
-                          marginHorizontal: 10,
-                          marginRight: 15,
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <Icon
-                        name="video"
-                        onPress={() => {
-                          this.NotificationCallPhone(1);
-                        }}
-                        type="Feather"
-                        style={{
-                          color: '#2B2B2B',
-                          fontSize: 18,
-                          marginRight: 15,
-                        }}
-                      />
-                      <Icon
-                        name="phone"
-                        type="Feather"
-                        onPress={() => {
-                          this.NotificationCallPhone(0);
-                        }}
-                        style={{
-                          color: '#2B2B2B',
-                          fontSize: 18,
-                          marginHorizontal: 10,
-                          marginRight: 15,
-                        }}
-                      />
-                      {/* <Icon
+                    <TouchableOpacity
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingLeft: 4,
+                      }}
+                      onPress={this.openProfile}>
+                      <Text
+                        style={[
+                          styles.TitleStyle,
+                          {textAlign: 'left', fontSize: resp(15)},
+                        ]}>
+                        {this.props.route.params.username}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    {this.state.selectedMode ? (
+                      <>
+                        <Icon
+                          name="reply"
+                          type="Entypo"
+                          onPress={() => {
+                            this.replytype();
+                            // this.replyTo();
+                          }}
+                          style={{
+                            color: '#2B2B2B',
+                            fontSize: 18,
+                            marginRight: 15,
+                          }}
+                        />
+                        <Icon
+                          name="delete"
+                          type="MaterialCommunityIcons"
+                          onPress={() => {
+                            this.setState({deletemodal: true});
+                            // this.deleteMessages()
+                          }}
+                          style={{
+                            color: '#2B2B2B',
+                            fontSize: 18,
+                            marginRight: 15,
+                          }}
+                        />
+                        <Icon
+                          name="content-copy"
+                          type="MaterialCommunityIcons"
+                          onPress={() => {
+                            this.copyToClipboard();
+                          }}
+                          style={{
+                            color: '#2B2B2B',
+                            fontSize: 18,
+                            marginRight: 15,
+                          }}
+                        />
+                        <Icon
+                          name="forward"
+                          type="Entypo"
+                          onPress={() => {
+                            const msgids = JSON.stringify(
+                              this.state.forwardMessageIds,
+                            );
+                            this.setState({
+                              selectedMode: false,
+                              forwardMessageIds: [],
+                            });
+                            this.props.navigation.navigate(
+                              'ForwardMessageScreen',
+                              {
+                                fcmToken: this.state.fcmToken,
+                                PhoneNumber: this.state.PhoneNumber,
+                                userId: this.state.userId,
+                                userAccessToken: this.state.userAccessToken,
+                                msgids: msgids.substring(1, msgids.length - 1),
+                              },
+                            );
+                          }}
+                          style={{
+                            color: '#2B2B2B',
+                            fontSize: 18,
+                            marginHorizontal: 10,
+                            marginRight: 15,
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Icon
+                          name="video"
+                          onPress={() => {
+                            this.NotificationCallPhone(1);
+                          }}
+                          type="Feather"
+                          style={{
+                            color: '#2B2B2B',
+                            fontSize: 18,
+                            marginRight: 15,
+                          }}
+                        />
+                        <Icon
+                          name="phone"
+                          type="Feather"
+                          onPress={() => {
+                            this.NotificationCallPhone(0);
+                          }}
+                          style={{
+                            color: '#2B2B2B',
+                            fontSize: 18,
+                            marginHorizontal: 10,
+                            marginRight: 15,
+                          }}
+                        />
+                        {/* <Icon
                 name="more-vertical"
                 type="Feather"
                 style={{color: '#2B2B2B', fontSize: 24, marginRight: 5}}
               /> */}
-                      <Menu
-                        ref={(ref) => (this._menu = ref)}
-                        button={
-                          <TouchableOpacity
-                            onPress={() => {
-                              this._menu.show();
-                            }}>
-                            <Icon
-                              name="more-vertical"
-                              type="Feather"
-                              style={{
-                                color: '#2B2B2B',
-                                fontSize: 24,
-                                marginRight: 5,
-                              }}
-                            />
-                          </TouchableOpacity>
-                        }>
-                        {/* <MenuItem onPress={() =>{ this._menu.hide()
+                        <Menu
+                          ref={(ref) => (this._menu = ref)}
+                          button={
+                            <TouchableOpacity
+                              onPress={() => {
+                                this._menu.show();
+                              }}>
+                              <Icon
+                                name="more-vertical"
+                                type="Feather"
+                                style={{
+                                  color: '#2B2B2B',
+                                  fontSize: 24,
+                                  marginRight: 5,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          }>
+                          {/* <MenuItem onPress={() =>{ this._menu.hide()
                     this.openProfile()
                     }}>
                       View Contact
                     </MenuItem> */}
-                        <MenuItem
-                          onPress={() => {
-                            this._menu.hide();
-                            this.openProfile();
-                          }}>
-                          Media,links,and docs
-                        </MenuItem>
-                        <MenuItem
-                          onPress={() => {
-                            this._menu.hide();
-                            this.clearMessages();
-                          }}>
-                          Clear Chat
-                        </MenuItem>
-                        <MenuItem
-                          onPress={() => {
-                            this._menu.hide();
-                            this.SendReportIssue();
-                          }}>
-                          Report user
-                        </MenuItem>
-                      </Menu>
-                    </>
-                  )}
+                          <MenuItem
+                            onPress={() => {
+                              this._menu.hide();
+                              this.openProfile();
+                            }}>
+                            Media,links,and docs
+                          </MenuItem>
+                          <MenuItem
+                            onPress={() => {
+                              this._menu.hide();
+                              this.clearMessages();
+                            }}>
+                            Clear Chat
+                          </MenuItem>
+                          <MenuItem
+                            onPress={() => {
+                              this._menu.hide();
+                              this.SendReportIssue();
+                            }}>
+                            Report user
+                          </MenuItem>
+                        </Menu>
+                      </>
+                    )}
+                  </View>
                 </View>
               </View>
-            </View>
-            <ScrollView
-              style={{height: height * 0.84}}
-              ref={(ref) => {
-                this.scrollView = ref;
-              }}
-              onContentSizeChange={() =>
-                this.scrollView.scrollToEnd({animated: true})
-              }>
-              <ScrollView>
-                <View style={{paddingHorizontal: 10, marginTop: '20%'}}>
-                  {/* <Text
+              <ScrollView
+                style={{height: height * 0.84}}
+                ref={(ref) => {
+                  this.scrollView = ref;
+                }}
+                onContentSizeChange={() =>
+                  this.scrollView.scrollToEnd({animated: true})
+                }>
+                <ScrollView>
+                  <View style={{paddingHorizontal: 10, marginTop: '20%'}}>
+                    {/* <Text
                 style={{
                   color: 'red',
                   fontSize: 14,
@@ -1426,1204 +1429,1219 @@ class ChatDetailScreen extends React.Component {
                 }}>
                 {moment().format("DD-MM-YYYY")}
               </Text> */}
-                  {this.state.ischatList
-                    ? this.state.chatList.messages.map((v, i) => {
-                        return (
-                          <MessageComponent
-                            key={`message-${i}`}
-                            message={v}
-                            toggleSelectedMode={this.toggleSelectedMode}
-                            appendMessages={this.appendMessages}
-                            removeMessages={this.removeMessages}
-                            selectedMode={this.state.selectedMode}
-                            forwardMessageIds={this.state.forwardMessageIds}
-                            copyText={this.copyText}
-                            replyMessage={this.replyTo}
-                          />
-                        );
-                      })
-                    : null}
-                </View>
+                    {this.state.ischatList
+                      ? this.state.chatList.messages.map((v, i) => {
+                          return (
+                            <MessageComponent
+                              key={`message-${i}`}
+                              message={v}
+                              toggleSelectedMode={this.toggleSelectedMode}
+                              appendMessages={this.appendMessages}
+                              removeMessages={this.removeMessages}
+                              selectedMode={this.state.selectedMode}
+                              forwardMessageIds={this.state.forwardMessageIds}
+                              copyText={this.copyText}
+                              replyMessage={this.replyTo}
+                            />
+                          );
+                        })
+                      : null}
+                  </View>
+                </ScrollView>
               </ScrollView>
-            </ScrollView>
 
-            {this.state.open && (
-              <View
-                style={{
-                  width: '90%',
-                  height: '25%',
-                  backgroundColor: '#FFFFFF',
-                  alignSelf: 'center',
-                  borderRadius: 10,
-                  justifyContent: 'space-around',
-                  padding: 20,
-                }}>
+              {this.state.open && (
                 <View
                   style={{
-                    flexDirection: 'row',
+                    width: '90%',
+                    height: '25%',
+                    backgroundColor: '#FFFFFF',
+                    alignSelf: 'center',
+                    borderRadius: 10,
                     justifyContent: 'space-around',
+                    padding: 20,
                   }}>
-                  <View>
-                    <TouchableOpacity
-                      style={{justifyContent: 'center', alignItems: 'center'}}
-                      onPress={() => this.selectOneFile()}>
-                      <View
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 20,
-                          backgroundColor: '#ffebe6',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Image
-                          source={require('../images/docs.png')}
-                          // resizeMode="center"
-                          style={{width: 15, height: 20, alignSelf: 'center'}}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: '#2B2B2B',
-                          textAlign: 'center',
-                        }}>
-                        Document
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View>
-                    <TouchableOpacity onPress={() => this.videoPicker()}>
-                      <View
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 20,
-                          backgroundColor: '#e7f0fe',
-                          justifyContent: 'center',
-                        }}>
-                        <Icon
-                          name="videocam"
-                          type="Ionicons"
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}>
+                    <View>
+                      <TouchableOpacity
+                        style={{justifyContent: 'center', alignItems: 'center'}}
+                        onPress={() => this.selectOneFile()}>
+                        <View
                           style={{
-                            fontSize: 18,
-                            alignSelf: 'center',
-                            color: '#4086F4',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: '#2B2B2B',
-                          textAlign: 'center',
-                        }}>
-                        Video
-                      </Text>
-                    </TouchableOpacity>
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: '#ffebe6',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Image
+                            source={require('../images/docs.png')}
+                            // resizeMode="center"
+                            style={{width: 15, height: 20, alignSelf: 'center'}}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: '#2B2B2B',
+                            textAlign: 'center',
+                          }}>
+                          Document
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View>
+                      <TouchableOpacity onPress={() => this.videoPicker()}>
+                        <View
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: '#e7f0fe',
+                            justifyContent: 'center',
+                          }}>
+                          <Icon
+                            name="videocam"
+                            type="Ionicons"
+                            style={{
+                              fontSize: 18,
+                              alignSelf: 'center',
+                              color: '#4086F4',
+                            }}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: '#2B2B2B',
+                            textAlign: 'center',
+                          }}>
+                          Video
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View>
+                      <TouchableOpacity onPress={() => this.imagepicker()}>
+                        <View
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: '#e6fef6',
+                            justifyContent: 'center',
+                          }}>
+                          <Image
+                            source={require('../images/gal.png')}
+                            // resizeMode="center"
+                            style={{width: 20, height: 15, alignSelf: 'center'}}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: '#2B2B2B',
+                            textAlign: 'center',
+                          }}>
+                          Photo
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                  <View>
-                    <TouchableOpacity onPress={() => this.imagepicker()}>
-                      <View
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}>
+                    <View style={{marginLeft: 10}}>
+                      <TouchableOpacity onPress={() => this.selectOneFile1()}>
+                        <View
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: '#fffae6',
+                            justifyContent: 'center',
+                          }}>
+                          <Image
+                            source={require('../images/audioo.png')}
+                            // resizeMode="center"
+                            style={{alignSelf: 'center', width: 15, height: 15}}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: '#2B2B2B',
+                            textAlign: 'center',
+                          }}>
+                          Audio
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View
+                      style={{justifyContent: 'center', alignItems: 'center'}}>
+                      <TouchableOpacity
+                        onPress={() => this.locationPicker()}
                         style={{
                           width: 40,
                           height: 40,
                           borderRadius: 20,
                           backgroundColor: '#e6fef6',
                           justifyContent: 'center',
+                          alignItems: 'center',
                         }}>
                         <Image
-                          source={require('../images/gal.png')}
-                          // resizeMode="center"
-                          style={{width: 20, height: 15, alignSelf: 'center'}}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: '#2B2B2B',
-                          textAlign: 'center',
-                        }}>
-                        Photo
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                  }}>
-                  <View style={{marginLeft: 10}}>
-                    <TouchableOpacity onPress={() => this.selectOneFile1()}>
-                      <View
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 20,
-                          backgroundColor: '#fffae6',
-                          justifyContent: 'center',
-                        }}>
-                        <Image
-                          source={require('../images/audioo.png')}
-                          // resizeMode="center"
-                          style={{alignSelf: 'center', width: 15, height: 15}}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: '#2B2B2B',
-                          textAlign: 'center',
-                        }}>
-                        Audio
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View
-                    style={{justifyContent: 'center', alignItems: 'center'}}>
-                    <TouchableOpacity
-                      onPress={() => this.locationPicker()}
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 20,
-                        backgroundColor: '#e6fef6',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <Image
-                        source={require('../images/loc.png')}
-                        // resizeMode="center"
-                        style={{alignSelf: 'center', width: 15, height: 20}}
-                      />
-                    </TouchableOpacity>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: '#2B2B2B',
-                        textAlign: 'center',
-                      }}>
-                      Location
-                    </Text>
-                  </View>
-                  <View>
-                    <TouchableOpacity onPress={() => this.contactPicker()}>
-                      <View
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 20,
-                          backgroundColor: '#e7f0fe',
-                          justifyContent: 'center',
-                        }}>
-                        <Image
-                          source={require('../images/folw.png')}
+                          source={require('../images/loc.png')}
                           // resizeMode="center"
                           style={{alignSelf: 'center', width: 15, height: 20}}
                         />
-                      </View>
-                      <Text style={{fontSize: 12, color: '#2B2B2B'}}>
-                        Contact
+                      </TouchableOpacity>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: '#2B2B2B',
+                          textAlign: 'center',
+                        }}>
+                        Location
                       </Text>
-                    </TouchableOpacity>
+                    </View>
+                    <View>
+                      <TouchableOpacity onPress={() => this.contactPicker()}>
+                        <View
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: '#e7f0fe',
+                            justifyContent: 'center',
+                          }}>
+                          <Image
+                            source={require('../images/folw.png')}
+                            // resizeMode="center"
+                            style={{alignSelf: 'center', width: 15, height: 20}}
+                          />
+                        </View>
+                        <Text style={{fontSize: 12, color: '#2B2B2B'}}>
+                          Contact
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
-              </View>
-            )}
-            {this.props.route.params.groupexit == false ||
-            this.props.route.params.groupexit == undefined ? (
-              <View>
-                {this.state.showRelymsg == true ? (
-                  this.state.replyMessage.text.fmsg !== '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
+              )}
+              {this.props.route.params.groupexit == false ||
+              this.props.route.params.groupexit == undefined ? (
+                <View>
+                  {this.state.showRelymsg == true ? (
+                    this.state.replyMessage.text.fmsg !== '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Text
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'red',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          You
-                        </Text>
-                        <View>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'red',
+                            }}>
+                            You
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showRelymsg: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                          }}>
+                          <Text style={{marginBottom: 5, color: '#191919'}}>
+                            {this.state.replyMessage.text.fmsg}
+                          </Text>
+                        </View>
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
+                        }}>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'green',
+                            }}>
+                            {this.props.route.params.username}
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showRelymsg: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                          }}>
+                          <Text style={{marginBottom: 5, color: '#191919'}}>
+                            {this.state.replyMessage.text.tmsg}
+                          </Text>
+                        </View>
+                      </View>
+                    )
+                  ) : null}
+                  {this.state.showimagerply == true ? (
+                    this.state.replyMessage.text.fattach != '' ? (
+                      <View
+                        style={{
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
+                        }}>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'red',
+                            }}>
+                            You
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showimagerply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
+                          }}>
+                          <Image
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              width: 40,
+                              height: 40,
+                              alignSelf: 'flex-end',
+                            }}
+                            source={{
+                              uri: this.state.replyMessage.text.fattach.attach,
+                            }}></Image>
+                        </View>
+                      </View>
+                    ) : this.state.replyMessage.text.tattach != '' ? (
+                      <View
+                        style={{
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
+                        }}>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'green',
+                            }}>
+                            {this.props.route.params.username}
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showimagerply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                          }}>
+                          <Image
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              width: 40,
+                              height: 40,
+                              alignSelf: 'flex-end',
+                            }}
+                            source={{
+                              uri: this.state.replyMessage.text.tattach.attach,
+                            }}></Image>
+                          {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
+                        </View>
+                      </View>
+                    ) : null
+                  ) : null}
+                  {this.state.showaudiorply == true ? (
+                    this.state.replyMessage.text.fattach != '' ? (
+                      <View
+                        style={{
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
+                        }}>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'red',
+                            }}>
+                            You
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showaudiorply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
+                          }}>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showRelymsg: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="mic"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text style={{marginBottom: 5, color: '#191919'}}>
+                            Voice message
+                          </Text>
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
-                      <View
-                        style={{marginLeft: 10, marginTop: 5, marginRight: 10}}>
-                        <Text style={{marginBottom: 5, color: '#191919'}}>
-                          {this.state.replyMessage.text.fmsg}
-                        </Text>
-                      </View>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
+                    ) : this.state.replyMessage.text.tattach != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Text
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'green',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          {this.props.route.params.username}
-                        </Text>
-                        <View>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'green',
+                            }}>
+                            {this.props.route.params.username}
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showaudiorply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
+                          }}>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showRelymsg: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="mic"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text style={{marginBottom: 5, color: '#191919'}}>
+                            Voice message
+                          </Text>
+                          {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
-                      <View
-                        style={{marginLeft: 10, marginTop: 5, marginRight: 10}}>
-                        <Text style={{marginBottom: 5, color: '#191919'}}>
-                          {this.state.replyMessage.text.tmsg}
-                        </Text>
-                      </View>
-                    </View>
-                  )
-                ) : null}
-                {this.state.showimagerply == true ? (
-                  this.state.replyMessage.text.fattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
+                    ) : null
+                  ) : null}
+                  {this.state.showcontactrply == true ? (
+                    this.state.replyMessage.text.fmsg != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Text
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'red',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          You
-                        </Text>
-                        <View>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'red',
+                            }}>
+                            You
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showcontactrply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
+                          }}>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showimagerply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="user"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 8,
+                            }}>
+                            Contact
+                          </Text>
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
+                    ) : this.state.replyMessage.text.tattach != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Image
+                        <View
                           style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            width: 40,
-                            height: 40,
-                            alignSelf: 'flex-end',
-                          }}
-                          source={{
-                            uri: this.state.replyMessage.text.fattach.attach,
-                          }}></Image>
-                      </View>
-                    </View>
-                  ) : this.state.replyMessage.text.tattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'green',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          {this.props.route.params.username}
-                        </Text>
-                        <View>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'green',
+                            }}>
+                            {this.props.route.params.username}
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showcontactrply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
+                          }}>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showimagerply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="user"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
-                        </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
-                      </View>
-                      <View
-                        style={{marginLeft: 10, marginTop: 5, marginRight: 10}}>
-                        <Image
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            width: 40,
-                            height: 40,
-                            alignSelf: 'flex-end',
-                          }}
-                          source={{
-                            uri: this.state.replyMessage.text.tattach.attach,
-                          }}></Image>
-                        {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
-                      </View>
-                    </View>
-                  ) : null
-                ) : null}
-                {this.state.showaudiorply == true ? (
-                  this.state.replyMessage.text.fattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'red',
-                          }}>
-                          You
-                        </Text>
-                        <View>
-                          <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showaudiorply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
-                            }}
-                          />
-                        </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
-                      </View>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
-                        }}>
-                        <Icon
-                          name="mic"
-                          type="Feather"
-                          style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text style={{marginBottom: 5, color: '#191919'}}>
-                          Voice message
-                        </Text>
-                      </View>
-                    </View>
-                  ) : this.state.replyMessage.text.tattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'green',
-                          }}>
-                          {this.props.route.params.username}
-                        </Text>
-                        <View>
-                          <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showaudiorply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
-                            }}
-                          />
-                        </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
-                      </View>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
-                        }}>
-                        <Icon
-                          name="mic"
-                          type="Feather"
-                          style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text style={{marginBottom: 5, color: '#191919'}}>
-                          Voice message
-                        </Text>
-                        {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
-                      </View>
-                    </View>
-                  ) : null
-                ) : null}
-                {this.state.showcontactrply == true ? (
-                  this.state.replyMessage.text.fmsg != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'red',
-                          }}>
-                          You
-                        </Text>
-                        <View>
-                          <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showcontactrply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
-                            }}
-                          />
-                        </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
-                      </View>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
-                        }}>
-                        <Icon
-                          name="user"
-                          type="Feather"
-                          style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 8,
-                          }}>
-                          Contact
-                        </Text>
-                      </View>
-                    </View>
-                  ) : this.state.replyMessage.text.tattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'green',
-                          }}>
-                          {this.props.route.params.username}
-                        </Text>
-                        <View>
-                          <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showcontactrply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
-                            }}
-                          />
-                        </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
-                      </View>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
-                        }}>
-                        <Icon
-                          name="user"
-                          type="Feather"
-                          style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 8,
-                          }}>
-                          Contact
-                        </Text>
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 8,
+                            }}>
+                            Contact
+                          </Text>
 
-                        {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
+                          {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
+                        </View>
                       </View>
-                    </View>
-                  ) : null
-                ) : null}
-                {this.state.showfilerply == true ? (
-                  this.state.replyMessage.text.fattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
+                    ) : null
+                  ) : null}
+                  {this.state.showfilerply == true ? (
+                    this.state.replyMessage.text.fattach != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Text
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'red',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          You
-                        </Text>
-                        <View>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'red',
+                            }}>
+                            You
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showfilerply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
+                          }}>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showfilerply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="file"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 5,
+                            }}>
+                            Document
+                          </Text>
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
+                    ) : this.state.replyMessage.text.tattach != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Icon
-                          name="file"
-                          type="Feather"
+                        <View
                           style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 5,
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          Document
-                        </Text>
-                      </View>
-                    </View>
-                  ) : this.state.replyMessage.text.tattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'green',
+                            }}>
+                            {this.props.route.params.username}
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showfilerply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'green',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
                           }}>
-                          {this.props.route.params.username}
-                        </Text>
-                        <View>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showfilerply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="file"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 5,
+                            }}>
+                            Document
+                          </Text>
+                          {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
+                    ) : null
+                  ) : null}
+                  {this.state.showvideorply == true ? (
+                    this.state.replyMessage.text.fattach != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Icon
-                          name="file"
-                          type="Feather"
+                        <View
                           style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 5,
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          Document
-                        </Text>
-                        {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
-                      </View>
-                    </View>
-                  ) : null
-                ) : null}
-                {this.state.showvideorply == true ? (
-                  this.state.replyMessage.text.fattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'red',
+                            }}>
+                            You
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showfilerply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'red',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
                           }}>
-                          You
-                        </Text>
-                        <View>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showfilerply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="video"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 5,
+                            }}>
+                            Video
+                          </Text>
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
+                    ) : this.state.replyMessage.text.tattach != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Icon
-                          name="video"
-                          type="Feather"
+                        <View
                           style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 5,
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          Video
-                        </Text>
-                      </View>
-                    </View>
-                  ) : this.state.replyMessage.text.tattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'green',
+                            }}>
+                            {this.props.route.params.username}
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showfilerply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'green',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
                           }}>
-                          {this.props.route.params.username}
-                        </Text>
-                        <View>
                           <Icon
-                            type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showfilerply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            name="video"
+                            type="Feather"
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 5,
+                            }}>
+                            Video
+                          </Text>
+                          {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
-                        }}>
-                        <Icon
-                          name="video"
-                          type="Feather"
-                          style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 5,
-                          }}>
-                          Video
-                        </Text>
-                        {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
-                      </View>
-                    </View>
-                  ) : null
-                ) : null}
+                    ) : null
+                  ) : null}
 
-                {this.state.showlocationmsg == true ? (
-                  this.state.replyMessage.text.fmsg != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
+                  {this.state.showlocationmsg == true ? (
+                    this.state.replyMessage.text.fmsg != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Text
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'red',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          You
-                        </Text>
-                        <View>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'red',
+                            }}>
+                            You
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showlocationmsg: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
+                          style={{
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
+                          }}>
                           <Icon
+                            name="location"
                             type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showlocationmsg: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 8,
+                            }}>
+                            Location
+                          </Text>
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
+                    ) : this.state.replyMessage.text.tattach != '' ? (
                       <View
                         style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
+                          width: '80%',
+                          backgroundColor: '#e5e5e5',
+                          marginHorizontal: 15,
+                          height: 'auto',
+                          borderTopRightRadius: 10,
+                          borderTopLeftRadius: 10,
                         }}>
-                        <Icon
-                          name="location"
-                          type="Entypo"
+                        <View
                           style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 8,
+                            marginLeft: 10,
+                            marginTop: 5,
+                            flexDirection: 'row',
                           }}>
-                          Location
-                        </Text>
-                      </View>
-                    </View>
-                  ) : this.state.replyMessage.text.tattach != '' ? (
-                    <View
-                      style={{
-                        width: '80%',
-                        backgroundColor: '#e5e5e5',
-                        marginHorizontal: 15,
-                        height: 'auto',
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                      }}>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          flexDirection: 'row',
-                        }}>
-                        <Text
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: 'green',
+                            }}>
+                            {this.props.route.params.username}
+                          </Text>
+                          <View>
+                            <Icon
+                              type="Entypo"
+                              name="cross"
+                              style={{fontSize: 20, textAlign: 'right'}}
+                              onPress={() => {
+                                this.setState({
+                                  showcontactrply: false,
+                                  selectedMode: false,
+                                  forwardMessageIds: [],
+                                });
+                              }}
+                            />
+                          </View>
+                          {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
+                        </View>
+                        <View
                           style={{
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'green',
+                            marginLeft: 10,
+                            marginTop: 5,
+                            marginRight: 10,
+                            flexDirection: 'row',
                           }}>
-                          {this.props.route.params.username}
-                        </Text>
-                        <View>
                           <Icon
+                            name="location"
                             type="Entypo"
-                            name="cross"
-                            style={{fontSize: 20, textAlign: 'right'}}
-                            onPress={() => {
-                              this.setState({
-                                showcontactrply: false,
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
+                            style={{
+                              color: 'black',
+                              fontSize: 18,
+                              alignSelf: 'center',
                             }}
                           />
+                          <Text
+                            style={{
+                              marginBottom: 5,
+                              color: '#191919',
+                              marginLeft: 8,
+                            }}>
+                            Location
+                          </Text>
+
+                          {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
                         </View>
-                        {/* <View style={{borderWidth:1,borderColor:'red'}}></View> */}
                       </View>
-                      <View
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 5,
-                          marginRight: 10,
-                          flexDirection: 'row',
-                        }}>
-                        <Icon
-                          name="location"
-                          type="Entypo"
-                          style={{
-                            color: 'black',
-                            fontSize: 18,
-                            alignSelf: 'center',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            marginBottom: 5,
-                            color: '#191919',
-                            marginLeft: 8,
-                          }}>
-                          Location
-                        </Text>
+                    ) : null
+                  ) : null}
 
-                        {/* <Text style={{marginBottom:5,color:'#191919'}}>{this.state.replyMessage.text.tattach.attach}</Text> */}
-                      </View>
-                    </View>
-                  ) : null
-                ) : null}
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom:
-                      this.state.chatList.length === 0
-                        ? height * 0.001
-                        : height * 0.001,
-                    alignSelf: 'center',
-                  }}>
-                  <TextInput
-                    ref={(ref) => (this.inputRef = ref)}
-                    multiline={true}
-                    value={this.state.message}
-                    onContentSizeChange={(event) => {
-                      this.setState({
-                        height: event.nativeEvent.contentSize.height,
-                      });
-                    }}
-                    onChangeText={(text) => this.onChangeText(text)}
-                    placeholder="Type a message…"
-                    editable={this.state.editMode}
-                    style={{
-                      marginLeft: 10,
-                      marginRight: 10,
-                      marginBottom: 10,
-                      backgroundColor: '#FFFFFF',
-                      color: '#0000008A',
-                      borderRadius: 1,
-                      width: '60%',
-                      height: this.state.height,
-                      fontSize: 15,
-                      paddingLeft: 10,
-                      borderWidth: 0,
-                      borderTopLeftRadius: this.state.borderval ? 0 : 15,
-                      borderBottomLeftRadius: 15,
-                    }}
-                  />
                   <View
                     style={{
-                      backgroundColor: '#FFFFFF',
-                      alignSelf: 'center',
-                      height: this.state.height,
-                      width: '20%',
-                      justifyContent: 'center',
+                      flexDirection: 'row',
+                      marginBottom: height * 0.001,
                       alignItems: 'center',
-                      borderWidth: 0,
-                      marginLeft: -10,
-                      borderTopRightRadius: this.state.borderval ? 0 : 15,
-                      borderBottomRightRadius: 15,
-                      paddingBottom: 4,
-                      marginBottom: 22,
                     }}>
-                    {/* <View style={{flexDirection: 'row'}}>
-                      <Icon
-                        onPress={() => {
-                          this.setState({open: !this.state.open});
-                          this.setState({editMode: !this.state.editMode});
-                          this.setState({message: ''});
-                        }}
-                        name="attachment"
-                        type="MaterialIcons"
-                        style={{color: '#0000008A', marginRight: 8}}
-                      />
-                      {!this.state.message.length > 0 ? (
+                    <TextInput
+                      ref={(ref) => (this.inputRef = ref)}
+                      multiline={true}
+                      value={this.state.message}
+                      onContentSizeChange={(event) => {
+                        this.setState({
+                          height: event.nativeEvent.contentSize.height,
+                        });
+                      }}
+                      onChangeText={(text) => this.onChangeText(text)}
+                      placeholder="Type a message…"
+                      editable={this.state.editMode}
+                      style={{
+                        marginLeft: 10,
+                        marginRight: 10,
+                        backgroundColor: '#FFFFFF',
+                        color: '#0000008A',
+                        borderRadius: 1,
+                        width: '60%',
+                        height:
+                          Platform.OS === 'android'
+                            ? this.state.height
+                            : this.state.height + 20,
+                        fontSize: 15,
+                        paddingLeft: 10,
+                        borderWidth: 0,
+                        borderTopLeftRadius: this.state.borderval ? 0 : 15,
+                        borderBottomLeftRadius: 15,
+                      }}
+                    />
+                    <View
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        alignSelf: 'center',
+                        height:
+                          Platform.OS === 'android'
+                            ? this.state.height
+                            : this.state.height + 20,
+                        width: '20%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderWidth: 0,
+                        marginLeft: -10,
+                        borderTopRightRadius: this.state.borderval ? 0 : 15,
+                        borderBottomRightRadius: 15,
+                        paddingBottom: 4,
+                        marginBottom: height * 0.001,
+                      }}>
+                      <View style={{flexDirection: 'row'}}>
                         <Icon
                           onPress={() => {
-                            this.launchCamera();
+                            // this.setState({open: !this.state.open});
+                            // this.setState({editMode: !this.state.editMode});
+                            // this.setState({message: ''});
                           }}
-                          name="photo-camera"
+                          name="attachment"
                           type="MaterialIcons"
                           style={{color: '#0000008A', marginRight: 8}}
                         />
-                      ) : null}
-                    </View> */}
-                  </View>
-                  <View>
-                    <View
-                      style={{
-                        alignSelf: 'flex-end',
-                        width: this.state.recording ? 60 : 40,
-                        height: this.state.recording ? 60 : 40,
-                        margin: this.state.recording ? 0 : 10,
-                        borderRadius: this.state.recording ? 30 : 20,
-                        backgroundColor: 'red',
-                        justifyContent: 'center',
-                      }}>
-                      <TouchableOpacity
-                        // onLongPress={() => {
-                        //   this.startRecording();
-                        //   this.setState({recording: true});
-                        // }}
-                        // onPressOut={() => {
-                        //   this.createTwoButtonAlert();
-                        //   this.setState({recording: false});
-                        // }}
-                        onPress={() => {
-                          this.sendMessage();
+                        {!this.state.message.length > 0 ? (
+                          <Icon
+                            onPress={() => {
+                              // this.launchCamera();
+                            }}
+                            name="photo-camera"
+                            type="MaterialIcons"
+                            style={{color: '#0000008A', marginRight: 8}}
+                          />
+                        ) : null}
+                      </View>
+                    </View>
+                    <View>
+                      <View
+                        style={{
+                          alignSelf: 'flex-end',
+                          width: this.state.recording ? 60 : 40,
+                          height: this.state.recording ? 60 : 40,
+                          margin: this.state.recording ? 0 : 10,
+                          borderRadius: this.state.recording ? 30 : 20,
+                          marginBottom: 8,
+                          backgroundColor: 'red',
+                          justifyContent: 'center',
                         }}>
-                        {/* {this.state.message === '' ? (
+                        <TouchableOpacity
+                          // onLongPress={() => {
+                          //   this.startRecording();
+                          //   this.setState({recording: true});
+                          // }}
+                          // onPressOut={() => {
+                          //   this.createTwoButtonAlert();
+                          //   this.setState({recording: false});
+                          // }}
+                          onPress={() => {
+                            this.sendMessage();
+                          }}>
+                          {/* {this.state.message === '' ? (
                           <Icon
                             name="mic"
                             type="Feather"
@@ -2644,119 +2662,120 @@ class ChatDetailScreen extends React.Component {
                             }}
                           />
                         )} */}
-                        <Icon
-                          name="arrowright"
-                          type="AntDesign"
-                          style={{
-                            fontSize: 20,
-                            color: '#FFFFFF',
-                            alignSelf: 'center',
-                          }}
-                        />
-                      </TouchableOpacity>
+                          <Icon
+                            name="arrowright"
+                            type="AntDesign"
+                            style={{
+                              fontSize: 20,
+                              color: '#FFFFFF',
+                              alignSelf: 'center',
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
-              </View>
-            ) : (
-              <Text style={{margin: 10, color: 'red'}}>
-                You can't sent message to this group because you're no longer a
-                Participant
-              </Text>
-            )}
-          </View>
-        ) : (
-          <View style={{flex: 1, backgroundColor: 'black'}}>
-            <ScrollView>
-              <View>
-                <Image
-                  source={{uri: this.state.imageView.path}}
-                  style={{width: 500, height: 600}}
-                />
-                <View style={{flexDirection: 'row'}}>
-                  <TextInput
-                    placeholder="Type a caption...."
-                    style={{
-                      backgroundColor: '#fff',
-                      marginTop: 15,
-                      width: '90%',
-                    }}
-                    onChangeText={(text) => {
-                      this.setState({caption: text});
-                    }}
+              ) : (
+                <Text style={{margin: 10, color: 'red'}}>
+                  You can't sent message to this group because you're no longer
+                  a Participant
+                </Text>
+              )}
+            </View>
+          ) : (
+            <View style={{flex: 1, backgroundColor: 'black'}}>
+              <ScrollView>
+                <View>
+                  <Image
+                    source={{uri: this.state.imageView.path}}
+                    style={{width: 500, height: 600}}
                   />
-                  <View
-                    style={{
-                      backgroundColor: 'red',
-                      marginTop: 15,
-                      justifyContent: 'center',
-                      alignContent: 'center',
-                      width: '10%',
-                    }}>
-                    <Icon
-                      name="arrowright"
-                      type="AntDesign"
-                      onPress={() => {
-                        this.sendImage();
-                      }}
+                  <View style={{flexDirection: 'row'}}>
+                    <TextInput
+                      placeholder="Type a caption...."
                       style={{
-                        fontSize: 20,
-                        color: '#FFFFFF',
-                        alignSelf: 'center',
+                        backgroundColor: '#fff',
+                        marginTop: 15,
+                        width: '90%',
+                      }}
+                      onChangeText={(text) => {
+                        this.setState({caption: text});
                       }}
                     />
+                    <View
+                      style={{
+                        backgroundColor: 'red',
+                        marginTop: 15,
+                        justifyContent: 'center',
+                        alignContent: 'center',
+                        width: '10%',
+                      }}>
+                      <Icon
+                        name="arrowright"
+                        type="AntDesign"
+                        onPress={() => {
+                          this.sendImage();
+                        }}
+                        style={{
+                          fontSize: 20,
+                          color: '#FFFFFF',
+                          alignSelf: 'center',
+                        }}
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
-            </ScrollView>
-          </View>
-        )}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.deletemodal}
-          onRequestClose={() => this.closeModal()}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View>
+              </ScrollView>
+            </View>
+          )}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.deletemodal}
+            onRequestClose={() => this.closeModal()}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
                 <View>
-                  <Text style={{margin: 15, fontSize: 15}}>
-                    {'Delete Message ?'}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={{alignItems: 'flex-end', margin: 10}}
-                  onPress={() => {
-                    this.deleteMessages('1');
-                  }}>
-                  <Text style={{color: 'red'}}>DELETE FOR ME</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{alignItems: 'flex-end', margin: 10}}
-                  onPress={() => {
-                    this.setState({
-                      deletemodal: false,
-                      selectedMode: false,
-                      forwardMessageIds: [],
-                      showEveryone: false,
-                    });
-                  }}>
-                  <Text style={{color: 'red'}}>CANCEL</Text>
-                </TouchableOpacity>
-                {this.state.showEveryone ? (
+                  <View>
+                    <Text style={{margin: 15, fontSize: 15}}>
+                      {'Delete Message ?'}
+                    </Text>
+                  </View>
                   <TouchableOpacity
                     style={{alignItems: 'flex-end', margin: 10}}
                     onPress={() => {
-                      this.deleteMessages('0');
+                      this.deleteMessages('1');
                     }}>
-                    <Text style={{color: 'red'}}>DELETE FOR EVERYONE</Text>
+                    <Text style={{color: 'red'}}>DELETE FOR ME</Text>
                   </TouchableOpacity>
-                ) : null}
+                  <TouchableOpacity
+                    style={{alignItems: 'flex-end', margin: 10}}
+                    onPress={() => {
+                      this.setState({
+                        deletemodal: false,
+                        selectedMode: false,
+                        forwardMessageIds: [],
+                        showEveryone: false,
+                      });
+                    }}>
+                    <Text style={{color: 'red'}}>CANCEL</Text>
+                  </TouchableOpacity>
+                  {this.state.showEveryone ? (
+                    <TouchableOpacity
+                      style={{alignItems: 'flex-end', margin: 10}}
+                      onPress={() => {
+                        this.deleteMessages('0');
+                      }}>
+                      <Text style={{color: 'red'}}>DELETE FOR EVERYONE</Text>
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
-      </Container>
+          </Modal>
+        </Container>
+      </SafeAreaView>
     );
   }
 }

@@ -38,18 +38,6 @@ export function GiftedChatDemo() {
           <>
             <Image
               style={{
-                height: 42,
-                width: 42,
-                borderRadius: 21,
-                resizeMode: 'contain',
-                marginLeft: 8,
-                tintColor: 'white',
-                backgroundColor: 'red',
-              }}
-              source={require('../images/camera_icon.png')}
-            />
-            <Image
-              style={{
                 position: 'absolute',
                 right: 100,
                 height: 42,

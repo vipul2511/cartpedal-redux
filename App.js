@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
+import {GiftedChatDemo} from './Component/Screens/GiftedChatDemo';
 // import {pushNotifications} from './Component/Screens/services';
 // pushNotifications.configure();
 
