@@ -11,9 +11,10 @@ import {
   SafeAreaView,
   ScrollView,
   Linking,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
-
+import NotificationSetting from 'react-native-open-notification';
 class NotificationsScreen extends Component {
   constructor(props) {
     super(props);
@@ -22,12 +23,7 @@ class NotificationsScreen extends Component {
 
   NotificationOpen = async () => {
     try {
-      // let extras = [{'android.provider.extra.APP_PACKAGE': 'in.cartpedal'}];
-      // await Linking.sendIntent(
-      //   'android.settings.NOTIFICATION_SETTINGS',
-      //   extras,
-      // );
-      Linking.openSettings();
+      NotificationSetting.open();
     } catch (e) {
       alert(e.message);
     }
