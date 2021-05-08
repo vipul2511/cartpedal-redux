@@ -12,7 +12,6 @@ export const profileView = (userId, userAccessToken) => {
     dispatch({type: PROFILE_VIEW_START});
     var urlprofile = `${API_URL}api-user/view-profile?user_id=` + userId;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-
     return fetch(urlprofile, {
       method: 'GET',
       headers: {

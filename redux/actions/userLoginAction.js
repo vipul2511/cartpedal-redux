@@ -92,7 +92,7 @@ export const forgotPass = (phone) => {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })

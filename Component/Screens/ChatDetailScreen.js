@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
 /* eslint-disable react/no-did-update-set-state */
+
 import React from 'react';
 import {Container, Icon, View} from 'native-base';
 import {
@@ -299,7 +300,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'text/plain',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: raw,
@@ -381,7 +382,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'text/plain',
         device_id: '1234',
         device_token: '1111',
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify(data),
@@ -448,7 +449,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'text/plain',
         device_id: '1234',
         device_token: '1111',
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify(data),
@@ -559,7 +560,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'text/plain',
         device_id: '1234',
         device_token: '1111',
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       data,
@@ -725,7 +726,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'text/plain',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: raw,
@@ -803,7 +804,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'text/plain',
         device_id: '1234',
         device_token: '1111',
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify(data),
@@ -910,7 +911,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'text/plain',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: raw,
@@ -966,7 +967,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -1002,7 +1003,7 @@ class ChatDetailScreen extends React.Component {
       headers: {
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: data,
@@ -1043,7 +1044,7 @@ class ChatDetailScreen extends React.Component {
       headers: {
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: data,
@@ -1146,7 +1147,7 @@ class ChatDetailScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,

@@ -6,7 +6,6 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
 import {Platform} from 'react-native';
-
 export const productlistAction = (userId, userAccessToken) => {
   return async (dispatch) => {
     dispatch({type: GET_PRODUCT_START});

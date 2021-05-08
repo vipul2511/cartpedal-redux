@@ -12,6 +12,7 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 
@@ -92,7 +93,7 @@ class EditImageUpdateProduct extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -152,7 +153,7 @@ class EditImageUpdateProduct extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -194,7 +195,7 @@ class EditImageUpdateProduct extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({

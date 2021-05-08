@@ -157,7 +157,7 @@ export default class ProductDetailScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
@@ -188,7 +188,6 @@ export default class ProductDetailScreen extends React.Component {
             this.setState({imageList: imageURl});
           }
           this.setState({nextId: responseData.data.prev});
-          // console.log(JSON.stringify(responseData));
         } else {
         }
       })
@@ -217,7 +216,7 @@ export default class ProductDetailScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
@@ -248,7 +247,7 @@ export default class ProductDetailScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '11111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,

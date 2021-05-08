@@ -15,6 +15,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform
 } from 'react-native';
 import AppConst from '../Component/AppConst';
 import AppImageSlider from '../Component/AppImageSlider';
@@ -141,7 +142,7 @@ export default class UpdateProductScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       }),
       body: formData,
@@ -201,7 +202,7 @@ export default class UpdateProductScreen extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
     })
@@ -219,8 +220,6 @@ export default class UpdateProductScreen extends React.Component {
   openCamara() {
     this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openCamera({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
@@ -247,8 +246,6 @@ export default class UpdateProductScreen extends React.Component {
   openImageGallery() {
     this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
@@ -278,7 +275,7 @@ export default class UpdateProductScreen extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
     })
@@ -301,7 +298,7 @@ export default class UpdateProductScreen extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
       body: JSON.stringify({
@@ -345,7 +342,7 @@ export default class UpdateProductScreen extends React.Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       },
     })
@@ -406,7 +403,7 @@ export default class UpdateProductScreen extends React.Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.access_token),
       }),
       body: formData,
@@ -419,7 +416,6 @@ export default class UpdateProductScreen extends React.Component {
             (items) => items.mobile !== contactNumber,
           );
           this.setState({sharedPeople: filterData});
-          console.log('filter data', filterData);
         } else {
           alert;
         }
@@ -564,7 +560,6 @@ export default class UpdateProductScreen extends React.Component {
                 selectedValue={this.state.Category}
                 style={{height: 50, width: screenWidth - 55}}
                 onValueChange={(itemValue) => {
-                  console.log('item value', itemValue);
                   if (itemValue != '0') {
                     this.setState({Category: itemValue});
                   } else {
@@ -621,7 +616,6 @@ export default class UpdateProductScreen extends React.Component {
                   value={'0'}
                 />
                 {this.state.ProductUnit.map((item, index) => {
-                  console.log('items', item);
                   return (
                     <Picker.Item
                       label={item.title}

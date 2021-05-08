@@ -9,7 +9,6 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
 import {Platform} from 'react-native';
-
 export const signUp = (phone) => {
   return async (dispatch) => {
     dispatch({type: USER_SIGNUP_START});

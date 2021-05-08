@@ -1,5 +1,5 @@
 const AppConst = {
-  AppName: 'CartPadle',
+  AppName: 'Cartpedal',
   rupeeSym: '\u20B9',
   inputPH_select_cat: 'Please Select Category',
   inputPH_enter_name: 'Name',

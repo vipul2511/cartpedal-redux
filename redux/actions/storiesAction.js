@@ -9,7 +9,6 @@ import {
 import {API_URL} from '../../Config';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Platform} from 'react-native';
-
 export const storiesAction = (userId, userAccessToken) => {
   return async (dispatch) => {
     dispatch({type: GET_STORIES_START});

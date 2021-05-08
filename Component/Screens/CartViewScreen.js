@@ -13,6 +13,7 @@ import {
   SafeAreaView,
   Dimensions,
   Share,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
@@ -114,7 +115,7 @@ class CartViewScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
@@ -158,7 +159,7 @@ class CartViewScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
         // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
       }),
@@ -205,7 +206,7 @@ class CartViewScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
@@ -262,7 +263,7 @@ class CartViewScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: formData,
@@ -381,7 +382,7 @@ class CartViewScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '11111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         // Authorization: 'Bearer' + this.state.access_token,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),

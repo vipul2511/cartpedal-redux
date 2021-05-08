@@ -14,6 +14,7 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
@@ -201,7 +202,7 @@ class CartPlaceScreen extends Component {
                     'Content-Type': 'multipart/form-data',
                     device_id: '1111',
                     device_token: fcmtoken,
-                    device_type: 'android',
+                    device_type: Platform.OS,
                     Authorization: JSON.parse(accesstokenid),
                   }),
                   body: formData,
@@ -282,7 +283,7 @@ class CartPlaceScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '11111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -348,7 +349,7 @@ class CartPlaceScreen extends Component {
           'Content-Type': 'multipart/form-data',
           device_id: '11111',
           device_token: this.state.fcmtoken,
-          device_type: 'android',
+          device_type: Platform.OS,
           Authorization: JSON.parse(this.state.userAccessToken),
         }),
         body: formData,
@@ -390,7 +391,7 @@ class CartPlaceScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,

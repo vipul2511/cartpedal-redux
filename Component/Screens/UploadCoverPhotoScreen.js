@@ -12,6 +12,8 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
+  Platform,
+  Text
 } from 'react-native';
 import resp from 'rn-responsive-font';
 
@@ -86,7 +88,7 @@ class UploadCoverPhotoScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -144,7 +146,7 @@ class UploadCoverPhotoScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -186,7 +188,7 @@ class UploadCoverPhotoScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -335,7 +337,27 @@ class UploadCoverPhotoScreen extends Component {
           textStyle={styles.spinnerTextStyle}
         />
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
-        <AppHeader />
+        <View style={styles.headerView}>
+          <View style={styles.BackButtonContainer}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <Image
+                source={require('../images/back_blck_icon.png')}
+                style={styles.backButtonStyle}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.TitleContainer}>
+            <Image
+              source={require('../images/logo_cart_paddle.png')}
+              style={styles.LogoIconStyle}
+            />
+            <TouchableOpacity
+              style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={styles.TitleStyle}>Cartpedal</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
+        </View>
         <View style={[styles.container]}>
           <View style={{flex: 1}}>
             {this.state.UploadedImage.length !== 0 ? (
@@ -453,6 +475,47 @@ const styles = StyleSheet.create({
   spinnerTextStyle: {
     color: '#F01738',
   },
+  LogoIconStyle: {
+    margin: 5,
+    height: 30,
+    width: 30,
+  },
+  TitleStyle: {
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: resp(20),
+    textAlign: 'center',
+  },
+  SearchContainer: {
+    flex: 0.2,
+    backgroundColor: '#fff',
+  },
+  headerView: {
+    flex: 0.1,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    elevation: 20,
+  },
+  TitleContainer: {
+    flexDirection: 'row',
+    flex: 0.6,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  BackButtonContainer: {
+    flex: 0.2,
+    marginLeft: 10,
+    backgroundColor: 'white',
+  },
+  backButtonStyle: {
+    margin: 10,
+    height: 20,
+    width: 20,
+  },
   headerLogo: {
     height: 30,
     width: 30,
@@ -471,9 +534,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   imageSliderSmall: {
-    // justifyContent: 'center',
-    // marginTop:1,
-    // minHeight: (screenWidth / 4)
+
   },
   imagePlaceholder: {
     width: screenWidth,

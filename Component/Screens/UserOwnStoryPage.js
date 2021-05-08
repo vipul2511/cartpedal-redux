@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Text,
+  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import {SliderBox} from 'react-native-image-slider-box';
@@ -80,7 +81,7 @@ class UserStoryPage extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
