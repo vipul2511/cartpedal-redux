@@ -505,11 +505,12 @@ class DashBoardScreen extends Component {
     this.setState({isStoryModalVisible: false});
   };
   openImageGallery() {
-    this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
     ImagePicker.openPicker({
+      mediaType: 'photo',
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onImagePick(image);
     });
   }
@@ -527,11 +528,11 @@ class DashBoardScreen extends Component {
   }
 
   openCamara() {
-    this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
     ImagePicker.openCamera({
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onImagePick(image);
     });
   }

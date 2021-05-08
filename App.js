@@ -45,7 +45,7 @@ const getInitial = async () => {
 
   if (notificationOpen) {
     //const {title, body} = notificationOpen.notification;
-    console.log(notificationOpen.notification.data);
+    // console.log(notificationOpen.notification.data);
     alert('hello1');
   }
 };
@@ -53,17 +53,17 @@ const getInitial = async () => {
 getInitial();
 
 firebase.notifications().onNotification((notification) => {
-  console.log(notification.data, 'HELLO2');
+  // console.log(notification.data, 'HELLO2');
   alert('hello2');
 });
 
 firebase.messaging().onMessage(async (m) => {
-  console.log(m.data);
+  // console.log(m.data);
   alert('hello3');
 });
 
 firebase.notifications().onNotificationOpened(async (m) => {
-  console.log(m.notification.data, 'ON OPEN');
+  // console.log(m.notification.data, 'ON OPEN');
   alert('hello4');
 });
 
