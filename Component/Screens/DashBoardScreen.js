@@ -36,7 +36,6 @@ import {
   loggedStoriesAction,
   RecentDataAction,
   addStoryAction,
-  resetStore,
 } from '../../redux/actions';
 import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
@@ -115,7 +114,7 @@ class DashBoardScreen extends Component {
       alert(error.message);
     }
   };
-
+  
   link = async (id, name) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
@@ -401,6 +400,30 @@ class DashBoardScreen extends Component {
       </View>
     );
   };
+  logout=()=>{
+    fetch(`${BASE_URL}api-user/logout?user_id=${this.state.userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        device_id: '1234',
+        device_token: this.state.fcmtoken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+    }
+  })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.code === 200) {
+          AsyncStorage.removeItem('@is_login').then((succ) => {
+            this.logOut();
+          });
+        }else{
+          if(responseData.message) alert(responseData.message)
+        }
+      })
+
+      .catch((error) => {});
+  }
 
   RecentUpdateCall(newContacts) {
     this.setState({callUpdate: true}, () => {
@@ -490,14 +513,7 @@ class DashBoardScreen extends Component {
       </Text>
     );
   };
-  logOut = () => {
-    AsyncStorage.removeItem('@user_id').then((succss) => {
-      AsyncStorage.removeItem('@access_token').then((resul) => {
-        this.props.resetStore();
-        this.props.navigation.navigate('LoginScreen');
-      });
-    });
-  };
+
   openStoryModal() {
     this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
   }
@@ -505,11 +521,12 @@ class DashBoardScreen extends Component {
     this.setState({isStoryModalVisible: false});
   };
   openImageGallery() {
-    this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
     ImagePicker.openPicker({
+      mediaType: 'photo',
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onImagePick(image);
     });
   }
@@ -527,11 +544,11 @@ class DashBoardScreen extends Component {
   }
 
   openCamara() {
-    this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
     ImagePicker.openCamera({
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onImagePick(image);
     });
   }
@@ -572,14 +589,6 @@ class DashBoardScreen extends Component {
         />
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                AsyncStorage.removeItem('@is_login').then((succ) => {
-                  this.logOut();
-                });
-              }}>
-              <Text style={styles.backButtonStyle}>Log Out</Text>
-            </TouchableOpacity>
           </View>
           <View style={styles.TitleContainer}>
             <Image
@@ -1554,5 +1563,4 @@ export default connect(mapStateToProps, {
   loggedStoriesAction,
   RecentDataAction,
   addStoryAction,
-  resetStore,
 })(DashBoardScreen);

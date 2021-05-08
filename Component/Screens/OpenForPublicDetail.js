@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {Component, useState} from 'react';
+import React, { Component, useState } from 'react';
 console.disableYellowBox = true;
 
 import {
@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
-import {BASE_URL} from '../Component/ApiClient';
+import { BASE_URL } from '../Component/ApiClient';
 let width = Dimensions.get('window').width;
 
 class OpenForPublicDetail extends Component {
@@ -48,28 +48,28 @@ class OpenForPublicDetail extends Component {
   }
 
   showLoading() {
-    this.setState({spinner: true});
+    this.setState({ spinner: true });
   }
 
   hideLoading() {
-    this.setState({spinner: false});
+    this.setState({ spinner: false });
   }
 
   async componentDidMount() {
     this.showLoading();
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
-        this.setState({fcmToken: token});
+        this.setState({ fcmToken: token });
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({userAccessToken: accessToken});
+        this.setState({ userAccessToken: accessToken });
       }
     });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-        this.setState({userNo: userId});
+        this.setState({ userNo: userId });
         this.UserProfileCall();
       } else {
         this.hideLoading();
@@ -101,11 +101,11 @@ class OpenForPublicDetail extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          this.setState({NoData: false}, () => {
+          this.setState({ NoData: false }, () => {
             this.UserProfileCall();
           });
         } else {
-          this.setState({NoData: true});
+          this.setState({ NoData: true });
         }
       })
       .catch((error) => {
@@ -136,23 +136,23 @@ class OpenForPublicDetail extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          if (
-            responseData.data[0].products !== undefined &&
-            responseData.data[0].products.length > 0
-          ) {
-            this.setState({ProfileData: responseData.data[0].products});
-            this.setState({wholeData: responseData.data[0]});
-          } else {
-            this.setState({NoData: true});
-            this.setState({ProfileData: ''});
+          if (responseData.data.length > 0) {
+            this.setState({ name: responseData.data[0].name });
           }
-          this.setState({block_id: responseData.data[0].id});
-          this.setState({favourite: responseData.data[0].favourite});
-          this.setState({about: responseData.data[0].about});
-          if (responseData.data[0].avatar == null) {
-            this.setState({avatar: ''});
+          if (responseData.data[0].products !== undefined && responseData.data[0].products.length > 0) {
+            this.setState({ ProfileData: responseData.data[0].products });
+            this.setState({ wholeData: responseData.data[0] });
           } else {
-            this.setState({avatar: responseData.data[0].avatar});
+            this.setState({ NoData: true });
+            this.setState({ ProfileData: '' });
+          }
+          this.setState({ block_id: responseData.data[0].id });
+          this.setState({ favourite: responseData.data[0].favourite })
+          this.setState({ about: responseData.data[0].about });
+          if (responseData.data[0].avatar == null) {
+            this.setState({ avatar: '' })
+          } else {
+            this.setState({ avatar: responseData.data[0].avatar });
           }
         } else {
         }
@@ -183,7 +183,7 @@ class OpenForPublicDetail extends Component {
   link = async (id, name) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
-        id,
+      id,
       'https://cartpedal.page.link',
     ).android
       .setPackageName('in.cartpedal')
@@ -201,7 +201,7 @@ class OpenForPublicDetail extends Component {
   forwardlink = async (userid, name) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
-        userid,
+      userid,
       'https://cartpedal.page.link',
     ).android
       .setPackageName('in.cartpedal')
@@ -228,7 +228,7 @@ class OpenForPublicDetail extends Component {
   };
 
   actionOnRow(item) {
-    this.setState({isModalVisible: !this.state.isModalVisible});
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   }
 
   render() {
@@ -254,7 +254,7 @@ class OpenForPublicDetail extends Component {
               style={styles.LogoIconStyle}
             />
             <TouchableOpacity
-              style={{alignItems: 'center', justifyContent: 'center'}}>
+              style={{ alignItems: 'center', justifyContent: 'center' }}>
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
@@ -270,7 +270,7 @@ class OpenForPublicDetail extends Component {
                     source={
                       this.state.avatar == ''
                         ? this.state.pickedImage
-                        : {uri: this.state.avatar}
+                        : { uri: this.state.avatar }
                     }
                     style={styles.RiyaImageViewStyle}
                   />
@@ -286,7 +286,7 @@ class OpenForPublicDetail extends Component {
                 </Text>
 
                 <View style={styles.PersonInfoContainer}>
-                  <View style={{width: width * 0.7}}>
+                  <View style={{ width: width * 0.7 }}>
                     {this.state.about ? (
                       <SeeMore
                         style={styles.PersonDescriptionStyle}
@@ -325,25 +325,22 @@ class OpenForPublicDetail extends Component {
               <View style={styles.hairline} />
             </View>
             <FlatList
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               data={this.state.ProfileData}
               keyExtractor={(item) => item.ProdcutName}
               numColumns={2}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.listItem}
                   onPress={() => {
                     this.props.navigation.navigate('ProductDetailScreen', {
-                      whole_data: item,
-                      seller_id: this.state.wholeData.id,
-                      imageURL: item.image,
-                      name: this.props.route.params.name,
+                      id:item.id
                     });
                   }}>
                   <Image
                     source={
                       item.image[0]
-                        ? {uri: item.image[0].image}
+                        ? { uri: item.image[0].image }
                         : this.state.pickedImage
                     }
                     style={styles.image}
@@ -376,7 +373,7 @@ class OpenForPublicDetail extends Component {
                               marginTop: 3,
                               marginBottom: 5,
                             }}>
-                            <Text style={{color: '#fff', textAlign: 'center'}}>
+                            <Text style={{ color: '#fff', textAlign: 'center' }}>
                               Ask For Rate
                             </Text>
                           </TouchableOpacity>
@@ -387,10 +384,7 @@ class OpenForPublicDetail extends Component {
                       style={styles.eyeButtonContainer}
                       onPress={() => {
                         this.props.navigation.navigate('ProductDetailScreen', {
-                          whole_data: item,
-                          seller_id: this.state.wholeData.id,
-                          imageURL: item.image,
-                          name: this.props.route.params.name,
+                         id:item.id
                         });
                       }}>
                       <Image

@@ -12,13 +12,12 @@ export const profileView = (userId, userAccessToken) => {
     dispatch({type: PROFILE_VIEW_START});
     var urlprofile = `${API_URL}api-user/view-profile?user_id=` + userId;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
     return fetch(urlprofile, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
-        device_token: token,
+        device_token: fcmToken,
         device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },

@@ -45,22 +45,26 @@ const getInitial = async () => {
 
   if (notificationOpen) {
     //const {title, body} = notificationOpen.notification;
-    console.log(notificationOpen.notification.data);
+    // console.log(notificationOpen.notification.data);
+    alert('hello1');
   }
 };
 
 getInitial();
 
 firebase.notifications().onNotification((notification) => {
-  console.log(notification.data);
+  // console.log(notification.data, 'HELLO2');
+  alert('hello2');
 });
 
 firebase.messaging().onMessage(async (m) => {
-  console.log(m.data);
+  // console.log(m.data);
+  alert('hello3');
 });
 
 firebase.notifications().onNotificationOpened(async (m) => {
-  console.log(m.notification.data, 'ON OPEN');
+  // console.log(m.notification.data, 'ON OPEN');
+  alert('hello4');
 });
 
 import * as React from 'react';

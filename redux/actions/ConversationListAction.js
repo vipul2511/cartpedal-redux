@@ -7,7 +7,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
 import {Platform} from 'react-native';
 
-
 export const ConversationListAction = (userID, type, toid, userAccessToken) => {
   return async (dispatch) => {
     dispatch({type: CONVERSION_LIST_START});
@@ -17,7 +16,8 @@ export const ConversationListAction = (userID, type, toid, userAccessToken) => {
     formData.append('type', type);
     formData.append('msg_type', '0');
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     fetch(`${API_URL}api-message/conversation`, {
       method: 'POST',
       headers: {

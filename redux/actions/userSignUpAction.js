@@ -16,14 +16,16 @@ export const signUp = (phone) => {
     formData.append('mobile', '+91' + phone);
     var otpUrl = `${API_URL}api-user/send-otp`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
+
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type:  Platform.OS,
+        device_type: Platform.OS,
       },
       body: formData,
     })
@@ -66,14 +68,15 @@ export const signUpConf = (name, phone, email, pass) => {
     formData.append('password', pass);
     var otpUrl = `${API_URL}api-user/signup`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type:  Platform.OS,
+        device_type: Platform.OS,
       },
       body: formData,
     })

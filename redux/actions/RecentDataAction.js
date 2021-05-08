@@ -17,7 +17,8 @@ export const RecentDataAction = (userId, userAccessToken, newContacts) => {
     formData.append('contact', newContacts);
     var RecentShare = `${API_URL}api-user/recent-share`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     fetch(RecentShare, {
       method: 'Post',
       headers: new Headers({

@@ -188,7 +188,6 @@ export default class ProductDetailScreen extends React.Component {
             this.setState({imageList: imageURl});
           }
           this.setState({nextId: responseData.data.prev});
-          // console.log(JSON.stringify(responseData));
         } else {
         }
       })

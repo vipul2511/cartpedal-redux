@@ -17,7 +17,6 @@ import {
   Dimensions,
   Share,
   ScrollView,
-  Platform
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import ProfileCustomMenuIcon from './ProfileCustomMenuIcon';
@@ -143,7 +142,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -176,7 +175,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -247,33 +246,36 @@ class ProfileScreen extends Component {
   };
 
   openImageGallery() {
-    this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
-    ImagePicker.openPicker({
-      cropping: true,
-      includeBase64: true,
-    }).then((image) => {
-      this.onImagePick(image);
-    });
-  }
-  openImageStoryGallery = () => {
-    this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
     ImagePicker.openPicker({
       width: 300,
       height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
+
+      this.onImagePick(image);
+    });
+  }
+  openImageStoryGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      includeBase64: true,
+    }).then((image) => {
+      this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onStoryPick(image);
     });
   };
   openCamaraStory() {
-    this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
     ImagePicker.openCamera({
       width: 300,
       height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onStoryPick(image);
     });
   }
@@ -299,11 +301,14 @@ class ProfileScreen extends Component {
     this.uploadProfilePic();
   }
   openCamara() {
-    this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openCamera({
+      width: 300,
+      height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
+
       this.onImagePick(image);
     });
   }
@@ -336,7 +341,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -367,7 +372,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({
@@ -405,7 +410,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -440,7 +445,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -489,7 +494,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
@@ -607,7 +612,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
@@ -715,7 +720,7 @@ class ProfileScreen extends Component {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: Platform.OS,
+        device_type: 'android',
         Authorization: JSON.parse(this.state.userAccessToken),
       },
       body: JSON.stringify({

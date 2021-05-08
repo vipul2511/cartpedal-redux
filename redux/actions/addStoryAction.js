@@ -12,7 +12,7 @@ export const addStoryAction = (userId, userAccessToken, data) => {
   return async (dispatch) => {
     dispatch({type: ADD_STORIES_START});
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     fetch(`${API_URL}api-user/add-story`, {
       method: 'Post',
       headers: {

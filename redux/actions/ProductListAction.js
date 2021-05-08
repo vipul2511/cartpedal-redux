@@ -11,7 +11,8 @@ export const productlistAction = (userId, userAccessToken) => {
     dispatch({type: GET_PRODUCT_START});
     var urlProduct = `${API_URL}api-product/product-list?user_id=${userId}&type=2`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
-    const token = fcmToken ? fcmToken : '1111';
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     fetch(urlProduct, {
       method: 'GET',
       headers: {

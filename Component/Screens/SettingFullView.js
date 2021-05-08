@@ -92,7 +92,7 @@ export default class SettingFullView extends React.Component {
       }
     });
   }
-
+  
   lessTheQuantity = () => {
     if (this.state.currentQuantity != 1) {
       this.setState({currentQuantity: this.state.currentQuantity - 1}, () => {
