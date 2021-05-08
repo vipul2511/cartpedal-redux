@@ -1,8 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
-import {GiftedChatDemo} from './Component/Screens/GiftedChatDemo';
-// import {pushNotifications} from './Component/Screens/services';
-// pushNotifications.configure();
+import NotificationSetting from 'react-native-open-notification';
 
 if (Platform.OS === 'android') {
   const channel = new firebase.notifications.Android.Channel(
@@ -21,8 +19,12 @@ messaging
     if (enabled) {
       messaging
         .getToken()
-        .then((token) => {
-          console.log(token, 'TOKEN');
+        .then(async (token) => {
+          const asked = await AsyncStorage.getItem('asked');
+          if (!asked && Platform.OS === 'android') {
+            NotificationSetting.open();
+            await AsyncStorage.setItem('asked', 'true');
+          }
           AsyncStorage.setItem('@fcmtoken', JSON.stringify(token));
         })
         .catch((error) => {
@@ -38,35 +40,6 @@ messaging
     }
   })
   .catch((error) => {});
-
-const getInitial = async () => {
-  const notificationOpen = await firebase
-    .notifications()
-    .getInitialNotification();
-
-  if (notificationOpen) {
-    //const {title, body} = notificationOpen.notification;
-    // console.log(notificationOpen.notification.data);
-    alert('hello1');
-  }
-};
-
-getInitial();
-
-firebase.notifications().onNotification((notification) => {
-  // console.log(notification.data, 'HELLO2');
-  // alert('hello2');
-});
-
-firebase.messaging().onMessage(async (m) => {
-  // console.log(m.data);
-  // alert('hello3');
-});
-
-firebase.notifications().onNotificationOpened(async (m) => {
-  // console.log(m.notification.data, 'ON OPEN');
-  // alert('hello4');
-});
 
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
