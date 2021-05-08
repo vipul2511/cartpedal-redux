@@ -54,17 +54,17 @@ getInitial();
 
 firebase.notifications().onNotification((notification) => {
   // console.log(notification.data, 'HELLO2');
-  alert('hello2');
+  // alert('hello2');
 });
 
 firebase.messaging().onMessage(async (m) => {
   // console.log(m.data);
-  alert('hello3');
+  // alert('hello3');
 });
 
 firebase.notifications().onNotificationOpened(async (m) => {
   // console.log(m.notification.data, 'ON OPEN');
-  alert('hello4');
+  // alert('hello4');
 });
 
 import * as React from 'react';

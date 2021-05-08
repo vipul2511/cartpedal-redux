@@ -139,7 +139,6 @@ export const MessageComponent = ({
     }));
   };
   const onPausePlay1 = async () => {
-    console.log('working');
     await audioRecorderPlayer.pausePlayer();
     setAudio1((p) => ({
       current: p.current,
@@ -149,13 +148,12 @@ export const MessageComponent = ({
     setpause(true);
   };
   const onPlay = async (uri, playerId) => {
-    console.log('player id', playerId);
     // No player are reading or it is the same player
     if (pause && playerRecording == playerId) return onStartPlay1(uri);
 
     // Another player is reading - stop it before starting the new one
     audioRecorderPlayer.removePlayBackListener();
-    console.log('working');
+
     await audioRecorderPlayer.resumePlayer();
     await audioRecorderPlayer.stopPlayer();
     setAudio1((p) => ({
@@ -201,22 +199,10 @@ export const MessageComponent = ({
     }
   }, [message]);
 
-  // const onStopPlay = async () => {
-  //   this.audioRecorderPlayer.stopPlayer();
-  //   this.audioRecorderPlayer.removePlayBackListener();
-  //   setAudio({...audio, playing: false});
-  // };
-
   let content = null;
 
-  // console.log(message);
-
   const {msg_type, fattach} = message;
-  //  if(msg_type==='info'){
-  //    let date=moment().format("DD-MM-YYYY")
-  //    {date==message.date?}
-  //  }
-  console.log(message);
+
   if (msg_type === 'accept') {
     if (message.tmsg !== '') {
       content = (

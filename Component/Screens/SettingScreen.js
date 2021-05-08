@@ -12,15 +12,13 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL} from '../Component/ApiClient';
-import {
-  resetStore,
-} from '../../redux/actions';
+import {resetStore} from '../../redux/actions';
 import {connect} from 'react-redux';
 class SettingScreen extends Component {
   constructor(props) {
@@ -62,7 +60,7 @@ class SettingScreen extends Component {
   showLoading() {
     this.setState({spinner: true});
   }
-  logout=()=>{
+  logout = () => {
     fetch(`${BASE_URL}api-user/logout?user_id=${this.state.userId}`, {
       method: 'GET',
       headers: {
@@ -71,21 +69,21 @@ class SettingScreen extends Component {
         device_token: this.state.fc,
         device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
-    }
-  })
+      },
+    })
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
           AsyncStorage.removeItem('@is_login').then((succ) => {
             this.logOut();
           });
-        }else{
-          if(responseData.message) alert(responseData.message)
+        } else {
+          if (responseData.message) alert(responseData.message);
         }
       })
 
       .catch((error) => {});
-  }
+  };
   logOut = () => {
     AsyncStorage.removeItem('@user_id').then((succss) => {
       AsyncStorage.removeItem('@access_token').then((resul) => {
@@ -184,7 +182,7 @@ class SettingScreen extends Component {
           textStyle={styles.spinnerTextStyle}
         />
         <View style={styles.headerView}>
-        <View style={styles.BackButtonContainer}>
+          <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../images/back_blck_icon.png')}
@@ -415,12 +413,13 @@ class SettingScreen extends Component {
             <TouchableOpacity
               style={styles.Profile2Container}
               onPress={() => {
-                this.logout()
+                this.logout();
               }}>
               <View style={styles.Profile2ImageContainer}>
-                <TouchableOpacity onPress={() => {
-                this.logout()
-              }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.logout();
+                  }}>
                   <Image
                     source={require('../images/account_icon.png')}
                     style={styles.Profile2ImageViewStyle}
@@ -473,7 +472,7 @@ class SettingScreen extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen');
@@ -483,7 +482,7 @@ class SettingScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -701,9 +700,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 });
-function mapStateToProps(state) {
-
-}
+function mapStateToProps(state) {}
 export default connect(mapStateToProps, {
   resetStore,
 })(SettingScreen);

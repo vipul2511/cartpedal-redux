@@ -464,6 +464,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
     height: 48,
+    paddingLeft: 16,
   },
   TextView: {
     fontSize: 16,
@@ -479,6 +480,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 1,
     height: 48,
+    paddingLeft: 16,
   },
   container2: {
     flex: 1,

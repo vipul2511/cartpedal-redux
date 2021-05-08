@@ -8,6 +8,7 @@ const devToolsExtension = window && window.__REDUX_DEVTOOLS_EXTENSION__;
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  blacklist: ['ChatlistReducer'],
 };
 if (typeof devToolsExtension === 'function') {
   enhancerList.push(devToolsExtension());
