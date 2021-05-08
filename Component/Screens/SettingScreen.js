@@ -195,7 +195,7 @@ class SettingScreen extends Component {
           <View style={styles.TitleContainer}>
             <TouchableOpacity
               style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>Setting </Text>
+              <Text style={styles.TitleStyle}>Setting</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.SearchContainer} />

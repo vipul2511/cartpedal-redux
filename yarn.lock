@@ -6298,6 +6298,11 @@
     "redux" "^4.0.1"
     "redux-saga" "^1.0.2"
 
+"react-native-open-notification@^0.1.4":
+  "integrity" "sha512-TPeFRsao6nDFW5nvBseD6nheRCN1U3poaY90iDzBY1MEEVepClqfEC9Iw0cqj7LYnpDSF8V25fb/SpjEg3HdQQ=="
+  "resolved" "https://registry.npmjs.org/react-native-open-notification/-/react-native-open-notification-0.1.4.tgz"
+  "version" "0.1.4"
+
 "react-native-otp-textinput@0.0.7":
   "integrity" "sha512-4q3HVL8a5SCrLy7Fiyv/+4HvUmOSZYC+JvKaQQB1sObyb5v9EcsdtZrK0ffE+7g/u501aIKbDZfhr8flFeGKZw=="
   "resolved" "https://registry.npmjs.org/react-native-otp-textinput/-/react-native-otp-textinput-0.0.7.tgz"
