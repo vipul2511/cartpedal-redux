@@ -1,5 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
+
 import React from 'react';
 import {
   Dimensions,
@@ -422,7 +423,7 @@ export default class ProductMasterUpdate extends React.Component {
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
         <View style={[styles.container, {backgroundColor: '#fff'}]}>
-        <TouchableOpacity
+          <TouchableOpacity
             style={styles.editImageBox}
             onPress={() => this.props.navigation.goBack()}>
             <Image
@@ -522,16 +523,18 @@ export default class ProductMasterUpdate extends React.Component {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.inputTextView}>
+            <View style={styles.pickerStyle}>
               <Picker
                 selectedValue={this.state.Category}
                 style={{height: 50, width: screenWidth - 55}}
+                placeholder="Please Select Category"
                 onValueChange={(itemValue, itemIndex) => {
                   if (itemValue != '0') {
                     this.setState({Category: itemValue});
                     this.setState({showPicker: true});
                   } else alert('Please select correct category');
                 }}>
+                <Picker.Item label="Please select Category" value="0" />
                 {this.state.CategoryList.map((item, index) => {
                   return (
                     <Picker.Item
@@ -558,10 +561,11 @@ export default class ProductMasterUpdate extends React.Component {
               onChangeText={this._handleMultiInput('price')}
               editable={true}
             />
-            <View style={styles.inputTextView}>
+            <View style={styles.pickerStyle}>
               <Picker
                 selectedValue={this.state.Unit}
                 style={{height: 50, width: screenWidth - 55}}
+                placeholder="Please select unit"
                 onValueChange={(itemValue, itemIndex) => {
                   if (itemValue != '0') {
                     this.setState({Unit: itemValue});
@@ -569,6 +573,7 @@ export default class ProductMasterUpdate extends React.Component {
                     alert('Please select correct unit');
                   }
                 }}>
+                <Picker.Item label="Please select Unit" value="0" />
                 {this.state.ProductUnit.map((item, index) => {
                   return (
                     <Picker.Item
@@ -759,10 +764,16 @@ const styles = StyleSheet.create({
   },
   inputTextView: {
     fontSize: 17,
-    color: 'black',
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
-    marginTop: 5,
+    height: 48,
+    paddingLeft: 16,
+  },
+  pickerStyle: {
+    fontSize: 17,
+    borderBottomColor: '#e3e3e3',
+    borderBottomWidth: 1,
+    height: 48,
   },
   ProfilemodalViewStyle: {
     width: 300,
@@ -784,6 +795,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 5,
     marginBottom: resp(25),
+    paddingLeft: 16,
   },
   centeredView: {
     flex: 1,
@@ -879,7 +891,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e3e3e3',
     borderBottomWidth: 1,
     marginTop: 1,
-    color: 'black',
+    height: 48,
+    paddingLeft: 16,
   },
   container2: {
     flex: 1,

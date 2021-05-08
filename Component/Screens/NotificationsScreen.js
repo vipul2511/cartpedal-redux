@@ -22,11 +22,12 @@ class NotificationsScreen extends Component {
 
   NotificationOpen = async () => {
     try {
-      let extras = [{'android.provider.extra.APP_PACKAGE': 'in.cartpedal'}];
-      await Linking.sendIntent(
-        'android.settings.NOTIFICATION_SETTINGS',
-        extras,
-      );
+      // let extras = [{'android.provider.extra.APP_PACKAGE': 'in.cartpedal'}];
+      // await Linking.sendIntent(
+      //   'android.settings.NOTIFICATION_SETTINGS',
+      //   extras,
+      // );
+      Linking.openSettings();
     } catch (e) {
       alert(e.message);
     }
@@ -117,7 +118,7 @@ class NotificationsScreen extends Component {
               <Text style={styles.bottomInactiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen');
@@ -127,7 +128,7 @@ class NotificationsScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {

@@ -2,6 +2,7 @@ import {
   CHAT_LIST_START,
   CHAT_LIST_SUCCESS,
   CHAT_LIST_ERROR,
+  TOGGLE_CHAT,
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
@@ -47,3 +48,11 @@ export const ChatlistAction = (userId, userAccesstoken) => {
       });
   };
 };
+
+export const toggleChatting = (chatting, chattingUserId) => ({
+  type: TOGGLE_CHAT,
+  payload: {
+    chatting,
+    chattingUserId,
+  },
+});

@@ -892,6 +892,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginTop: 5,
     height: 40,
+    paddingLeft: 16,
   },
   ProfilemodalViewStyle: {
     width: 300,
@@ -914,6 +915,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 5,
     marginBottom: resp(25),
+    paddingLeft: 16,
   },
   centeredView: {
     flex: 1,
@@ -1011,6 +1013,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
     color: 'black',
     height: 40,
+    paddingLeft: 16,
   },
   container2: {
     flex: 1,

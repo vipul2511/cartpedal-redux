@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
 /* eslint-disable react/no-did-update-set-state */
 import React from 'react';
@@ -12,10 +13,12 @@ import {
   Alert,
   Modal,
   PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
 import DocumentPicker from 'react-native-document-picker';
+import firebase from 'react-native-firebase';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import resp from 'rn-responsive-font';
@@ -29,7 +32,7 @@ import Clipboard from '@react-native-community/clipboard';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import {ConversationListAction} from '../../redux/actions';
+import {ConversationListAction, toggleChatting} from '../../redux/actions';
 import _ from 'lodash';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 import {BASE_URL} from '../Component/ApiClient';
@@ -38,6 +41,7 @@ import {
   locationPermission,
   recordingPermissions,
 } from '../Component/Permissions';
+import {displayLocalNotification} from '../../PushNotification/DisplayLocalNotification';
 
 let height = Dimensions.get('window').height;
 
@@ -111,6 +115,7 @@ class ChatDetailScreen extends React.Component {
   copyText = ({id, text}) => {
     this.setState((p) => ({...p, copyTexts: [...p.copyTexts, {id, text}]}));
   };
+
   replyTo = (text) => {
     if (this.props.route.params.msg_type == '1' && text.text.tname == '') {
       this.setState({showEveryone: true});
@@ -138,30 +143,54 @@ class ChatDetailScreen extends React.Component {
   };
 
   componentDidMount = () => {
+    this.props.toggleChatting(true, this.props.route.params.userid);
     this.requestCameraPermission();
+    this.listener1 = firebase.notifications().onNotification((notification) => {
+      if (notification.data.fromid == this.props.route.params.userid) {
+        this.getConversationList();
+      }
+    });
+
+    this.listener2 = firebase.messaging().onMessage((m) => {
+      if (m.data.fromid == this.props.route.params.userid) {
+        this.getConversationList();
+      }
+    });
+
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({userId: userId});
       }
     });
+
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({fcmToken: token});
         this.convertEmoji('128522');
       }
     });
+
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({userAccessToken: accessToken});
         this.getConversationList();
       }
     });
+
     AsyncStorage.getItem('@Phonecontacts').then((mobile) => {
       if (mobile) {
         this.setState({PhoneNumber: JSON.parse(mobile)});
       }
     });
   };
+
+  componentWillUnmount() {
+    // console.log('unmounted', Platform.OS);
+    this.props.toggleChatting(false, undefined);
+    this.listener1();
+    this.listener2();
+    // this.listener3();
+  }
 
   componentWillReceiveProps(nextProps) {
     let equalArray = _.isEqual(
@@ -227,7 +256,6 @@ class ChatDetailScreen extends React.Component {
     }
     let type;
     if (this.props.route.params.msg_type == 0) {
-      console;
       type = '0';
     } else {
       type = '1';
@@ -294,9 +322,7 @@ class ChatDetailScreen extends React.Component {
         } else {
         }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => {});
   };
 
   uploadFileApi = (datas) => {
@@ -367,9 +393,7 @@ class ChatDetailScreen extends React.Component {
         } else {
         }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => {});
   };
 
   sendVideo = async (data) => {
@@ -436,9 +460,7 @@ class ChatDetailScreen extends React.Component {
         } else {
         }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => {});
   };
 
   selectOneFile = () => {
@@ -549,9 +571,7 @@ class ChatDetailScreen extends React.Component {
         } else {
         }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => {});
   };
 
   launchCamera = async () => {
@@ -637,13 +657,9 @@ class ChatDetailScreen extends React.Component {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
       } else {
-        console.log('Camera permission denied');
       }
-    } catch (err) {
-      console.warn(err);
-    }
+    } catch (err) {}
   };
 
   videoPicker = async () => {
@@ -795,20 +811,15 @@ class ChatDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
-          console.log('asda', responseData);
           // this.LoginOrNot();
           //   alert("Message sent succesfully")
 
           this.getConversationList();
         } else {
           // alert(responseData.data);
-
-          console.log('logged user stories' + JSON.stringify(responseData));
         }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => {});
   };
 
   startRecording = async () => {
@@ -1061,18 +1072,15 @@ class ChatDetailScreen extends React.Component {
     if (comp < 0) {
       comp = emoji.charCodeAt(0);
     }
-    console.log('comp', comp);
+
     return comp.toString('16');
   };
   convertEmoji = (text) => {
-    console.log('emoji', text);
     return text.replace(/\\u[\dA-F]{4}/gi, function (match) {
       return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
     });
   };
   openProfile = () => {
-    console.log('group id', this.props.route.params.groupId);
-    console.log('group id', this.state.userId);
     let items = this.props.route.params.useravatar;
     let id = this.props.route.params.userid;
     let name = this.props.route.params.username;
@@ -1123,7 +1131,6 @@ class ChatDetailScreen extends React.Component {
     //perform Action on slide success.
   };
   SendReportIssue() {
-    console.log('working send report');
     let formData = new FormData();
     formData.append('user_id', this.state.userId);
     formData.append('reason', 'Report User');
@@ -1132,7 +1139,7 @@ class ChatDetailScreen extends React.Component {
     // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
 
     var otpUrl = `${BASE_URL}api-user/report-problem`;
-    console.log('url:' + otpUrl);
+
     fetch(otpUrl, {
       method: 'Post',
       headers: {
@@ -1149,10 +1156,8 @@ class ChatDetailScreen extends React.Component {
         if (responseData.code == '200') {
           //   this.props.navigation.navigate('LoginScreen')
           alert(responseData.data);
-          console.log(responseData);
         } else {
           alert(responseData.message);
-          console.log(responseData);
         }
       })
       .catch((error) => {
@@ -1229,14 +1234,7 @@ class ChatDetailScreen extends React.Component {
                     }
                     style={styles.LogoIconStyle}
                   />
-                  {/* <Image
-                source={
-                  this.props.route.params.useravatar
-                    ? {uri: this.props.route.params.useravatar}
-                    : require('../images/default_user.png')
-                }
-                style={styles.LogoIconStyle}
-              /> */}
+
                   <TouchableOpacity
                     style={{
                       alignItems: 'center',
@@ -1261,7 +1259,6 @@ class ChatDetailScreen extends React.Component {
                         type="Entypo"
                         onPress={() => {
                           this.replytype();
-                          console.log('abc', this.state.replyMessage.text.fmsg);
                           // this.replyTo();
                         }}
                         style={{
@@ -1430,7 +1427,6 @@ class ChatDetailScreen extends React.Component {
               </Text> */}
                   {this.state.ischatList
                     ? this.state.chatList.messages.map((v, i) => {
-                        console.log('the v values', v.exit);
                         return (
                           <MessageComponent
                             key={`message-${i}`}
@@ -2580,7 +2576,7 @@ class ChatDetailScreen extends React.Component {
                       paddingBottom: 4,
                       marginBottom: 22,
                     }}>
-                    <View style={{flexDirection: 'row'}}>
+                    {/* <View style={{flexDirection: 'row'}}>
                       <Icon
                         onPress={() => {
                           this.setState({open: !this.state.open});
@@ -2601,7 +2597,7 @@ class ChatDetailScreen extends React.Component {
                           style={{color: '#0000008A', marginRight: 8}}
                         />
                       ) : null}
-                    </View>
+                    </View> */}
                   </View>
                   <View>
                     <View
@@ -2615,18 +2611,18 @@ class ChatDetailScreen extends React.Component {
                         justifyContent: 'center',
                       }}>
                       <TouchableOpacity
-                        onLongPress={() => {
-                          this.startRecording();
-                          this.setState({recording: true});
-                        }}
-                        onPressOut={() => {
-                          this.createTwoButtonAlert();
-                          this.setState({recording: false});
-                        }}
+                        // onLongPress={() => {
+                        //   this.startRecording();
+                        //   this.setState({recording: true});
+                        // }}
+                        // onPressOut={() => {
+                        //   this.createTwoButtonAlert();
+                        //   this.setState({recording: false});
+                        // }}
                         onPress={() => {
                           this.sendMessage();
                         }}>
-                        {this.state.message === '' ? (
+                        {/* {this.state.message === '' ? (
                           <Icon
                             name="mic"
                             type="Feather"
@@ -2646,7 +2642,16 @@ class ChatDetailScreen extends React.Component {
                               alignSelf: 'center',
                             }}
                           />
-                        )}
+                        )} */}
+                        <Icon
+                          name="arrowright"
+                          type="AntDesign"
+                          style={{
+                            fontSize: 20,
+                            color: '#FFFFFF',
+                            alignSelf: 'center',
+                          }}
+                        />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -2930,9 +2935,10 @@ function mapStateToProps(state) {
     conversationError,
   };
 }
-export default connect(mapStateToProps, {ConversationListAction})(
-  ChatDetailScreen,
-);
+export default connect(mapStateToProps, {
+  ConversationListAction,
+  toggleChatting,
+})(ChatDetailScreen);
 
 const newMessage = {
   fattach: null,

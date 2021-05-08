@@ -41,6 +41,7 @@ import {
 import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
 import {hp, wp} from '../Component/hightWidthRatio';
+import {displayLocalNotification} from '../../PushNotification/DisplayLocalNotification';
 const width = Dimensions.get('screen').width;
 console.disableYellowBox = true;
 
@@ -158,6 +159,9 @@ class DashBoardScreen extends Component {
   };
 
   componentWillUnmount() {
+    this.listener1();
+    this.listener2();
+    this.listener3();
     BackHandler.removeEventListener(
       'hardwareBackPress',
       this.handleBackButtonClick,
@@ -320,14 +324,44 @@ class DashBoardScreen extends Component {
         }
       });
     });
+
     const notificationOpen = await firebase
       .notifications()
       .getInitialNotification();
     if (notificationOpen) {
+      firebase.notifications().removeAllDeliveredNotifications();
       this.props.navigation.navigate('ChatDetailScreen', {
-        userid: 2,
+        userid: notificationOpen.notification.data.fromid,
+        username: notificationOpen.notification.data.title,
       });
     }
+
+    this.listener1 = firebase.notifications().onNotification((notification) => {
+      if (
+        this.props.chatting &&
+        notification.data.fromid == this.props.chattingUserId
+      ) {
+      } else {
+        displayLocalNotification(notification);
+      }
+    });
+
+    this.listener2 = firebase.messaging().onMessage((m) => {
+      if (this.props.chatting && m.data.fromid == this.props.chattingUserId) {
+      } else {
+        displayLocalNotification(m.data);
+      }
+    });
+
+    this.listener3 = firebase
+      .notifications()
+      .onNotificationOpened(async (m) => {
+        firebase.notifications().removeAllDeliveredNotifications();
+        // this.props.navigation.navigate('ChatDetailScreen', {
+        //   userid: m.notification.data.fromid,
+        //   username: m.notification.data.title,
+        // });
+      });
   };
 
   customButton = () => {
@@ -354,6 +388,7 @@ class DashBoardScreen extends Component {
       alert('No story available');
     }
   };
+
   sendMessage = (UrlLink, userID) => {
     var raw = JSON.stringify({
       user_id: this.state.userId,
@@ -1533,6 +1568,7 @@ function mapStateToProps(state) {
     error: recenterror,
   } = state.RecentDataReducer;
   const {success: addStorySuccess} = state.addStoryReducer;
+  const {chatting, chattingUserId} = state.ChatlistReducer;
   return {
     isLoading,
     data,
@@ -1546,6 +1582,8 @@ function mapStateToProps(state) {
     recentData,
     recentDataSuccess,
     addStorySuccess,
+    chatting,
+    chattingUserId,
   };
 }
 

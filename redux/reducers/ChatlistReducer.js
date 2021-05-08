@@ -2,6 +2,7 @@ import {
   CHAT_LIST_START,
   CHAT_LIST_SUCCESS,
   CHAT_LIST_ERROR,
+  TOGGLE_CHAT,
 } from '../actions/index.actions';
 
 const initialState = {
@@ -10,7 +11,10 @@ const initialState = {
   error: false,
   data: {},
   errorMessage: '',
+  chatting: false,
+  chattingUserId: undefined,
 };
+
 export default function (state = initialState, action) {
   switch (action.type) {
     case CHAT_LIST_START:
@@ -32,6 +36,13 @@ export default function (state = initialState, action) {
         errorMessage: action.payload.message,
         isLoading: false,
         error: true,
+      };
+    case TOGGLE_CHAT:
+      const {chattingUserId, chatting} = action.payload;
+      return {
+        ...state,
+        chatting,
+        chattingUserId,
       };
     default:
       return state;
