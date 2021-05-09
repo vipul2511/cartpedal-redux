@@ -5,6 +5,7 @@
 import React from 'react';
 import {Container, Icon, View} from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Sound from 'react-native-sound';
 import {
   ScrollView,
   Image,
@@ -49,9 +50,16 @@ import {
   locationPermission,
   recordingPermissions,
 } from '../Component/Permissions';
-import {displayLocalNotification} from '../../PushNotification/DisplayLocalNotification';
 
 let height = Dimensions.get('window').height;
+
+const tick = new Sound('tick.mp3', Sound.MAIN_BUNDLE, (err) => {
+  console.log(err, Platform.OS, 'ZZZZ');
+});
+
+const received = new Sound('received.mp3', Sound.MAIN_BUNDLE, (err) => {
+  console.log(err, Platform.OS, 'YYYY');
+});
 
 class ChatDetailScreen extends React.Component {
   constructor(props) {
@@ -91,6 +99,7 @@ class ChatDetailScreen extends React.Component {
       showvideorply: false,
       showcontactrply: false,
       showlocationmsg: false,
+      live: false,
     };
   }
 
@@ -155,13 +164,22 @@ class ChatDetailScreen extends React.Component {
     this.requestCameraPermission();
     this.listener1 = firebase.notifications().onNotification((notification) => {
       if (notification.data.fromid == this.props.route.params.userid) {
+        this.setState({live: true});
         this.getConversationList();
+        setTimeout(
+          () => received.play((d) => console.log(d, Platform.OS)),
+          1000,
+        );
       }
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
       if (m.data.fromid == this.props.route.params.userid) {
+        this.setState({live: true});
         this.getConversationList();
+        setTimeout(() => {
+          received.play((d) => console.log(d, Platform.OS));
+        }, 1000);
       }
     });
 
@@ -321,13 +339,17 @@ class ChatDetailScreen extends React.Component {
             ...messages[messages.length - 1],
             sending: false,
           };
-          this.setState((p) => ({
-            chatList: {
-              ...p.chatList,
-              messages,
-            },
-            ischatList: true,
-          }));
+          this.setState(
+            (p) => ({
+              chatList: {
+                ...p.chatList,
+                messages,
+              },
+              ischatList: true,
+            }),
+            () => setTimeout(() => tick.play(), 1000),
+          );
+
           replyID = '0';
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
@@ -1216,7 +1238,7 @@ class ChatDetailScreen extends React.Component {
         style={{flex: 1}}>
         <SafeAreaView style={{flex: 1}}>
           <Spinner
-            visible={this.props.conversationLoading}
+            visible={this.props.conversationLoading && !this.state.live}
             color="#F01738"
             textStyle={styles.spinnerTextStyle}
           />

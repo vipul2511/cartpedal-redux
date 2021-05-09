@@ -15,6 +15,8 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* cartTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* cartTests.m */; };
+		49ADB9F526483EC6003E2128 /* tick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 49ADB9F426483EC6003E2128 /* tick.mp3 */; };
+		49ADB9FF26483EF9003E2128 /* received.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 49ADB9FE26483EF9003E2128 /* received.mp3 */; };
 		49FE4FD12640A3180098624B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49FE4FD02640A3180098624B /* GoogleService-Info.plist */; };
 		5CC5222F5028BC48617B6C49 /* libPods-cart-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48917AB3DAF8C468CC741100 /* libPods-cart-tvOS.a */; };
 		72B97E46FE28059BDC56A732 /* libPods-cart-cartTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7512A1CB0469115993CD57CC /* libPods-cart-cartTests.a */; };
@@ -64,6 +66,8 @@
 		3E96387A44AA4C9CA293A928 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/native-base/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		3F26030B651BA0E351AB73AA /* Pods-cart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cart.release.xcconfig"; path = "Target Support Files/Pods-cart/Pods-cart.release.xcconfig"; sourceTree = "<group>"; };
 		48917AB3DAF8C468CC741100 /* libPods-cart-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cart-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49ADB9F426483EC6003E2128 /* tick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = tick.mp3; path = ../../../../Downloads/tick.mp3; sourceTree = "<group>"; };
+		49ADB9FE26483EF9003E2128 /* received.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = received.mp3; path = ../../../../Downloads/received.mp3; sourceTree = "<group>"; };
 		49FE4F4C26405D440098624B /* cartRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = cartRelease.entitlements; path = cart/cartRelease.entitlements; sourceTree = "<group>"; };
 		49FE4FD02640A3180098624B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "cart/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4E634533770B44031C6ADEA0 /* Pods-cart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cart.debug.xcconfig"; path = "Target Support Files/Pods-cart/Pods-cart.debug.xcconfig"; sourceTree = "<group>"; };
@@ -147,6 +151,8 @@
 		13B07FAE1A68108700A75B9A /* cart */ = {
 			isa = PBXGroup;
 			children = (
+				49ADB9FE26483EF9003E2128 /* received.mp3 */,
+				49ADB9F426483EC6003E2128 /* tick.mp3 */,
 				49FE4FD02640A3180098624B /* GoogleService-Info.plist */,
 				49FE4F4C26405D440098624B /* cartRelease.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -394,6 +400,8 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				49FE4FD12640A3180098624B /* GoogleService-Info.plist in Resources */,
+				49ADB9F526483EC6003E2128 /* tick.mp3 in Resources */,
+				49ADB9FF26483EF9003E2128 /* received.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

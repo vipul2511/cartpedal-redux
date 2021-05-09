@@ -488,6 +488,11 @@ PODS:
     - React
   - RNScreens (2.18.1):
     - React-Core
+  - RNSound (0.11.0):
+    - React
+    - RNSound/Core (= 0.11.0)
+  - RNSound/Core (0.11.0):
+    - React
   - RNTextSize (4.0.0-rc.1):
     - React
   - RNVectorIcons (7.1.0):
@@ -590,6 +595,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - RNTextSize (from `../node_modules/react-native-text-size/ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -766,6 +772,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   RNTextSize:
     :path: "../node_modules/react-native-text-size/ios"
   RNVectorIcons:
@@ -871,6 +879,7 @@ SPEC CHECKSUMS:
   RNPermissions: 034db8a73d562766f990c89abbdeaa5d6e204c67
   RNReanimated: 89f5e0a04d1dd52fbf27e7e7030d8f80a646a3fc
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
+  RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
   RNTextSize: 7efa06531c6bb7ab6ed070b4ce0d1248cf06fcdf
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
