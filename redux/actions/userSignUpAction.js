@@ -105,7 +105,7 @@ export const signUpConf = (name, phone, email, pass) => {
             payload: responseData,
           });
           return Promise.resolve(responseData);
-        } else if (responseData.code === '500') {
+        } else if (responseData.code == '500') {
           if (responseData.data.password) {
             // eslint-disable-next-line no-alert
             alert(responseData.data.password);

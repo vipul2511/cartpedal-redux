@@ -134,7 +134,7 @@ class SignUPScreen extends Component {
             <View style={styles.box} />
             <Text style={styles.UserName}>UserName</Text>
             <View style={styles.inputView1}>
-              <View style={{flexDirection: 'row', marginLeft: 15}} />
+              {/* <View style={{flexDirection: 'row', marginLeft: 15}} /> */}
               <TextInput
                 placeholder=""
                 placeholderTextColor="#000"
@@ -146,7 +146,7 @@ class SignUPScreen extends Component {
             </View>
             <Text style={styles.UserName}>Email</Text>
             <View style={styles.inputView1}>
-              <View style={{flexDirection: 'row', marginLeft: 15}} />
+              {/* <View style={{flexDirection: 'row', marginLeft: 15}} /> */}
               <TextInput
                 placeholder=""
                 placeholderTextColor="#000"
@@ -157,7 +157,7 @@ class SignUPScreen extends Component {
             </View>
             <Text style={styles.UserName}>Password</Text>
             <View style={styles.inputView1}>
-              <View style={{flexDirection: 'row', marginLeft: 10}} />
+              {/* <View style={{flexDirection: 'row', marginLeft: 10}} /> */}
               <TextInput
                 placeholder=""
                 placeholderTextColor="#000"
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
   },
 
   inputView1: {
-    width: '90%',
+    width: '100%',
     marginBottom: resp(15),
     alignSelf: 'center',
     borderColor: '#F01738',
