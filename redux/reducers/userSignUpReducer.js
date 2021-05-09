@@ -24,6 +24,7 @@ export default function (state = initialState, action) {
         data: action.payload,
         isLoading: false,
         success: true,
+        error: false,
       };
     case USER_SIGNUP_ERROR:
       return {

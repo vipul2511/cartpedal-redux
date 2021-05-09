@@ -91,7 +91,7 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture =true
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
@@ -202,8 +202,8 @@ dependencies {
     implementation "com.google.firebase:firebase-core:17.0.1"
     implementation "com.google.firebase:firebase-messaging:19.0.0"
     //implementation project(':react-native-image-picker')
-  implementation 'com.android.support:design:27.1.0'
-  implementation "com.google.firebase:firebase-invites:17.0.0"
+    implementation 'com.android.support:design:27.1.0'
+    implementation "com.google.firebase:firebase-invites:17.0.0"
     implementation fileTree(dir: "libs", include: ["*.jar"])
     // implementation 'com.google.firebase:firebase-links'
     implementation project(':react-native-contacts')

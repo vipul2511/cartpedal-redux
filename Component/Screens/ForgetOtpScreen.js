@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import OTPTextView from 'react-native-otp-textinput';
@@ -67,6 +67,7 @@ class ForgetOtpScreen extends Component {
   resendopt = () => {
     let formData = new FormData();
     formData.append('mobile', '+91' + mobileNumber);
+    formData.append('type', '1');
     var otpUrl = this.state.baseUrl + 'api-user/send-otp';
     fetch(otpUrl, {
       method: 'Post',

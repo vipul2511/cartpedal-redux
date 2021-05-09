@@ -48,13 +48,27 @@ class PhoneScreen extends Component {
       alert('Please select the Terms and condition');
     } else {
       this.setState({callUpdate: true}, () => {
-        this.props.signUp(this.state.phone_number);
+        this.props
+          .signUp(this.state.phone_number)
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
       });
     }
   };
 
   componentDidUpdate() {
-    if (this.props.success && this.state.callUpdate) {
+    // if (this.props.success && !this.props.error && this.state.callUpdate) {
+    //   this.setState({callUpdate: false}, () => {
+    //     this.props.navigation.navigate('SignUPWithOtpScreen', {
+    //       mobile: this.props.data.data.mobile,
+    //       otp: this.props.data.data.otp,
+    //     });
+    //   });
+    // }
+  }
+
+  render() {
+    if (this.props.success && !this.props.error && this.state.callUpdate) {
       this.setState({callUpdate: false}, () => {
         this.props.navigation.navigate('SignUPWithOtpScreen', {
           mobile: this.props.data.data.mobile,
@@ -62,9 +76,6 @@ class PhoneScreen extends Component {
         });
       });
     }
-  }
-
-  render() {
     return (
       <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
         <View style={styles.container}>
@@ -296,11 +307,12 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  const {isLoading, data, success} = state.SignUpReducer;
+  const {isLoading, data, success, error} = state.SignUpReducer;
   return {
     isLoading,
     data,
     success,
+    error,
   };
 }
 

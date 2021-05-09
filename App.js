@@ -1,6 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
 import NotificationSetting from 'react-native-open-notification';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {MainStack} from './Routes';
+import {initStore} from './redux/store';
+import {Provider} from 'react-redux';
+import {LogBox, Platform} from 'react-native';
 
 if (Platform.OS === 'android') {
   const channel = new firebase.notifications.Android.Channel(
@@ -41,16 +47,9 @@ messaging
   })
   .catch((error) => {});
 
-import * as React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {MainStack} from './Routes';
-import initStore from './redux/store';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
-import {LogBox, Platform} from 'react-native';
 // import {GiftedChatDemo} from './Component/Screens/GiftedChatDemo';
 
-const {store, persistor} = initStore();
+const store = initStore();
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -61,12 +60,10 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <NavigationContainer>
-            <MainStack />
-            {/* <GiftedChatDemo /> */}
-          </NavigationContainer>
-        </PersistGate>
+        <NavigationContainer>
+          <MainStack />
+          {/* <GiftedChatDemo /> */}
+        </NavigationContainer>
       </Provider>
     );
   }

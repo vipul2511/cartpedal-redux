@@ -9,11 +9,13 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
 import {Platform} from 'react-native';
+
 export const signUp = (phone) => {
   return async (dispatch) => {
     dispatch({type: USER_SIGNUP_START});
     let formData = new FormData();
     formData.append('mobile', '+91' + phone);
+    formData.append('type', '0');
     var otpUrl = `${API_URL}api-user/send-otp`;
     const fcmToken = await AsyncStorage.getItem('@fcmtoken');
 
@@ -31,7 +33,7 @@ export const signUp = (phone) => {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code == '200') {
+        if (!responseData.error) {
           dispatch({
             type: USER_SIGNUP_SUCCESS,
             payload: responseData,
@@ -46,6 +48,21 @@ export const signUp = (phone) => {
           alert(JSON.stringify(responseData.data));
           return Promise.reject(responseData);
         }
+        // if (responseData.code == '200') {
+        //   dispatch({
+        //     type: USER_SIGNUP_SUCCESS,
+        //     payload: responseData,
+        //   });
+        //   return Promise.resolve(responseData);
+        // } else {
+        //   dispatch({
+        //     type: USER_SIGNUP_ERROR,
+        //     payload: responseData,
+        //   });
+        //   // eslint-disable-next-line no-alert
+        //   alert(JSON.stringify(responseData.data));
+        //   return Promise.reject(responseData);
+        // }
       })
       .catch((error) => {
         dispatch({

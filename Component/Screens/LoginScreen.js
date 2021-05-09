@@ -9,7 +9,7 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -33,6 +33,7 @@ class LoginScreen extends Component {
   showLoading() {
     this.setState({loading: true});
   }
+
   componentWillUnmount() {
     BackHandler.removeEventListener(
       'hardwareBackPress',

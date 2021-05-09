@@ -53,3 +53,9 @@ export const ConversationListAction = (userID, type, toid, userAccessToken) => {
       });
   };
 };
+
+export const clearConversation = () => {
+  return {
+    type: 'CLEAR_CONVERSATION',
+  };
+};

@@ -4,6 +4,7 @@
 
 import React from 'react';
 import {Container, Icon, View} from 'native-base';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   ScrollView,
   Image,
@@ -35,7 +36,11 @@ import Clipboard from '@react-native-community/clipboard';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import {ConversationListAction, toggleChatting} from '../../redux/actions';
+import {
+  ConversationListAction,
+  toggleChatting,
+  clearConversation,
+} from '../../redux/actions';
 import _ from 'lodash';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 import {BASE_URL} from '../Component/ApiClient';
@@ -189,6 +194,7 @@ class ChatDetailScreen extends React.Component {
 
   componentWillUnmount() {
     // console.log('unmounted', Platform.OS);
+    this.props.clearConversation();
     this.props.toggleChatting(false, undefined);
     this.listener1();
     this.listener2();
@@ -310,6 +316,18 @@ class ChatDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
+          const messages = this.state.chatList.messages;
+          messages[messages.length - 1] = {
+            ...messages[messages.length - 1],
+            sending: false,
+          };
+          this.setState((p) => ({
+            chatList: {
+              ...p.chatList,
+              messages,
+            },
+            ischatList: true,
+          }));
           replyID = '0';
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
@@ -321,7 +339,7 @@ class ChatDetailScreen extends React.Component {
             showcontactrply: false,
             showvideorply: false,
           });
-          this.getConversationList();
+          // this.getConversationList();
         } else {
         }
       })
@@ -1139,8 +1157,6 @@ class ChatDetailScreen extends React.Component {
     formData.append('reason', 'Report User');
     formData.append('message', 'Something went wrong with this user');
 
-    // var otpUrl= 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/api-user/send-otp'
-
     var otpUrl = `${BASE_URL}api-user/report-problem`;
 
     fetch(otpUrl, {
@@ -1199,6 +1215,11 @@ class ChatDetailScreen extends React.Component {
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         style={{flex: 1}}>
         <SafeAreaView style={{flex: 1}}>
+          <Spinner
+            visible={this.props.conversationLoading}
+            color="#F01738"
+            textStyle={styles.spinnerTextStyle}
+          />
           <Container style={{backgroundColor: '#F1F0F2'}}>
             {this.state.imageshow ? (
               <View style={{flex: 1}}>
@@ -2989,6 +3010,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   ConversationListAction,
   toggleChatting,
+  clearConversation,
 })(ChatDetailScreen);
 
 const newMessage = {

@@ -47,6 +47,7 @@ class SignUPWithOtpScreen extends Component {
   resendopt = () => {
     let formData = new FormData();
     formData.append('mobile', '+91' + mobileNumber);
+    formData.append('type', '0');
     var otpUrl = this.state.baseUrl + 'api-user/send-otp';
     fetch(otpUrl, {
       method: 'Post',

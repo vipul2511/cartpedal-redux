@@ -44,6 +44,7 @@ export const signin = (phone, password) => {
           });
           return Promise.resolve(responseData);
         } else {
+          // console.log(JSON.stringify(responseData, null, 2));
           dispatch({
             type: USER_SIGNIN_ERROR,
             payload: responseData,
