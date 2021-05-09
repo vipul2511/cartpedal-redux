@@ -12,7 +12,7 @@ import {
   ScrollView,
   Platform,
   TextInput,
-  PermissionsAndroid
+  PermissionsAndroid,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -318,7 +318,6 @@ class ChatScreen extends Component {
               {this.state.ischatList ? (
                 this.state.chatList.map(function (v) {
                   const inList = funct.state.Deleteid;
-
                   return (
                     <TouchableOpacity
                       onLongPress={() => {

@@ -115,7 +115,7 @@ class DashBoardScreen extends Component {
       alert(error.message);
     }
   };
-  
+
   link = async (id, name) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
@@ -329,9 +329,23 @@ class DashBoardScreen extends Component {
       .getInitialNotification();
     if (notificationOpen) {
       firebase.notifications().removeAllDeliveredNotifications();
+      const {
+        fromid,
+        name,
+        mobile,
+        avatar,
+        about,
+        msg_type,
+      } = notificationOpen.notification.data;
       this.props.navigation.navigate('ChatDetailScreen', {
-        userid: notificationOpen.notification.data.fromid,
-        username: notificationOpen.notification.data.title,
+        userid: fromid,
+        username: name,
+        useravatar: avatar,
+        userabout: about,
+        userphone: mobile,
+        msg_type: msg_type,
+        groupId: fromid,
+        groupexit: false,
       });
     }
 
@@ -356,10 +370,24 @@ class DashBoardScreen extends Component {
       .notifications()
       .onNotificationOpened(async (m) => {
         firebase.notifications().removeAllDeliveredNotifications();
-        // this.props.navigation.navigate('ChatDetailScreen', {
-        //   userid: m.notification.data.fromid,
-        //   username: m.notification.data.title,
-        // });
+        const {
+          fromid,
+          name,
+          mobile,
+          avatar,
+          about,
+          msg_type,
+        } = m.notification.data;
+        this.props.navigation.navigate('ChatDetailScreen', {
+          userid: fromid,
+          username: name,
+          useravatar: avatar,
+          userabout: about,
+          userphone: mobile,
+          msg_type: msg_type,
+          groupId: fromid,
+          groupexit: false,
+        });
       });
   };
 
@@ -435,7 +463,7 @@ class DashBoardScreen extends Component {
       </View>
     );
   };
-  logout=()=>{
+  logout = () => {
     fetch(`${BASE_URL}api-user/logout?user_id=${this.state.userId}`, {
       method: 'GET',
       headers: {
@@ -444,21 +472,21 @@ class DashBoardScreen extends Component {
         device_token: this.state.fcmtoken,
         device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
-    }
-  })
+      },
+    })
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
           AsyncStorage.removeItem('@is_login').then((succ) => {
             this.logOut();
           });
-        }else{
-          if(responseData.message) alert(responseData.message)
+        } else {
+          if (responseData.message) alert(responseData.message);
         }
       })
 
       .catch((error) => {});
-  }
+  };
 
   RecentUpdateCall(newContacts) {
     this.setState({callUpdate: true}, () => {
@@ -623,8 +651,7 @@ class DashBoardScreen extends Component {
           textStyle={styles.spinnerTextStyle}
         />
         <View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}>
-          </View>
+          <View style={styles.BackButtonContainer}></View>
           <View style={styles.TitleContainer}>
             <Image
               source={require('../images/logo_cart_paddle.png')}
@@ -740,7 +767,9 @@ class DashBoardScreen extends Component {
                           ]}
                         />
                         <Text style={styles.storyTextView}>
-                          {item.name.length>8?item.name.substring(0, 8) + '..':item.name}
+                          {item.name.length > 8
+                            ? item.name.substring(0, 8) + '..'
+                            : item.name}
                         </Text>
                       </TouchableOpacity>
                     </View>
