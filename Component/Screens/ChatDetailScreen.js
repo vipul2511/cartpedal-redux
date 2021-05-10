@@ -50,6 +50,7 @@ import {
   locationPermission,
   recordingPermissions,
 } from '../Component/Permissions';
+import {PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
 let height = Dimensions.get('window').height;
 
@@ -211,12 +212,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   componentWillUnmount() {
-    // console.log('unmounted', Platform.OS);
     this.props.clearConversation();
     this.props.toggleChatting(false, undefined);
     this.listener1();
     this.listener2();
-    // this.listener3();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -610,7 +609,21 @@ class ChatDetailScreen extends React.Component {
       .then((responseData) => {
         if (responseData.data.code === 200) {
           this.setState({caption: ''});
-          this.getConversationList();
+          const messages = this.state.chatList.messages;
+          messages[messages.length - 1] = {
+            ...messages[messages.length - 1],
+            sending: false,
+          };
+          this.setState(
+            (p) => ({
+              chatList: {
+                ...p.chatList,
+                messages,
+              },
+              ischatList: true,
+            }),
+            () => setTimeout(() => tick.play(), 1000),
+          );
         } else {
         }
       })
@@ -629,34 +642,11 @@ class ChatDetailScreen extends React.Component {
         this.setState({imageshow: false});
         this.setState({imageView: response});
         await this.setState({open: false});
-        const messageToSent = {
-          ...newMessage,
-          msg_type: 'image',
-          fmsg: '',
-          fattach: {...newMessage.fattach, attach: response.path},
-          time: moment().format('hh:mm'),
-        };
-        if (this.state.ischatList && this.state.chatList.messages.length > 0) {
-          this.setState((p) => ({
-            chatList: {
-              ...p.chatList,
-              messages: [...p.chatList.messages, messageToSent],
-            },
-            ischatList: true,
-          }));
-        } else {
-          this.setState((p) => ({
-            chatList: {
-              message: [p.chatList.messages, messageToSent],
-            },
-          }));
-        }
         if (response.didCancel) {
         } else if (response.error) {
         } else if (response.customButton) {
         } else {
           const source = {uri: response.path};
-
           this.setState({
             avatarSource: source,
           });
@@ -669,8 +659,34 @@ class ChatDetailScreen extends React.Component {
 
   sendImage = async () => {
     this.setState({imageshow: true});
-    let response = this.state.imageView;
     await this.setState({open: false});
+    let response = this.state.imageView;
+    const messageToSent = {
+      ...newMessage,
+      msg_type: 'image',
+      fmsg: '',
+      fattach: {
+        ...newMessage.fattach,
+        attach: response.path,
+        caption: this.state.caption,
+      },
+      time: moment().format('hh:mm'),
+    };
+    if (this.state.ischatList && this.state.chatList.messages.length > 0) {
+      this.setState((p) => ({
+        chatList: {
+          ...p.chatList,
+          messages: [...p.chatList.messages, messageToSent],
+        },
+        ischatList: true,
+      }));
+    } else {
+      this.setState((p) => ({
+        chatList: {
+          message: [p.chatList.messages, messageToSent],
+        },
+      }));
+    }
     this.uploadImage(response);
     if (response.didCancel) {
     } else {
@@ -681,6 +697,7 @@ class ChatDetailScreen extends React.Component {
       });
     }
   };
+
   imagepicker = () => {
     ImagePicker.openPicker({
       cropping: true,
@@ -690,19 +707,22 @@ class ChatDetailScreen extends React.Component {
       this.setState({imageView: response});
     });
   };
+
   requestCameraPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'App Premission',
-          message: 'Chat x App need permission.',
-        },
+      const granted = await request(
+        Platform.OS === 'android'
+          ? PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
+          : PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE,
       );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      if (granted === RESULTS.GRANTED) {
       } else {
+        return;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.warn(err);
+      return;
+    }
   };
 
   videoPicker = async () => {
@@ -2670,9 +2690,11 @@ class ChatDetailScreen extends React.Component {
                         <View style={{flexDirection: 'row'}}>
                           <Icon
                             onPress={() => {
-                              // this.setState({open: !this.state.open});
-                              // this.setState({editMode: !this.state.editMode});
-                              // this.setState({message: ''});
+                              this.setState((p) => ({
+                                open: !p.open,
+                                editMode: !p.editMode,
+                                message: '',
+                              }));
                             }}
                             name="attachment"
                             type="MaterialIcons"
@@ -2681,7 +2703,7 @@ class ChatDetailScreen extends React.Component {
                           {!this.state.message.length > 0 ? (
                             <Icon
                               onPress={() => {
-                                // this.launchCamera();
+                                this.launchCamera();
                               }}
                               name="photo-camera"
                               type="MaterialIcons"
@@ -2758,7 +2780,7 @@ class ChatDetailScreen extends React.Component {
               </View>
             ) : (
               <View style={{flex: 1, backgroundColor: 'black'}}>
-                <ScrollView>
+                <ScrollView keyboardShouldPersistTaps="always">
                   <View>
                     <Image
                       source={{uri: this.state.imageView.path}}
@@ -3047,4 +3069,26 @@ const newMessage = {
   tmsg: '',
   type: '0',
   sending: true,
+};
+
+const data = {
+  created_at: 1620650650,
+  date: '10-05-2021',
+  fattach: {
+    attach:
+      'https://www.cartpedal.com/attachments/attachment_1491620650650.jpg',
+    caption: 'Hello Hii ',
+    ext: 'jpg',
+  },
+  fmsg: '',
+  id: 306,
+  isread: '149,156',
+  msg_type: 'image',
+  reply_id: 0,
+  reply_msg: '',
+  rowdate: '10-05-2021',
+  tattach: '',
+  time: '06:14 pm',
+  tmsg: '',
+  type: '0',
 };
