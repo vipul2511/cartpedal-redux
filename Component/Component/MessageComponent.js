@@ -166,16 +166,20 @@ export const MessageComponent = ({
   };
 
   const downloadAndOpenDocument = async (uri) => {
-    const parts = uri.split('/');
-    const fileName = parts[parts.length - 1];
-    downloadFile({
-      fromUrl: uri,
-      toFile: `${DocumentDirectoryPath}/${fileName}`,
-    }).promise.then((res) => {
-      FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
-        showOpenWithDialog: true,
+    if (!uri.includes('http')) {
+      FileViewer.open(uri);
+    } else {
+      const parts = uri.split('/');
+      const fileName = parts[parts.length - 1];
+      downloadFile({
+        fromUrl: uri,
+        toFile: `${DocumentDirectoryPath}/${fileName}`,
+      }).promise.then((res) => {
+        FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
+          showOpenWithDialog: true,
+        });
       });
-    });
+    }
   };
 
   const convertToLink = (text) => {
@@ -1168,7 +1172,7 @@ export const MessageComponent = ({
                     color: '#2B2B2B',
                     fontSize: 16,
                   }}>
-                  {contact.displayName}
+                  {contact.givenName + ' ' + contact.familyName}
                 </Text>
                 {contact.phoneNumbers &&
                   contact.phoneNumbers.map((i) => (
@@ -1201,7 +1205,10 @@ export const MessageComponent = ({
       if (sending) {
         contact = JSON.parse(message.fmsg);
       } else {
-        contact = JSON.parse(JSON.parse(message.fmsg));
+        contact = JSON.parse(message.fmsg);
+        if (typeof contact === 'string') {
+          contact = JSON.parse(contact);
+        }
       }
 
       content = (
@@ -1230,7 +1237,7 @@ export const MessageComponent = ({
                   color: '#fff',
                   fontSize: 16,
                 }}>
-                {contact.displayName}
+                {contact.givenName + ' ' + contact.familyName}
               </Text>
               {contact.phoneNumbers &&
                 contact.phoneNumbers.map((i) => (
@@ -1920,47 +1927,45 @@ export const MessageComponent = ({
             alignSelf: 'flex-start',
             marginVertical: 10,
           }}>
-          <View
+          {/* <View
             style={{
               backgroundColor: '#fff',
               borderRadius: 8,
               width: 205,
               height: 315,
-            }}>
-            {message.tname ? (
+            }}> */}
+          {/* {message.tname ? (
               <View style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>
                 <Text style={{color: '#1EA81D', fontSize: 15}}>
                   {message.tname}
                 </Text>
               </View>
-            ) : null}
-            <Lightbox
-              onOpen={() => setOpen(true)}
-              onClose={() => setOpen(false)}>
-              <View
+            ) : null} */}
+          <Lightbox onOpen={() => setOpen(true)} onClose={() => setOpen(false)}>
+            <View
+              style={{
+                borderRadius: 8,
+                elevation: 5,
+                width: open ? '100%' : 200,
+                height: open ? '100%' : 280,
+              }}>
+              <MapView
+                provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                 style={{
-                  borderRadius: 8,
-                  elevation: 5,
-                  width: open ? '100%' : 200,
-                  height: open ? '100%' : 280,
+                  flex: 1,
+                  ...StyleSheet.absoluteFillObject,
+                }}
+                region={{
+                  latitude,
+                  longitude,
+                  latitudeDelta: 0.015,
+                  longitudeDelta: 0.0121,
                 }}>
-                <MapView
-                  provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-                  style={{
-                    flex: 1,
-                    ...StyleSheet.absoluteFillObject,
-                  }}
-                  region={{
-                    latitude,
-                    longitude,
-                    latitudeDelta: 0.015,
-                    longitudeDelta: 0.0121,
-                  }}>
-                  <Marker coordinate={{latitude, longitude}} />
-                </MapView>
-              </View>
-            </Lightbox>
-          </View>
+                <Marker coordinate={{latitude, longitude}} />
+              </MapView>
+            </View>
+          </Lightbox>
+          {/* </View> */}
           <Text
             style={{
               color: '#524D4D',
@@ -1979,7 +1984,7 @@ export const MessageComponent = ({
       if (sending) {
         location = JSON.parse(message.fmsg);
       } else {
-        location = JSON.parse(JSON.parse(message.fmsg));
+        location = JSON.parse(message.fmsg);
       }
       if (typeof location === 'string') {
         location = JSON.parse(location);

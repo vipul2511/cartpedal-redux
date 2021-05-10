@@ -14,7 +14,7 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
   },
   itemBox: {
     flex: 1,
-    height: hp(400),
+    height: hp(290),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',

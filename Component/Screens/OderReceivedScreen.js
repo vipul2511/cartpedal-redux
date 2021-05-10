@@ -12,7 +12,7 @@ import {
   SafeAreaView,
   Share,
   Dimensions,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import CustomMenuIcon from './CustomMenuIcon';
@@ -741,7 +741,7 @@ const styles = StyleSheet.create({
   },
 
   itemBox: {
-    height: hp(400),
+    height: hp(290),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',

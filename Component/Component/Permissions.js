@@ -44,14 +44,23 @@ export const locationPermission = async () => {
     const granted = await requestMultiple([
       Platform.OS === 'android'
         ? PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-        : PERMISSIONS.IOS.ACCESS_FINE_LOCATION,
+        : PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
       Platform.OS === 'android'
         ? PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION
-        : PERMISSIONS.IOS.ACCESS_COARSE_LOCATION,
+        : PERMISSIONS.IOS.LOCATION_ALWAYS,
     ]);
-    console.log('GRANTED', granted);
+    if (Platform.OS === 'android') {
+      return (
+        granted['android.permission.ACCESS_COARSE_LOCATION'] === 'granted' ||
+        granted['android.permission.ACCESS_FINE_LOCATION'] === 'granted'
+      );
+    } else {
+      return (
+        granted['ios.permission.LOCATION_ALWAYS'] === 'granted' ||
+        granted['ios.permission.LOCATION_WHEN_IN_USE'] === 'granted'
+      );
+    }
   } catch (err) {
-    console.warn(err);
-    return;
+    return false;
   }
 };

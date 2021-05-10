@@ -58,6 +58,8 @@
 	<string>allows location to show on the map and see how far away from your friends and devices are.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>allows location to show on the map and see how far away from your friends and devices are.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>allows location to show on the map and see how far away from your friends and devices are.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>enable cartpedal to access your camera roll to upload your photos and save one's ypu have taken with the app. purpose is to share images,videos in chat, product upload and this informaton save to our server.</string>
 	<key>UIAppFonts</key>

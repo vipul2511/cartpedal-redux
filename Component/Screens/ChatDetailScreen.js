@@ -6,6 +6,7 @@ import React from 'react';
 import {Container, Icon, View} from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Sound from 'react-native-sound';
+
 import {
   ScrollView,
   Image,
@@ -43,6 +44,7 @@ import {
   clearConversation,
 } from '../../redux/actions';
 import _ from 'lodash';
+import {SafeAreaInsetsContext} from 'react-native-safe-area-context';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 import {BASE_URL} from '../Component/ApiClient';
 import {MessageComponent} from '../Component/MessageComponent';
@@ -101,6 +103,7 @@ class ChatDetailScreen extends React.Component {
       showcontactrply: false,
       showlocationmsg: false,
       live: false,
+      uploading: false,
     };
   }
 
@@ -381,7 +384,7 @@ class ChatDetailScreen extends React.Component {
       fmsg: '',
       fattach: {
         ...newMessage.fattach,
-        attach: `${datas.path}.${datas.type.split('/')[1]}`,
+        attach: datas.path,
       },
       time: moment().format('hh:mm'),
     };
@@ -431,7 +434,22 @@ class ChatDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
-          this.getConversationList();
+          const messages = this.state.chatList.messages;
+          messages[messages.length - 1] = {
+            ...messages[messages.length - 1],
+            sending: false,
+          };
+          this.setState(
+            (p) => ({
+              chatList: {
+                ...p.chatList,
+                messages,
+              },
+              ischatList: true,
+              uploading: false,
+            }),
+            () => setTimeout(() => tick.play(), 1000),
+          );
         } else {
         }
       })
@@ -507,7 +525,7 @@ class ChatDetailScreen extends React.Component {
 
   selectOneFile = () => {
     try {
-      const res = DocumentPicker.pick({
+      DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
       }).then(async (data) => {
         this.setState({open: false});
@@ -621,6 +639,7 @@ class ChatDetailScreen extends React.Component {
                 messages,
               },
               ischatList: true,
+              uploading: false,
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
@@ -658,7 +677,7 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendImage = async () => {
-    this.setState({imageshow: true});
+    this.setState({imageshow: true, uploading: true});
     await this.setState({open: false});
     let response = this.state.imageView;
     const messageToSent = {
@@ -796,7 +815,21 @@ class ChatDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
-          this.getConversationList();
+          const messages = this.state.chatList.messages;
+          messages[messages.length - 1] = {
+            ...messages[messages.length - 1],
+            sending: false,
+          };
+          this.setState(
+            (p) => ({
+              chatList: {
+                ...p.chatList,
+                messages,
+              },
+              ischatList: true,
+            }),
+            () => setTimeout(() => tick.play(), 1000),
+          );
         } else {
         }
       })
@@ -805,13 +838,18 @@ class ChatDetailScreen extends React.Component {
 
   contactPicker = async () => {
     this.setState({open: false});
-    PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-    ).then(() => {
+    const granted = await request(
+      Platform.OS === 'android'
+        ? PERMISSIONS.ANDROID.READ_CONTACTS
+        : PERMISSIONS.IOS.CONTACTS,
+    );
+    if (granted === RESULTS.GRANTED) {
       this.props.navigation.navigate('ContactsListScreen', {
         sendContact: this.sendContact,
       });
-    });
+    } else {
+      return;
+    }
   };
 
   sendAudio = (data) => {
@@ -981,7 +1019,22 @@ class ChatDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
-          this.getConversationList();
+          const messages = this.state.chatList.messages;
+          messages[messages.length - 1] = {
+            ...messages[messages.length - 1],
+            sending: false,
+          };
+          this.setState(
+            (p) => ({
+              chatList: {
+                ...p.chatList,
+                messages,
+              },
+              ischatList: true,
+            }),
+            () => setTimeout(() => tick.play(), 1000),
+          );
+          // this.getConversationList();
         } else {
         }
       })
@@ -993,20 +1046,22 @@ class ChatDetailScreen extends React.Component {
   locationPicker = async () => {
     try {
       this.setState({open: false});
-      await locationPermission();
-      Geolocation.getCurrentPosition(
-        (info) => {
-          const location = {
-            latitude: info.coords.latitude,
-            longitude: info.coords.longitude,
-          };
-          this.sendLocation(location);
-        },
-        (err) => {
-          alert(err.message);
-        },
-        {enableHighAccuracy: false, timeout: 20000, maximumAge: 10000},
-      );
+      const granted = await locationPermission();
+      if (granted) {
+        Geolocation.getCurrentPosition(
+          (info) => {
+            const location = {
+              latitude: info.coords.latitude,
+              longitude: info.coords.longitude,
+            };
+            this.sendLocation(location);
+          },
+          (err) => {
+            alert(err.message);
+          },
+          {enableHighAccuracy: false, timeout: 20000, maximumAge: 10000},
+        );
+      }
     } catch (error) {
       console.log(error, 'I am here ');
     }
@@ -1258,7 +1313,10 @@ class ChatDetailScreen extends React.Component {
         style={{flex: 1}}>
         <SafeAreaView style={{flex: 1}}>
           <Spinner
-            visible={this.props.conversationLoading && !this.state.live}
+            visible={
+              (this.props.conversationLoading && !this.state.live) ||
+              this.state.uploading
+            }
             color="#F01738"
             textStyle={styles.spinnerTextStyle}
           />
@@ -1572,7 +1630,10 @@ class ChatDetailScreen extends React.Component {
                         </TouchableOpacity>
                       </View>
                       <View>
-                        <TouchableOpacity onPress={() => this.videoPicker()}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            // this.videoPicker()
+                          }}>
                           <View
                             style={{
                               width: 40,
@@ -1639,7 +1700,10 @@ class ChatDetailScreen extends React.Component {
                         justifyContent: 'space-around',
                       }}>
                       <View style={{marginLeft: 10}}>
-                        <TouchableOpacity onPress={() => this.selectOneFile1()}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            // this.selectOneFile1()
+                          }}>
                           <View
                             style={{
                               width: 40,
@@ -1699,7 +1763,10 @@ class ChatDetailScreen extends React.Component {
                         </Text>
                       </View>
                       <View>
-                        <TouchableOpacity onPress={() => this.contactPicker()}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.contactPicker();
+                          }}>
                           <View
                             style={{
                               width: 40,
@@ -2779,50 +2846,64 @@ class ChatDetailScreen extends React.Component {
                 )}
               </View>
             ) : (
-              <View style={{flex: 1, backgroundColor: 'black'}}>
-                <ScrollView keyboardShouldPersistTaps="always">
-                  <View>
-                    <Image
-                      source={{uri: this.state.imageView.path}}
-                      style={{width: 500, height: 600}}
-                    />
-                    <View style={{flexDirection: 'row'}}>
-                      <TextInput
-                        placeholder="Type a caption...."
-                        style={{
-                          backgroundColor: '#fff',
-                          marginTop: 15,
-                          width: '90%',
-                        }}
-                        onChangeText={(text) => {
-                          this.setState({caption: text});
-                        }}
-                      />
-                      <View
-                        style={{
-                          backgroundColor: 'red',
-                          marginTop: 15,
-                          justifyContent: 'center',
-                          alignContent: 'center',
-                          width: '10%',
-                        }}>
-                        <Icon
-                          name="arrowright"
-                          type="AntDesign"
-                          onPress={() => {
-                            this.sendImage();
-                          }}
-                          style={{
-                            fontSize: 20,
-                            color: '#FFFFFF',
-                            alignSelf: 'center',
-                          }}
+              <SafeAreaInsetsContext.Consumer>
+                {(insets) => (
+                  <View style={{flex: 1, backgroundColor: 'black'}}>
+                    <ScrollView keyboardShouldPersistTaps="always">
+                      <View>
+                        <Image
+                          source={{uri: this.state.imageView.path}}
+                          style={{width: 500, height: height}}
                         />
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            position: 'absolute',
+                            bottom:
+                              Platform.OS === 'ios'
+                                ? height * 0.09 + 12
+                                : 0 + 12,
+                          }}>
+                          <TextInput
+                            placeholder="Type a caption...."
+                            style={{
+                              backgroundColor: '#fff',
+                              marginTop: 15,
+                              width: '90%',
+                              height: 42,
+                            }}
+                            onChangeText={(text) => {
+                              this.setState({caption: text});
+                            }}
+                          />
+                          <View
+                            style={{
+                              backgroundColor: 'red',
+                              marginTop: 15,
+                              justifyContent: 'center',
+                              alignContent: 'center',
+                              width: '10%',
+                            }}>
+                            <Icon
+                              name="arrowright"
+                              type="AntDesign"
+                              onPress={() => {
+                                this.sendImage();
+                              }}
+                              style={{
+                                fontSize: 20,
+                                color: '#FFFFFF',
+                                alignSelf: 'center',
+                              }}
+                            />
+                          </View>
+                        </View>
                       </View>
-                    </View>
+                    </ScrollView>
                   </View>
-                </ScrollView>
-              </View>
+                )}
+              </SafeAreaInsetsContext.Consumer>
             )}
             <Modal
               animationType="slide"

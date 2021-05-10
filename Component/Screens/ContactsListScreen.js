@@ -10,6 +10,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -98,7 +99,7 @@ class ContactsListScreen extends Component {
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      funct.props.navigation.state.params.sendContact(v);
+                      funct.props.route.params.sendContact(v);
                       funct.props.navigation.goBack();
                     }}>
                     <View
@@ -136,7 +137,7 @@ class ContactsListScreen extends Component {
                           }}>
                           <View>
                             <Text style={styles.PersonNameStyle}>
-                              {v.displayName}
+                              {v.givenName + ' ' + v.familyName}
                             </Text>
                           </View>
                         </View>

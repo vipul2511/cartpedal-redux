@@ -29,3 +29,33 @@ export default async function requestCameraAndAudioPermission() {
     console.warn(err);
   }
 }
+
+const data = {
+  jobTitle: 'Producer',
+  emailAddresses: [{label: 'work', email: 'kate-bell@mac.com'}],
+  urlAddresses: [{label: 'homepage', url: 'www.icloud.com'}],
+  phoneNumbers: [
+    {label: 'mobile', number: '(555) 564-8583'},
+    {label: 'main', number: '(415) 555-3695'},
+  ],
+  recordID: '177C371E-701D-42F8-A03B-C61CA31627F6',
+  postalAddresses: [
+    {
+      state: 'CA',
+      label: 'work',
+      region: 'CA',
+      postCode: '94010',
+      country: '',
+      city: 'Hillsborough',
+      street: '165 Davis Street',
+    },
+  ],
+  thumbnailPath: '',
+  company: 'Creative Consulting',
+  middleName: '',
+  imAddresses: [],
+  givenName: 'Kate',
+  birthday: {day: 20, month: 0, year: 1978},
+  hasThumbnail: false,
+  familyName: 'Bell',
+};
