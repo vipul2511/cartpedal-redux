@@ -49,7 +49,8 @@ class SplashScreen extends Component {
           this.props.navigation.navigate(page, {id, cartValue});
         } else if (page === 'ProductDetailScreen') {
           const id = split2[2].split('=')[1];
-
+          console.log('UUUUU', split2);
+          console.log('UUUUU', id);
           this.props.navigation.navigate(page, {id});
         } else if (page === 'OderPlacedViewScreen') {
           const id = split2[2].split('=')[1];
@@ -121,7 +122,6 @@ class SplashScreen extends Component {
               } else if (page === 'CartScreen') {
                 const id = split2[2].split('=')[1];
                 const cartValue = split2[3].split('=')[1];
-                console.log('split', split2);
                 this.setState({
                   deepLink: true,
                   initialPage: page,
@@ -132,7 +132,8 @@ class SplashScreen extends Component {
                 });
               } else if (page === 'ProductDetailScreen') {
                 const id = split2[2].split('=')[1];
-                console.log('split', split2);
+                console.log('UUUUU', split2);
+                console.log('UUUUU', id);
                 this.setState({
                   deepLink: true,
                   initialPage: page,

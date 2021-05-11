@@ -150,6 +150,7 @@ export default class ProductDetailScreen extends React.Component {
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
     formData.append('product_id', this.props.route.params.id);
+    console.log(formData);
     var AddCartProductUrl = `${BASE_URL}api-product/add-views`;
     fetch(AddCartProductUrl, {
       method: 'Post',
@@ -164,6 +165,7 @@ export default class ProductDetailScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
+        // console.log(JSON.stringify(responseData, null, 2));
         if (responseData.code == '200') {
           let nameId = responseData.data.name;
           this.setState({

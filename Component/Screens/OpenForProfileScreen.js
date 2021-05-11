@@ -11,7 +11,7 @@ import {
   Share,
   ScrollView,
   Dimensions,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
@@ -497,14 +497,11 @@ class OpenForProfileScreen extends Component {
                             }}
                             option1Click={() => {
                               let name = 'ProductDetailScreen';
-                              this.link(this.props.route.params.id, name);
+                              this.link(item.id, name);
                             }}
                             option2Click={() => {
                               let name = 'ProductDetailScreen';
-                              this.forwardlink(
-                                this.props.route.params.id,
-                                name,
-                              );
+                              this.forwardlink(item.id, name);
                             }}
                           />
                         </TouchableOpacity>
