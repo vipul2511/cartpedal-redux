@@ -14,7 +14,7 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
@@ -73,60 +73,60 @@ class OderPlacedViewScreen extends Component {
       alert(error.message);
     }
   };
-  link =async(id,name)=>{
+  link = async (id, name) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
+        id,
       'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      console.log('the url',url);
-      this.onShare(url);
-    });
-  }
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
-  forwardlink =async(userid,name)=>{
-    const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
-        userid,
-        'https://cartpedal.page.link',
-    ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
     firebase
       .links()
       .createDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
-      AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-        if(NumberFormat){
-          let numID=JSON.parse(NumberFormat)
-    this.props.navigation.navigate('ForwardLinkScreen', {
-      fcmToken: this.state.fcmToken,
-      PhoneNumber: numID,
-      userId: this.state.userNo,
-      userAccessToken: this.state.userAccessToken,
-      msgids:  url,
-    });
-  }
-  }));
-     });
-   }
+        this.onShare(url);
+      });
+  };
+
+  forwardlink = async (userid, name) => {
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
+        userid,
+      'https://cartpedal.page.link',
+    ).android
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        console.log('the url', url);
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
 
   async componentDidMount() {
     this.showLoading();
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({fcmToken: token});
-        this.setState({OderPlaceProduct: this.props.route.params.wholeData});
-        console.log('order data', this.state.OderPlaceProduct);
       }
     });
 
@@ -139,15 +139,13 @@ class OderPlacedViewScreen extends Component {
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
         this.setState({userNo: userId});
-        this.UserProfileCall();
-        setTimeout(() => {
-          this.hideLoading();
-        }, 2000);
+        this.CartListCall();
       } else {
         this.hideLoading();
       }
     });
   }
+
   ListEmpty = () => {
     return (
       <View style={styles.container}>
@@ -187,7 +185,7 @@ class OderPlacedViewScreen extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          this.UserProfileCall();
+          this.UserProfileCall(this.state.ProfileData.block_id);
         } else {
           this.setState({NoData: true});
         }
@@ -198,10 +196,10 @@ class OderPlacedViewScreen extends Component {
       .done();
   }
 
-  UserProfileCall() {
+  UserProfileCall(profile_id) {
     let formData = new FormData();
     formData.append('user_id', +this.state.userNo);
-    formData.append('profile_id', this.props.route.params.id);
+    formData.append('profile_id', profile_id);
     var userProfile = this.state.baseUrl + 'api-user/user-profile';
     fetch(userProfile, {
       method: 'Post',
@@ -225,6 +223,7 @@ class OderPlacedViewScreen extends Component {
             responseData.data[0].covers.map((item) => {
               imageArr.push(item.image);
             });
+            console.log(imageArr.length);
             this.setState({images: imageArr});
           }
           this.setState({avatar: responseData.data[0].avatar});
@@ -239,9 +238,45 @@ class OderPlacedViewScreen extends Component {
           }
         } else {
         }
+        this.hideLoading();
       })
+
       .catch((error) => {
         this.hideLoading();
+      })
+      .done();
+  }
+
+  CartListCall() {
+    let formData = new FormData();
+    formData.append('user_id', this.state.userNo);
+    formData.append('type', 1);
+    formData.append('order_id', this.props.route.params.order_id);
+    console.log('form data==' + JSON.stringify(formData));
+    var CartList = 'https://www.cartpedal.com/api-product/cart-list';
+    fetch(CartList, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.code == '200') {
+          this.UserProfileCall(responseData.data[0].id);
+          this.setState({OderPlaceProduct: responseData.data[0].products});
+        } else {
+          this.setState({NoData: true});
+        }
+      })
+      .catch((error) => {
+        // this.hideLoading();
+        console.error(error);
       })
       .done();
   }
@@ -322,7 +357,7 @@ class OderPlacedViewScreen extends Component {
                   style={styles.messageButtonContainer}
                   onPress={() => {
                     this.props.navigation.navigate('ChatDetailScreen', {
-                      userid: this.props.route.params.id,
+                      userid: this.state.ProfileData.block_id,
                       userabout: this.state.ProfileData.about,
                       username: this.state.ProfileData.name,
                       useravatar: this.state.avatar,
@@ -373,12 +408,20 @@ class OderPlacedViewScreen extends Component {
                       Toast.show('CLicked Block', Toast.LONG);
                     }}
                     option2Click={() => {
-                      let name="OderPlacedViewScreen"
-                      this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                      let name = 'OderPlacedViewScreen';
+                      this.link(
+                        this.state.ProfileData.block_id,
+                        name,
+                        this.props.route.params.order_id,
+                      );
                     }}
                     option3Click={() => {
-                      let name="OderPlacedViewScreen"
-                      this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
+                      let name = 'OderPlacedViewScreen';
+                      this.forwardlink(
+                        this.state.ProfileData.block_id,
+                        name,
+                        this.props.route.params.order_id,
+                      );
                     }}
                   />
                 </View>
@@ -439,12 +482,20 @@ class OderPlacedViewScreen extends Component {
                             color: 'white',
                           }}
                           option1Click={() => {
-                            let name="OderPlacedViewScreen"
-                            this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                            let name = 'OderPlacedViewScreen';
+                            this.link(
+                              this.state.ProfileData.block_id,
+                              name,
+                              this.props.route.params.order_id,
+                            );
                           }}
                           option2Click={() => {
-                            let name="OderPlacedViewScreen"
-                            this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
+                            let name = 'OderPlacedViewScreen';
+                            this.forwardlink(
+                              this.state.ProfileData.block_id,
+                              name,
+                              this.props.route.params.order_id,
+                            );
                           }}
                         />
                       </View>

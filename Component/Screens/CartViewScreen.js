@@ -13,7 +13,7 @@ import {
   SafeAreaView,
   Dimensions,
   Share,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
@@ -169,21 +169,15 @@ class CartViewScreen extends Component {
       .then((responseData) => {
         // this.hideLoading();
         if (responseData.code == '200') {
-          //  this.props.navigation.navigate('StoryViewScreen')
-          //  Toast.show(responseData.message);
           this.setState({CartListProduct: responseData.data[0].products});
-          console.log('product', responseData.data);
         } else {
           this.setState({NoData: true});
         }
-        console.log('response object:', responseData);
-        console.log('User user ID==', JSON.stringify(responseData));
       })
       .catch((error) => {
         // this.hideLoading();
         console.error(error);
       })
-
       .done();
   }
 

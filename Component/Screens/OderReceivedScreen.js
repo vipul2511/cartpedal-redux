@@ -15,6 +15,7 @@ import {
   Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
+
 import CustomMenuIcon from './CustomMenuIcon';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -23,6 +24,7 @@ import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
 import {wp, hp} from '../Component/hightWidthRatio';
 let width = Dimensions.get('window').width;
+
 class CartPlaceScreen extends Component {
   constructor(props) {
     super(props);
@@ -117,7 +119,7 @@ class CartPlaceScreen extends Component {
           userNo = userId;
           let formData = new FormData();
           formData.append('user_id', userNo);
-          formData.append('type', 2);
+          formData.append('type', 1);
           var CartList = `${BASE_URL}api-product/cart-list`;
           fetch(CartList, {
             method: 'Post',
@@ -202,7 +204,7 @@ class CartPlaceScreen extends Component {
     let formData = new FormData();
     formData.append('user_id', id);
     formData.append('block_id', block_id);
-    formData.append('type', 1);
+    formData.append('type', 2);
     var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',
@@ -316,6 +318,7 @@ class CartPlaceScreen extends Component {
           <FlatList
             style={{flex: 0.85}}
             data={this.state.OderRecevieProduct}
+            initialNumToRender={20}
             keyExtractor={(item, index) => index}
             renderItem={({item}) => {
               return (
@@ -661,11 +664,10 @@ const styles = StyleSheet.create({
 
   ItemCountContainer: {
     marginLeft: wp(20),
-    marginTop: hp(5),
-    width: wp(415),
-    height: hp(75),
-    flexDirection: 'row',
 
+    width: wp(415),
+    height: hp(80),
+    flexDirection: 'row',
     elevation: 0,
   },
 
@@ -679,7 +681,7 @@ const styles = StyleSheet.create({
 
   PlacedButtonStyle: {
     marginLeft: resp(40),
-    height: hp(40),
+    height: 40,
     width: wp(130),
     marginTop: resp(20),
     backgroundColor: '#FFCF33',
@@ -741,7 +743,7 @@ const styles = StyleSheet.create({
   },
 
   itemBox: {
-    height: hp(290),
+    height: resp(410),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -886,12 +888,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   ImageContainer: {
-    marginTop: resp(-8),
     flexDirection: 'column',
-    width: wp(90),
-    height: hp(133),
-    borderRadius: resp(15),
-    marginLeft: wp(2),
+    width: wp(95),
+    marginTop: wp(10),
+    height: hp(160),
+    marginLeft: resp(2),
+    borderRadius: resp(5),
   },
   bottomInactiveTextStyleChart: {
     color: '#887F82',
@@ -1090,7 +1092,6 @@ const styles = StyleSheet.create({
   columnView: {
     flexDirection: 'row',
     width: '100%',
-    height: '40%',
     marginTop: hp(5),
   },
   tabButtonStyle: {

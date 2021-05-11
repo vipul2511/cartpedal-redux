@@ -321,9 +321,7 @@ class CartPlaceScreen extends Component {
                     style={styles.itemBox}
                     onPress={() => {
                       this.props.navigation.navigate('OderPlacedViewScreen', {
-                        id: item.id,
-                        name: item.name,
-                        wholeData: item.products,
+                        order_id: item.orderid,
                       });
                     }}>
                     <View style={styles.box}>
@@ -407,9 +405,7 @@ class CartPlaceScreen extends Component {
                             this.props.navigation.navigate(
                               'OderPlacedViewScreen',
                               {
-                                id: item.id,
-                                name: item.name,
-                                wholeData: item.products,
+                                order_id: item.orderid,
                               },
                             );
                           }}>
@@ -640,7 +636,7 @@ const styles = StyleSheet.create({
   },
   PlacedButtonStyle: {
     marginLeft: resp(40),
-    height: 50,
+    height: 40,
     width: 130,
     marginTop: resp(20),
     backgroundColor: '#FFCF33',
@@ -693,7 +689,7 @@ const styles = StyleSheet.create({
     marginBottom: resp(20),
     margin: resp(5),
     width: resp(150),
-    height: resp(65),
+    height: resp(55),
     flex: 0.6,
     flexDirection: 'column',
 
