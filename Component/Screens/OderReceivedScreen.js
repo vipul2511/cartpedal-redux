@@ -167,6 +167,7 @@ class CartPlaceScreen extends Component {
   }
 
   AskForStautsCall(orderID, blockID) {
+    this.showLoading()
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
     formData.append('type', 1);
@@ -188,6 +189,7 @@ class CartPlaceScreen extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
+          alert('Order has been accepted');
         } else {
         }
       })
@@ -330,9 +332,7 @@ class CartPlaceScreen extends Component {
                         this.props.navigation.navigate(
                           'OrderRecievedViewScreen',
                           {
-                            id: item.id,
-                            name: item.name,
-                            wholeData: item.products,
+                            order_id: item.orderid,
                           },
                         );
                       }}>
@@ -424,9 +424,7 @@ class CartPlaceScreen extends Component {
                                 this.props.navigation.navigate(
                                   'OrderRecievedViewScreen',
                                   {
-                                    id: item.id,
-                                    name: item.name,
-                                    wholeData: item.products,
+                                    order_id: item.orderid,
                                   },
                                 );
                               }}>

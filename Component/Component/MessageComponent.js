@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import Lightbox from 'react-native-lightbox';
 import VideoPlayer from 'react-native-video-player';
@@ -213,7 +213,13 @@ export const MessageComponent = ({
   if (msg_type === 'accept') {
     if (message.tmsg !== '') {
       content = (
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            const split = message.tmsg.split(' ');
+            navigation.navigate('OrderRecievedViewScreen', {
+              order_id: split[split.length - 1],
+            });
+          }}
           style={{
             alignSelf: 'flex-start',
             marginVertical: 10,
@@ -290,12 +296,19 @@ export const MessageComponent = ({
               {message.time}
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       );
     }
     if (message.fmsg !== '') {
       content = (
-        <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
+        <TouchableOpacity
+          onPress={() => {
+            const split = message.tmsg.split(' ');
+            navigation.navigate('OrderRecievedViewScreen', {
+              order_id: split[split.length - 1],
+            });
+          }}
+          style={{alignSelf: 'flex-end', marginVertical: 10}}>
           <View
             style={{
               backgroundColor: 'red',
@@ -383,7 +396,7 @@ export const MessageComponent = ({
               />
             )}
           </View>
-        </View>
+        </TouchableOpacity>
       );
     }
   }

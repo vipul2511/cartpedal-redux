@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 console.disableYellowBox = true;
 
 import {
@@ -12,18 +12,18 @@ import {
   SafeAreaView,
   ScrollView,
   Share,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Toast from 'react-native-simple-toast';
 import CustomMenuIcon from './CustomMenuIcon';
-import { SliderBox } from 'react-native-image-slider-box';
+import {SliderBox} from 'react-native-image-slider-box';
 import MenuIcon from './MenuIcon';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
-import { BASE_URL } from '../Component/ApiClient';
+import {BASE_URL} from '../Component/ApiClient';
 class OrderRecievedViewScreen extends Component {
   constructor(props) {
     super(props);
@@ -48,33 +48,31 @@ class OrderRecievedViewScreen extends Component {
   }
 
   showLoading() {
-    this.setState({ spinner: true });
+    this.setState({spinner: true});
   }
 
   hideLoading() {
-    this.setState({ spinner: false });
+    this.setState({spinner: false});
   }
 
   async componentDidMount() {
     this.showLoading();
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
-        this.setState({ fcmToken: token });
-        this.setState({ OderPlaceProduct: this.props.route.params.wholeData });
+        this.setState({fcmToken: token});
+        //  this.setState({OderPlaceProduct: this.props.route.params.wholeData});
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
+        this.setState({userAccessToken: accessToken});
       }
     });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-        this.setState({ userNo: userId });
-        this.UserProfileCall();
-        setTimeout(() => {
-          this.hideLoading();
-        }, 2000);
+        this.setState({userNo: userId});
+        this.CartListCall();
+        //  this.UserProfileCall();
       } else {
         this.hideLoading();
       }
@@ -100,7 +98,7 @@ class OrderRecievedViewScreen extends Component {
     let formData = new FormData();
     formData.append('user_id', id);
     formData.append('block_id', block_id);
-    formData.append('type', 1);
+    formData.append('type', 2);
     var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',
@@ -117,9 +115,9 @@ class OrderRecievedViewScreen extends Component {
       .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          this.UserProfileCall();
+          this.UserProfileCall(this.state.ProfileData.block_id);
         } else {
-          this.setState({ NoData: true });
+          this.setState({NoData: true});
         }
       })
       .catch((error) => {
@@ -156,7 +154,8 @@ class OrderRecievedViewScreen extends Component {
       .ios.setBundleId('com.ios.cartpadle')
       .ios.setAppStoreId('1539321365');
 
-    firebase.links()
+    firebase
+      .links()
       .createDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
@@ -173,14 +172,15 @@ class OrderRecievedViewScreen extends Component {
       .ios.setBundleId('com.ios.cartpadle')
       .ios.setAppStoreId('1539321365');
 
-    firebase.links()
+    firebase
+      .links()
       .createDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
         //  this.sendMessage(url,userid);
-        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat => {
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
           if (NumberFormat) {
-            let numID = JSON.parse(NumberFormat)
+            let numID = JSON.parse(NumberFormat);
             //   this.setState({PhoneNumber:numID})
             this.props.navigation.navigate('ForwardLinkScreen', {
               fcmToken: this.state.fcmToken,
@@ -190,15 +190,17 @@ class OrderRecievedViewScreen extends Component {
               msgids: url,
             });
           }
-        }));
+        });
       });
-  }
+  };
 
   CartListCall() {
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
-    formData.append('type', 2);
-    var CartList = `${BASE_URL}api-product/cart-list`;
+    formData.append('type', 1);
+    formData.append('order_id', this.props.route.params.order_id);
+    console.log('form data==' + JSON.stringify(formData));
+    var CartList = 'https://www.cartpedal.com/api-product/cart-list';
     fetch(CartList, {
       method: 'Post',
       headers: new Headers({
@@ -213,18 +215,23 @@ class OrderRecievedViewScreen extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
+          this.UserProfileCall(responseData.data[0].id);
+          this.setState({OderPlaceProduct: responseData.data[0].products});
         } else {
-          this.setState({ NoData: true });
+          this.setState({NoData: true});
         }
       })
-      .catch((error) => { })
+      .catch((error) => {
+        // this.hideLoading();
+        console.error(error);
+      })
       .done();
   }
 
-  UserProfileCall() {
+  UserProfileCall(profile_id) {
     let formData = new FormData();
     formData.append('user_id', +this.state.userNo);
-    formData.append('profile_id', this.props.route.params.id);
+    formData.append('profile_id', profile_id);
     var userProfile = this.state.baseUrl + 'api-user/user-profile';
     fetch(userProfile, {
       method: 'Post',
@@ -248,20 +255,21 @@ class OrderRecievedViewScreen extends Component {
             responseData.data[0].covers.map((item) => {
               imageArr.push(item.image);
             });
-            this.setState({ images: imageArr });
+            this.setState({images: imageArr});
           }
-          this.setState({ avatar: responseData.data[0].avatar });
-          this.setState({ ProfileData: responseData.data[0] });
-          this.setState({ about: responseData.data[0].about });
-          this.setState({ block_id: responseData.data[0].id });
-          this.setState({ favourite: responseData.data[0].favourite });
+          this.setState({avatar: responseData.data[0].avatar});
+          this.setState({ProfileData: responseData.data[0]});
+          this.setState({about: responseData.data[0].about});
+          this.setState({block_id: responseData.data[0].id});
+          this.setState({favourite: responseData.data[0].favourite});
           if (responseData.data[0].avatar == null) {
-            this.setState({ avatar: '' });
+            this.setState({avatar: ''});
           } else {
-            this.setState({ avatar: responseData.data[0].avatar });
+            this.setState({avatar: responseData.data[0].avatar});
           }
         } else {
         }
+        this.hideLoading();
       })
       .catch((error) => {
         this.hideLoading();
@@ -269,7 +277,7 @@ class OrderRecievedViewScreen extends Component {
       .done();
   }
 
-  actionOnRow(item) { }
+  actionOnRow(item) {}
 
   render() {
     return (
@@ -294,7 +302,7 @@ class OrderRecievedViewScreen extends Component {
               style={styles.LogoIconStyle}
             />
             <TouchableOpacity
-              style={{ alignItems: 'center', justifyContent: 'center' }}>
+              style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
@@ -315,7 +323,7 @@ class OrderRecievedViewScreen extends Component {
                     source={
                       this.state.avatar == ''
                         ? this.state.pickedImage
-                        : { uri: this.state.avatar }
+                        : {uri: this.state.avatar}
                     }
                     style={styles.RiyaImageViewStyle}
                   />
@@ -327,7 +335,7 @@ class OrderRecievedViewScreen extends Component {
                 <Text style={styles.PersonNameStyle}>
                   {this.state.ProfileData.name}
                 </Text>
-                <View style={{ marginLeft: 25, marginTop: 5 }}>
+                <View style={{marginLeft: 25, marginTop: 5}}>
                   {this.state.ProfileData.about ? (
                     <SeeMore
                       style={styles.ProfileDescription}
@@ -345,7 +353,7 @@ class OrderRecievedViewScreen extends Component {
                   style={styles.messageButtonContainer}
                   onPress={() => {
                     this.props.navigation.navigate('ChatDetailScreen', {
-                      userid: this.props.route.params.id,
+                      userid: this.state.ProfileData.block_id,
                       userabout: this.state.ProfileData.about,
                       username: this.state.ProfileData.name,
                       useravatar: this.state.avatar,
@@ -395,12 +403,20 @@ class OrderRecievedViewScreen extends Component {
                       Toast.show('CLicked Block', Toast.LONG);
                     }}
                     option2Click={() => {
-                      let name="OrderRecievedViewScreen"
-                      this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                      let name = 'OrderRecievedViewScreen';
+                      this.link(
+                        this.state.ProfileData.block_id,
+                        name,
+                        this.props.route.params.order_id,
+                      );
                     }}
                     option3Click={() => {
-                      let name="OrderRecievedViewScreen"
-                      this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
+                      let name = 'OrderRecievedViewScreen';
+                      this.forwardlink(
+                        this.state.ProfileData.block_id,
+                        name,
+                        this.props.route.params.order_id,
+                      );
                     }}
                   />
                 </View>
@@ -411,14 +427,14 @@ class OrderRecievedViewScreen extends Component {
               <View style={styles.hairline} />
             </View>
             <FlatList
-              style={{ flex: 1 }}
+              style={{flex: 1}}
               data={this.state.OderPlaceProduct}
-              keyExtractor={({ item, index }) => index}
+              keyExtractor={({item, index}) => index}
               numColumns={1}
-              renderItem={({ item }) => {
+              renderItem={({item}) => {
                 return (
                   <View style={styles.listItem}>
-                    <Image source={{ uri: item.image }} style={styles.image} />
+                    <Image source={{uri: item.image}} style={styles.image} />
 
                     <View style={styles.columnStyele}>
                       <Text style={styles.itemNameStyle}>{item.name}</Text>
@@ -461,12 +477,20 @@ class OrderRecievedViewScreen extends Component {
                           color: 'white',
                         }}
                         option1Click={() => {
-                          let name="OrderRecievedViewScreen"
-                          this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                          let name = 'OrderRecievedViewScreen';
+                          this.link(
+                            this.state.ProfileData.block_id,
+                            name,
+                            this.props.route.params.order_id,
+                          );
                         }}
                         option2Click={() => {
-                          let name="OrderRecievedViewScreen"
-                          this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
+                          let name = 'OrderRecievedViewScreen';
+                          this.forwardlink(
+                            this.state.ProfileData.block_id,
+                            name,
+                            this.props.route.params.order_id,
+                          );
                         }}
                       />
                     </View>
