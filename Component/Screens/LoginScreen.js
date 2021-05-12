@@ -84,6 +84,7 @@ class LoginScreen extends Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({callUpdate: false}, () => {
         this.LoginOrNot();
+        this.setState({phone_number: '', password: ''});
       });
     }
   }

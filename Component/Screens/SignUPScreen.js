@@ -12,6 +12,7 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -134,7 +135,6 @@ class SignUPScreen extends Component {
             <View style={styles.box} />
             <Text style={styles.UserName}>UserName</Text>
             <View style={styles.inputView1}>
-              {/* <View style={{flexDirection: 'row', marginLeft: 15}} /> */}
               <TextInput
                 placeholder=""
                 placeholderTextColor="#000"
@@ -146,7 +146,6 @@ class SignUPScreen extends Component {
             </View>
             <Text style={styles.UserName}>Email</Text>
             <View style={styles.inputView1}>
-              {/* <View style={{flexDirection: 'row', marginLeft: 15}} /> */}
               <TextInput
                 placeholder=""
                 placeholderTextColor="#000"
@@ -157,7 +156,6 @@ class SignUPScreen extends Component {
             </View>
             <Text style={styles.UserName}>Password</Text>
             <View style={styles.inputView1}>
-              {/* <View style={{flexDirection: 'row', marginLeft: 10}} /> */}
               <TextInput
                 placeholder=""
                 placeholderTextColor="#000"
@@ -415,7 +413,7 @@ const styles = StyleSheet.create({
   },
 
   inputView1: {
-    width: '100%',
+    width: Platform.OS === 'android' ? '90%' : '100%',
     marginBottom: resp(15),
     alignSelf: 'center',
     borderColor: '#F01738',

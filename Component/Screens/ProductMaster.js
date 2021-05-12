@@ -14,7 +14,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Platform
+  Platform,
 } from 'react-native';
 import AppConst from '../Component/AppConst';
 import AppImageSlider from '../Component/AppImageSlider';
@@ -696,13 +696,14 @@ const styles = StyleSheet.create({
   },
   DescriptionStyle: {
     marginTop: resp(20),
-    fontSize: resp(16),
+    fontSize: resp(18),
     color: '#2B2B2B',
+    paddingLeft: 14,
   },
   ShareTextStyle: {
     color: '#2B2B2B',
     marginLeft: resp(5),
-    width: 'auto',
+    width: resp(72),
   },
   saveCancelButton: {
     fontSize: 17,
@@ -752,11 +753,7 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: screenWidth,
   },
-  DescriptionStyle: {
-    marginTop: resp(20),
-    fontSize: resp(16),
-    color: '#2B2B2B',
-  },
+
   DescriptionStyle2: {
     width: resp(335),
     marginTop: resp(5),

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
 import {useNavigation} from '@react-navigation/native';
@@ -1979,7 +1980,7 @@ export const MessageComponent = ({
                 height: open ? '100%' : 280,
               }}>
               <MapView
-                provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : false} // remove if not using Google Maps
                 style={{
                   flex: 1,
                   ...StyleSheet.absoluteFillObject,
@@ -2032,7 +2033,7 @@ export const MessageComponent = ({
                 height: open ? '100%' : 280,
               }}>
               <MapView
-                provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : false} // remove if not using Google Maps
                 style={{
                   flex: 1,
                   ...StyleSheet.absoluteFillObject,

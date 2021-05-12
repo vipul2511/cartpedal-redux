@@ -15,7 +15,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Platform
+  Platform,
 } from 'react-native';
 import AppConst from '../Component/AppConst';
 import AppImageSlider from '../Component/AppImageSlider';
@@ -555,10 +555,11 @@ export default class UpdateProductScreen extends React.Component {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.inputTextView}>
+            <View style={styles.pickerStyle}>
               <Picker
                 selectedValue={this.state.Category}
                 style={{height: 50, width: screenWidth - 55}}
+                placeholder="Please Select Category"
                 onValueChange={(itemValue) => {
                   if (itemValue != '0') {
                     this.setState({Category: itemValue});
@@ -566,11 +567,6 @@ export default class UpdateProductScreen extends React.Component {
                     alert('Please select new category');
                   }
                 }}>
-                <Picker.Item
-                  color="grey"
-                  label={this.state.defaultCategory}
-                  value={'0'}
-                />
                 {this.state.CategoryList.map((item, index) => {
                   return (
                     <Picker.Item
@@ -599,10 +595,11 @@ export default class UpdateProductScreen extends React.Component {
               editable={true}
             />
 
-            <View style={styles.inputTextView}>
+            <View style={styles.pickerStyle}>
               <Picker
                 selectedValue={this.state.Unitid}
                 style={{height: 50, width: screenWidth - 55}}
+                placeholder="Please Select Unit"
                 onValueChange={(itemValue) => {
                   if (itemValue != '0') {
                     this.setState({Unit: itemValue, Unitid: itemValue});
@@ -610,11 +607,6 @@ export default class UpdateProductScreen extends React.Component {
                     alert('Please select correct unit');
                   }
                 }}>
-                <Picker.Item
-                  color="grey"
-                  label={this.state.defaultUnit}
-                  value={'0'}
-                />
                 {this.state.ProductUnit.map((item, index) => {
                   return (
                     <Picker.Item
@@ -713,7 +705,9 @@ export default class UpdateProductScreen extends React.Component {
                   }
                   return (
                     <View style={styles.ShareButtonContainer}>
-                      <Text style={styles.ShareTextStyle}>{name}</Text>
+                      <Text numberOfLines={1} style={styles.ShareTextStyle}>
+                        {name + '3984983948'}
+                      </Text>
                       <TouchableOpacity
                         onPress={() => {
                           this.removeShareUser(item.mobile, 'appuser');
@@ -778,6 +772,12 @@ export default class UpdateProductScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  pickerStyle: {
+    fontSize: 17,
+    borderBottomColor: '#e3e3e3',
+    borderBottomWidth: 1,
+    height: 48,
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -813,11 +813,12 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     fontSize: resp(16),
     color: '#2B2B2B',
+    paddingLeft: 14,
   },
   ShareTextStyle: {
     color: '#2B2B2B',
     marginLeft: resp(5),
-    width: 'auto',
+    width: resp(72),
   },
   saveCancelButton: {
     fontSize: 17,
@@ -868,11 +869,7 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: screenWidth,
   },
-  DescriptionStyle: {
-    marginTop: resp(20),
-    fontSize: resp(16),
-    color: '#2B2B2B',
-  },
+
   DescriptionStyle2: {
     width: resp(335),
     marginTop: resp(5),

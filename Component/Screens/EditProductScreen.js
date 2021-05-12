@@ -12,7 +12,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Platform
+  Platform,
 } from 'react-native';
 import AppConst from '../Component/AppConst';
 import AppImageSlider from '../Component/AppImageSlider';
@@ -315,7 +315,7 @@ export default class EditProductScreen extends React.Component {
                 </Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.inputTextView}>
+            <View style={styles.pickerStyle}>
               <Picker
                 placeholder="Please select category"
                 selectedValue={this.state.language}
@@ -354,7 +354,7 @@ export default class EditProductScreen extends React.Component {
               }}
               value={this.state.price}
             />
-            <View style={styles.inputTextView}>
+            <View style={styles.pickerStyle}>
               <Picker
                 placeholder="Please select unit"
                 selectedValue={this.state.Unit}
@@ -367,7 +367,6 @@ export default class EditProductScreen extends React.Component {
                     alert('Please select correct unit');
                   }
                 }}>
-                <Picker.Item label="Please select Unit" value="0" />
                 {this.state.ProductUnit.map((item, index) => {
                   return (
                     <Picker.Item
@@ -422,6 +421,12 @@ export default class EditProductScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  pickerStyle: {
+    fontSize: 17,
+    borderBottomColor: '#e3e3e3',
+    borderBottomWidth: 1,
+    height: 48,
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -452,6 +457,7 @@ const styles = StyleSheet.create({
     marginTop: resp(20),
     fontSize: resp(16),
     color: '#2B2B2B',
+    paddingLeft: 15,
   },
   DescriptionStyle2: {
     width: resp(335),

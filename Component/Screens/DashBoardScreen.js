@@ -330,6 +330,7 @@ class DashBoardScreen extends Component {
     if (notificationOpen) {
       firebase.notifications().removeAllDeliveredNotifications();
       const {
+        groupid,
         fromid,
         name,
         mobile,
@@ -338,7 +339,7 @@ class DashBoardScreen extends Component {
         msg_type,
       } = notificationOpen.notification.data;
       this.props.navigation.navigate('ChatDetailScreen', {
-        userid: fromid,
+        userid: groupid != '0' ? groupid : fromid,
         username: name,
         useravatar: avatar,
         userabout: about,
@@ -352,7 +353,8 @@ class DashBoardScreen extends Component {
     this.listener1 = firebase.notifications().onNotification((notification) => {
       if (
         this.props.chatting &&
-        notification.data.fromid == this.props.chattingUserId
+        (notification.data.fromid == this.props.chattingUserId ||
+          notification.data.groupid == this.props.chattingUserId)
       ) {
       } else {
         displayLocalNotification(notification);
@@ -360,7 +362,11 @@ class DashBoardScreen extends Component {
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
-      if (this.props.chatting && m.data.fromid == this.props.chattingUserId) {
+      if (
+        this.props.chatting &&
+        (m.data.fromid == this.props.chattingUserId ||
+          m.data.groupid == this.props.chattingUserId)
+      ) {
       } else {
         displayLocalNotification(m.data);
       }
@@ -377,9 +383,10 @@ class DashBoardScreen extends Component {
           avatar,
           about,
           msg_type,
+          groupid,
         } = m.notification.data;
         this.props.navigation.navigate('ChatDetailScreen', {
-          userid: fromid,
+          userid: groupid != '0' ? groupid : fromid,
           username: name,
           useravatar: avatar,
           userabout: about,

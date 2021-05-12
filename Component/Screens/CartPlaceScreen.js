@@ -768,7 +768,7 @@ const styles = StyleSheet.create({
   PlaceHolderTextStyle: {
     marginTop: resp(10),
     alignSelf: 'center',
-
+    lineHeight: 18,
     height: resp(18),
     fontWeight: 'bold',
     fontSize: 15,
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
   },
   itemBox: {
     flex: 1,
-    height: hp(290),
+    height: resp(400),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -880,7 +880,7 @@ const styles = StyleSheet.create({
   },
   hairline: {
     backgroundColor: '#C8C7CC80',
-    height: resp(2),
+    height: Platform.OS === 'android' ? resp(2) : 0,
     width: '100%',
   },
   headerBox: {

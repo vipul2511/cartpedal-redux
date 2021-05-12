@@ -167,7 +167,10 @@ class ChatDetailScreen extends React.Component {
     this.props.toggleChatting(true, this.props.route.params.userid);
     this.requestCameraPermission();
     this.listener1 = firebase.notifications().onNotification((notification) => {
-      if (notification.data.fromid == this.props.route.params.userid) {
+      if (
+        notification.data.fromid == this.props.route.params.userid ||
+        notification.data.groupid == this.props.route.params.userid
+      ) {
         this.setState({live: true});
         this.getConversationList();
         setTimeout(
@@ -178,7 +181,10 @@ class ChatDetailScreen extends React.Component {
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
-      if (m.data.fromid == this.props.route.params.userid) {
+      if (
+        m.data.fromid == this.props.route.params.userid ||
+        m.data.groupid == this.props.route.params.userid
+      ) {
         this.setState({live: true});
         this.getConversationList();
         setTimeout(() => {
@@ -2801,7 +2807,9 @@ class ChatDetailScreen extends React.Component {
                             //   this.setState({recording: false});
                             // }}
                             onPress={() => {
-                              this.sendMessage();
+                              if (this.state.message !== '') {
+                                this.sendMessage();
+                              }
                             }}>
                             {/* {this.state.message === '' ? (
                           <Icon
