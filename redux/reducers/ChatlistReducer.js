@@ -9,7 +9,7 @@ const initialState = {
   isLoading: false,
   success: false,
   error: false,
-  data: {},
+  data: [],
   errorMessage: '',
   chatting: false,
   chattingUserId: undefined,
