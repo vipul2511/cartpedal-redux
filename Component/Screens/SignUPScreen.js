@@ -419,6 +419,7 @@ const styles = StyleSheet.create({
     borderColor: '#F01738',
     borderBottomWidth: 1,
   },
+  
   loginButtonStyle: {
     marginTop: resp(10),
     width: resp(350),

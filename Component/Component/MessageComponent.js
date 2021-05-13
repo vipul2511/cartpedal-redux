@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
 import {useNavigation} from '@react-navigation/native';
+import ProgressCircle from 'react-native-progress-circle';
 
 import Lightbox from 'react-native-lightbox';
 import VideoPlayer from 'react-native-video-player';
@@ -53,6 +54,7 @@ export const MessageComponent = ({
   });
   const [playerRecording, setPlayerRecording] = useState(false);
   const [opacity, setOpacity] = useState(0);
+  const [download, setDownload] = useState({downloaded: false, percentage: 0});
 
   const onLoadStart = () => {
     setOpacity(1);
@@ -163,8 +165,14 @@ export const MessageComponent = ({
       duration: 0,
       playing: false,
     }));
-    // Start the new player
     onStartPlay1(uri);
+  };
+
+  const trackDownloadProgress = (e) => {
+    setDownload({
+      downloaded: true,
+      percentage: e.bytesWritten / e.contentLength,
+    });
   };
 
   const downloadAndOpenDocument = async (uri) => {
@@ -176,10 +184,14 @@ export const MessageComponent = ({
       downloadFile({
         fromUrl: uri,
         toFile: `${DocumentDirectoryPath}/${fileName}`,
+        progress: trackDownloadProgress,
+        begin: () => {},
       }).promise.then((res) => {
+        setDownload({downloaded: false, percentage: 1});
         FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
           showOpenWithDialog: true,
         });
+        setTimeout(() => setDownload({downloaded: false, percentage: 0}), 2000);
       });
     }
   };
@@ -1835,7 +1847,6 @@ export const MessageComponent = ({
               style={{
                 backgroundColor: '#FFFFFF',
                 borderRadius: 8,
-                // elevation: 5,
                 width: '100%',
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -1856,6 +1867,20 @@ export const MessageComponent = ({
                   }
                 </Text>
               </View>
+              <ProgressCircle
+                percent={download.percentage * 100}
+                radius={18}
+                borderWidth={2}
+                color="red"
+                shadowColor="grey"
+                bgColor="white">
+                {download.percentage !== 1.0 ? (
+                  <Icon
+                    name="arrow-down"
+                    style={{color: 'red', fontSize: 26, fontWeight: 'bold'}}
+                  />
+                ) : null}
+              </ProgressCircle>
             </TouchableOpacity>
           </View>
           <Text
@@ -1892,7 +1917,6 @@ export const MessageComponent = ({
             ) : (
               <Icon name="document" style={{color: 'white'}} />
             )}
-
             <View
               style={{
                 paddingHorizontal: 16,
@@ -1907,6 +1931,22 @@ export const MessageComponent = ({
                 }
               </Text>
             </View>
+            {message.fattach.attach.includes('http') ? (
+              <ProgressCircle
+                percent={download.percentage * 100}
+                radius={18}
+                borderWidth={2}
+                color="white"
+                shadowColor="#920"
+                bgColor="red">
+                {download.percentage !== 1 ? (
+                  <Icon
+                    name="arrow-down"
+                    style={{color: 'white', fontSize: 26, fontWeight: 'bold'}}
+                  />
+                ) : null}
+              </ProgressCircle>
+            ) : null}
           </TouchableOpacity>
           <View
             style={{
