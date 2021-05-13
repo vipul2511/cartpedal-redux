@@ -63,6 +63,7 @@ import ChangePassword from '../Component/Screens/ChangePassword';
 import AdminReport from '../Component/Screens/AdminReport';
 import ReportIssue from '../Component/Screens/ReportIssue';
 import ProductMasterSaveScreen from '../Component/Screens/ProductMatserSaveScreen';
+import ViewContact from '../Component/Screens/ViewContact';
 
 const Stack = createStackNavigator();
 
@@ -70,6 +71,8 @@ export function MainStack() {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      <Stack.Screen name="ViewContact" component={ViewContact} />
+
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen
         name="ForgotPasswordScreen"

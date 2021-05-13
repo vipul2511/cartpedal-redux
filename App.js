@@ -47,8 +47,6 @@ messaging
   })
   .catch((error) => {});
 
-// import {GiftedChatDemo} from './Component/Screens/GiftedChatDemo';
-
 const store = initStore();
 export default class App extends React.Component {
   constructor(props) {

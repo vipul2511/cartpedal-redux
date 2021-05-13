@@ -1190,7 +1190,8 @@ export const MessageComponent = ({
                 </Text>
               </View>
             ) : null}
-            <View
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ViewContact', {contact})}
               style={{
                 backgroundColor: '#FFFFFF',
                 borderRadius: 8,
@@ -1227,7 +1228,7 @@ export const MessageComponent = ({
                     </Text>
                   ))}
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
           <Text
             style={{
@@ -1255,7 +1256,8 @@ export const MessageComponent = ({
 
       content = (
         <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
-          <View
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ViewContact', {contact})}
             style={{
               backgroundColor: 'red',
               borderRadius: 8,
@@ -1292,7 +1294,7 @@ export const MessageComponent = ({
                   </Text>
                 ))}
             </View>
-          </View>
+          </TouchableOpacity>
           <View
             style={{
               flexDirection: 'row',
