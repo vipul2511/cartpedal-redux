@@ -1368,6 +1368,7 @@ export const MessageComponent = ({
                   width: 200,
                   alignSelf: 'center',
                 }}
+                resizeMode="contain"
                 imageBackgroundColor="transparent"
                 loadingStyle={{size: 'large', color: 'gray'}}
                 source={{uri: message.tattach.attach}}
@@ -1432,6 +1433,7 @@ export const MessageComponent = ({
                 width: 200,
                 alignSelf: 'center',
               }}
+              resizeMode="contain"
               imageBackgroundColor="transparent"
               loadingStyle={{size: 'large', color: 'gray'}}
               source={{uri: message.fattach.attach}}
