@@ -47,14 +47,12 @@ export const MessageComponent = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(initialize(message.sending));
-  const [audio, setAudio] = useState({playing: false, duration: 0, current: 0});
   const [pause, setpause] = useState(false);
   const [audio1, setAudio1] = useState({
     playing: false,
     duration: 0,
     current: 0,
   });
-  const [playerRecording, setPlayerRecording] = useState(false);
   const [opacity, setOpacity] = useState(0);
   const [download, setDownload] = useState({downloaded: false, percentage: 0});
 
@@ -86,7 +84,6 @@ export const MessageComponent = ({
           current: p.current,
           playing: false,
         }));
-        setPlayerRecording(0);
         await audioRecorderPlayer.stopPlayer();
         await audioRecorderPlayer.removePlayBackListener();
       }
@@ -114,6 +111,16 @@ export const MessageComponent = ({
       playing: false,
     }));
     onStartPlay1(uri);
+  };
+
+  const onResume = async () => {
+    await audioRecorderPlayer.resumePlayer();
+    setAudio1((p) => ({
+      current: p.current,
+      duration: p.duration,
+      playing: true,
+    }));
+    setpause(false);
   };
 
   const trackDownloadProgress = (e) => {
@@ -1621,14 +1628,21 @@ export const MessageComponent = ({
               }}>
               <Icon
                 onPress={() => {
-                  if (audio1.playing) {
+                  if (audio1.playing && playingAudioId === message.id) {
                     onPausePlay1();
                   } else {
-                    setPlayerRecording(message.id);
-                    onPlay(message.tattach.attach, message.id);
+                    if (pause) {
+                      onResume();
+                    } else {
+                      onPlay(message.tattach.attach, message.id);
+                    }
                   }
                 }}
-                name={audio1.playing ? 'pause' : 'play'}
+                name={
+                  audio1.playing && playingAudioId === message.id
+                    ? 'pause'
+                    : 'play'
+                }
                 style={{color: 'grey'}}
               />
               <View
@@ -1639,7 +1653,7 @@ export const MessageComponent = ({
                 }}>
                 <Slider
                   value={
-                    playerRecording == message.id
+                    playingAudioId === message.id
                       ? audio1.duration === 0
                         ? 0
                         : audio1.current / audio1.duration
@@ -1648,7 +1662,7 @@ export const MessageComponent = ({
                   thumbStyle={{width: 10, height: 10}}
                 />
                 <Text style={{fontSize: 12, color: 'black', marginTop: -12}}>
-                  {playerRecording == message.id
+                  {playingAudioId === message.id
                     ? audioRecorderPlayer.mmssss(audio1.current).slice(0, -3)
                     : '00:00'}
                 </Text>
@@ -1689,8 +1703,11 @@ export const MessageComponent = ({
                   if (audio1.playing && playingAudioId === message.id) {
                     onPausePlay1();
                   } else {
-                    setPlayerRecording(message.id);
-                    onPlay(message.fattach.attach, message.id);
+                    if (pause) {
+                      onResume();
+                    } else {
+                      onPlay(message.fattach.attach, message.id);
+                    }
                   }
                 }}
                 name={
@@ -1722,7 +1739,7 @@ export const MessageComponent = ({
                 onValueChange={(value) => this.setState({value})}
               />
               <Text style={{fontSize: 12, color: 'white', marginTop: -12}}>
-                {playerRecording == message.id
+                {playingAudioId === message.id
                   ? audioRecorderPlayer.mmssss(audio1.current).slice(0, -3)
                   : '00:00'}
               </Text>
