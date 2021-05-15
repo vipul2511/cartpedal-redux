@@ -148,7 +148,6 @@ class ChatDetailScreen extends React.Component {
     } else {
       if (text.text.fmsg != '') this.setState({showEveryone: true});
     }
-
     this.setState({replyMessage: text});
   };
 
@@ -300,13 +299,32 @@ class ChatDetailScreen extends React.Component {
     } else {
       type = '1';
     }
+
     this.setState({message: '', height: 40});
-    const messageToSent = {
-      ...newMessage,
-      msg_type: msg_type,
-      fmsg: this.state.message,
-      time: moment().format('hh:mm'),
-    };
+    let messageToSent = null;
+    if (replyID == '0') {
+      messageToSent = {
+        ...newMessage,
+        msg_type: msg_type,
+        fmsg: this.state.message,
+        time: moment().format('hh:mm'),
+      };
+    } else {
+      messageToSent = {
+        ...replyNewMessage,
+        msg_type: msg_type,
+        fmsg: this.state.message,
+        time: moment().format('hh:mm'),
+        reply_id: this.state.replyMessage.text.id,
+        reply_msg: {
+          ...this.state.replyMessage.text,
+          rmsg: this.state.replyMessage.text.tmsg,
+          rimage: null,
+        },
+      };
+      console.log(JSON.stringify(messageToSent, null, 2));
+    }
+
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
       this.setState((p) => ({
         chatList: {
@@ -318,7 +336,7 @@ class ChatDetailScreen extends React.Component {
     } else {
       this.setState((p) => ({
         chatList: {
-          message: [p.chatList.messages, messageToSent],
+          messages: [p.chatList.messages, messageToSent],
         },
       }));
     }
@@ -410,7 +428,7 @@ class ChatDetailScreen extends React.Component {
     } else {
       this.setState((p) => ({
         chatList: {
-          message: [p.chatList.messages, messageToSent],
+          messages: [p.chatList.messages, messageToSent],
         },
       }));
     }
@@ -493,7 +511,7 @@ class ChatDetailScreen extends React.Component {
     } else {
       this.setState((p) => ({
         chatList: {
-          message: [p.chatList.messages, messageToSent],
+          messages: [p.chatList.messages, messageToSent],
         },
       }));
     }
@@ -713,7 +731,7 @@ class ChatDetailScreen extends React.Component {
     } else {
       this.setState((p) => ({
         chatList: {
-          message: [p.chatList.messages, messageToSent],
+          messages: [p.chatList.messages, messageToSent],
         },
       }));
     }
@@ -807,7 +825,7 @@ class ChatDetailScreen extends React.Component {
     } else {
       this.setState((p) => ({
         chatList: {
-          message: [p.chatList.messages, messageToSent],
+          messages: [p.chatList.messages, messageToSent],
         },
       }));
     }
@@ -889,7 +907,7 @@ class ChatDetailScreen extends React.Component {
     } else {
       this.setState((p) => ({
         chatList: {
-          message: [p.chatList.messages, messageToSent],
+          messages: [p.chatList.messages, messageToSent],
         },
       }));
     }
@@ -938,12 +956,7 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
-          // this.LoginOrNot();
-          //   alert("Message sent succesfully")
-
-          // this.getConversationList();
         } else {
-          // alert(responseData.data);
         }
       })
       .catch((error) => {});
@@ -1017,7 +1030,7 @@ class ChatDetailScreen extends React.Component {
     } else {
       this.setState((p) => ({
         chatList: {
-          message: [p.chatList.messages, messageToSent],
+          messages: [p.chatList.messages, messageToSent],
         },
       }));
     }
@@ -1097,6 +1110,7 @@ class ChatDetailScreen extends React.Component {
     this.emojiUnicode(text);
     this.setState({message: text});
   };
+
   NotificationCallPhone = (type) => {
     let formData = new FormData();
     formData.append('user_id', this.state.userId);
@@ -1408,25 +1422,25 @@ class ChatDetailScreen extends React.Component {
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       {this.state.selectedMode ? (
                         <>
-                          <Icon
-                            name="reply"
-                            type="Entypo"
-                            onPress={() => {
-                              this.replytype();
-                              // this.replyTo();
-                            }}
-                            style={{
-                              color: '#2B2B2B',
-                              fontSize: 18,
-                              marginRight: 15,
-                            }}
-                          />
+                          {this.state.forwardMessageIds.length === 1 ? (
+                            <Icon
+                              name="reply"
+                              type="Entypo"
+                              onPress={() => {
+                                this.replytype();
+                              }}
+                              style={{
+                                color: '#2B2B2B',
+                                fontSize: 18,
+                                marginRight: 15,
+                              }}
+                            />
+                          ) : null}
                           <Icon
                             name="delete"
                             type="MaterialCommunityIcons"
                             onPress={() => {
                               this.setState({deletemodal: true});
-                              // this.deleteMessages()
                             }}
                             style={{
                               color: '#2B2B2B',
@@ -3171,24 +3185,25 @@ const newMessage = {
   sending: true,
 };
 
-const data = {
-  created_at: 1620650650,
-  date: '10-05-2021',
-  fattach: {
-    attach:
-      'https://www.cartpedal.com/attachments/attachment_1491620650650.jpg',
-    caption: 'Hello Hii ',
-    ext: 'jpg',
-  },
+const replyNewMessage = {
+  fattach: null,
   fmsg: '',
-  id: 306,
-  isread: '149,156',
-  msg_type: 'image',
+  id: 42,
+  isread: '0',
+  msg_type: '',
   reply_id: 0,
-  reply_msg: '',
-  rowdate: '10-05-2021',
+  reply_msg: {
+    id: 605,
+    rmsg: '',
+    rimage: null,
+    isread: '',
+    msg_type: '',
+    type: '0',
+    reply_id: 0,
+  },
   tattach: '',
-  time: '06:14 pm',
+  time: moment().format('hh:mm'),
   tmsg: '',
-  type: '0',
+  type: '1',
+  sending: true,
 };
