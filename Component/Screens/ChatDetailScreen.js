@@ -104,8 +104,13 @@ class ChatDetailScreen extends React.Component {
       showlocationmsg: false,
       live: false,
       uploading: false,
+      playingAudioId: undefined,
     };
   }
+
+  setAudioId = (id) => {
+    this.setState({playingAudioId: id});
+  };
 
   toggleSelectedMode = () => {
     this.setState((p) => ({
@@ -918,10 +923,25 @@ class ChatDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
+          const messages = this.state.chatList.messages;
+          messages[messages.length - 1] = {
+            ...messages[messages.length - 1],
+            sending: false,
+          };
+          this.setState(
+            (p) => ({
+              chatList: {
+                ...p.chatList,
+                messages,
+              },
+              ischatList: true,
+            }),
+            () => setTimeout(() => tick.play(), 1000),
+          );
           // this.LoginOrNot();
           //   alert("Message sent succesfully")
 
-          this.getConversationList();
+          // this.getConversationList();
         } else {
           // alert(responseData.data);
         }
@@ -1551,17 +1571,6 @@ class ChatDetailScreen extends React.Component {
                   }>
                   <ScrollView>
                     <View style={{paddingHorizontal: 10, marginTop: '20%'}}>
-                      {/* <Text
-                style={{
-                  color: 'red',
-                  fontSize: 14,
-                  textAlign: 'center',
-                  marginTop: 10,
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
-                }}>
-                {moment().format("DD-MM-YYYY")}
-              </Text> */}
                       {this.state.ischatList
                         ? this.state.chatList.messages.map((v, i) => {
                             return (
@@ -1575,6 +1584,8 @@ class ChatDetailScreen extends React.Component {
                                 forwardMessageIds={this.state.forwardMessageIds}
                                 copyText={this.copyText}
                                 replyMessage={this.replyTo}
+                                setAudioId={this.setAudioId}
+                                playingAudioId={this.state.playingAudioId}
                               />
                             );
                           })
@@ -2798,41 +2809,41 @@ class ChatDetailScreen extends React.Component {
                             justifyContent: 'center',
                           }}>
                           <TouchableOpacity
-                            // onLongPress={() => {
-                            //   this.startRecording();
-                            //   this.setState({recording: true});
-                            // }}
-                            // onPressOut={() => {
-                            //   this.createTwoButtonAlert();
-                            //   this.setState({recording: false});
-                            // }}
+                            onLongPress={() => {
+                              this.startRecording();
+                              this.setState({recording: true});
+                            }}
+                            onPressOut={() => {
+                              this.createTwoButtonAlert();
+                              this.setState({recording: false});
+                            }}
                             onPress={() => {
                               if (this.state.message !== '') {
                                 this.sendMessage();
                               }
                             }}>
-                            {/* {this.state.message === '' ? (
-                          <Icon
-                            name="mic"
-                            type="Feather"
-                            style={{
-                              color: '#FFFFFF',
-                              fontSize: 18,
-                              alignSelf: 'center',
-                            }}
-                          />
-                        ) : (
-                          <Icon
-                            name="arrowright"
-                            type="AntDesign"
-                            style={{
-                              fontSize: 20,
-                              color: '#FFFFFF',
-                              alignSelf: 'center',
-                            }}
-                          />
-                        )} */}
-                            <Icon
+                            {this.state.message === '' ? (
+                              <Icon
+                                name="mic"
+                                type="Feather"
+                                style={{
+                                  color: '#FFFFFF',
+                                  fontSize: 18,
+                                  alignSelf: 'center',
+                                }}
+                              />
+                            ) : (
+                              <Icon
+                                name="arrowright"
+                                type="AntDesign"
+                                style={{
+                                  fontSize: 20,
+                                  color: '#FFFFFF',
+                                  alignSelf: 'center',
+                                }}
+                              />
+                            )}
+                            {/* <Icon
                               name="arrowright"
                               type="AntDesign"
                               style={{
@@ -2840,7 +2851,7 @@ class ChatDetailScreen extends React.Component {
                                 color: '#FFFFFF',
                                 alignSelf: 'center',
                               }}
-                            />
+                            /> */}
                           </TouchableOpacity>
                         </View>
                       </View>

@@ -1,3 +1,4 @@
+import {Platform} from 'react-native';
 import firebase from 'react-native-firebase';
 
 export const displayLocalNotification = async (notification) => {
@@ -8,10 +9,16 @@ export const displayLocalNotification = async (notification) => {
     .setBody(body)
     .setSound(sound)
     // .android.setSmallIcon('ic_mir_notification')
-    .android.setColor('#DA463C')
+    .android.setColor('red')
     .android.setPriority(firebase.notifications.Android.Priority.Max)
     .android.setChannelId('test-channel')
     .setData(notification.data ? notification.data : notification);
+
+  // if (notification.android && Platform.OS === 'android') {
+  //   notification22.android
+  //     .setBigPicture(notification.android.largeIcon)
+  //     .android.setLargeIcon(notification.android.largeIcon);
+  // }
 
   await firebase.notifications().displayNotification(notification22);
 };

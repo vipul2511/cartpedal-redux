@@ -52,7 +52,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
+  async componentDidMount() {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }
   render() {
