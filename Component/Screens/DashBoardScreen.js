@@ -300,6 +300,7 @@ class DashBoardScreen extends Component {
   };
 
   componentDidMount = async () => {
+    this.showLoading();
     this.focusListener = this.props.navigation.addListener('focus', () => {
       this.requestReadContactsPermission();
       AsyncStorage.getItem('@fcmtoken').then((token) => {
@@ -315,7 +316,7 @@ class DashBoardScreen extends Component {
       AsyncStorage.getItem('@access_token').then((accessToken) => {
         if (accessToken) {
           this.setState({userAccessToken: accessToken}, () => {
-            this.showLoading();
+            // this.showLoading();
             this.ProfileViewCall();
             this.userStories();
             this.loggedUserstory();
