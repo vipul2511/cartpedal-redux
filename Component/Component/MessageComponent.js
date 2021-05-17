@@ -1310,6 +1310,12 @@ export const MessageComponent = ({
 
   if (msg_type === 'media' || msg_type === 'image') {
     if (message.tattach !== null && message.tattach !== '') {
+      let Component = null;
+      if (selectedMode) {
+        Component = Image;
+      } else {
+        Component = ImageModal;
+      }
       content = (
         <View style={{alignSelf: 'flex-start', marginVertical: 10}}>
           <View
@@ -1336,8 +1342,8 @@ export const MessageComponent = ({
                 borderBottomLeftRadius: message.tattach.caption !== '' ? 8 : 7,
                 borderBottomRightRadius: message.tattach.caption !== '' ? 8 : 7,
               }}>
-              <ImageModal
-                onLongPress={() => {
+              <Component
+                onLongPressOriginImage={() => {
                   if (!selectedMode) {
                     toggleSelectedMode();
                     appendMessages(message.id);
@@ -1362,6 +1368,7 @@ export const MessageComponent = ({
                 imageBackgroundColor="transparent"
                 loadingStyle={{size: 'large', color: 'gray'}}
                 source={{uri: message.tattach.attach}}
+                disabled={selectedMode}
               />
             </View>
             {message.tattach.caption !== '' ? (
@@ -1398,6 +1405,12 @@ export const MessageComponent = ({
       );
     }
     if (message.fattach !== null && message.fattach !== '') {
+      let Component = null;
+      if (selectedMode) {
+        Component = Image;
+      } else {
+        Component = ImageModal;
+      }
       content = (
         <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
           <View
@@ -1415,7 +1428,22 @@ export const MessageComponent = ({
               borderColor: '#fff',
               borderBottomLeftRadius: message.fattach.caption !== '' ? 8 : 0,
             }}>
-            <ImageModal
+            <Component
+              onLongPressOriginImage={() => {
+                if (!selectedMode) {
+                  toggleSelectedMode();
+                  appendMessages(message.id);
+                  replyMessage({
+                    text: message,
+                  });
+                  if (message.msg_type === 'text') {
+                    copyText({
+                      id: message.id,
+                      text: message.fmsg !== '' ? message.fmsg : message.tmsg,
+                    });
+                  }
+                }
+              }}
               loading={sending}
               style={{
                 height: 200,
