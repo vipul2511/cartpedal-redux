@@ -2026,27 +2026,21 @@ export const MessageComponent = ({
   if (msg_type === 'location') {
     if (message.tmsg !== '') {
       const {latitude, longitude} = JSON.parse(JSON.parse(message.tmsg));
+      let Component = View;
+      if (!selectedMode) {
+        Component = Lightbox;
+      }
       content = (
         <View
           style={{
             alignSelf: 'flex-start',
             marginVertical: 10,
           }}>
-          {/* <View
-            style={{
-              backgroundColor: '#fff',
-              borderRadius: 8,
-              width: 205,
-              height: 315,
-            }}> */}
-          {/* {message.tname ? (
-              <View style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>
-                <Text style={{color: '#1EA81D', fontSize: 15}}>
-                  {message.tname}
-                </Text>
-              </View>
-            ) : null} */}
-          <Lightbox onOpen={() => setOpen(true)} onClose={() => setOpen(false)}>
+          <Component
+            onOpen={() => {
+              setOpen(true);
+            }}
+            onClose={() => setOpen(false)}>
             <View
               style={{
                 borderRadius: 8,
@@ -2055,6 +2049,40 @@ export const MessageComponent = ({
                 height: open ? '100%' : 280,
               }}>
               <MapView
+                onPress={() => {
+                  if (selectedMode) {
+                    if (!inList) {
+                      appendMessages(message.id);
+                      replyMessage({
+                        text: message,
+                      });
+                      if (message.msg_type === 'text') {
+                        copyText({
+                          id: message.id,
+                          text:
+                            message.fmsg !== '' ? message.fmsg : message.tmsg,
+                        });
+                      }
+                    } else {
+                      removeMessages(message.id);
+                    }
+                  }
+                }}
+                onLongPress={() => {
+                  if (!selectedMode) {
+                    toggleSelectedMode();
+                    appendMessages(message.id);
+                    replyMessage({
+                      text: message,
+                    });
+                    if (message.msg_type === 'text') {
+                      copyText({
+                        id: message.id,
+                        text: message.fmsg !== '' ? message.fmsg : message.tmsg,
+                      });
+                    }
+                  }
+                }}
                 provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : false} // remove if not using Google Maps
                 style={{
                   flex: 1,
@@ -2069,7 +2097,7 @@ export const MessageComponent = ({
                 <Marker coordinate={{latitude, longitude}} />
               </MapView>
             </View>
-          </Lightbox>
+          </Component>
           {/* </View> */}
           <Text
             style={{
@@ -2097,9 +2125,16 @@ export const MessageComponent = ({
 
       const {latitude, longitude} = location;
 
+      let Component = View;
+      if (!selectedMode) {
+        Component = Lightbox;
+      }
+
       content = (
         <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
-          <Lightbox onOpen={() => setOpen(true)} onClose={() => setOpen(false)}>
+          <Component
+            onOpen={() => setOpen(true)}
+            onClose={() => setOpen(false)}>
             <View
               style={{
                 borderRadius: 8,
@@ -2108,6 +2143,40 @@ export const MessageComponent = ({
                 height: open ? '100%' : 280,
               }}>
               <MapView
+                onPress={() => {
+                  if (selectedMode) {
+                    if (!inList) {
+                      appendMessages(message.id);
+                      replyMessage({
+                        text: message,
+                      });
+                      if (message.msg_type === 'text') {
+                        copyText({
+                          id: message.id,
+                          text:
+                            message.fmsg !== '' ? message.fmsg : message.tmsg,
+                        });
+                      }
+                    } else {
+                      removeMessages(message.id);
+                    }
+                  }
+                }}
+                onLongPress={() => {
+                  if (!selectedMode) {
+                    toggleSelectedMode();
+                    appendMessages(message.id);
+                    replyMessage({
+                      text: message,
+                    });
+                    if (message.msg_type === 'text') {
+                      copyText({
+                        id: message.id,
+                        text: message.fmsg !== '' ? message.fmsg : message.tmsg,
+                      });
+                    }
+                  }
+                }}
                 provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : false} // remove if not using Google Maps
                 style={{
                   flex: 1,
@@ -2122,7 +2191,7 @@ export const MessageComponent = ({
                 <Marker coordinate={{latitude, longitude}} />
               </MapView>
             </View>
-          </Lightbox>
+          </Component>
           <View
             style={{
               flexDirection: 'row',
