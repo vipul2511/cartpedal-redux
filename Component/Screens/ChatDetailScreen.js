@@ -324,7 +324,7 @@ class ChatDetailScreen extends React.Component {
         reply_msg: {
           ...this.state.replyMessage.text,
           rmsg: this.state.replyMessage.text.tmsg,
-          rimage: null,
+          rimage: this.state.replyMessage.text.tattach,
         },
       };
       console.log(JSON.stringify(messageToSent, null, 2));
@@ -3208,4 +3208,70 @@ const replyNewMessage = {
   tmsg: '',
   type: '1',
   sending: true,
+};
+
+const data = {
+  fattach: null,
+  id: 42,
+  isread: '0',
+  tattach: '',
+  time: '09:07',
+  tmsg: '',
+  type: '1',
+  sending: true,
+  msg_type: 'text',
+  fmsg: 'Kejriwal',
+  reply_id: 649,
+  reply_msg: {
+    id: 649,
+    fmsg: '',
+    fattach: '',
+    tmsg: '',
+    tattach: {
+      ext: 'jpg',
+      attach:
+        'https://www.cartpedal.com/attachments/attachment_1491621162412.jpg',
+      caption: '',
+    },
+    isread: '160,149',
+    msg_type: 'image',
+    type: '0',
+    reply_id: 0,
+    reply_msg: '',
+    created_at: 1621162412,
+    rowdate: '16-05-2021',
+    date: '16-05-2021',
+    time: '04:23 pm',
+    rmsg: '',
+  },
+};
+
+const data2 = {
+  created_at: 1621265861,
+  date: '17-05-2021',
+  fattach: null,
+  fmsg: 'Kejriwal',
+  id: 688,
+  isread: '149,160',
+  msg_type: 'text',
+  reply_id: 649,
+  reply_msg: {
+    id: 649,
+    isread: '160,149',
+    msg_type: 'image',
+    reply_id: 0,
+    rimage: {
+      attach:
+        'https://www.cartpedal.com/attachments/attachment_1491621162412.jpg',
+      caption: '',
+      ext: 'jpg',
+    },
+    rmsg: '',
+    type: '0',
+  },
+  rowdate: '17-05-2021',
+  tattach: '',
+  time: '09:07 pm',
+  tmsg: '',
+  type: '1',
 };

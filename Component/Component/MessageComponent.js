@@ -178,6 +178,8 @@ export const MessageComponent = ({
 
   const {msg_type} = message;
 
+  // console.log(message);
+
   if (msg_type === 'accept') {
     if (message.tmsg !== '') {
       content = (

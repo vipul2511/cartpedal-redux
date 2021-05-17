@@ -266,6 +266,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				EAC126165535B11BCAFAA64A /* [CP] Copy Pods Resources */,
+				C66A0D137B739DF28EBE8439 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -288,6 +289,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				B46178B27C24A302A478604A /* [CP] Copy Pods Resources */,
+				DF76FF908EC05C6ABD1E2FBA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -593,6 +595,46 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cart/Pods-cart-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C66A0D137B739DF28EBE8439 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-cart-cartTests/Pods-cart-cartTests-frameworks.sh",
+				"${PODS_ROOT}/VideoEditorSDK/VideoEditorSDK.framework",
+				"${PODS_ROOT}/imglyKit/ImglyKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VideoEditorSDK.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImglyKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cart-cartTests/Pods-cart-cartTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DF76FF908EC05C6ABD1E2FBA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-cart/Pods-cart-frameworks.sh",
+				"${PODS_ROOT}/VideoEditorSDK/VideoEditorSDK.framework",
+				"${PODS_ROOT}/imglyKit/ImglyKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VideoEditorSDK.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImglyKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-cart/Pods-cart-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EAC126165535B11BCAFAA64A /* [CP] Copy Pods Resources */ = {

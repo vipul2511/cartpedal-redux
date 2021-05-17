@@ -8,6 +8,15 @@ import {initStore} from './redux/store';
 import {Provider} from 'react-redux';
 import {LogBox, Platform} from 'react-native';
 
+// import {
+//   VESDK,
+//   VideoEditorModal,
+//   Configuration,
+//   Tool,
+// } from 'react-native-videoeditorsdk';
+
+// VESDK.unlockWithLicense(require('./Routes/vesdk_android_license.json'));
+
 if (Platform.OS === 'android') {
   const channel = new firebase.notifications.Android.Channel(
     'test-channel',
@@ -54,6 +63,9 @@ export default class App extends React.Component {
   }
   async componentDidMount() {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    // VESDK.openEditor(require('./sample-mp4-file.mp4'), {
+    //   tools: [Tool.TRIM, Tool.FRAME],
+    // }).then((res) => console.log(res));
   }
   render() {
     return (
