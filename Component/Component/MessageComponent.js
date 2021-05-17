@@ -178,8 +178,6 @@ export const MessageComponent = ({
 
   const {msg_type} = message;
 
-  // console.log(JSON.stringify(message, null, 2));
-
   if (msg_type === 'accept') {
     if (message.tmsg !== '') {
       content = (
@@ -187,7 +185,7 @@ export const MessageComponent = ({
           onPress={() => {
             const split = message.tmsg.split(' ');
             navigation.navigate('OrderRecievedViewScreen', {
-              order_id: split[split.length - 1],
+              order_id: split[split.length - 4],
             });
           }}
           style={{
@@ -273,9 +271,9 @@ export const MessageComponent = ({
       content = (
         <TouchableOpacity
           onPress={() => {
-            const split = message.tmsg.split(' ');
+            const split = message.fmsg.split(' ');
             navigation.navigate('OrderRecievedViewScreen', {
-              order_id: split[split.length - 1],
+              order_id: split[split.length - 4],
             });
           }}
           style={{alignSelf: 'flex-end', marginVertical: 10}}>

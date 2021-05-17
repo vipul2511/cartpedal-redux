@@ -167,7 +167,7 @@ class CartPlaceScreen extends Component {
   }
 
   AskForStautsCall(orderID, blockID) {
-    this.showLoading()
+    this.showLoading();
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
     formData.append('type', 1);
@@ -195,7 +195,6 @@ class CartPlaceScreen extends Component {
       })
       .catch((error) => {
         this.hideLoading();
-        console.error(error);
       })
       .done();
   }
