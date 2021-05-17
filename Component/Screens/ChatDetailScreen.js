@@ -327,7 +327,7 @@ class ChatDetailScreen extends React.Component {
           rimage: this.state.replyMessage.text.tattach,
         },
       };
-      console.log(JSON.stringify(messageToSent, null, 2));
+      // console.log(JSON.stringify(messageToSent, null, 2));
     }
 
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
@@ -615,7 +615,7 @@ class ChatDetailScreen extends React.Component {
     }
   };
 
-  uploadImage = (datas) => {
+  uploadImage = (datas, reply_id) => {
     let type;
     this.setState({open: false});
     if (this.props.route.params.msg_type !== 0) {
@@ -628,7 +628,7 @@ class ChatDetailScreen extends React.Component {
       toid: this.props.route.params.userid,
       msg_type: 'image',
       type: this.props.route.params.msg_type,
-      reply_id: '0',
+      reply_id,
       body: 'sfsdfsdfd dsfsdfs',
       upload: [
         {
@@ -711,20 +711,80 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendImage = async () => {
+    let replyID = '0';
+    if (this.state.showRelymsg == true && this.state.replyMessage != '') {
+      if (
+        this.state.replyMessage.text.fmsg ||
+        this.state.replyMessage.text.tmsg
+      ) {
+        replyID = this.state.replyMessage.text.id;
+      }
+    }
+    if (this.state.showimagerply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showaudiorply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showlocationmsg == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showfilerply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showcontactrply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showvideorply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
     this.setState({imageshow: true, uploading: true});
     await this.setState({open: false});
     let response = this.state.imageView;
-    const messageToSent = {
-      ...newMessage,
-      msg_type: 'image',
-      fmsg: '',
-      fattach: {
-        ...newMessage.fattach,
-        attach: response.path,
-        caption: this.state.caption,
-      },
-      time: moment().format('hh:mm'),
-    };
+    let messageToSent = null;
+    if (replyID == '0') {
+      messageToSent = {
+        ...newMessage,
+        msg_type: 'image',
+        fmsg: '',
+        fattach: {
+          ...newMessage.fattach,
+          attach: response.path,
+          caption: this.state.caption,
+        },
+        time: moment().format('hh:mm'),
+      };
+    } else {
+      messageToSent = {
+        ...replyNewMessage,
+        msg_type: 'image',
+        fmsg: '',
+        fattach: {
+          ...newMessage.fattach,
+          attach: response.path,
+          caption: this.state.caption,
+        },
+        time: moment().format('hh:mm'),
+        reply_id: this.state.replyMessage.text.id,
+        reply_msg: {
+          ...this.state.replyMessage.text,
+          rmsg: this.state.replyMessage.text.tmsg,
+          rimage: this.state.replyMessage.text.tattach,
+        },
+      };
+      // console.log(JSON.stringify(messageToSent, null, 2));
+    }
+    // const messageToSent = {
+    //   ...newMessage,
+    //   msg_type: 'image',
+    // fmsg: '',
+    // fattach: {
+    //   ...newMessage.fattach,
+    //   attach: response.path,
+    //   caption: this.state.caption,
+    // },
+    //   time: moment().format('hh:mm'),
+    // };
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
       this.setState((p) => ({
         chatList: {
@@ -740,7 +800,7 @@ class ChatDetailScreen extends React.Component {
         },
       }));
     }
-    this.uploadImage(response);
+    this.uploadImage(response, replyID);
     if (response.didCancel) {
     } else {
       const source = {uri: response.path};

@@ -178,8 +178,6 @@ export const MessageComponent = ({
 
   const {msg_type} = message;
 
-  // console.log(message);
-
   if (msg_type === 'accept') {
     if (message.tmsg !== '') {
       content = (
@@ -361,7 +359,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -543,7 +542,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -991,7 +991,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -1132,7 +1133,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -1300,7 +1302,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -1334,6 +1337,173 @@ export const MessageComponent = ({
                 </Text>
               </View>
             ) : null}
+
+            <View
+              style={{
+                borderWidth:
+                  message.reply_msg && message.reply_msg.length > 0 ? 5 : 0,
+                borderColor: '#fff',
+              }}>
+              {message.reply_msg != '' ? (
+                message.reply_msg.msg_type == 'text' ? (
+                  <Text
+                    style={{
+                      margin: 10,
+                      color: 'red',
+                      fontSize: 15,
+                    }}>
+                    {message.reply_msg.rmsg}
+                  </Text>
+                ) : message.reply_msg.msg_type == 'contact' ? (
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="user"
+                      type="Feather"
+                      style={{
+                        color: 'red',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+                    <Text
+                      style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                      Contact
+                    </Text>
+                  </View>
+                ) : message.reply_msg.msg_type == 'location' ? (
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="location"
+                      type="Entypo"
+                      style={{
+                        color: 'red',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+
+                    <Text
+                      style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                      Location
+                    </Text>
+                  </View>
+                ) : message.reply_msg.rimage ? (
+                  message.reply_msg.msg_type == 'image' ? (
+                    <Image
+                      source={{uri: message.reply_msg.rimage.attach}}
+                      style={{width: 100, height: 80}}
+                    />
+                  ) : message.reply_msg.msg_type == 'audio' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="mic"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: 'red'}}>
+                        Voice message
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'video' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="video"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: 'red'}}>
+                        Voice message
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'file' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="file"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                        Document
+                      </Text>
+                    </View>
+                  ) : null
+                ) : null
+              ) : (
+                <Hyperlink
+                  linkDefault={true}
+                  linkStyle={{color: '#2980b9', fontSize: 20}}>
+                  <Text
+                    style={{
+                      margin: 10,
+                      color: 'black',
+                      fontSize: 12,
+                      textDecorationLine: message.tmsg.includes('http')
+                        ? 'underline'
+                        : 'none',
+                    }}>
+                    {message.tmsg}
+                  </Text>
+                </Hyperlink>
+              )}
+              {message.reply_msg ? (
+                <View style={{backgroundColor: '#fff'}}>
+                  <Text
+                    style={{
+                      marginLeft: 5,
+                      marginTop: 8,
+                      fontSize: 15,
+                      marginRight: 5,
+                      color: 'black',
+                    }}>
+                    {' '}
+                    {message.tmsg}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
 
             <View
               style={{
@@ -1515,7 +1685,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -1654,7 +1825,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -1845,7 +2017,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -2015,7 +2188,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
@@ -2224,7 +2398,8 @@ export const MessageComponent = ({
                 name="checkmark-done-sharp"
                 style={{
                   fontSize: 16,
-                  color: message.is_read === '1' ? '#34B7F1' : 'grey',
+                  color:
+                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
                 }}
               />
             )}
