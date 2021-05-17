@@ -708,14 +708,21 @@ export const MessageComponent = ({
                   ) : null
                 ) : null
               ) : (
-                <Text
-                  style={{
-                    margin: 10,
-                    color: 'black',
-                    fontSize: 12,
-                  }}>
-                  {message.tmsg}
-                </Text>
+                <Hyperlink
+                  linkDefault={true}
+                  linkStyle={{color: '#2980b9', fontSize: 20}}>
+                  <Text
+                    style={{
+                      margin: 10,
+                      color: 'black',
+                      fontSize: 12,
+                      textDecorationLine: message.tmsg.includes('http')
+                        ? 'underline'
+                        : 'none',
+                    }}>
+                    {message.tmsg}
+                  </Text>
+                </Hyperlink>
               )}
               {message.reply_msg ? (
                 <View style={{backgroundColor: '#fff'}}>
@@ -920,12 +927,17 @@ export const MessageComponent = ({
                   ) : null
                 ) : null
               ) : (
-                <Hyperlink linkStyle={{color: '#2980b9', fontSize: 20}}>
+                <Hyperlink
+                  linkDefault={true}
+                  linkStyle={{color: 'white', fontSize: 20}}>
                   <Text
                     style={{
                       margin: 10,
                       color: '#fff',
                       fontSize: 15,
+                      textDecorationLine: message.fmsg.includes('http')
+                        ? 'underline'
+                        : 'none',
                     }}>
                     {message.fmsg}
                   </Text>
@@ -1012,6 +1024,9 @@ export const MessageComponent = ({
                     margin: 10,
                     color: '#2B2B2B',
                     fontSize: 12,
+                    textDecorationLine: message.tmsg.includes('http')
+                      ? 'underline'
+                      : 'none',
                   }}>
                   {message.tmsg}
                 </Text>
@@ -1063,6 +1078,9 @@ export const MessageComponent = ({
                       margin: 10,
                       color: '#fff',
                       fontSize: 12,
+                      textDecorationLine: message.tmsg.includes('http')
+                        ? 'underline'
+                        : 'none',
                     }}>
                     {message.fmsg}
                   </Text>
@@ -1415,6 +1433,9 @@ export const MessageComponent = ({
                     fontSize: 16,
                     color: 'black',
                     marginBottom: 5,
+                    textDecorationLine: message.tmsg.includes('http')
+                      ? 'underline'
+                      : 'none',
                   }}>
                   {message.fattach.caption}
                 </Text>
