@@ -1229,8 +1229,7 @@ export const MessageComponent = ({
 
       content = (
         <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ViewContact', {contact})}
+          <View
             style={{
               backgroundColor: 'red',
               borderRadius: 8,
@@ -1250,9 +1249,10 @@ export const MessageComponent = ({
             />
             <View style={{paddingHorizontal: 16, alignSelf: 'flex-start'}}>
               <Text
+                onPress={() => navigation.navigate('ViewContact', {contact})}
                 style={{
                   color: '#fff',
-                  fontSize: 16,
+                  fontSize: 20,
                 }}>
                 {contact.givenName + ' ' + contact.familyName}
               </Text>
@@ -1267,7 +1267,7 @@ export const MessageComponent = ({
                   </Text>
                 ))}
             </View>
-          </TouchableOpacity>
+          </View>
           <View
             style={{
               flexDirection: 'row',
@@ -1337,6 +1337,21 @@ export const MessageComponent = ({
                 borderBottomRightRadius: message.tattach.caption !== '' ? 8 : 7,
               }}>
               <ImageModal
+                onLongPress={() => {
+                  if (!selectedMode) {
+                    toggleSelectedMode();
+                    appendMessages(message.id);
+                    replyMessage({
+                      text: message,
+                    });
+                    if (message.msg_type === 'text') {
+                      copyText({
+                        id: message.id,
+                        text: message.fmsg !== '' ? message.fmsg : message.tmsg,
+                      });
+                    }
+                  }
+                }}
                 style={{
                   height: 200,
                   borderRadius: 8,
