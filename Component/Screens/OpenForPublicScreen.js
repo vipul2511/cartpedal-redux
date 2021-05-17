@@ -10,7 +10,7 @@ import {
   FlatList,
   SafeAreaView,
   Modal,
-  Platform
+  Platform,
 } from 'react-native';
 import {Container, TabHeading, Tab, Tabs} from 'native-base';
 import resp from 'rn-responsive-font';
@@ -131,13 +131,14 @@ class OpenForPublicScreen extends Component {
   }
 
   openCamara() {
-    this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
     ImagePicker.openCamera({
       width: 300,
       height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
+
       this.onImagePick(image);
     });
   }

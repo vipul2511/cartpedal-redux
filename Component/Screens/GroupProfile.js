@@ -14,7 +14,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Platform
+  Platform,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -329,26 +329,28 @@ export default class GroupProfile extends React.Component {
   };
 
   openImageGallery() {
-    this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openPicker({
       width: 300,
       height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
+
       this.onImagePick(image);
       console.log('image pic===', image);
     });
   }
 
   openCamara() {
-    this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openCamera({
       width: 300,
       height: 400,
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
+
       this.onImagePick(image);
       console.log('pickedImage===', image);
     });

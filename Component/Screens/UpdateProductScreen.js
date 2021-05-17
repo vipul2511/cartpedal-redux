@@ -218,11 +218,12 @@ export default class UpdateProductScreen extends React.Component {
   }
 
   openCamara() {
-    this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openCamera({
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
+
       let newImage = this.state.newImageArr;
       let imagePervious = this.state.imageList;
       let objImage = {
@@ -244,11 +245,12 @@ export default class UpdateProductScreen extends React.Component {
   }
 
   openImageGallery() {
-    this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
     }).then((image) => {
+      this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
+
       let newImage = this.state.newImageArr;
       let imagePervious = this.state.imageList;
       let objImage = {
