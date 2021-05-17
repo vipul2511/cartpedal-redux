@@ -154,9 +154,14 @@ class ChatDetailScreen extends React.Component {
   copyToClipboard = () => {
     let message = '';
     let count = 0;
-    this.state.copyTexts.map((i) => {
-      message = message + '\n' + i.text;
-      count = count + 1;
+    this.state.copyTexts.map((i, index) => {
+      if (index === 0) {
+        message = i.text;
+        count = count + 1;
+      } else {
+        message = message + '\n' + i.text;
+        count = count + 1;
+      }
     });
     Toast.show(`${count} messages copied`, 2000);
     Clipboard.setString(message);
@@ -1175,6 +1180,7 @@ class ChatDetailScreen extends React.Component {
             selectedMode: false,
             showEveryone: false,
             forwardMessageIds: [],
+            deletemodal: false,
           });
           this.getConversationList();
         } else {
@@ -1520,11 +1526,7 @@ class ChatDetailScreen extends React.Component {
                               marginRight: 15,
                             }}
                           />
-                          {/* <Icon
-                name="more-vertical"
-                type="Feather"
-                style={{color: '#2B2B2B', fontSize: 24, marginRight: 5}}
-              /> */}
+
                           <Menu
                             ref={(ref) => (this._menu = ref)}
                             button={

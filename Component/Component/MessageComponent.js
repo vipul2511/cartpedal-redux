@@ -1147,8 +1147,7 @@ export const MessageComponent = ({
                 </Text>
               </View>
             ) : null}
-            <TouchableOpacity
-              onPress={() => navigation.navigate('ViewContact', {contact})}
+            <View
               style={{
                 backgroundColor: '#FFFFFF',
                 borderRadius: 8,
@@ -1168,9 +1167,10 @@ export const MessageComponent = ({
               />
               <View style={{paddingHorizontal: 16, alignSelf: 'flex-start'}}>
                 <Text
+                  onPress={() => navigation.navigate('ViewContact', {contact})}
                   style={{
-                    color: '#2B2B2B',
-                    fontSize: 16,
+                    color: '#2980b9',
+                    fontSize: 20,
                   }}>
                   {contact.givenName + ' ' + contact.familyName}
                 </Text>
@@ -1185,7 +1185,7 @@ export const MessageComponent = ({
                     </Text>
                   ))}
               </View>
-            </TouchableOpacity>
+            </View>
           </View>
           <Text
             style={{
