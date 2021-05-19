@@ -2398,22 +2398,192 @@ export const MessageComponent = ({
             alignSelf: 'flex-start',
             marginVertical: 10,
           }}>
-          <Component
-            onOpen={() => {
-              setOpen(true);
-            }}
-            onClose={() => setOpen(false)}>
+          <View
+            style={{
+              borderRadius: 8,
+              elevation: 5,
+              width: '70%',
+              backgroundColor: '#fff',
+            }}>
+            {message.tname ? (
+              <View style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>
+                <Text style={{color: '#1EA81D', fontSize: 15}}>
+                  {message.tname}
+                </Text>
+              </View>
+            ) : null}
+
             <View
               style={{
-                borderRadius: 8,
-                elevation: 5,
-                width: open ? '100%' : 200,
-                height: open ? '100%' : 280,
+                borderWidth:
+                  message.reply_msg && message.reply_msg.length > 0 ? 5 : 0,
+                borderColor: '#fff',
               }}>
-              <MapView
-                onPress={() => {
-                  if (selectedMode) {
-                    if (!inList) {
+              {message.reply_msg != '' ? (
+                message.reply_msg.msg_type == 'text' ? (
+                  <Text
+                    style={{
+                      margin: 10,
+                      color: 'red',
+                      fontSize: 15,
+                    }}>
+                    {message.reply_msg.rmsg}
+                  </Text>
+                ) : message.reply_msg.msg_type == 'contact' ? (
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="user"
+                      type="Feather"
+                      style={{
+                        color: 'red',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+                    <Text
+                      style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                      Contact
+                    </Text>
+                  </View>
+                ) : message.reply_msg.msg_type == 'location' ? (
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="location"
+                      type="Entypo"
+                      style={{
+                        color: 'red',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+
+                    <Text
+                      style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                      Location
+                    </Text>
+                  </View>
+                ) : message.reply_msg.rimage ? (
+                  message.reply_msg.msg_type == 'image' ? (
+                    <Image
+                      source={{uri: message.reply_msg.rimage.attach}}
+                      style={{width: 100, height: 80}}
+                    />
+                  ) : message.reply_msg.msg_type == 'audio' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="mic"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: 'red'}}>
+                        Voice message
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'video' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="video"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: 'red'}}>
+                        Voice message
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'file' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="file"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                        Document
+                      </Text>
+                    </View>
+                  ) : null
+                ) : null
+              ) : null}
+            </View>
+
+            <Component
+              onOpen={() => {
+                setOpen(true);
+              }}
+              onClose={() => setOpen(false)}>
+              <View
+                style={{
+                  borderRadius: 8,
+                  elevation: 5,
+                  width: open ? '100%' : 200,
+                  height: open ? '100%' : 280,
+                }}>
+                <MapView
+                  onPress={() => {
+                    if (selectedMode) {
+                      if (!inList) {
+                        appendMessages(message.id);
+                        replyMessage({
+                          text: message,
+                        });
+                        if (message.msg_type === 'text') {
+                          copyText({
+                            id: message.id,
+                            text:
+                              message.fmsg !== '' ? message.fmsg : message.tmsg,
+                          });
+                        }
+                      } else {
+                        removeMessages(message.id);
+                      }
+                    }
+                  }}
+                  onLongPress={() => {
+                    if (!selectedMode) {
+                      toggleSelectedMode();
                       appendMessages(message.id);
                       replyMessage({
                         text: message,
@@ -2425,42 +2595,24 @@ export const MessageComponent = ({
                             message.fmsg !== '' ? message.fmsg : message.tmsg,
                         });
                       }
-                    } else {
-                      removeMessages(message.id);
                     }
-                  }
-                }}
-                onLongPress={() => {
-                  if (!selectedMode) {
-                    toggleSelectedMode();
-                    appendMessages(message.id);
-                    replyMessage({
-                      text: message,
-                    });
-                    if (message.msg_type === 'text') {
-                      copyText({
-                        id: message.id,
-                        text: message.fmsg !== '' ? message.fmsg : message.tmsg,
-                      });
-                    }
-                  }
-                }}
-                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : false} // remove if not using Google Maps
-                style={{
-                  flex: 1,
-                  ...StyleSheet.absoluteFillObject,
-                }}
-                region={{
-                  latitude,
-                  longitude,
-                  latitudeDelta: 0.015,
-                  longitudeDelta: 0.0121,
-                }}>
-                <Marker coordinate={{latitude, longitude}} />
-              </MapView>
-            </View>
-          </Component>
-          {/* </View> */}
+                  }}
+                  provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : false} // remove if not using Google Maps
+                  style={{
+                    flex: 1,
+                    ...StyleSheet.absoluteFillObject,
+                  }}
+                  region={{
+                    latitude,
+                    longitude,
+                    latitudeDelta: 0.015,
+                    longitudeDelta: 0.0121,
+                  }}>
+                  <Marker coordinate={{latitude, longitude}} />
+                </MapView>
+              </View>
+            </Component>
+          </View>
           <Text
             style={{
               color: '#524D4D',
@@ -2494,6 +2646,181 @@ export const MessageComponent = ({
 
       content = (
         <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
+          <View
+            style={
+              message.reply_msg
+                ? {
+                    backgroundColor: 'red',
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
+                    elevation: 5,
+                  }
+                : {
+                    height: 0,
+                  }
+            }>
+            <View
+              style={{
+                borderWidth:
+                  message.reply_msg && message.reply_msg.length > 0 ? 5 : 0,
+                borderColor: '#fff',
+              }}>
+              {message.reply_msg ? (
+                message.reply_msg.msg_type == 'text' ? (
+                  <Text
+                    style={{
+                      margin: 10,
+                      color: '#fff',
+                      fontSize: 15,
+                    }}>
+                    {message.reply_msg.rmsg}
+                  </Text>
+                ) : message.reply_msg.msg_type == 'contact' ? (
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="user"
+                      type="Feather"
+                      style={{
+                        color: '#fff',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+
+                    <Text
+                      style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                      Contact
+                    </Text>
+                  </View>
+                ) : message.reply_msg.msg_type == 'location' ? (
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="location"
+                      type="Entypo"
+                      style={{
+                        color: '#fff',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+
+                    <Text
+                      style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                      Location
+                    </Text>
+                  </View>
+                ) : message.reply_msg.rimage ? (
+                  message.reply_msg.msg_type == 'image' ? (
+                    <Image
+                      source={{uri: message.reply_msg.rimage.attach}}
+                      style={{width: 100, height: 80}}
+                    />
+                  ) : message.reply_msg.msg_type == 'audio' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="mic"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: '#fff'}}>
+                        Voice message
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'video' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="video"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                          marginLeft: 5,
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: '#fff', marginLeft: 8}}>
+                        Video
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'file' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="file"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                        Document
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'location' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="location"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                        Location
+                      </Text>
+                    </View>
+                  ) : null
+                ) : null
+              ) : null}
+            </View>
+          </View>
+
           <Component
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}>
