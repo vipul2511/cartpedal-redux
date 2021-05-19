@@ -1043,13 +1043,75 @@ class ChatDetailScreen extends React.Component {
     } else {
       type = '0';
     }
-    const messageToSent = {
-      ...newMessage,
-      msg_type: 'audio',
-      fmsg: '',
-      fattach: {...newMessage.fattach, attach: data.path},
-      time: moment().format('hh:mm'),
-    };
+    let replyID = '0';
+    if (this.state.showRelymsg == true && this.state.replyMessage != '') {
+      if (
+        this.state.replyMessage.text.fmsg ||
+        this.state.replyMessage.text.tmsg
+      ) {
+        replyID = this.state.replyMessage.text.id;
+      }
+    }
+    if (this.state.showimagerply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showaudiorply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showlocationmsg == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showfilerply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showcontactrply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showvideorply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    let messageToSent = null;
+    if (replyID == '0') {
+      messageToSent = {
+        ...newMessage,
+        msg_type: 'audio',
+        fmsg: '',
+        fattach: {...newMessage.fattach, attach: data.path},
+        time: moment().format('hh:mm'),
+      };
+    } else {
+      const rmsg =
+        this.state.replyMessage.text.tmsg == ''
+          ? this.state.replyMessage.text.fmsg
+          : this.state.replyMessage.text.tmsg;
+
+      const rimage =
+        this.state.replyMessage.text.tattach == ''
+          ? this.state.replyMessage.text.fattach
+          : this.state.replyMessage.text.tattach;
+
+      messageToSent = {
+        ...replyNewMessage,
+        msg_type: 'audio',
+        fmsg: '',
+        fattach: {...newMessage.fattach, attach: data.path},
+        time: moment().format('hh:mm'),
+        reply_id: this.state.replyMessage.text.id,
+        reply_msg: {
+          ...this.state.replyMessage.text,
+          rmsg,
+          rimage,
+        },
+      };
+    }
+
+    // const messageToSent = {
+    //   ...newMessage,
+    //   msg_type: 'audio',
+    //   fmsg: '',
+    //   fattach: {...newMessage.fattach, attach: data.path},
+    //   time: moment().format('hh:mm'),
+    // };
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
       this.setState((p) => ({
         chatList: {
@@ -1070,7 +1132,7 @@ class ChatDetailScreen extends React.Component {
       toid: this.props.route.params.userid,
       msg_type: 'audio',
       type: this.props.route.params.msg_type,
-      reply_id: 0,
+      reply_id: replyID,
       body: '',
       upload: [
         {
@@ -1110,6 +1172,16 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
+          this.setState({selectedMode: false, forwardMessageIds: []});
+          this.setState({
+            showRelymsg: false,
+            showaudiorply: false,
+            showimagerply: false,
+            showlocationmsg: false,
+            showfilerply: false,
+            showcontactrply: false,
+            showvideorply: false,
+          });
         } else {
         }
       })
