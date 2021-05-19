@@ -1471,23 +1471,7 @@ export const MessageComponent = ({
                     </View>
                   ) : null
                 ) : null
-              ) : (
-                <Hyperlink
-                  linkDefault={true}
-                  linkStyle={{color: '#2980b9', fontSize: 20}}>
-                  <Text
-                    style={{
-                      margin: 10,
-                      color: 'black',
-                      fontSize: 12,
-                      textDecorationLine: message.tmsg.includes('http')
-                        ? 'underline'
-                        : 'none',
-                    }}>
-                    {message.tmsg}
-                  </Text>
-                </Hyperlink>
-              )}
+              ) : null}
               {message.reply_msg ? (
                 <View style={{backgroundColor: '#fff'}}>
                   <Text
@@ -2050,10 +2034,7 @@ export const MessageComponent = ({
                 </Text>
               </View>
             ) : null}
-            <TouchableOpacity
-              onPress={() => {
-                downloadAndOpenDocument(message.tattach.attach);
-              }}
+            <View
               style={{
                 backgroundColor: '#FFFFFF',
                 borderRadius: 8,
@@ -2086,12 +2067,15 @@ export const MessageComponent = ({
                 bgColor="white">
                 {download.percentage !== 1.0 ? (
                   <Icon
+                    onPress={() => {
+                      downloadAndOpenDocument(message.tattach.attach);
+                    }}
                     name="arrow-down"
                     style={{color: 'red', fontSize: 26, fontWeight: 'bold'}}
                   />
                 ) : null}
               </ProgressCircle>
-            </TouchableOpacity>
+            </View>
           </View>
           <Text
             style={{
@@ -2109,10 +2093,7 @@ export const MessageComponent = ({
     if (message.fattach !== null && message.fattach !== '') {
       content = (
         <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
-          <TouchableOpacity
-            onPress={() => {
-              downloadAndOpenDocument(message.fattach.attach);
-            }}
+          <View
             style={{
               backgroundColor: 'red',
               borderRadius: 8,
@@ -2151,13 +2132,16 @@ export const MessageComponent = ({
                 bgColor="red">
                 {download.percentage !== 1 ? (
                   <Icon
+                    onPress={() => {
+                      downloadAndOpenDocument(message.fattach.attach);
+                    }}
                     name="arrow-down"
                     style={{color: 'white', fontSize: 26, fontWeight: 'bold'}}
                   />
                 ) : null}
               </ProgressCircle>
             ) : null}
-          </TouchableOpacity>
+          </View>
           <View
             style={{
               flexDirection: 'row',

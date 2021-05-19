@@ -315,6 +315,15 @@ class ChatDetailScreen extends React.Component {
         time: moment().format('hh:mm'),
       };
     } else {
+      const rmsg =
+        this.state.replyMessage.text.tmsg == ''
+          ? this.state.replyMessage.text.fmsg
+          : this.state.replyMessage.text.tmsg;
+
+      const rimage =
+        this.state.replyMessage.text.tattach == ''
+          ? this.state.replyMessage.text.fattach
+          : this.state.replyMessage.text.tattach;
       messageToSent = {
         ...replyNewMessage,
         msg_type: msg_type,
@@ -323,11 +332,10 @@ class ChatDetailScreen extends React.Component {
         reply_id: this.state.replyMessage.text.id,
         reply_msg: {
           ...this.state.replyMessage.text,
-          rmsg: this.state.replyMessage.text.tmsg,
-          rimage: this.state.replyMessage.text.tattach,
+          rmsg,
+          rimage,
         },
       };
-      // console.log(JSON.stringify(messageToSent, null, 2));
     }
 
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
@@ -755,6 +763,16 @@ class ChatDetailScreen extends React.Component {
         time: moment().format('hh:mm'),
       };
     } else {
+      const rmsg =
+        this.state.replyMessage.text.tmsg == ''
+          ? this.state.replyMessage.text.fmsg
+          : this.state.replyMessage.text.tmsg;
+
+      const rimage =
+        this.state.replyMessage.text.tattach == ''
+          ? this.state.replyMessage.text.fattach
+          : this.state.replyMessage.text.tattach;
+
       messageToSent = {
         ...replyNewMessage,
         msg_type: 'image',
@@ -768,8 +786,8 @@ class ChatDetailScreen extends React.Component {
         reply_id: this.state.replyMessage.text.id,
         reply_msg: {
           ...this.state.replyMessage.text,
-          rmsg: this.state.replyMessage.text.tmsg,
-          rimage: this.state.replyMessage.text.tattach,
+          rmsg,
+          rimage,
         },
       };
       // console.log(JSON.stringify(messageToSent, null, 2));

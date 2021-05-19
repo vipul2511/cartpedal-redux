@@ -462,6 +462,7 @@ class DashBoardScreen extends Component {
       );
     });
   };
+
   ListEmpty = () => {
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -471,6 +472,7 @@ class DashBoardScreen extends Component {
       </View>
     );
   };
+
   logout = () => {
     fetch(`${BASE_URL}api-user/logout?user_id=${this.state.userId}`, {
       method: 'GET',
@@ -505,12 +507,14 @@ class DashBoardScreen extends Component {
       );
     });
   }
+
   loggedUserstory = () => {
     this.props.loggedStoriesAction(
       this.state.userId,
       this.state.userAccessToken,
     );
   };
+
   userStories = () => {
     this.props.storiesAction(this.state.userId, this.state.userAccessToken);
   };
