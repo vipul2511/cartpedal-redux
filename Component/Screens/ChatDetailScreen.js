@@ -685,6 +685,17 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
+
+          this.setState({selectedMode: false, forwardMessageIds: []});
+          this.setState({
+            showRelymsg: false,
+            showaudiorply: false,
+            showimagerply: false,
+            showlocationmsg: false,
+            showfilerply: false,
+            showcontactrply: false,
+            showvideorply: false,
+          });
         } else {
         }
       })
