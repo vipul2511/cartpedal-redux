@@ -113,7 +113,6 @@ export default class GroupProfile extends React.Component {
     AsyncStorage.getItem('@user_name').then((userName) => {
       if (userName) {
         this.setState({userName: JSON.parse(userName)});
-        console.log('username   ====' + this.state.userName);
         this.AddCartProductCall();
         this.singleProductPlaceOrder();
       }

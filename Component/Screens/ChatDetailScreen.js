@@ -324,6 +324,7 @@ class ChatDetailScreen extends React.Component {
         this.state.replyMessage.text.tattach == ''
           ? this.state.replyMessage.text.fattach
           : this.state.replyMessage.text.tattach;
+
       messageToSent = {
         ...replyNewMessage,
         msg_type: msg_type,
@@ -1566,14 +1567,16 @@ class ChatDetailScreen extends React.Component {
   clearMessages = () => {
     const {fcmToken, userId, userAccessToken, forwardMessageIds} = this.state;
 
-    const msgids = JSON.stringify(forwardMessageIds);
-
     const data = new FormData();
 
     data.append('user_id', userId);
     data.append('type', this.props.route.params.msg_type);
     data.append('toid', this.props.route.params.userid);
     var EditProfileUrl = `${BASE_URL}-message/clear-all`;
+
+    console.log(EditProfileUrl, data);
+
+    console.log(fcmToken, Platform.OS, JSON.parse(userAccessToken));
 
     fetch(EditProfileUrl, {
       method: 'POST',
@@ -1587,12 +1590,15 @@ class ChatDetailScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
+        console.log(JSON.stringify(responseData, null, 2));
         if (responseData.code == '200') {
           this.setState({chatList: {messages: []}});
         } else {
         }
       })
-      .catch((error) => {})
+      .catch((error) => {
+        console.log(JSON.stringify(error, null, 2));
+      })
       .finally(() => {});
   };
 
@@ -1624,6 +1630,14 @@ class ChatDetailScreen extends React.Component {
     let about = this.props.route.params.userabout;
     let phone = this.props.route.params.userphone;
     let groupid = this.props.route.params.groupId;
+
+    console.log(items, '!!!');
+    console.log(id, '!!!');
+    console.log(name, '!!!');
+    console.log(about, '!!!');
+    console.log(phone, '!!!');
+    console.log(groupid, '!!!');
+
     if (this.props.route.params.msg_type == '1') {
       if (items) {
         this.props.navigation.navigate('GroupProfile', {
@@ -1636,7 +1650,6 @@ class ChatDetailScreen extends React.Component {
       } else {
         this.props.navigation.navigate('GroupProfile', {
           imageURL: '',
-          imageURL: items,
           name: name,
           about: about,
           phone: phone,
@@ -1655,7 +1668,6 @@ class ChatDetailScreen extends React.Component {
       } else {
         this.props.navigation.navigate('ChatProfile', {
           imageURL: '',
-          imageURL: items,
           name: name,
           about: about,
           phone: phone,

@@ -18,14 +18,15 @@ import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Icon from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import ImagePicker from 'react-native-image-crop-picker';
 import {downloadFile, DocumentDirectoryPath} from 'react-native-fs';
 import ImageModal from 'react-native-image-modal';
 import FileViewer from 'react-native-file-viewer';
 import {BASE_URL} from '../Component/ApiClient';
+
 const screenWidth = Dimensions.get('screen').width;
 let width = Dimensions.get('window').width;
+
 export default class ChatProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -65,12 +66,12 @@ export default class ChatProfile extends React.Component {
       if (token) {
         this.setState({fcmToken: token});
         let image = this.state.imageList;
-        let name = this.props.navigation.state.params.name;
-        let about = this.props.navigation.state.params.about;
+        let name = this.props.route.params.name;
+        let about = this.props.route.params.about;
         this.setState({name: name});
         this.setState({about: about});
-        this.setState({phone: this.props.navigation.state.params.phone});
-        let propsImage = this.props.navigation.state.params.imageURL;
+        this.setState({phone: this.props.route.params.phone});
+        let propsImage = this.props.route.params.imageURL;
         if (propsImage !== '') {
           let obj = {
             uri: propsImage,
@@ -295,7 +296,7 @@ export default class ChatProfile extends React.Component {
   singleProductPlaceOrder = () => {
     let formData = new FormData();
     formData.append('user_id', this.state.userId);
-    formData.append('toid', this.props.navigation.state.params.userid);
+    formData.append('toid', this.props.route.params.userid);
     formData.append('type', '0');
 
     var PalceOderUrl = `${BASE_URL}api-message/media-list`;
@@ -354,8 +355,8 @@ export default class ChatProfile extends React.Component {
     });
   }
   customButton = () => {
-    let item = this.props.navigation.state.params.imageURL;
-    if (this.props.navigation.state.params.imageURL != '') {
+    let item = this.props.route.params.imageURL;
+    if (this.props.route.params.imageURL != '') {
       this.props.navigation.navigate('FullViewProfileScreen', {images: item});
       this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
     } else {
@@ -441,8 +442,8 @@ export default class ChatProfile extends React.Component {
                 <ImageModal
                   imageBackgroundColor="transparent"
                   source={
-                    this.props.navigation.state.params.imageURL
-                      ? {uri: this.props.navigation.state.params.imageURL}
+                    this.props.route.params.imageURL
+                      ? {uri: this.props.route.params.imageURL}
                       : require('../images/default_user.png')
                   }
                   style={{width: width, height: 300}}
@@ -461,12 +462,18 @@ export default class ChatProfile extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={styles.Name}>
-              <View style={{flexDirection: 'row'}}>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{marginLeft: 15, marginTop: 5}}>
                   <Text style={{fontSize: 15, color: '#F01738'}}>
                     Media,links,and docs
                   </Text>
                 </View>
+                <TouchableOpacity
+                  onPress={this.customButton}
+                  style={{marginRight: 15, marginTop: 5}}>
+                  <Text style={{fontSize: 15, color: '#F01738'}}>View All</Text>
+                </TouchableOpacity>
               </View>
 
               <View
@@ -477,7 +484,6 @@ export default class ChatProfile extends React.Component {
                 }}>
                 <ScrollView horizontal={true}>
                   {this.state.mediaArr.map((item) => {
-                    console.log('item', item);
                     return (
                       <View style={{flexDirection: 'row'}}>
                         {item.type == 'image' ? (
