@@ -121,7 +121,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
-  - imglyKit (10.23.1)
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -452,14 +451,8 @@ PODS:
     - React
   - RNVectorIcons (7.1.0):
     - React
-  - RNVideoEditorSDK (2.9.0):
-    - React
-    - React-RCTImage
-    - VideoEditorSDK (~> 10.23)
   - Toast (4.0.0)
   - TOCropViewController (2.6.0)
-  - VideoEditorSDK (10.23.1):
-    - imglyKit (= 10.23.1)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -529,7 +522,6 @@ DEPENDENCIES:
   - RNSound (from `../node_modules/react-native-sound`)
   - RNTextSize (from `../node_modules/react-native-text-size/ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
-  - RNVideoEditorSDK (from `../node_modules/react-native-videoeditorsdk`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -552,13 +544,11 @@ SPEC REPOS:
     - GoogleDataTransportCCTSupport
     - GoogleMaps
     - GoogleUtilities
-    - imglyKit
     - nanopb
     - PromisesObjC
     - Protobuf
     - Toast
     - TOCropViewController
-    - VideoEditorSDK
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -685,8 +675,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-text-size/ios"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
-  RNVideoEditorSDK:
-    :path: "../node_modules/react-native-videoeditorsdk"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -714,7 +702,6 @@ SPEC CHECKSUMS:
   GoogleDataTransportCCTSupport: 0f39025e8cf51f168711bd3fb773938d7e62ddb5
   GoogleMaps: 32ca02de09de357a10ac773f2c70f1986751392d
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
-  imglyKit: 4ffe931831f12ccab5d41c8586687d8e04dd97ad
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   Permission-Camera: 6abdb054620b2f6b3bf9e0b3842db246424d4d48
   Permission-Contacts: 6bcbdab0f0e11bc8db99e14bfe0dfff6188cb8a5
@@ -775,10 +762,8 @@ SPEC CHECKSUMS:
   RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
   RNTextSize: 7efa06531c6bb7ab6ed070b4ce0d1248cf06fcdf
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
-  RNVideoEditorSDK: fd1e0b5636b54d895748ee1b87af578b256505a1
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
-  VideoEditorSDK: 251e32a43e98bbd6b4113551c74e9b607515f3c0
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
 
 PODFILE CHECKSUM: c011a28b65d13577a23d8532cfb2646134de2cbb

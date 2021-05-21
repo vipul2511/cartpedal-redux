@@ -1939,11 +1939,6 @@ class ChatDetailScreen extends React.Component {
                                 />
                               </TouchableOpacity>
                             }>
-                            {/* <MenuItem onPress={() =>{ this._menu.hide()
-                    this.openProfile()
-                    }}>
-                      View Contact
-                    </MenuItem> */}
                             <MenuItem
                               onPress={() => {
                                 this._menu.hide();
@@ -2129,7 +2124,7 @@ class ChatDetailScreen extends React.Component {
                       <View style={{marginLeft: 10}}>
                         <TouchableOpacity
                           onPress={() => {
-                            // this.selectOneFile1()
+                            this.selectOneFile1();
                           }}>
                           <View
                             style={{
