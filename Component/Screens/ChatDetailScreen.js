@@ -142,12 +142,17 @@ class ChatDetailScreen extends React.Component {
     this.setState((p) => ({...p, copyTexts: [...p.copyTexts, {id, text}]}));
   };
 
+  // replyTo = (text) => {
+  //   if (this.props.route.params.msg_type == '1' && text.text.tname == '') {
+  //     this.setState({showEveryone: true});
+  //   } else {
+  //     if (text.text.fmsg != '') this.setState({showEveryone: true});
+  //   }
+  //   this.setState({replyMessage: text});
+  // };
+
   replyTo = (text) => {
-    if (this.props.route.params.msg_type == '1' && text.text.tname == '') {
-      this.setState({showEveryone: true});
-    } else {
-      if (text.text.fmsg != '') this.setState({showEveryone: true});
-    }
+    this.setState({showEveryone: true});
     this.setState({replyMessage: text});
   };
 
