@@ -414,7 +414,6 @@ export default class ChatProfile extends React.Component {
   };
 
   render() {
-    console.log(this.state.downloading);
     return (
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />

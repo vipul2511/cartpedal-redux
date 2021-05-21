@@ -338,15 +338,17 @@ class DashBoardScreen extends Component {
         avatar,
         about,
         msg_type,
+        groupname,
+        groupavatar,
       } = notificationOpen.notification.data;
       this.props.navigation.navigate('ChatDetailScreen', {
         userid: groupid != '0' ? groupid : fromid,
-        username: name,
-        useravatar: avatar,
+        username: groupname != '' ? groupname : name,
+        useravatar: groupavatar != '' ? groupavatar : avatar,
         userabout: about,
         userphone: mobile,
         msg_type: msg_type,
-        groupId: fromid,
+        groupId: groupid != '0' ? groupid : fromid,
         groupexit: false,
       });
     }
@@ -376,6 +378,7 @@ class DashBoardScreen extends Component {
     this.listener3 = firebase
       .notifications()
       .onNotificationOpened(async (m) => {
+        console.log(JSON.stringify(m.notification.data, null, 2), Platform.OS);
         firebase.notifications().removeAllDeliveredNotifications();
         const {
           fromid,
@@ -385,15 +388,17 @@ class DashBoardScreen extends Component {
           about,
           msg_type,
           groupid,
+          groupname,
+          groupavatar,
         } = m.notification.data;
         this.props.navigation.navigate('ChatDetailScreen', {
           userid: groupid != '0' ? groupid : fromid,
-          username: name,
-          useravatar: avatar,
+          username: groupname != '' ? groupname : name,
+          useravatar: groupavatar != '' ? groupavatar : avatar,
           userabout: about,
           userphone: mobile,
           msg_type: msg_type,
-          groupId: fromid,
+          groupId: groupid != '0' ? groupid : fromid,
           groupexit: false,
         });
       });
@@ -555,7 +560,6 @@ class DashBoardScreen extends Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         if (responseData.code == '200') {
           if (responseData.data.name !== null) {
             this.setState({userName: responseData.data.name});
@@ -596,9 +600,11 @@ class DashBoardScreen extends Component {
   openStoryModal() {
     this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
   }
+
   closeProfileModal = () => {
     this.setState({isStoryModalVisible: false});
   };
+
   openImageGallery() {
     ImagePicker.openPicker({
       mediaType: 'photo',
