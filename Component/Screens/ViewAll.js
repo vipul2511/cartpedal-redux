@@ -8,6 +8,7 @@ import {
   Image,
   FlatList,
   useWindowDimensions,
+  SafeAreaView,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Feather from 'react-native-vector-icons/Feather';
@@ -39,108 +40,110 @@ export const ViewAll = (props) => {
       });
   };
   return (
-    <View style={{flex: 1}}>
-      <Spinner
-        visible={downloading}
-        color="#F01738"
-        textStyle={styles.spinnerTextStyle}
-      />
-      <View style={styles.headerView}>
-        <View style={styles.BackButtonContainer}>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
+        <Spinner
+          visible={downloading}
+          color="#F01738"
+          textStyle={styles.spinnerTextStyle}
+        />
+        <View style={styles.headerView}>
+          <View style={styles.BackButtonContainer}>
+            <TouchableOpacity onPress={() => props.navigation.goBack()}>
+              <Image
+                source={require('../images/back_blck_icon.png')}
+                style={styles.backButtonStyle}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.TitleContainer}>
             <Image
-              source={require('../images/back_blck_icon.png')}
-              style={styles.backButtonStyle}
+              source={require('../images/logo_cart_paddle.png')}
+              style={styles.LogoIconStyle}
             />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={styles.TitleStyle}>CartPadle</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.SearchContainer} />
         </View>
-        <View style={styles.TitleContainer}>
-          <Image
-            source={require('../images/logo_cart_paddle.png')}
-            style={styles.LogoIconStyle}
-          />
-          <TouchableOpacity
-            style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={styles.TitleStyle}>CartPadle</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.SearchContainer} />
+        <FlatList
+          numColumns={3}
+          data={data}
+          renderItem={({item}) => {
+            return (
+              <View style={{flexDirection: 'row'}}>
+                {item.type == 'image' ? (
+                  <ImageModal
+                    style={{
+                      width: width / 3.2,
+                      height: width / 3.2,
+                      borderRadius: 8,
+                      margin: '1%',
+                      marginVertical: 4,
+                    }}
+                    imageBackgroundColor="transparent"
+                    source={{uri: item.attachment}}
+                  />
+                ) : item.type == 'audio' ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      downloadAndOpenDocument(item.attachment);
+                    }}
+                    style={{
+                      width: width / 3.2,
+                      height: width / 3.2,
+                      backgroundColor: 'red',
+                      borderRadius: 8,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      margin: '1%',
+                      marginVertical: 4,
+                    }}>
+                    <Feather name="headphones" color="#fff" size={18} />
+                  </TouchableOpacity>
+                ) : item.type == 'video' ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      downloadAndOpenDocument(item.attachment);
+                    }}
+                    style={{
+                      width: width / 3.2,
+                      height: width / 3.2,
+                      backgroundColor: 'red',
+                      margin: '1%',
+                      marginVertical: 4,
+                      borderRadius: 8,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Feather name="video" color="#fff" size={18} />
+                  </TouchableOpacity>
+                ) : item.type == 'file' ? (
+                  <TouchableOpacity
+                    style={{
+                      width: width / 3.2,
+                      height: width / 3.2,
+                      backgroundColor: 'red',
+                      margin: '1%',
+                      marginVertical: 4,
+                      borderRadius: 8,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      downloadAndOpenDocument(item.attachment);
+                    }}>
+                    <Feather name="file" color="#fff" size={18} />
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            );
+          }}
+        />
       </View>
-      <FlatList
-        numColumns={3}
-        data={data}
-        renderItem={({item}) => {
-          return (
-            <View style={{flexDirection: 'row'}}>
-              {item.type == 'image' ? (
-                <ImageModal
-                  style={{
-                    width: width / 3.2,
-                    height: width / 3.2,
-                    borderRadius: 8,
-                    margin: '1%',
-                    marginVertical: 4,
-                  }}
-                  imageBackgroundColor="transparent"
-                  source={{uri: item.attachment}}
-                />
-              ) : item.type == 'audio' ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    downloadAndOpenDocument(item.attachment);
-                  }}
-                  style={{
-                    width: width / 3.2,
-                    height: width / 3.2,
-                    backgroundColor: 'red',
-                    borderRadius: 8,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: '1%',
-                    marginVertical: 4,
-                  }}>
-                  <Feather name="headphones" color="#fff" size={18} />
-                </TouchableOpacity>
-              ) : item.type == 'video' ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    downloadAndOpenDocument(item.attachment);
-                  }}
-                  style={{
-                    width: width / 3.2,
-                    height: width / 3.2,
-                    backgroundColor: 'red',
-                    margin: '1%',
-                    marginVertical: 4,
-                    borderRadius: 8,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Feather name="video" color="#fff" size={18} />
-                </TouchableOpacity>
-              ) : item.type == 'file' ? (
-                <TouchableOpacity
-                  style={{
-                    width: width / 3.2,
-                    height: width / 3.2,
-                    backgroundColor: 'red',
-                    margin: '1%',
-                    marginVertical: 4,
-                    borderRadius: 8,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    downloadAndOpenDocument(item.attachment);
-                  }}>
-                  <Feather name="file" color="#fff" size={18} />
-                </TouchableOpacity>
-              ) : null}
-            </View>
-          );
-        }}
-      />
-    </View>
+    </SafeAreaView>
   );
 };
 

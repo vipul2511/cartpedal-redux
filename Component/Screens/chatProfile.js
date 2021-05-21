@@ -49,7 +49,6 @@ export default class ChatProfile extends React.Component {
         fcmToken: '',
         imageList: [],
         itemOfProduct: '',
-
         audio1: {playing: false, duration: 0, current: 0},
         about: '',
         isEditModalVisible: false,
@@ -57,6 +56,7 @@ export default class ChatProfile extends React.Component {
         isProfileModalVisible: false,
         newImageArr: '',
         phone: '',
+        downloading: false,
       });
     this.doubleClick = false;
     this.hidden = false;
@@ -137,16 +137,22 @@ export default class ChatProfile extends React.Component {
   }
 
   downloadAndOpenDocument = async (uri) => {
+    this.setState({downloading: true});
     const parts = uri.split('/');
     const fileName = parts[parts.length - 1];
     downloadFile({
       fromUrl: uri,
       toFile: `${DocumentDirectoryPath}/${fileName}`,
-    }).promise.then(() => {
-      FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
-        showOpenWithDialog: true,
-      });
-    });
+    })
+      .promise.then(() => {
+        FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
+          showOpenWithDialog: true,
+        });
+      })
+      .catch(() => {
+        alert('could not open file');
+      })
+      .finally(() => this.setState({downloading: false}));
   };
 
   renderInnerImageList(item) {
@@ -246,19 +252,6 @@ export default class ChatProfile extends React.Component {
     } else {
       this.EditProfileCall();
     }
-  };
-
-  downloadAndOpenDocument = async (uri) => {
-    const parts = uri.split('/');
-    const fileName = parts[parts.length - 1];
-    downloadFile({
-      fromUrl: uri,
-      toFile: `${DocumentDirectoryPath}/${fileName}`,
-    }).promise.then(() => {
-      FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
-        showOpenWithDialog: true,
-      });
-    });
   };
 
   EditProfileCall = () => {
@@ -421,11 +414,12 @@ export default class ChatProfile extends React.Component {
   };
 
   render() {
+    console.log(this.state.downloading);
     return (
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
         <Spinner
-          visible={this.state.spinner}
+          visible={this.state.spinner || this.state.downloading}
           color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
@@ -514,7 +508,10 @@ export default class ChatProfile extends React.Component {
                             />
                           </View>
                         ) : item.type == 'audio' ? (
-                          <View
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.downloadAndOpenDocument(item.attachment);
+                            }}
                             style={{
                               width: 45,
                               height: 45,
@@ -525,9 +522,12 @@ export default class ChatProfile extends React.Component {
                               alignItems: 'center',
                             }}>
                             <Feather name="headphones" color="#fff" size={18} />
-                          </View>
+                          </TouchableOpacity>
                         ) : item.type == 'video' ? (
-                          <View
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.downloadAndOpenDocument(item.attachment);
+                            }}
                             style={{
                               width: 45,
                               height: 45,
@@ -538,7 +538,7 @@ export default class ChatProfile extends React.Component {
                               alignItems: 'center',
                             }}>
                             <Feather name="video" color="#fff" size={18} />
-                          </View>
+                          </TouchableOpacity>
                         ) : item.type == 'file' ? (
                           <TouchableOpacity
                             style={{

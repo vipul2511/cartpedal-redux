@@ -27,6 +27,8 @@ import ImageModal from 'react-native-image-modal';
 const screenWidth = Dimensions.get('screen').width;
 let width = Dimensions.get('window').width;
 import {BASE_URL} from '../Component/ApiClient';
+import {DocumentDirectoryPath, downloadFile} from 'react-native-fs';
+import FileViewer from 'react-native-file-viewer';
 
 export default class GroupProfile extends React.Component {
   constructor(props) {
@@ -65,6 +67,7 @@ export default class GroupProfile extends React.Component {
         groupname: '',
         grpMemberId: '',
         showOptions: false,
+        downloading: false,
       });
     this.doubleClick = false;
     this.hidden = false;
@@ -428,6 +431,23 @@ export default class GroupProfile extends React.Component {
       .done();
   };
 
+  downloadAndOpenDocument = async (uri) => {
+    this.setState({downloading: true});
+    const parts = uri.split('/');
+    const fileName = parts[parts.length - 1];
+    downloadFile({
+      fromUrl: uri,
+      toFile: `${DocumentDirectoryPath}/${fileName}`,
+    })
+      .promise.then(() => {
+        FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
+          showOpenWithDialog: true,
+        });
+      })
+      .catch('could not open file')
+      .finally(() => this.setState({downloading: false}));
+  };
+
   addMember = () => {
     this.props.navigation.navigate('ChatGroupListScreen', {
       userId: this.state.userId,
@@ -460,7 +480,7 @@ export default class GroupProfile extends React.Component {
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
         <Spinner
-          visible={this.state.spinner}
+          visible={this.state.spinner || this.state.downloading}
           color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
@@ -676,7 +696,10 @@ export default class GroupProfile extends React.Component {
                             />
                           </View>
                         ) : item.type == 'audio' ? (
-                          <View
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.downloadAndOpenDocument(item.attachment);
+                            }}
                             style={{
                               width: 45,
                               height: 45,
@@ -687,9 +710,12 @@ export default class GroupProfile extends React.Component {
                               alignItems: 'center',
                             }}>
                             <Feather name="headphones" color="#fff" size={18} />
-                          </View>
+                          </TouchableOpacity>
                         ) : item.type == 'video' ? (
-                          <View
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.downloadAndOpenDocument(item.attachment);
+                            }}
                             style={{
                               width: 45,
                               height: 45,
@@ -700,9 +726,12 @@ export default class GroupProfile extends React.Component {
                               alignItems: 'center',
                             }}>
                             <Feather name="video" color="#fff" size={18} />
-                          </View>
+                          </TouchableOpacity>
                         ) : item.type == 'file' ? (
-                          <View
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.downloadAndOpenDocument(item.attachment);
+                            }}
                             style={{
                               width: 45,
                               height: 45,
@@ -713,7 +742,7 @@ export default class GroupProfile extends React.Component {
                               alignItems: 'center',
                             }}>
                             <Feather name="file" color="#fff" size={18} />
-                          </View>
+                          </TouchableOpacity>
                         ) : null}
                       </View>
                     );
