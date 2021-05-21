@@ -14,7 +14,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Platform
 } from 'react-native';
 import {contactIcon, tickIcon, untickIcon} from '../Component/Images';
 import AsyncStorage from '@react-native-community/async-storage';

@@ -449,6 +449,12 @@ export default class GroupProfile extends React.Component {
     }
   };
 
+  viewAll = () => {
+    this.props.navigation.navigate('ViewAll', {
+      items: this.state.mediaArr,
+    });
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -626,12 +632,18 @@ export default class GroupProfile extends React.Component {
               )}
             </View>
             <View style={styles.Name}>
-              <View style={{flexDirection: 'row'}}>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{marginLeft: 15, marginTop: 5}}>
                   <Text style={{fontSize: 15, color: '#F01738'}}>
                     Media,links,and docs
                   </Text>
                 </View>
+                <TouchableOpacity
+                  onPress={this.viewAll}
+                  style={{marginRight: 15, marginTop: 5}}>
+                  <Text style={{fontSize: 15, color: '#F01738'}}>View All</Text>
+                </TouchableOpacity>
               </View>
               <View
                 style={{
@@ -641,7 +653,6 @@ export default class GroupProfile extends React.Component {
                 }}>
                 <ScrollView horizontal={true}>
                   {this.state.mediaArr.map((item, index) => {
-                    console.log('item', item);
                     return (
                       <View style={{flexDirection: 'row'}}>
                         {item.type == 'image' ? (

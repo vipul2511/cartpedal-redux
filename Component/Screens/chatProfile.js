@@ -135,6 +135,7 @@ export default class ChatProfile extends React.Component {
       }, 800);
     }
   }
+
   downloadAndOpenDocument = async (uri) => {
     const parts = uri.split('/');
     const fileName = parts[parts.length - 1];
@@ -413,6 +414,12 @@ export default class ChatProfile extends React.Component {
 
   filemedia = () => {};
 
+  viewAll = () => {
+    this.props.navigation.navigate('ViewAll', {
+      items: this.state.mediaArr,
+    });
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.mainContainer}>
@@ -470,7 +477,7 @@ export default class ChatProfile extends React.Component {
                   </Text>
                 </View>
                 <TouchableOpacity
-                  onPress={this.customButton}
+                  onPress={this.viewAll}
                   style={{marginRight: 15, marginTop: 5}}>
                   <Text style={{fontSize: 15, color: '#F01738'}}>View All</Text>
                 </TouchableOpacity>

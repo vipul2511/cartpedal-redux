@@ -755,7 +755,7 @@ class ChatDetailScreen extends React.Component {
           const messages = this.state.chatList.messages;
           messages[messages.length - 1] = {
             ...messages[messages.length - 1],
-            id: responseData.data[0].id,
+            id: responseData.data.data[0].id,
             sending: false,
           };
           this.setState(
@@ -1635,12 +1635,12 @@ class ChatDetailScreen extends React.Component {
     let phone = this.props.route.params.userphone;
     let groupid = this.props.route.params.groupId;
 
-    console.log(items, '!!!');
-    console.log(id, '!!!');
-    console.log(name, '!!!');
-    console.log(about, '!!!');
-    console.log(phone, '!!!');
-    console.log(groupid, '!!!');
+    // console.log(items, '!!!');
+    // console.log(id, '!!!');
+    // console.log(name, '!!!');
+    // console.log(about, '!!!');
+    // console.log(phone, '!!!');
+    // console.log(groupid, '!!!');
 
     if (this.props.route.params.msg_type == '1') {
       if (items) {
