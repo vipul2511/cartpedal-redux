@@ -9,11 +9,11 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Fab, Icon} from 'native-base';
+import {Button, Fab, Header, Icon, Input, Item} from 'native-base';
 import {BASE_URL} from '../Component/ApiClient';
 
 class ForwardMessageScreen extends Component {
@@ -25,6 +25,8 @@ class ForwardMessageScreen extends Component {
       toids: [],
       groups: [],
       groupID: [],
+      searching: false,
+      text: '',
     };
   }
 
@@ -126,7 +128,9 @@ class ForwardMessageScreen extends Component {
   };
 
   render() {
-    const funct = this;
+    const filteredData = this.state.list.filter((i) =>
+      `${i.name}`.includes(this.state.text),
+    );
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -145,7 +149,7 @@ class ForwardMessageScreen extends Component {
             <Icon name="chevron-forward" />
           </Fab>
         )}
-        <View style={styles.headerView}>
+        {/* <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
@@ -170,12 +174,70 @@ class ForwardMessageScreen extends Component {
               style={styles.SearchIconStyle}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
+
+        {this.state.searching ? (
+          <Header
+            androidStatusBarColor="#F01738"
+            style={{backgroundColor: '#F01738'}}
+            searchBar
+            rounded>
+            <Item>
+              <TouchableOpacity
+                onPress={() => this.setState({searching: false})}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+              <Input
+                autoFocus
+                onChangeText={(text) => this.setState({text})}
+                value={this.state.text}
+                placeholder="Search"
+              />
+            </Item>
+            <Button transparent>
+              <Text>Search</Text>
+            </Button>
+          </Header>
+        ) : (
+          <View style={styles.headerView}>
+            <View style={styles.BackButtonContainer}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.TitleContainer}>
+              <Image
+                source={require('../images/logo_cart_paddle.png')}
+                style={styles.LogoIconStyle}
+              />
+              <TouchableOpacity
+                style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.TitleStyle}>CartPadle</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.SearchContainer}
+              onPress={() => {
+                this.setState({searching: true});
+              }}>
+              <Image
+                source={require('../images/search.png')}
+                style={styles.SearchIconStyle}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <View style={styles.MainContentBox}>
           <ScrollView>
             <View>
-              {this.state.list.map((v, i) => {
+              {filteredData.map((v, i) => {
                 const inList = this.state.toids.indexOf(v.id) !== -1;
                 return (
                   <TouchableOpacity

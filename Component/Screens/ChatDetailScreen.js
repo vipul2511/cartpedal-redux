@@ -1572,11 +1572,7 @@ class ChatDetailScreen extends React.Component {
     data.append('user_id', userId);
     data.append('type', this.props.route.params.msg_type);
     data.append('toid', this.props.route.params.userid);
-    var EditProfileUrl = `${BASE_URL}-message/clear-all`;
-
-    console.log(EditProfileUrl, data);
-
-    console.log(fcmToken, Platform.OS, JSON.parse(userAccessToken));
+    var EditProfileUrl = `${BASE_URL}api-message/clear-all`;
 
     fetch(EditProfileUrl, {
       method: 'POST',
