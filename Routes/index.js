@@ -64,6 +64,7 @@ import AdminReport from '../Component/Screens/AdminReport';
 import ReportIssue from '../Component/Screens/ReportIssue';
 import ProductMasterSaveScreen from '../Component/Screens/ProductMatserSaveScreen';
 import ViewContact from '../Component/Screens/ViewContact';
+import {ViewAll} from '../Component/Screens/ViewAll';
 
 const Stack = createStackNavigator();
 
@@ -72,6 +73,7 @@ export function MainStack() {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="ViewContact" component={ViewContact} />
+      <Stack.Screen name="ViewAll" component={ViewAll} />
 
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen

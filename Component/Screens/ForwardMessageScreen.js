@@ -149,33 +149,6 @@ class ForwardMessageScreen extends Component {
             <Icon name="chevron-forward" />
           </Fab>
         )}
-        {/* <View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <Image
-                source={require('../images/back_blck_icon.png')}
-                style={styles.backButtonStyle}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.TitleContainer}>
-            <Image
-              source={require('../images/logo_cart_paddle.png')}
-              style={styles.LogoIconStyle}
-            />
-            <TouchableOpacity
-              style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>CartPadle</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}}>
-            <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            />
-          </TouchableOpacity>
-        </View> */}
-
         {this.state.searching ? (
           <Header
             androidStatusBarColor="#F01738"

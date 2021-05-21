@@ -6358,6 +6358,11 @@ react-native-video@^5.1.0-alpha8:
     prop-types "^15.7.2"
     shaka-player "^2.5.9"
 
+react-native-videoeditorsdk@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-videoeditorsdk/-/react-native-videoeditorsdk-2.9.0.tgz#070eb4f075dfd748009a4e87e22d5633ca29c3b3"
+  integrity sha512-gMJ9ysk4wSwqhDaDTTXxTi6VXVh5j2G2hgKtM8HuiAlAHtb/5pa7azVhupinfNnc6c7YJfwFVWfBMMrKn1Rxww==
+
 react-native-webview@^11.0.0:
   version "11.4.3"
   resolved "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.4.3.tgz"

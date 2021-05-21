@@ -382,6 +382,7 @@ class ChatDetailScreen extends React.Component {
           const messages = this.state.chatList.messages;
           messages[messages.length - 1] = {
             ...messages[messages.length - 1],
+            id: responseData.data[0].id,
             sending: false,
           };
           this.setState(
@@ -550,6 +551,7 @@ class ChatDetailScreen extends React.Component {
           const messages = this.state.chatList.messages;
           messages[messages.length - 1] = {
             ...messages[messages.length - 1],
+            id: responseData.data[0].id,
             sending: false,
           };
           this.setState(
@@ -753,6 +755,7 @@ class ChatDetailScreen extends React.Component {
           const messages = this.state.chatList.messages;
           messages[messages.length - 1] = {
             ...messages[messages.length - 1],
+            id: responseData.data[0].id,
             sending: false,
           };
           this.setState(
@@ -1072,6 +1075,7 @@ class ChatDetailScreen extends React.Component {
           const messages = this.state.chatList.messages;
           messages[messages.length - 1] = {
             ...messages[messages.length - 1],
+            id: responseData.data[0].id,
             sending: false,
           };
           this.setState(
@@ -1193,6 +1197,7 @@ class ChatDetailScreen extends React.Component {
     //   fattach: {...newMessage.fattach, attach: data.path},
     //   time: moment().format('hh:mm'),
     // };
+
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
       this.setState((p) => ({
         chatList: {
@@ -1241,6 +1246,8 @@ class ChatDetailScreen extends React.Component {
           const messages = this.state.chatList.messages;
           messages[messages.length - 1] = {
             ...messages[messages.length - 1],
+            id: responseData.data[0].id,
+            fattach: responseData.data[0].attach,
             sending: false,
           };
           this.setState(
@@ -1430,6 +1437,7 @@ class ChatDetailScreen extends React.Component {
           const messages = this.state.chatList.messages;
           messages[messages.length - 1] = {
             ...messages[messages.length - 1],
+            id: responseData.data[0].id,
             sending: false,
           };
           this.setState(

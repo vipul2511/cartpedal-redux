@@ -2083,12 +2083,6 @@ const styles = StyleSheet.create({
     marginLeft: resp(17),
     backgroundColor: 'white',
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
     elevation: 0,
   },
   priceContainer: {

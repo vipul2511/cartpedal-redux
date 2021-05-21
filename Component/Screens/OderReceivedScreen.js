@@ -119,7 +119,7 @@ class CartPlaceScreen extends Component {
           userNo = userId;
           let formData = new FormData();
           formData.append('user_id', userNo);
-          formData.append('type', 1);
+          formData.append('type', 2);
           var CartList = `${BASE_URL}api-product/cart-list`;
           fetch(CartList, {
             method: 'Post',

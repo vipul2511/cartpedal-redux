@@ -542,6 +542,7 @@ class DashBoardScreen extends Component {
   ProfileViewCall = () => {
     var urlprofile =
       `${BASE_URL}api-user/view-profile?user_id=` + this.state.userId;
+    console.log(urlprofile);
     fetch(urlprofile, {
       method: 'GET',
       headers: {
@@ -554,6 +555,7 @@ class DashBoardScreen extends Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
+        console.log(responseData);
         if (responseData.code == '200') {
           if (responseData.data.name !== null) {
             this.setState({userName: responseData.data.name});
@@ -571,7 +573,9 @@ class DashBoardScreen extends Component {
           }
         }
       })
-      .catch((error) => {})
+      .catch((error) => {
+        console.log(error, 'ERROR');
+      })
       .done();
   };
   _renderTruncatedFooter = (handlePress) => {
