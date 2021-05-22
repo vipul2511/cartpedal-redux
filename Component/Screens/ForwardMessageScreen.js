@@ -27,6 +27,7 @@ class ForwardMessageScreen extends Component {
       groupID: [],
       searching: false,
       text: '',
+      singleForward: [],
     };
   }
 
@@ -73,7 +74,18 @@ class ForwardMessageScreen extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          this.props.navigation.goBack();
+          if (this.state.singleForward.length === 1) {
+            this.props.navigation.replace('ChatDetailScreen', {
+              userid: this.state.singleForward[0].id,
+              username: this.state.singleForward[0].name,
+              useravatar: this.state.singleForward[0].avatar,
+              groupexit: false,
+              groupId: 0,
+              msg_type: '0',
+            });
+          } else {
+            this.props.navigation.goBack();
+          }
         } else {
         }
       })
@@ -220,11 +232,15 @@ class ForwardMessageScreen extends Component {
                         this.setState((p) => ({
                           ...p,
                           toids: [...p.toids, v.id],
+                          singleForward: [...p.singleForward, v],
                         }));
                       } else {
                         this.setState((p) => ({
                           ...p,
                           toids: p.toids.filter((i) => i !== v.id),
+                          singleForward: p.singleForward.filter(
+                            (i) => i.id !== v.id,
+                          ),
                         }));
                       }
                     }}>

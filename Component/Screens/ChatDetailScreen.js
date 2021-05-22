@@ -110,8 +110,14 @@ class ChatDetailScreen extends React.Component {
       playingAudioId: undefined,
       FILES: [],
       scrollToId: undefined,
+      useravatar: this.props.route.params.useravatar,
+      username: this.props.route.params.username,
     };
   }
+
+  changeProfile = (avatar, name) => {
+    this.setState({useravatar: avatar, username: name});
+  };
 
   setAudioId = (id) => {
     this.setState({playingAudioId: id});
@@ -1580,37 +1586,59 @@ class ChatDetailScreen extends React.Component {
   };
 
   clearMessages = () => {
-    const {fcmToken, userId, userAccessToken, forwardMessageIds} = this.state;
+    Alert.alert(
+      'Clear Chat',
+      'Are you sure to clear whole chat ??',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            const {
+              fcmToken,
+              userId,
+              userAccessToken,
+              forwardMessageIds,
+            } = this.state;
 
-    const data = new FormData();
+            const data = new FormData();
 
-    data.append('user_id', userId);
-    data.append('type', this.props.route.params.msg_type);
-    data.append('toid', this.props.route.params.userid);
-    var EditProfileUrl = `${BASE_URL}api-message/clear-all`;
+            data.append('user_id', userId);
+            data.append('type', this.props.route.params.msg_type);
+            data.append('toid', this.props.route.params.userid);
+            var EditProfileUrl = `${BASE_URL}api-message/clear-all`;
 
-    fetch(EditProfileUrl, {
-      method: 'POST',
-      headers: {
-        device_id: '1234',
-        device_token: fcmToken,
-        device_type: Platform.OS,
-        Authorization: JSON.parse(userAccessToken),
-      },
-      body: data,
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(JSON.stringify(responseData, null, 2));
-        if (responseData.code == '200') {
-          this.setState({chatList: {messages: []}});
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(JSON.stringify(error, null, 2));
-      })
-      .finally(() => {});
+            fetch(EditProfileUrl, {
+              method: 'POST',
+              headers: {
+                device_id: '1234',
+                device_token: fcmToken,
+                device_type: Platform.OS,
+                Authorization: JSON.parse(userAccessToken),
+              },
+              body: data,
+            })
+              .then((response) => response.json())
+              .then((responseData) => {
+                console.log(JSON.stringify(responseData, null, 2));
+                if (responseData.code == '200') {
+                  this.setState({chatList: {messages: []}});
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(JSON.stringify(error, null, 2));
+              })
+              .finally(() => {});
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   emojiUnicode = (emoji) => {
@@ -1650,21 +1678,23 @@ class ChatDetailScreen extends React.Component {
     // console.log(groupid, '!!!');
 
     if (this.props.route.params.msg_type == '1') {
-      if (items) {
+      if (this.state.useravatar) {
         this.props.navigation.navigate('GroupProfile', {
-          imageURL: items,
-          name: name,
+          imageURL: this.state.useravatar,
+          name: this.state.username,
           about: about,
           phone: phone,
           groupId: groupid,
+          changeProfile: this.changeProfile,
         });
       } else {
         this.props.navigation.navigate('GroupProfile', {
           imageURL: '',
-          name: name,
+          name: this.state.username,
           about: about,
           phone: phone,
           groupId: groupid,
+          changeProfile: this.changeProfile,
         });
       }
     } else {
@@ -1802,7 +1832,9 @@ class ChatDetailScreen extends React.Component {
                     }}>
                     <View style={styles.BackButtonContainer}>
                       <TouchableOpacity
-                        onPress={() => this.props.navigation.goBack()}>
+                        onPress={() =>
+                          this.props.navigation.navigate('ChatScreen')
+                        }>
                         <Image
                           source={require('../images/back_blck_icon.png')}
                           style={styles.backButtonStyle}
@@ -1813,8 +1845,8 @@ class ChatDetailScreen extends React.Component {
                       <ImageModal
                         imageBackgroundColor="transparent"
                         source={
-                          this.props.route.params.useravatar
-                            ? {uri: this.props.route.params.useravatar}
+                          this.state.useravatar
+                            ? {uri: this.state.useravatar}
                             : require('../images/default_user.png')
                         }
                         style={styles.LogoIconStyle}
@@ -1832,7 +1864,7 @@ class ChatDetailScreen extends React.Component {
                             styles.TitleStyle,
                             {textAlign: 'left', fontSize: resp(15)},
                           ]}>
-                          {this.props.route.params.username}
+                          {this.state.username}
                         </Text>
                       </TouchableOpacity>
                     </View>

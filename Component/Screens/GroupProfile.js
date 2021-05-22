@@ -70,6 +70,7 @@ export default class GroupProfile extends React.Component {
         showOptions: false,
         downloading: false,
         FILES: [],
+        imageURL: this.props.route.params.imageURL,
       });
     this.doubleClick = false;
     this.hidden = false;
@@ -343,9 +344,7 @@ export default class GroupProfile extends React.Component {
       includeBase64: true,
     }).then((image) => {
       this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
-
       this.onImagePick(image);
-      console.log('image pic===', image);
     });
   }
 
@@ -364,7 +363,6 @@ export default class GroupProfile extends React.Component {
   }
 
   customButton = () => {
-    console.log('working');
     let item = this.props.route.params.imageURL;
     if (this.props.route.params.imageURL != '') {
       this.props.navigation.navigate('FullViewProfileScreen', {images: item});
@@ -389,6 +387,8 @@ export default class GroupProfile extends React.Component {
     this.setState({newImageArr: imgOjc});
     this.setState({isImageModalVisible: false});
     this.uploadProfilePic(3);
+    this.setState({imageURL: response.sourceURL});
+    this.props.route.params.changeProfile(response.sourceURL, this.state.name);
   }
 
   uploadProfilePic = (typeID) => {
@@ -527,8 +527,8 @@ export default class GroupProfile extends React.Component {
                 <ImageModal
                   imageBackgroundColor="transparent"
                   source={
-                    this.props.route.params.imageURL
-                      ? {uri: this.props.route.params.imageURL}
+                    this.state.imageURL
+                      ? {uri: this.state.imageURL}
                       : require('../images/default_user.png')
                   }
                   style={{width: width, height: 300}}
@@ -603,6 +603,10 @@ export default class GroupProfile extends React.Component {
                         color="red"
                         style={{bottom: 5}}
                         onPress={() => {
+                          this.props.route.params.changeProfile(
+                            this.state.imageURL,
+                            this.state.name,
+                          );
                           this.uploadProfilePic(1);
                         }}
                       />

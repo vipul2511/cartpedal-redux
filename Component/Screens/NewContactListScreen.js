@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   ScrollView,
   TextInput,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -164,7 +164,10 @@ class NewContactsListScreen extends Component {
         <View style={styles.MainContentBox}>
           <ScrollView>
             <View>
-              {this.state.list.map(function (v, i) {
+              {this.state.list.map((v, i) => {
+                if (v.id == this.props.route.params.userId) {
+                  return null;
+                }
                 return (
                   <TouchableOpacity
                     onPress={() => {
