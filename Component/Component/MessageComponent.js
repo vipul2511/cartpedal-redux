@@ -1,5 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useMemo, useState} from 'react';
+import Animated, {Easing} from 'react-native-reanimated';
 import {
   View,
   Text,
@@ -47,6 +48,9 @@ export const MessageComponent = ({
   playingAudioId,
   FILES,
   updateFilesArray,
+  scrollToID,
+  scrollMessageId,
+  setScrollMessageUndefined,
 }) => {
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(initialize(message.sending));
@@ -175,6 +179,13 @@ export const MessageComponent = ({
       setSending(false);
     }
   }, [message]);
+
+  useEffect(() => {
+    if (scrollMessageId === message.id) {
+      setTimeout(() => setScrollMessageUndefined(), 2000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollMessageId]);
 
   const inList = useMemo(() => {
     return forwardMessageIds.indexOf(message.id) !== -1;
@@ -591,6 +602,7 @@ export const MessageComponent = ({
               {message.reply_msg != '' ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: 'red',
@@ -785,6 +797,7 @@ export const MessageComponent = ({
               {message.reply_msg ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: '#fff',
@@ -3794,7 +3807,7 @@ export const MessageComponent = ({
       style={
         inList
           ? {
-              backgroundColor: 'rgba(0,0,0,0.2)',
+              backgroundColor: `rgba(0,0,0,0.2)`,
             }
           : {}
       }
@@ -3831,7 +3844,16 @@ export const MessageComponent = ({
           }
         }
       }}>
-      {content}
+      <View
+        style={
+          message.id === scrollMessageId
+            ? {
+                backgroundColor: 'rgba(0,0,0,0.2)',
+              }
+            : {}
+        }>
+        {content}
+      </View>
     </TouchableOpacity>
   );
 };

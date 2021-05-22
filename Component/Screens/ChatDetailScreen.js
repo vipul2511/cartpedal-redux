@@ -20,6 +20,7 @@ import {
   Platform,
   SafeAreaView,
   KeyboardAvoidingView,
+  FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
@@ -108,6 +109,7 @@ class ChatDetailScreen extends React.Component {
       uploading: false,
       playingAudioId: undefined,
       FILES: [],
+      scrollToId: undefined,
     };
   }
 
@@ -1746,6 +1748,21 @@ class ChatDetailScreen extends React.Component {
       this.setState({showfilerply: true, borderval: true});
     }
   };
+
+  scrollToID = (id) => {
+    this.setState({scrollToId: id});
+    if (this.state.ischatList) {
+      const index = this.state.chatList.messages.findIndex((i) => i.id === id);
+      if (index > -1) {
+        this.scroll.scrollToIndex({index, animated: true});
+      }
+    }
+  };
+
+  setScrollMessageUndefined = () => {
+    this.setState({scrollToId: undefined});
+  };
+
   render() {
     return (
       <KeyboardAvoidingView
@@ -1966,40 +1983,44 @@ class ChatDetailScreen extends React.Component {
                     </View>
                   </View>
                 </View>
-                <ScrollView
-                  style={{height: height * 0.84}}
+                <FlatList
+                  nestedScrollEnabled={true}
+                  style={{paddingHorizontal: 10, marginTop: '20%', flex: 1}}
+                  data={
+                    this.state.ischatList ? this.state.chatList.messages : []
+                  }
                   ref={(ref) => {
-                    this.scrollView = ref;
+                    this.scroll = ref;
                   }}
                   onContentSizeChange={() =>
-                    this.scrollView.scrollToEnd({animated: true})
-                  }>
-                  <ScrollView>
-                    <View style={{paddingHorizontal: 10, marginTop: '20%'}}>
-                      {this.state.ischatList
-                        ? this.state.chatList.messages.map((v, i) => {
-                            return (
-                              <MessageComponent
-                                key={`message-${i}`}
-                                message={v}
-                                toggleSelectedMode={this.toggleSelectedMode}
-                                appendMessages={this.appendMessages}
-                                removeMessages={this.removeMessages}
-                                selectedMode={this.state.selectedMode}
-                                forwardMessageIds={this.state.forwardMessageIds}
-                                copyText={this.copyText}
-                                replyMessage={this.replyTo}
-                                setAudioId={this.setAudioId}
-                                playingAudioId={this.state.playingAudioId}
-                                FILES={this.state.FILES}
-                                updateFilesArray={this.updateFilesArray}
-                              />
-                            );
-                          })
-                        : null}
-                    </View>
-                  </ScrollView>
-                </ScrollView>
+                    this.scroll.scrollToEnd({animated: true})
+                  }
+                  renderItem={({item: v, index: i}) => {
+                    return (
+                      <MessageComponent
+                        key={`message-${i}`}
+                        message={v}
+                        toggleSelectedMode={this.toggleSelectedMode}
+                        appendMessages={this.appendMessages}
+                        removeMessages={this.removeMessages}
+                        selectedMode={this.state.selectedMode}
+                        forwardMessageIds={this.state.forwardMessageIds}
+                        copyText={this.copyText}
+                        replyMessage={this.replyTo}
+                        setAudioId={this.setAudioId}
+                        playingAudioId={this.state.playingAudioId}
+                        FILES={this.state.FILES}
+                        updateFilesArray={this.updateFilesArray}
+                        scrollToID={this.scrollToID}
+                        scrollMessageId={this.state.scrollToId}
+                        setScrollMessageUndefined={
+                          this.setScrollMessageUndefined
+                        }
+                      />
+                    );
+                  }}
+                />
+                {/* </ScrollView> */}
 
                 {this.state.open && (
                   <View
