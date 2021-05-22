@@ -23,6 +23,7 @@ import {downloadFile, DocumentDirectoryPath} from 'react-native-fs';
 import ImageModal from 'react-native-image-modal';
 import FileViewer from 'react-native-file-viewer';
 import {BASE_URL} from '../Component/ApiClient';
+import {IsFileExist, ListFiles, saveFileInCache} from '../utils/FilesCaching';
 
 const screenWidth = Dimensions.get('screen').width;
 let width = Dimensions.get('window').width;
@@ -57,11 +58,14 @@ export default class ChatProfile extends React.Component {
         newImageArr: '',
         phone: '',
         downloading: false,
+        FILES: [],
       });
     this.doubleClick = false;
     this.hidden = false;
   }
-  componentDidMount() {
+  async componentDidMount() {
+    const FILES = await ListFiles();
+    this.setState({FILES});
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({fcmToken: token});
@@ -137,22 +141,38 @@ export default class ChatProfile extends React.Component {
   }
 
   downloadAndOpenDocument = async (uri) => {
-    this.setState({downloading: true});
-    const parts = uri.split('/');
-    const fileName = parts[parts.length - 1];
-    downloadFile({
-      fromUrl: uri,
-      toFile: `${DocumentDirectoryPath}/${fileName}`,
-    })
-      .promise.then(() => {
-        FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
-          showOpenWithDialog: true,
+    if (!uri.includes('http')) {
+      FileViewer.open(uri, {
+        showOpenWithDialog: true,
+      });
+    } else {
+      const parts = uri.split('/');
+      const fileName = parts[parts.length - 1];
+      this.setState({downloading: true});
+      downloadFile({
+        fromUrl: uri,
+        toFile: `${DocumentDirectoryPath}/${fileName}`,
+      })
+        .promise.then(() => {
+          saveFileInCache(uri, `${DocumentDirectoryPath}/${fileName}`);
+          this.setState((p) => ({
+            FILES: [
+              ...p.FILES,
+              {
+                uri,
+                localPath: `${DocumentDirectoryPath}/${fileName}`,
+              },
+            ],
+          }));
+          FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
+            showOpenWithDialog: true,
+          });
+        })
+        .catch(() => alert('could not open file'))
+        .finally(() => {
+          this.setState({downloading: false});
         });
-      })
-      .catch(() => {
-        alert('could not open file');
-      })
-      .finally(() => this.setState({downloading: false}));
+    }
   };
 
   renderInnerImageList(item) {
@@ -484,6 +504,11 @@ export default class ChatProfile extends React.Component {
                 }}>
                 <ScrollView horizontal={true}>
                   {this.state.mediaArr.map((item) => {
+                    const isFileExist = IsFileExist(
+                      this.state.FILES,
+                      item.attachment,
+                    );
+
                     return (
                       <View style={{flexDirection: 'row'}}>
                         {item.type == 'image' ? (
@@ -509,7 +534,11 @@ export default class ChatProfile extends React.Component {
                         ) : item.type == 'audio' ? (
                           <TouchableOpacity
                             onPress={() => {
-                              this.downloadAndOpenDocument(item.attachment);
+                              this.downloadAndOpenDocument(
+                                isFileExist
+                                  ? isFileExist.localPath
+                                  : item.attachment,
+                              );
                             }}
                             style={{
                               width: 45,
@@ -525,7 +554,11 @@ export default class ChatProfile extends React.Component {
                         ) : item.type == 'video' ? (
                           <TouchableOpacity
                             onPress={() => {
-                              this.downloadAndOpenDocument(item.attachment);
+                              this.downloadAndOpenDocument(
+                                isFileExist
+                                  ? isFileExist.localPath
+                                  : item.attachment,
+                              );
                             }}
                             style={{
                               width: 45,
@@ -550,7 +583,11 @@ export default class ChatProfile extends React.Component {
                               alignItems: 'center',
                             }}
                             onPress={() => {
-                              this.downloadAndOpenDocument(item.attachment);
+                              this.downloadAndOpenDocument(
+                                isFileExist
+                                  ? isFileExist.localPath
+                                  : item.attachment,
+                              );
                             }}>
                             <Feather name="file" color="#fff" size={18} />
                           </TouchableOpacity>

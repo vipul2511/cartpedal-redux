@@ -22,6 +22,7 @@ import {downloadFile, DocumentDirectoryPath} from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import ImageModal from 'react-native-image-modal';
+import {IsFileExist, saveFileInCache} from '../utils/FilesCaching';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
@@ -44,6 +45,8 @@ export const MessageComponent = ({
   replyMessage,
   setAudioId,
   playingAudioId,
+  FILES,
+  updateFilesArray,
 }) => {
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(initialize(message.sending));
@@ -143,6 +146,11 @@ export const MessageComponent = ({
         begin: () => {},
       }).promise.then((res) => {
         setDownload({downloaded: false, percentage: 1});
+        saveFileInCache(uri, `${DocumentDirectoryPath}/${fileName}`);
+        updateFilesArray({
+          uri,
+          localPath: `${DocumentDirectoryPath}/${fileName}`,
+        });
         FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
           showOpenWithDialog: true,
         });
@@ -2870,6 +2878,7 @@ export const MessageComponent = ({
 
   if (msg_type === 'file') {
     if (message.tattach !== null && message.tattach !== '') {
+      const isFileExist = IsFileExist(FILES, message.tattach.attach);
       content = (
         <View
           style={{
@@ -2906,7 +2915,13 @@ export const MessageComponent = ({
                   width: '70%',
                   alignSelf: 'flex-start',
                 }}>
-                <Text style={{color: '#2B2B2B'}}>
+                <Text
+                  onPress={() => {
+                    if (isFileExist) {
+                      downloadAndOpenDocument(isFileExist.localPath);
+                    }
+                  }}
+                  style={{color: '#2B2B2B'}}>
                   {
                     message.tattach.attach.split('/')[
                       message.tattach.attach.split('/').length - 1
@@ -2914,23 +2929,25 @@ export const MessageComponent = ({
                   }
                 </Text>
               </View>
-              <ProgressCircle
-                percent={download.percentage * 100}
-                radius={18}
-                borderWidth={2}
-                color="red"
-                shadowColor="grey"
-                bgColor="white">
-                {download.percentage !== 1.0 ? (
-                  <Icon
-                    onPress={() => {
-                      downloadAndOpenDocument(message.tattach.attach);
-                    }}
-                    name="arrow-down"
-                    style={{color: 'red', fontSize: 26, fontWeight: 'bold'}}
-                  />
-                ) : null}
-              </ProgressCircle>
+              {!isFileExist ? (
+                <ProgressCircle
+                  percent={download.percentage * 100}
+                  radius={18}
+                  borderWidth={2}
+                  color="red"
+                  shadowColor="grey"
+                  bgColor="white">
+                  {download.percentage !== 1.0 ? (
+                    <Icon
+                      onPress={() => {
+                        downloadAndOpenDocument(message.tattach.attach);
+                      }}
+                      name="arrow-down"
+                      style={{color: 'red', fontSize: 26, fontWeight: 'bold'}}
+                    />
+                  ) : null}
+                </ProgressCircle>
+              ) : null}
             </View>
           </View>
           <Text
@@ -2946,7 +2963,9 @@ export const MessageComponent = ({
         </View>
       );
     }
+
     if (message.fattach !== null && message.fattach !== '') {
+      const isFileExist = IsFileExist(FILES, message.fattach.attach);
       content = (
         <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
           <View
@@ -3154,7 +3173,15 @@ export const MessageComponent = ({
                 width: '70%',
                 alignSelf: 'flex-start',
               }}>
-              <Text style={{color: message.reply_msg ? 'black' : 'white'}}>
+              <Text
+                onPress={() => {
+                  if (
+                    !(message.fattach.attach.includes('http') && !isFileExist)
+                  ) {
+                    downloadAndOpenDocument(message.fattach.attach);
+                  }
+                }}
+                style={{color: message.reply_msg ? 'black' : 'white'}}>
                 {
                   message.fattach.attach.split('/')[
                     message.fattach.attach.split('/').length - 1
@@ -3162,7 +3189,7 @@ export const MessageComponent = ({
                 }
               </Text>
             </View>
-            {message.fattach.attach.includes('http') ? (
+            {message.fattach.attach.includes('http') && !isFileExist ? (
               <ProgressCircle
                 percent={download.percentage * 100}
                 radius={18}

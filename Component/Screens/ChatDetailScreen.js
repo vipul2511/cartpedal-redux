@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
 /* eslint-disable react/no-did-update-set-state */
@@ -16,7 +17,6 @@ import {
   Dimensions,
   Alert,
   Modal,
-  PermissionsAndroid,
   Platform,
   SafeAreaView,
   KeyboardAvoidingView,
@@ -53,6 +53,7 @@ import {
   recordingPermissions,
 } from '../Component/Permissions';
 import {PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import {ListFiles} from '../utils/FilesCaching';
 
 let height = Dimensions.get('window').height;
 
@@ -67,6 +68,7 @@ const received = new Sound('received.mp3', Sound.MAIN_BUNDLE, (err) => {
 class ChatDetailScreen extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       height: 40,
       open: false,
@@ -105,6 +107,7 @@ class ChatDetailScreen extends React.Component {
       live: false,
       uploading: false,
       playingAudioId: undefined,
+      FILES: [],
     };
   }
 
@@ -142,15 +145,6 @@ class ChatDetailScreen extends React.Component {
     this.setState((p) => ({...p, copyTexts: [...p.copyTexts, {id, text}]}));
   };
 
-  // replyTo = (text) => {
-  //   if (this.props.route.params.msg_type == '1' && text.text.tname == '') {
-  //     this.setState({showEveryone: true});
-  //   } else {
-  //     if (text.text.fmsg != '') this.setState({showEveryone: true});
-  //   }
-  //   this.setState({replyMessage: text});
-  // };
-
   replyTo = (text) => {
     this.setState({showEveryone: true});
     this.setState({replyMessage: text});
@@ -177,7 +171,13 @@ class ChatDetailScreen extends React.Component {
     });
   };
 
-  componentDidMount = () => {
+  updateFilesArray = (file) => {
+    this.setState((p) => ({FILES: [...p.FILES, file]}));
+  };
+
+  componentDidMount = async () => {
+    const FILES = await ListFiles();
+    this.setState({FILES});
     this.props.toggleChatting(true, this.props.route.params.userid);
     this.requestCameraPermission();
     this.listener1 = firebase.notifications().onNotification((notification) => {
@@ -1991,6 +1991,8 @@ class ChatDetailScreen extends React.Component {
                                 replyMessage={this.replyTo}
                                 setAudioId={this.setAudioId}
                                 playingAudioId={this.state.playingAudioId}
+                                FILES={this.state.FILES}
+                                updateFilesArray={this.updateFilesArray}
                               />
                             );
                           })

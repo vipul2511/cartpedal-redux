@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -16,29 +16,54 @@ import ImageModal from 'react-native-image-modal';
 import {DocumentDirectoryPath, downloadFile} from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {IsFileExist, ListFiles, saveFileInCache} from '../utils/FilesCaching';
 
 export const ViewAll = (props) => {
   const {width} = useWindowDimensions();
   const [downloading, setDownloading] = useState(false);
+  const [FILES, SETFILES] = useState([]);
   const data = props.route.params.items;
   const downloadAndOpenDocument = async (uri) => {
-    const parts = uri.split('/');
-    const fileName = parts[parts.length - 1];
-    setDownloading(true);
-    downloadFile({
-      fromUrl: uri,
-      toFile: `${DocumentDirectoryPath}/${fileName}`,
-    })
-      .promise.then(() => {
-        FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
-          showOpenWithDialog: true,
-        });
-      })
-      .catch(() => alert('could not open file'))
-      .finally(() => {
-        setDownloading(false);
+    if (!uri.includes('http')) {
+      FileViewer.open(uri, {
+        showOpenWithDialog: true,
       });
+    } else {
+      const parts = uri.split('/');
+      const fileName = parts[parts.length - 1];
+      setDownloading(true);
+      downloadFile({
+        fromUrl: uri,
+        toFile: `${DocumentDirectoryPath}/${fileName}`,
+      })
+        .promise.then(() => {
+          saveFileInCache(uri, `${DocumentDirectoryPath}/${fileName}`);
+          SETFILES((p) => [
+            ...p,
+            {
+              uri,
+              localPath: `${DocumentDirectoryPath}/${fileName}`,
+            },
+          ]);
+          FileViewer.open(`${DocumentDirectoryPath}/${fileName}`, {
+            showOpenWithDialog: true,
+          });
+        })
+        .catch(() => alert('could not open file'))
+        .finally(() => {
+          setDownloading(false);
+        });
+    }
   };
+
+  useEffect(() => {
+    const foo = async () => {
+      const FILES = await ListFiles();
+      SETFILES(FILES);
+    };
+    foo();
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
@@ -72,6 +97,7 @@ export const ViewAll = (props) => {
           numColumns={3}
           data={data}
           renderItem={({item}) => {
+            const isFileExist = IsFileExist(FILES, item.attachment);
             return (
               <View style={{flexDirection: 'row'}}>
                 {item.type == 'image' ? (
@@ -89,7 +115,11 @@ export const ViewAll = (props) => {
                 ) : item.type == 'audio' ? (
                   <TouchableOpacity
                     onPress={() => {
-                      downloadAndOpenDocument(item.attachment);
+                      if (isFileExist) {
+                        downloadAndOpenDocument(isFileExist.localPath);
+                      } else {
+                        downloadAndOpenDocument(item.attachment);
+                      }
                     }}
                     style={{
                       width: width / 3.2,
@@ -106,7 +136,11 @@ export const ViewAll = (props) => {
                 ) : item.type == 'video' ? (
                   <TouchableOpacity
                     onPress={() => {
-                      downloadAndOpenDocument(item.attachment);
+                      if (isFileExist) {
+                        downloadAndOpenDocument(isFileExist.localPath);
+                      } else {
+                        downloadAndOpenDocument(item.attachment);
+                      }
                     }}
                     style={{
                       width: width / 3.2,
@@ -133,7 +167,11 @@ export const ViewAll = (props) => {
                       alignItems: 'center',
                     }}
                     onPress={() => {
-                      downloadAndOpenDocument(item.attachment);
+                      if (isFileExist) {
+                        downloadAndOpenDocument(isFileExist.localPath);
+                      } else {
+                        downloadAndOpenDocument(item.attachment);
+                      }
                     }}>
                     <Feather name="file" color="#fff" size={18} />
                   </TouchableOpacity>
