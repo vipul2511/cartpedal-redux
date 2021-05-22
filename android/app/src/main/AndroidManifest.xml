@@ -68,13 +68,15 @@
             <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
         </intent-filter>
       </receiver>
-      <service
-         android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
-         android:exported="false" >
+      <service android:exported="true" android:enabled="true"  android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
         <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT" />
+         <action  android:name="com.google.firebase.MESSAGING_EVENT" />
         </intent-filter>
       </service>
+
+
+<service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
+
     </application>
 
 </manifest>

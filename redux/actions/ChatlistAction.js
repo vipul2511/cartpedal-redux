@@ -2,30 +2,31 @@ import {
   CHAT_LIST_START,
   CHAT_LIST_SUCCESS,
   CHAT_LIST_ERROR,
+  TOGGLE_CHAT,
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
+import {Platform} from 'react-native';
 
 export const ChatlistAction = (userId, userAccesstoken) => {
-  console.log(userId, userAccesstoken);
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: CHAT_LIST_START});
     var urlprofile = `${API_URL}api-message/chat-list?user_id=${userId}`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     fetch(urlprofile, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccesstoken),
       },
     })
       .then((response) => response.json())
       .then(async (responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: CHAT_LIST_SUCCESS,
             payload: responseData.data,
@@ -47,3 +48,11 @@ export const ChatlistAction = (userId, userAccesstoken) => {
       });
   };
 };
+
+export const toggleChatting = (chatting, chattingUserId) => ({
+  type: TOGGLE_CHAT,
+  payload: {
+    chatting,
+    chattingUserId,
+  },
+});

@@ -1,16 +1,8 @@
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  ActivityIndicator,
-  Platform,
-} from 'react-native';
+import {StyleSheet, View, Text, Image, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import resp from 'rn-responsive-font';
 import firebase from 'react-native-firebase';
-
 class SplashScreen extends Component {
   constructor(props) {
     super(props);
@@ -55,6 +47,23 @@ class SplashScreen extends Component {
           const id = split2[2].split('=')[1];
           const cartValue = split2[3].split('=')[1];
           this.props.navigation.navigate(page, {id, cartValue});
+        } else if (page === 'ProductDetailScreen') {
+          const id = split2[2].split('=')[1];
+          console.log('UUUUU', split2);
+          console.log('UUUUU', id);
+          this.props.navigation.navigate(page, {id});
+        } else if (page === 'OderPlacedViewScreen') {
+          const id = split2[2].split('=')[1];
+          const order_id = split2[3].split('=')[1];
+          this.props.navigation.navigate(page, {id, order_id});
+        } else if (page === 'OrderRecievedViewScreen') {
+          const id = split2[2].split('=')[1];
+          const order_id = split2[3].split('=')[1];
+          this.props.navigation.navigate(page, {id, order_id});
+        } else if (page === 'CartViewScreen') {
+          const id = split2[2].split('=')[1];
+          const order_id = split2[3].split('=')[1];
+          this.props.navigation.navigate(page, {id, order_id});
         }
       }
     }
@@ -69,7 +78,6 @@ class SplashScreen extends Component {
       .getInitialLink()
       .then((url) => {
         if (url) {
-          console.log(url, 'URL');
           const split1 = url.split('?');
           if (split1.length > 1) {
             const split2 = url.split('&');
@@ -122,26 +130,69 @@ class SplashScreen extends Component {
                     cartValue,
                   },
                 });
+              } else if (page === 'ProductDetailScreen') {
+                const id = split2[2].split('=')[1];
+                console.log('UUUUU', split2);
+                console.log('UUUUU', id);
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                  },
+                });
+              } else if (page === 'OderPlacedViewScreen') {
+                const id = split2[2].split('=')[1];
+                const order_id = split2[3].split('=')[1];
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                    order_id,
+                  },
+                });
+              } else if (page === 'OrderRecievedViewScreen') {
+                const id = split2[2].split('=')[1];
+                const order_id = split2[3].split('=')[1];
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                    order_id,
+                  },
+                });
+              } else if (page === 'CartViewScreen') {
+                const id = split2[2].split('=')[1];
+                const order_id = split2[3].split('=')[1];
+                console.log('split', split2);
+                this.setState({
+                  deepLink: true,
+                  initialPage: page,
+                  parameters: {
+                    id,
+                    order_id,
+                  },
+                });
               }
             }
           }
         } else {
           this.props.navigation.addListener('focus', this.load);
-          // app NOT opened from a url
         }
       });
     this.props.navigation.addListener('focus', this.load);
   }
 
   componentWillUnmount() {
-    // this.unsubscribe();
+    this.unsubscribe();
     clearTimeout(this.timeoutHandle); // This is just necessary in the case that the screen is closed before the timeout fires, otherwise it would cause a memory leak that would trigger the transition regardless, breaking the user experience.
   }
 
   load = () => {
     this.showLoading();
     this.timeoutHandle = setTimeout(() => {
-      // Add your logic for the transition
       AsyncStorage.getItem('@is_login').then(async (isLogin) => {
         const {deepLink, initialPage, parameters} = this.state;
         if (isLogin == undefined || isLogin == '0') {

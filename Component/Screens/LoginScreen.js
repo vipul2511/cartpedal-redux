@@ -9,6 +9,7 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
+  BackHandler,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -20,6 +21,7 @@ console.disableYellowBox = true;
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       phone_number: '',
       password: '',
@@ -32,17 +34,33 @@ class LoginScreen extends Component {
     this.setState({loading: true});
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
   componentDidMount() {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({fcmtoken: JSON.parse(token)});
-        console.log('device fcm token ====' + this.state.fcmtoken);
       }
     });
+  }
+
+  handleBackButtonClick() {
+    if (this.props.navigation.isFocused()) {
+      BackHandler.exitApp();
+      return true;
+    } else {
+      this.props.navigation.goBack(null);
+      return true;
+    }
   }
   hideLoading() {
     this.setState({loading: false});
   }
+
   CheckTextInput = () => {
     if (this.state.phone_number === '') {
       // eslint-disable-next-line no-alert
@@ -60,13 +78,21 @@ class LoginScreen extends Component {
       });
     }
   };
+
   componentDidUpdate() {
     if (this.props.success && this.state.callUpdate) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({callUpdate: false}, () => {
         this.LoginOrNot();
+        this.setState({phone_number: '', password: ''});
       });
     }
+  }
+  UNSAFE_componentWillMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
   }
 
   LoginOrNot = async () => {
@@ -185,6 +211,7 @@ class LoginScreen extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,4 +1,7 @@
-import React, { Component } from 'react'
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-did-update-set-state */
+/* eslint-disable no-alert */
+import React, {Component} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,97 +11,97 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
-} from 'react-native'
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import resp from 'rn-responsive-font'
+import resp from 'rn-responsive-font';
 import CheckBox from 'react-native-check-box';
-console.disableYellowBox = true
+console.disableYellowBox = true;
 import {signUp} from '../../redux/actions';
-import { connect} from 'react-redux'
+import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
 class PhoneScreen extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       phone_number: '',
       isChecked: '',
       fcmToken: '',
       callUpdate: false,
       baseUrl: `${BASE_URL}`,
-    }
+    };
   }
 
   componentDidMount() {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" + token);
       if (token) {
-        this.setState({ fcmToken: JSON.parse(token) });
+        this.setState({fcmToken: JSON.parse(token)});
       }
     });
   }
- 
+
   CheckTextInput = () => {
     if (this.state.phone_number === '') {
-      alert('Please Enter Mobile Number')
+      alert('Please Enter Mobile Number');
     } else if (this.state.phone_number.length != '10') {
-      alert('Please Enter Valid Mobile Number')
+      alert('Please Enter Valid Mobile Number');
     } else if (this.state.isChecked === false || this.state.isChecked === '') {
-      alert('Please select the Terms and condition')
+      alert('Please select the Terms and condition');
     } else {
       this.setState({callUpdate: true}, () => {
-        this.props.signUp(this.state.phone_number)
-      })
-      // this.showLoading();
+        this.props
+          .signUp(this.state.phone_number)
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
+      });
+    }
+  };
 
-    }
-  }
   componentDidUpdate() {
-    if (this.props.success && this.state.callUpdate) {
-      this.setState({ callUpdate: false }, () => {
-        this.props.navigation.navigate('SignUPWithOtpScreen', {
-          mobile: this.props.data.data.mobile,
-          otp: this.props.data.data.otp,
-        })
-      })
-    }
+    // if (this.props.success && !this.props.error && this.state.callUpdate) {
+    //   this.setState({callUpdate: false}, () => {
+    //     this.props.navigation.navigate('SignUPWithOtpScreen', {
+    //       mobile: this.props.data.data.mobile,
+    //       otp: this.props.data.data.otp,
+    //     });
+    //   });
+    // }
   }
 
   render() {
+    if (this.props.success && !this.props.error && this.state.callUpdate) {
+      this.setState({callUpdate: false}, () => {
+        this.props.navigation.navigate('SignUPWithOtpScreen', {
+          mobile: this.props.data.data.mobile,
+          otp: this.props.data.data.otp,
+        });
+      });
+    }
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} >
+      <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
         <View style={styles.container}>
-
           <View style={styles.headerContainer}>
-
-            <View style={{ flex: .34, backgroundColor: '#F01738', flexDirection: 'row' }}>
-
-              <TouchableOpacity
-                onPress={() => this.props.navigation.goBack()}>
+            <View
+              style={{
+                flex: 0.34,
+                backgroundColor: '#F01738',
+                flexDirection: 'row',
+              }}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                 <Image
                   source={require('../images/back_white.png')}
                   style={styles.MenuHomeIconStyle}
                 />
               </TouchableOpacity>
-
             </View>
 
-            <View style={{ flex: .33, backgroundColor: '#F01738' }}>
+            <View style={{flex: 0.33, backgroundColor: '#F01738'}} />
 
-            </View>
-
-            <View style={{ flex: .33, backgroundColor: '#F01738' }}>
-
-
-            </View>
-
-
+            <View style={{flex: 0.33, backgroundColor: '#F01738'}} />
           </View>
-
 
           <View style={styles.logoContainer}>
             <Image
               source={require('../images/logo_cart_paddle.png')}
-              // source={require('../images/Logo_icon2.png')}
               style={styles.ImageView}
             />
             <Text style={styles.CartTextStyle}>Cartpedal</Text>
@@ -108,58 +111,79 @@ class PhoneScreen extends Component {
             <View style={styles.PhoneBox}>
               <Text style={styles.UserName}>Phone Number</Text>
               <View style={styles.inputView}>
-                <View style={{ flexDirection: 'row', marginLeft: 15 }}></View>
+                <View style={{flexDirection: 'row', marginLeft: 15}} />
 
                 <TextInput
-                  placeholder=''
-                  placeholderTextColor='#000'
-                  underlineColorAndroid='transparent'
+                  placeholder=""
+                  placeholderTextColor="#000"
+                  underlineColorAndroid="transparent"
                   style={styles.input}
                   keyboardType={'numeric'}
                   maxLength={10}
-                  onChangeText={phone_number => this.setState({ phone_number })}
+                  onChangeText={(phone_number) => this.setState({phone_number})}
                 />
               </View>
-              <View style={{
-                flexDirection: 'row',
-                marginBottom: 15
-              }}>
-
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginBottom: 15,
+                }}>
                 <CheckBox
                   uncheckedCheckBoxColor={'#FB3954'}
                   checkedCheckBoxColor={'#FB3954'}
                   value={this.state.isChecked}
-                  onValueChange={() => this.setState({ isChecked: !this.state.isChecked })}
+                  onValueChange={() =>
+                    this.setState({isChecked: !this.state.isChecked})
+                  }
                   onClick={() => {
-                    this.setState({ isChecked: !this.state.isChecked }, () => {
+                    this.setState({isChecked: !this.state.isChecked}, () => {
                       if (this.state.isChecked == true) {
-
                       }
                     });
-
-
                   }}
                   isChecked={this.state.isChecked}
                 />
-                <View >
+                <View>
                   <Text
                     style={{
-                      marginTop: 5, color: '#06142D', marginHorizontal: 5,
-                      borderBottomWidth: 1, borderColor: '#C7E8F2', fontSize: 12
-                    }}
-                  > I Accept
-                                     <Text onPress={() => this.props.navigation.navigate('MyWebComponent', { screenSide: 'Signup' })} style={{ color: '#FB3954' }}> Terms & Conditions </Text>
-                                     and
-                                     <Text onPress={() => this.props.navigation.navigate('MyWebComponent', { screenSide: 'Signup1' })} style={{ color: '#FB3954' }}> Privacy Policy.</Text>
+                      marginTop: 5,
+                      color: '#06142D',
+                      marginHorizontal: 5,
+                      borderBottomWidth: 1,
+                      borderColor: '#C7E8F2',
+                      fontSize: 12,
+                    }}>
+                    {' '}
+                    I Accept
+                    <Text
+                      onPress={() =>
+                        this.props.navigation.navigate('MyWebComponent', {
+                          screenSide: 'Signup',
+                        })
+                      }
+                      style={{color: '#FB3954'}}>
+                      {' '}
+                      Terms & Conditions{' '}
+                    </Text>
+                    and
+                    <Text
+                      onPress={() =>
+                        this.props.navigation.navigate('MyWebComponent', {
+                          screenSide: 'Signup1',
+                        })
+                      }
+                      style={{color: '#FB3954'}}>
+                      {' '}
+                      Privacy Policy.
+                    </Text>
                   </Text>
                 </View>
-
               </View>
               <TouchableOpacity
                 style={styles.loginButtonStyle}
                 activeOpacity={0.2}
                 onPress={() => {
-                  this.CheckTextInput()
+                  this.CheckTextInput();
                 }}>
                 <Text style={styles.buttonWhiteTextStyle}>Submit</Text>
               </TouchableOpacity>
@@ -170,10 +194,9 @@ class PhoneScreen extends Component {
               )}
             </View>
           </View>
-
         </View>
       </ScrollView>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -184,7 +207,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#F01738',
   },
-
 
   CartTextStyle: {
     width: resp(204),
@@ -208,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container3: {
-    flex: .6,
+    flex: 0.6,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
@@ -219,13 +241,13 @@ const styles = StyleSheet.create({
     margin: resp(40),
   },
   logoContainer: {
-    flex: .2,
+    flex: 0.2,
     marginBottom: resp(60),
   },
 
   headerContainer: {
     flexDirection: 'row',
-    flex: .2,
+    flex: 0.2,
     backgroundColor: 'white',
   },
   MenuHomeIconStyle: {
@@ -265,9 +287,7 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: 'left',
   },
-
   inputView: {
-    width: '90%',
     marginBottom: 15,
     width: resp(350),
     borderColor: '#F01738',
@@ -284,13 +304,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-})
+});
 
 function mapStateToProps(state) {
-  const { isLoading, data, success } = state.SignUpReducer
+  const {isLoading, data, success, error} = state.SignUpReducer;
   return {
-    isLoading, data, success
-  }
+    isLoading,
+    data,
+    success,
+    error,
+  };
 }
 
-export default connect(mapStateToProps, { signUp })(PhoneScreen);
+export default connect(mapStateToProps, {signUp})(PhoneScreen);

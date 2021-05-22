@@ -1,124 +1,110 @@
-import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator,ScrollView } from 'react-native'
-import resp from 'rn-responsive-font'
-import OTPTextView from 'react-native-otp-textinput'
+/* eslint-disable no-alert */
+/* eslint-disable react/no-did-update-set-state */
+/* eslint-disable react/no-did-mount-set-state */
+import React, {Component} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+  Platform,
+} from 'react-native';
+import resp from 'rn-responsive-font';
+import OTPTextView from 'react-native-otp-textinput';
 import AsyncStorage from '@react-native-community/async-storage';
-import { forgotPassOTp } from '../../redux/actions';
-import { connect } from 'react-redux'
+import {forgotPassOTp} from '../../redux/actions';
+import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
-var mobileNumber, otp
+var mobileNumber, otp;
 
-console.disableYellowBox = true
+console.disableYellowBox = true;
 class ForgetOtpScreen extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.verifyCall = this.verifyCall.bind(this);
     this.state = {
       phone_number: '',
-      fcmToken:'',
-      // edit_otp: '',
+      fcmToken: '',
       otp: '',
       baseUrl: `${BASE_URL}`,
       callUpdate: false,
-     // baseUrl: 'http://cartpadle.atmanirbhartaekpahel.com/frontend/web/'
-    }
+    };
   }
+
   showLoading() {
-    this.setState({ loading: true });
+    this.setState({loading: true});
   }
 
   hideLoading() {
-    this.setState({ loading: false });
+    this.setState({loading: false});
   }
-  componentDidMount() {
-    const { navigation } = this.props
-    // mobileNumber = navigation.getParam('mobile', 'no-mobile')
-    mobileNumber = this.props.route.params.mogile
-    // otp = navigation.getParam('otp', 'no-otp')
-    otp = this.props.route.params.otp
-    
-  
-    this.setState({ otp: otp })
-    console.log(" in next screenfghj ", otp)
 
+  componentDidMount() {
+    mobileNumber = this.props.route.params.mogile;
+    otp = this.props.route.params.otp;
+    this.setState({otp: otp});
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
       if (token) {
-        this.setState({ fcmToken: JSON.parse(token) });
+        this.setState({fcmToken: JSON.parse(token)});
       }
     });
-
   }
-  CheckTextInput = () => {
-    console.log('sdfghjkusdfghjk' + this.state.otpInput)
 
+  CheckTextInput = () => {
     if (this.state.otpInput === '') {
       alert('Please Enter OTP');
-
-    }
-    else if (this.state.otpInput != this.state.otp) {
+    } else if (this.state.otpInput != this.state.otp) {
       alert('Please Valid OTP');
+    } else {
+      this.setState({callUpdate: true}, () => {
+        this.verifyCall();
+      });
     }
-
-    else {
-     this.setState({callUpdate: true}, () => {
-      this.verifyCall();
-     })
-      // this.showLoading();
-    }
-
   };
-  resendopt=()=>{
-    let formData = new FormData()
-    formData.append('mobile', '+91' +mobileNumber)
-    console.log('form data==' + formData)
 
-    var otpUrl = this.state.baseUrl + 'api-user/send-otp'
-    console.log('url:' + otpUrl)
+  resendopt = () => {
+    let formData = new FormData();
+    formData.append('mobile', '+91' + mobileNumber);
+    formData.append('type', '1');
+    var otpUrl = this.state.baseUrl + 'api-user/send-otp';
     fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: this.state.fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
+      .then((response) => response.json())
+      .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          this.setState({otp:responseData.data.otp});
-          // this.props.navigation.navigate('SignUPWithOtpScreen', {
-          //   mobile: responseData.data.mobile,
-          //   otp: responseData.data.otp,
-          // })
+          this.setState({otp: responseData.data.otp});
         } else {
-
-          // alert(JSON.stringify(responseData.data))
         }
-
-        console.log('response object:', responseData)
       })
-      .catch(error => {
+      .catch((error) => {
         this.hideLoading();
-        console.error(error)
       })
+      .done();
+  };
 
-      .done()
-  }
   componentDidUpdate() {
     if (this.props.success && this.state.callUpdate) {
-      this.setState({ callUpdate: false }, () => {
+      this.setState({callUpdate: false}, () => {
         this.props.navigation.navigate('ResetPasswordScreen', {
           otp: this.props.data.data,
-        })
-      })
+        });
+      });
     }
   }
+
   verifyCall() {
-     this.props.forgotPassOTp(mobileNumber, this.state.otp)
+    this.props.forgotPassOTp(mobileNumber, this.state.otp);
   }
 
   render() {
@@ -132,42 +118,29 @@ class ForgetOtpScreen extends Component {
               We have sent an otp on your mobile number{' '}
             </Text>
             <Text style={styles.forgotDescription2}>{mobileNumber}</Text>
-            <Text style={styles.forgotDescription2}>{'OTP:' + this.state.otp}</Text>
-            {/* <OTPTextView
-              ref={e => (this.input1 = e)}
+            <Text style={styles.forgotDescription2}>
+              {'OTP:' + this.state.otp}
+            </Text>
+
+            <OTPTextView
+              handleTextChange={(otp) => this.setState({otpInput: otp})}
               containerStyle={styles.textInputContainer}
-              handleTextChange={otp => this.setState({ otpInput: otp })}
+              textInputStyle={styles.roundedTextInput}
               inputCount={4}
               color={'white'}
-              keyboardType='numeric'
-              tintColor='#FB6C6A'
-              offTintColor='#BBBCBE'
-              textInputStyle=''
+              tintColor="#FB6C6A"
+              offTintColor="#BBBCBE"
+              inputCellLength={1}
             />
-            
-            */}
-
-                  <OTPTextView
-                    handleTextChange={otp => this.setState({ otpInput: otp })}
-                    containerStyle={styles.textInputContainer}
-                    textInputStyle={styles.roundedTextInput}
-                    inputCount={4}
-                    color={'white'}
-                    tintColor='#FB6C6A'
-                    offTintColor='#BBBCBE'
-                    inputCellLength={1}
-                  />
 
             <View style={styles.horizontal}>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate('PhoneScreen')
+                  this.props.navigation.navigate('PhoneScreen');
                 }}>
                 <Text style={styles.EditPhoneStyle}>Edit Phone Number</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-              onPress={this.resendopt}
-              >
+              <TouchableOpacity onPress={this.resendopt}>
                 <Text style={styles.ResendOtpStyle}>Resend Otp?</Text>
               </TouchableOpacity>
             </View>
@@ -176,22 +149,19 @@ class ForgetOtpScreen extends Component {
               style={styles.loginButtonStyle}
               activeOpacity={0.2}
               onPress={() => {
-                this.CheckTextInput()
+                this.CheckTextInput();
               }}>
               <Text style={styles.buttonWhiteTextStyle}>Verify</Text>
             </TouchableOpacity>
             {this.props.isLoading && (
               <View style={styles.loading}>
                 <ActivityIndicator size="large" color="#ffff" />
-
-
-
               </View>
             )}
           </View>
         </ScrollView>
       </View>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -287,15 +257,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-})
+});
 
 // export default ForgetOtpScreen;
 
 function mapStateToProps(state) {
-  const { isLoading, data, success } = state.forgotPassOtpReducer
+  const {isLoading, data, success} = state.forgotPassOtpReducer;
   return {
-    isLoading, data, success
-  }
+    isLoading,
+    data,
+    success,
+  };
 }
 
-export default connect(mapStateToProps, { forgotPassOTp })(ForgetOtpScreen);
+export default connect(mapStateToProps, {forgotPassOTp})(ForgetOtpScreen);

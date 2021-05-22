@@ -4,6 +4,7 @@
 #import "RNFirebaseNotifications.h"
 #import "RNFirebaseMessaging.h"
 #import "RNFirebaseLinks.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -33,6 +34,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [GMSServices provideAPIKey:@"AIzaSyB0avM-g3jfGiwd3sO3drl09JxoZI2nw4w"];
   [FIROptions defaultOptions].deepLinkURLScheme = @"cartpedal.page.link";
   [FIRApp configure];
   [RNFirebaseNotifications configure];

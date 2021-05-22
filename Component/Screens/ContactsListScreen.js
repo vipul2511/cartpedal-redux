@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
 
@@ -9,11 +10,12 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
-import moment from 'moment';
 import Contacts from 'react-native-contacts';
+import {Button, Header, Icon, Input, Item} from 'native-base';
 
 class ContactsListScreen extends Component {
   constructor(props) {
@@ -21,8 +23,11 @@ class ContactsListScreen extends Component {
     this.state = {
       list: [],
       spinner: false,
+      searching: false,
+      text: '',
     };
   }
+
   showLoading() {
     this.setState({spinner: true});
   }
@@ -49,7 +54,9 @@ class ContactsListScreen extends Component {
 
   render() {
     const funct = this;
-
+    const filteredData = this.state.list.filter((i) =>
+      `${i.givenName} ${i.familyName}`.includes(this.state.text),
+    );
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -57,48 +64,75 @@ class ContactsListScreen extends Component {
           color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
-        <View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+        {this.state.searching ? (
+          <Header
+            androidStatusBarColor="#F01738"
+            style={{backgroundColor: '#F01738'}}
+            searchBar
+            rounded>
+            <Item>
+              <TouchableOpacity
+                onPress={() => this.setState({searching: false})}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+              <Input
+                autoFocus
+                onChangeText={(text) => this.setState({text})}
+                value={this.state.text}
+                placeholder="Search"
+              />
+            </Item>
+            <Button transparent>
+              <Text>Search</Text>
+            </Button>
+          </Header>
+        ) : (
+          <View style={styles.headerView}>
+            <View style={styles.BackButtonContainer}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.TitleContainer}>
               <Image
-                source={require('../images/back_blck_icon.png')}
-                style={styles.backButtonStyle}
+                source={require('../images/logo_cart_paddle.png')}
+                style={styles.LogoIconStyle}
+              />
+              <TouchableOpacity
+                style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.TitleStyle}>CartPadle</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.SearchContainer}
+              onPress={() => {
+                this.setState({searching: true});
+              }}>
+              <Image
+                source={require('../images/search.png')}
+                style={styles.SearchIconStyle}
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.TitleContainer}>
-            <Image
-              source={require('../images/logo_cart_paddle.png')}
-              style={styles.LogoIconStyle}
-            />
-            <TouchableOpacity
-              style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>CartPadle</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            />
-          </TouchableOpacity>
-        </View>
+        )}
 
         <View style={styles.MainContentBox}>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps="always">
             <View>
-              {this.state.list.map(function (v, i) {
+              {filteredData.map(function (v, i) {
                 if (v.phoneNumbers.length === 0) {
                   return null;
                 }
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      funct.props.navigation.state.params.sendContact(v);
+                      funct.props.route.params.sendContact(v);
                       funct.props.navigation.goBack();
                     }}>
                     <View
@@ -136,7 +170,7 @@ class ContactsListScreen extends Component {
                           }}>
                           <View>
                             <Text style={styles.PersonNameStyle}>
-                              {v.displayName}
+                              {v.givenName + ' ' + v.familyName}
                             </Text>
                           </View>
                         </View>
@@ -315,7 +349,6 @@ const styles = StyleSheet.create({
     height: 60,
     shadowColor: '#ecf6fb',
     elevation: 20,
-    shadowColor: 'grey',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',

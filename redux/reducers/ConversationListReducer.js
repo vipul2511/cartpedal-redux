@@ -8,9 +8,10 @@ const initialState = {
   isLoading: false,
   success: false,
   error: false,
-  data: {},
+  data: {messages: []},
   errorMessage: '',
 };
+
 export default function (state = initialState, action) {
   switch (action.type) {
     case CONVERSION_LIST_START:
@@ -32,6 +33,11 @@ export default function (state = initialState, action) {
         errorMessage: action.payload.message,
         isLoading: false,
         error: true,
+      };
+    case 'CLEAR_CONVERSATION':
+      return {
+        ...state,
+        data: {messages: []},
       };
     default:
       return state;

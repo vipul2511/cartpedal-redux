@@ -1,4 +1,43 @@
 apply plugin: "com.android.application"
+
+/// VIDEO-EDITOR SDK
+// apply plugin: 'ly.img.android.sdk'
+// apply plugin: 'kotlin-android'
+
+// Comment out the modules you don't need, to save size.
+// imglyConfig {
+//     modules {
+//         include 'ui:text'
+//         include 'ui:focus'
+//         include 'ui:frame'
+//         include 'ui:brush'
+//         include 'ui:filter'
+//         include 'ui:sticker'
+//         include 'ui:overlay'
+//         include 'ui:transform'
+//         include 'ui:adjustment'
+//         include 'ui:text-design'
+//         include 'ui:video-trim'
+//         include 'ui:video-composition'
+
+//         // This module is big, remove the serializer if you don't need that feature.
+//         include 'backend:serializer'
+
+//         // Remove the asset packs you don't need, these are also big in size.
+//         include 'assets:font-basic'
+//         include 'assets:frame-basic'
+//         include 'assets:filter-basic'
+//         include 'assets:overlay-basic'
+//         include 'assets:sticker-shapes'
+//         include 'assets:sticker-emoticons'
+//         include 'assets:sticker-animated'
+
+//         include 'backend:sticker-animated'
+//         include 'backend:sticker-smart'
+//     }
+// }
+
+
 apply plugin: 'com.google.gms.google-services'
 import com.android.build.OutputFile
 
@@ -91,7 +130,7 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture =false
+def enableSeparateBuildPerCPUArchitecture = false
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
@@ -135,8 +174,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
          vectorDrawables.useSupportLibrary = true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "9.0"
+        versionCode 11
+        versionName "11.0"
         multiDexEnabled true
     }
     splits {
@@ -198,10 +237,12 @@ android {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-analytics:17.3.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    implementation "com.google.android.gms:play-services-base:17.0.0"
+    implementation "com.google.firebase:firebase-core:17.0.1"
+    implementation "com.google.firebase:firebase-messaging:19.0.0"
     //implementation project(':react-native-image-picker')
-  implementation 'com.android.support:design:27.1.0'
-implementation "com.google.firebase:firebase-invites:17.0.0"
+    implementation 'com.android.support:design:27.1.0'
+    implementation "com.google.firebase:firebase-invites:17.0.0"
     implementation fileTree(dir: "libs", include: ["*.jar"])
     // implementation 'com.google.firebase:firebase-links'
     implementation project(':react-native-contacts')
@@ -209,8 +250,9 @@ implementation "com.google.firebase:firebase-invites:17.0.0"
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.android.support:multidex:1.0.3'
+    
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-implementation ("com.google.firebase:firebase-messaging:17.3.4")
+    
    
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
@@ -243,3 +285,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+

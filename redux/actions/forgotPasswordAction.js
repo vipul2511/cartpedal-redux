@@ -15,7 +15,7 @@ import Odoo from 'react-native-odoo-promise-based';
 import _ from 'lodash';
 
 export const forgotPasswordWithOtp = (email_mobile, isMobile, hashCode) => {
-  return (dispatch) =>
+  return async (dispatch) =>
     getAsyncStorageParameters().then(({connection_context, odoo_config}) => {
       var endpoint = '/web/dataset/call_kw';
       var model = 'send.otp';
@@ -36,7 +36,6 @@ export const forgotPasswordWithOtp = (email_mobile, isMobile, hashCode) => {
       return odoo
         .rpc_call(endpoint, params)
         .then((response) => {
-          console.log('>> forgotPasswordWithOtp response', response);
           if (response.success) {
             if (
               _.get(response, 'data.success') &&
@@ -78,7 +77,7 @@ export const submitNewPasswordAfterOtp = (
   email_mobile,
   newPassword,
 ) => {
-  return (dispatch) =>
+  return async (dispatch) =>
     getAsyncStorageParameters().then(({connection_context, odoo_config}) => {
       var endpoint = '/web/dataset/call_kw';
       var model = 'res.users';
@@ -100,7 +99,6 @@ export const submitNewPasswordAfterOtp = (
       return odoo
         .rpc_call(endpoint, params)
         .then((response) => {
-          console.log('>> FORGOT_PASSWORD_AFTER_OTP_START response', response);
           if (response.success) {
             dispatch({
               type: FORGOT_PASSWORD_AFTER_OTP_SUCCESS,
@@ -131,7 +129,7 @@ export const submitNewPasswordAfterOtpProp = ({prop, value}) => ({
 });
 
 export const submitNewPasswordAfterOtpResetState = (data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: FORGOT_PASSWORD_AFTER_OTP_RESET_STATE,
       payload: null,

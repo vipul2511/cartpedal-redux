@@ -14,24 +14,24 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
+import {Platform} from 'react-native';
 
 export const signin = (phone, password) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: USER_SIGNIN_START});
     let formData = new FormData();
     formData.append('identity', '+91' + phone);
     formData.append('password', password);
     var otpUrl = `${API_URL}api-user/login`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
@@ -44,6 +44,7 @@ export const signin = (phone, password) => {
           });
           return Promise.resolve(responseData);
         } else {
+          // console.log(JSON.stringify(responseData, null, 2));
           dispatch({
             type: USER_SIGNIN_ERROR,
             payload: responseData,
@@ -68,7 +69,6 @@ export const signin = (phone, password) => {
         }
       })
       .catch((error) => {
-        console.log('error : ', error);
         dispatch({
           type: USER_SIGNIN_ERROR,
           payload: error,
@@ -80,25 +80,26 @@ export const signin = (phone, password) => {
 };
 
 export const forgotPass = (phone) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: FORGOT_PASSWORD_START});
     let formData = new FormData();
     formData.append('mobile', '+91' + phone);
     var otpUrl = `${API_URL}api-user/forgot-password`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: FORGOT_PASSWORD_SUCCESS,
             payload: responseData,
@@ -125,27 +126,28 @@ export const forgotPass = (phone) => {
 };
 
 export const forgotPassOTp = (phone, otp) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: FORGOT_PASSWORD_OTP_START});
     let formData = new FormData();
 
     formData.append('mobile', phone);
     formData.append('otp', otp);
     var otpUrl = `${API_URL}api-user/verify-otp`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: FORGOT_PASSWORD_OTP_SUCCESS,
             payload: responseData,
@@ -172,26 +174,27 @@ export const forgotPassOTp = (phone, otp) => {
 };
 
 export const resetPass = (pass, otp) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: RESET_PASSWORD_START});
     let formData = new FormData();
     formData.append('password', pass);
     formData.append('otp', otp);
     var otpUrl = `${API_URL}api-user/reset-password`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(otpUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'multipart/form-data',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
       },
       body: formData,
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           dispatch({
             type: RESET_PASSWORD_SUCCESS,
             payload: responseData,
@@ -216,3 +219,8 @@ export const resetPass = (pass, otp) => {
       .done();
   };
 };
+
+// const T_149 =
+//   'dpXx4N5NSJeVe-A5ZsZ37T:APA91bFnDWIHx3lQPaHDNNaRfx0tCuN0pMPu8W5uo469678TerFiXUdLy09Cos4ab1PqIV3Pav6i7Vso-4LN5QXAc2NBeIGzNlEicv_X8Trj2poXH-enjeflk1jE5qzLlzyPGe7Ut3zW';
+// const T_156 =
+//   'fGeP6RibTYmVSCQcDvOEaa:APA91bGSegPWl-Mb85nlsaykGIF74a-f9cZMbKWb-uRfj7Llin3W-Hx31i2275ghwXUx4Q0L_9KF1tWueB-m5CaE2MfSAKdCTJAJ6ZvL6LRai9ZKVhXk2yxaAlrBhQsqJ72LiLkNzpEo';

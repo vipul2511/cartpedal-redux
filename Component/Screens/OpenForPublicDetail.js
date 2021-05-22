@@ -1,5 +1,6 @@
-import React, { Component, useState } from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, { Component, useState } from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -11,44 +12,39 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
-  Share
-} from 'react-native'
-import resp from 'rn-responsive-font'
-import CustomMenuIcon from './CustomMenuIcon'
-import AsyncStorage from '@react-native-community/async-storage'
-import Toast from 'react-native-simple-toast'
+  Share,
+  Platform
+} from 'react-native';
+import resp from 'rn-responsive-font';
+import CustomMenuIcon from './CustomMenuIcon';
+import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
-// import { NavigationActions, withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
-import {BASE_URL} from '../Component/ApiClient';
-let width=Dimensions.get('window').width;
-let height=Dimensions.get('window').height;
-
-
+import { BASE_URL } from '../Component/ApiClient';
+let width = Dimensions.get('window').width;
 
 class OpenForPublicDetail extends Component {
   constructor(props) {
-    super(props)
-    this.UserProfileCall = this.UserProfileCall.bind(this),
-    this.AddFavourite = this.AddFavourite.bind(this);
+    super(props);
+    (this.UserProfileCall = this.UserProfileCall.bind(this)),
+      (this.AddFavourite = this.AddFavourite.bind(this));
     this.state = {
       isModalVisible: false,
-      ProfileData:'',
-      spinner:'',
-      about:'',
-      favourite:'',
-      fcmToken:'',
-      block_id:'',
-      wholeData:'',
-      userAccessToken:'',
-      redIcon:require('../images/Heart_icon.png'),
-      whiteIcon:require('../images/dislike.png'),
-      pickedImage:require('../images/default_user.png'),
-      avatar:'',
+      ProfileData: '',
+      spinner: false,
+      about: '',
+      favourite: '',
+      fcmToken: '',
+      block_id: '',
+      wholeData: '',
+      userAccessToken: '',
+      redIcon: require('../images/Heart_icon.png'),
+      whiteIcon: require('../images/dislike.png'),
+      pickedImage: require('../images/default_user.png'),
+      avatar: '',
       baseUrl: `${BASE_URL}`,
-      name:''
-    }
+    };
   }
 
   showLoading() {
@@ -60,240 +56,192 @@ class OpenForPublicDetail extends Component {
   }
 
   async componentDidMount() {
-   this.showLoading();
-     console.log("working ID");
-     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
+    this.showLoading();
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
         this.setState({ fcmToken: token });
-       
       }
     });
-     AsyncStorage.getItem('@access_token').then((accessToken) => {
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
         this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + accessToken);
-        //this.RecentUpdateCall();
       }
     });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-          this.setState({ userNo: userId });
-          console.log(" id from login  user id ====" + userId);
-          this.UserProfileCall();
-      }else{
-        console.log("else is executed");
+        this.setState({ userNo: userId });
+        this.UserProfileCall();
+      } else {
         this.hideLoading();
       }
-  });
-  
-
-}
-AddFavourite(){
-  this.showLoading();
-  let id=this.state.userNo;
-  let block_id=this.state.block_id;
-  let formData = new FormData();
-    
-  formData.append('user_id', id);
-  formData.append('block_id',block_id);
-  formData.append('type', 1);
-  console.log('form data==' + JSON.stringify(formData));
-
-// var CartList = this.state.baseUrl + 'api-product/cart-list'
-  var fav = `${BASE_URL}api-user/block-fav-user`
-  console.log('Add product Url:' + fav)
-  fetch(fav, {
-    method: 'Post',
-    headers: new Headers({
-      'Content-Type': 'multipart/form-data',
-      device_id: '1111',
-      device_token: '1111',
-      device_type: 'android',
-      // Authorization: 'Bearer' + this.state.access_token,  
-      Authorization:JSON.parse(this.state.userAccessToken), 
-    }),
-    body: formData,
-  })
-    .then(response => response.json())
-    .then(responseData => {
-    this.hideLoading();
-      if (responseData.code == '200') {
-      //  this.props.navigation.navigate('StoryViewScreen')
-       // Toast.show(responseData.message);
-        this.setState({NoData:false},()=>{
-          this.UserProfileCall();
-         // this.RecentShareCall();
-          //this.props.navigation.navigate('OpenForPublicScreen');
-        });
-        
-        // this.RecentShareCall();
-      } else {
-        // alert(responseData.data);
-        // alert(responseData.data.password)
-         this.setState({NoData:true});
-      }
-
-      console.log('response object:', responseData)
-      console.log('User user ID==', JSON.stringify(responseData))
-    })
-    .catch(error => {
-      this.hideLoading();
-      console.error(error)
-    })
-    .done();
-  
-}
-
-
-UserProfileCall() {
-  let formData = new FormData()
-
-  formData.append('user_id', + this.state.userNo);
-  console.log('user id in from Data',this.state.userNo);
-  console.log('props id in params',this.props.route.params.id);
-   
-  formData.append('profile_id',this.props.route.params.id)
-  console.log('form data==' + formData)
-
-  var userProfile = this.state.baseUrl + 'api-user/user-profile'
-  console.log('UserProfile Url:' + userProfile)
-  fetch(userProfile, {
-    method: 'Post',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      device_id: '1234',
-      device_token: '1111',
-      device_type: 'android',
-      Authorization: JSON.parse(this.state.userAccessToken)
-    },
-    body: formData,
-  })
-    .then(response => response.json())
-    .then(responseData => {
-     this.hideLoading();
-      if (responseData.code == '200') {
-      //  Toast.show(responseData.message);
-      if(responseData.data.length>0){
-        this.setState({name:responseData.data[0].name});
-      }
-      if(responseData.data[0].products!==undefined&&responseData.data[0].products.length>0){
-        console.log('if executed',responseData.data[0].products);
-        this.setState({ProfileData:responseData.data[0].products});
-        this.setState({wholeData:responseData.data[0]});
-    }else{
-      console.log('else executed');
-      this.setState({NoData:true});
-        this.setState({ProfileData:''});
-    }
-        this.setState({block_id:responseData.data[0].id});
-        this.setState({favourite:responseData.data[0].favourite})
-        console.log('fevtert========',responseData.data[0].favourite);
-      
-       
-        this.setState({about:responseData.data[0].about});
-        if(responseData.data[0].avatar==null){
-          this.setState({avatar:''})
-        }else{
-          this.setState({avatar:responseData.data[0].avatar});
-        }
-      } else {
-        // alert(responseData.data);
-        console.log(responseData.message)
-      }
-       console.log('response profile data:', JSON.stringify(responseData));
-    })
-    .catch(error => {
-     this.hideLoading();
-      console.error(error)
-    })
-
-    .done()
-}
-onShare = async (links) => {
-  try {
-    const result = await Share.share({
-      message:
-        `Get the product at ${links}`,
-        url:`${links}`
     });
-
-    if (result.action === Share.sharedAction) {
-      if (result.activityType) {
-        // shared with activity type of result.activityType
-      } else {
-        // shared
-      }
-    } else if (result.action === Share.dismissedAction) {
-      // dismissed
-    }
-  } catch (error) {
-    alert(error.message);
   }
-};
-link =async(id,name)=>{
-  const link = new firebase.links.DynamicLink(
-    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
-    'https://cartpedal.page.link',
-  ).android
-  .setPackageName('in.cartpedal')
-  .ios.setBundleId('com.ios.cartpadle')
-  .ios.setAppStoreId('1539321365');
+  AddFavourite() {
+    this.showLoading();
+    let id = this.state.userNo;
+    let block_id = this.state.block_id;
+    let formData = new FormData();
 
-firebase.links()
-  .createDynamicLink(link)
-  .then((url) => {
-    console.log('the url',url);
-    this.onShare(url);
-  });
-}
-forwardlink =async(userid,name)=>{
-  const link = new firebase.links.DynamicLink(
-    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
+    formData.append('user_id', id);
+    formData.append('block_id', block_id);
+    formData.append('type', 1);
+    var fav = `${BASE_URL}api-user/block-fav-user`;
+    fetch(fav, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
+        if (responseData.code == '200') {
+          this.setState({ NoData: false }, () => {
+            this.UserProfileCall();
+          });
+        } else {
+          this.setState({ NoData: true });
+        }
+      })
+      .catch((error) => {
+        this.hideLoading();
+      })
+      .done();
+  }
+
+  UserProfileCall() {
+    let formData = new FormData();
+
+    formData.append('user_id', +this.state.userNo);
+    formData.append('profile_id', this.props.route.params.id);
+    var userProfile = this.state.baseUrl + 'api-user/user-profile';
+
+    fetch(userProfile, {
+      method: 'Post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        device_id: '1234',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
+        if (responseData.code == '200') {
+          if (responseData.data.length > 0) {
+            this.setState({ name: responseData.data[0].name });
+          }
+          if (responseData.data[0].products !== undefined && responseData.data[0].products.length > 0) {
+            this.setState({ ProfileData: responseData.data[0].products });
+            this.setState({ wholeData: responseData.data[0] });
+          } else {
+            this.setState({ NoData: true });
+            this.setState({ ProfileData: '' });
+          }
+          this.setState({ block_id: responseData.data[0].id });
+          this.setState({ favourite: responseData.data[0].favourite })
+          this.setState({ about: responseData.data[0].about });
+          if (responseData.data[0].avatar == null) {
+            this.setState({ avatar: '' })
+          } else {
+            this.setState({ avatar: responseData.data[0].avatar });
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        this.hideLoading();
+      })
+      .done();
+  }
+
+  onShare = async (links) => {
+    try {
+      const result = await Share.share({
+        message: `Get the product at ${links}`,
+        url: `${links}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+        } else {
+        }
+      } else if (result.action === Share.dismissedAction) {
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  link = async (id, name) => {
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
+      id,
+      'https://cartpedal.page.link',
+    ).android
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        this.onShare(url);
+      });
+  };
+
+  forwardlink = async (userid, name) => {
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
       userid,
       'https://cartpedal.page.link',
-  ).android
-  .setPackageName('in.cartpedal')
-  .ios.setBundleId('com.ios.cartpadle')
-  .ios.setAppStoreId('1539321365');
+    ).android
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
-firebase.links()
- .createDynamicLink(link)
- .then((url) => {
-   console.log('the url',url);
-  //  this.sendMessage(url,userid);
-  AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-    if(NumberFormat){
-      let numID=JSON.parse(NumberFormat)
-    //   this.setState({PhoneNumber:numID})
-this.props.navigation.navigate('ForwardLinkScreen', {
-  fcmToken: this.state.fcmToken,
-  PhoneNumber: numID,
-  userId: this.state.userNo,
-  userAccessToken: this.state.userAccessToken,
-  msgids:  url,
-});
-}
-}));
- });
-}
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
+
   actionOnRow(item) {
-    console.log('Selected Item :', item)
     this.setState({ isModalVisible: !this.state.isModalVisible });
   }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
-         <Spinner
+        <Spinner
           visible={this.state.spinner}
-          color='#F01738'
-          // textContent={'Loading...'}
+          color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../images/back_blck_icon.png')}
                 style={styles.backButtonStyle}
@@ -310,119 +258,171 @@ this.props.navigation.navigate('ForwardLinkScreen', {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}>
-          
-          </View>
+          <View style={styles.SearchContainer} />
         </View>
 
         <View style={styles.MainContentBox}>
           <ScrollView>
             <View style={styles.ProfileContainer}>
               <View style={styles.RiyaImageContainer}>
-                <TouchableOpacity >
+                <TouchableOpacity>
                   <Image
-                 
-                 source={this.state.avatar==''?(this.state.pickedImage):{uri:this.state.avatar}}
+                    source={
+                      this.state.avatar == ''
+                        ? this.state.pickedImage
+                        : { uri: this.state.avatar }
+                    }
                     style={styles.RiyaImageViewStyle}
                   />
                   <Image
                     source={require('../images/status_add_largeicon.png')}
-                    style={styles.StatusAddLargeStyle}></Image>
+                    style={styles.StatusAddLargeStyle}
+                  />
                 </TouchableOpacity>
-                </View>
+              </View>
               <View style={styles.ProfileInfoContainer}>
-              <Text style={styles.PersonNameStyle}>{this.state.name}</Text>
-             
-              <View style={styles.PersonInfoContainer}>
-              <View style={{width:width*0.7}}>
-              {this.state.about? (<SeeMore style={styles.PersonDescriptionStyle} numberOfLines={4}  linkColor="red" seeMoreText="read more" seeLessText="read less">
+                <Text style={styles.PersonNameStyle}>
+                  {this.props.route.params.name}
+                </Text>
+
+                <View style={styles.PersonInfoContainer}>
+                  <View style={{ width: width * 0.7 }}>
+                    {this.state.about ? (
+                      <SeeMore
+                        style={styles.PersonDescriptionStyle}
+                        numberOfLines={4}
+                        linkColor="red"
+                        seeMoreText="read more"
+                        seeLessText="read less">
                         {this.state.about}
-                  </SeeMore>):null}
-                  </View>  
+                      </SeeMore>
+                    ) : null}
+                  </View>
+                </View>
               </View>
-              </View>
-              <TouchableOpacity onPress={this.AddFavourite} style={styles.messageButtonContainer}>
-              <Image
-                source={this.state.favourite==1?this.state.redIcon:this.state.whiteIcon}
-                style={[styles.heartButtonStyle,{width:this.state.favourite==1?resp(11):resp(18),height:this.state.favourite==1?resp(9):resp(18),marginTop:this.state.favourite==1?resp(5):resp(0)}]}></Image>
-            </TouchableOpacity>
-            </View> 
+              <TouchableOpacity
+                onPress={this.AddFavourite}
+                style={styles.messageButtonContainer}>
+                <Image
+                  source={
+                    this.state.favourite == 1
+                      ? this.state.redIcon
+                      : this.state.whiteIcon
+                  }
+                  style={[
+                    styles.heartButtonStyle,
+                    {
+                      width: this.state.favourite == 1 ? resp(20) : resp(30),
+                      height: this.state.favourite == 1 ? resp(20) : resp(30),
+                      marginTop: this.state.favourite == 1 ? resp(5) : resp(0),
+                      resizeMode: 'contain',
+                    },
+                  ]}
+                />
+              </TouchableOpacity>
+            </View>
             <View style={styles.horizontalLine}>
               <View style={styles.hairline} />
             </View>
             <FlatList
               style={{ flex: 1 }}
               data={this.state.ProfileData}
-              //renderItem={({ item }) => <Item item={item} />}
-              keyExtractor={item => item.ProdcutName}
+              keyExtractor={(item) => item.ProdcutName}
               numColumns={2}
-              renderItem={({ item }) =>(
-                <TouchableOpacity style={styles.listItem}
-                onPress={() => {
-                  this.props.navigation.navigate('ProductDetailScreen',{whole_data:item,seller_id:this.state.wholeData.id,imageURL:item.image,name:this.props.route.params.name})
-                }}>
-                <Image source={item.image[0]?{uri:item.image[0].image}:this.state.pickedImage} style={styles.image} />
-                {item.image[1]?( <View style={styles.MultipleOptionContainer}>
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.listItem}
+                  onPress={() => {
+                    this.props.navigation.navigate('ProductDetailScreen', {
+                      id:item.id
+                    });
+                  }}>
                   <Image
-                    source={require('../images/multipleImageIcon.png')}
-                    style={styles.MultipleIconStyle}></Image>
-                </View>):null}
-                <View>
-                  <Text style={styles.itemNameStyle}>{item.name}</Text>
-                </View>
-          
-                <View style={styles.box}>
-                  <View style={styles.priceContainer}>
-                    <View style={styles.itemPriceContainer}>
-                    {item.price!=0?( <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'} {item.price}
-                      </Text>):<TouchableOpacity style={{backgroundColor:'#F01738',width:resp(90),height:30,marginTop:3,marginBottom:5}}><Text style={{color:'#fff',textAlign:'center'}}>Ask For Rate</Text></TouchableOpacity>}
+                    source={
+                      item.image[0]
+                        ? { uri: item.image[0].image }
+                        : this.state.pickedImage
+                    }
+                    style={styles.image}
+                  />
+                  {item.image[1] ? (
+                    <View style={styles.MultipleOptionContainer}>
+                      <Image
+                        source={require('../images/multipleImageIcon.png')}
+                        style={styles.MultipleIconStyle}
+                      />
                     </View>
+                  ) : null}
+                  <View>
+                    <Text style={styles.itemNameStyle}>{item.name}</Text>
+                  </View>
+
+                  <View style={styles.box}>
+                    <View style={styles.priceContainer}>
+                      <View style={styles.itemPriceContainer}>
+                        {item.price != 0 ? (
+                          <Text style={styles.itemPriceStyle}>
+                            {'\u20B9'} {item.price}
+                          </Text>
+                        ) : (
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: '#F01738',
+                              width: resp(90),
+                              height: 30,
+                              marginTop: 3,
+                              marginBottom: 5,
+                            }}>
+                            <Text style={{ color: '#fff', textAlign: 'center' }}>
+                              Ask For Rate
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
-                    <TouchableOpacity style={styles.eyeButtonContainer}  onPress={() => {
-                   this.props.navigation.navigate('ProductDetailScreen',{whole_data:item,seller_id:this.state.wholeData.id,imageURL:item.image,name:this.props.route.params.name})
-                }}>
-                      <Image source={require('../images/shopping-cart-Icon.png')} style={styles.ShopingCartStyle}></Image>
-          
-                     
+                    <TouchableOpacity
+                      style={styles.eyeButtonContainer}
+                      onPress={() => {
+                        this.props.navigation.navigate('ProductDetailScreen', {
+                         id:item.id
+                        });
+                      }}>
+                      <Image
+                        source={require('../images/shopping-cart-Icon.png')}
+                        style={styles.ShopingCartStyle}
+                      />
                     </TouchableOpacity>
-          
                     <CustomMenuIcon
-          menutext='Menu'
-          menustyle={{
-          marginRight: 5,
-          flexDirection: 'row',
-          justifyContent: 'flex-end',
-          }}
-          textStyle={{
-          color: 'white',
-          }}
-          option1Click={() => {
-            let name="ProductDetailScreen"
-            this.link(item.id,name)
-          
-          }}
-          option2Click={() => {
-            let name="ProductDetailScreen"
-            this.forwardlink(item.id,name)
-          
-          }}
-          />
-                 
-                </View>
-              </TouchableOpacity>
-              )
-    }
+                      menutext="Menu"
+                      menustyle={{
+                        marginRight: 5,
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                      }}
+                      textStyle={{
+                        color: 'white',
+                      }}
+                      option1Click={() => {
+                        let name = 'ProductDetailScreen';
+                        this.link(item.id, name);
+                      }}
+                      option2Click={() => {
+                        let name = 'ProductDetailScreen';
+                        this.forwardlink(item.id, name);
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
             />
           </ScrollView>
-
         </View>
         <View style={styles.TabBox}>
           <View style={styles.tabStyle}>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('DashBoardScreen')
+                this.props.navigation.navigate('DashBoardScreen');
               }}>
               <Image
                 source={require('../images/home_inactive_icon.png')}
@@ -435,21 +435,19 @@ this.props.navigation.navigate('ForwardLinkScreen', {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('OpenForPublicScreen')
+                this.props.navigation.navigate('OpenForPublicScreen');
               }}>
               <Image
                 source={require('../images/group_active_icon.png')}
                 style={styles.StyleOpenForPublicTab}
               />
-              <Text style={styles.bottomActiveTextStyle}>
-                Open for Public
-              </Text>
+              <Text style={styles.bottomActiveTextStyle}>Open for Public</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('CartScreen')
+                this.props.navigation.navigate('CartScreen');
               }}>
               <Image
                 source={require('../images/cart_bag_inactive_icon.png')}
@@ -461,7 +459,7 @@ this.props.navigation.navigate('ForwardLinkScreen', {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('ChatScreen')
+                this.props.navigation.navigate('ChatScreen');
               }}>
               <Image
                 source={require('../images/chat_inactive_icon.png')}
@@ -472,7 +470,7 @@ this.props.navigation.navigate('ForwardLinkScreen', {
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
-                this.props.navigation.navigate('SettingScreen')
+                this.props.navigation.navigate('SettingScreen');
               }}>
               <Image
                 source={require('../images/setting_inactive_icon.png')}
@@ -483,9 +481,8 @@ this.props.navigation.navigate('ForwardLinkScreen', {
           </View>
         </View>
       </SafeAreaView>
-    )
+    );
   }
- 
 }
 
 const styles = StyleSheet.create({
@@ -513,7 +510,7 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
- 
+
   TitleContainer: {
     flexDirection: 'row',
     flex: 0.6,
@@ -532,9 +529,7 @@ const styles = StyleSheet.create({
     fontSize: resp(20),
     textAlign: 'center',
   },
- 
- 
- 
+
   heartButtonStyle: {
     marginTop: resp(30),
     color: '#F01738',
@@ -561,7 +556,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#ecf6fb',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
@@ -570,8 +564,8 @@ const styles = StyleSheet.create({
     position: 'absolute', //Here is the trick
     bottom: 0,
   },
-  messageButtonContainer:{
-    marginTop:resp(15),
+  messageButtonContainer: {
+    marginTop: resp(15),
   },
   tabButtonStyle: {
     flex: 0.25,
@@ -615,8 +609,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
   },
-  spinnerTextStyle:{
-    color:'#F01738'
+  spinnerTextStyle: {
+    color: '#F01738',
   },
   StyleHomeTab: {
     marginTop: 5,
@@ -649,7 +643,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
- 
+
   RiyaImageContainer: {
     marginBottom: resp(30),
     margin: resp(10),
@@ -657,15 +651,12 @@ const styles = StyleSheet.create({
     flex: 0.2,
     width: resp(90),
     height: resp(90),
-   
   },
-  ProfileContainer:{
+  ProfileContainer: {
     flexDirection: 'row',
     width: '100%',
   },
   RiyaImageViewStyle: {
-    
-  
     width: resp(90),
     height: resp(90),
     borderRadius: resp(10),
@@ -673,7 +664,6 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
   },
   StatusAddLargeStyle: {
- 
     marginLeft: resp(65),
     width: resp(25),
     height: resp(25),
@@ -681,20 +671,19 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 
- 
   ProfileInfoContainer: {
-      flex:0.75,
+    flex: 0.75,
     flexDirection: 'column',
     width: '100%',
-    marginLeft:resp(15),
-    marginTop:resp(18),
+    marginLeft: resp(15),
+    marginTop: resp(18),
     height: resp(30),
     color: '#fff',
   },
   PersonInfoContainer: {
-     marginTop:resp(5),
+    marginTop: resp(5),
     flexDirection: 'row',
-    width: resp(260),    
+    width: resp(260),
     height: resp(66),
   },
 
@@ -710,7 +699,7 @@ const styles = StyleSheet.create({
     width: resp(250),
     height: resp(44),
     color: '#7F7F7F',
-  }, 
+  },
   horizontalLine: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -721,7 +710,6 @@ const styles = StyleSheet.create({
     height: 5,
     width: '100%',
   },
- 
 
   ImageViewStyle: {
     margin: resp(8),
@@ -730,8 +718,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#F01738',
   },
- 
- 
+
   image: {
     alignContent: 'center',
     alignItems: 'center',
@@ -789,11 +776,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     shadowColor: 'black',
-
   },
   priceContainer: {
     flex: 0.8,
-    marginLeft:resp(-5),
+    marginLeft: resp(-5),
     flexDirection: 'row',
     backgroundColor: 'white',
   },
@@ -802,7 +788,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-   marginBottom:resp(2),
+    marginBottom: resp(2),
     width: resp(15),
     height: resp(20),
     borderRadius: resp(50),
@@ -824,5 +810,5 @@ const styles = StyleSheet.create({
     height: resp(24),
     backgroundColor: '#fff',
   },
-})
+});
 export default OpenForPublicDetail;

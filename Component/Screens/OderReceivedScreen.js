@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -7,560 +8,598 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Image,
   SafeAreaView,
-  ScrollView,
   Share,
-  Dimensions
-} from 'react-native'
-import resp from 'rn-responsive-font'
-import CustomMenuIcon from './CustomMenuIcon'
-// import { withNavigation } from 'react-navigation';
-import Toast from 'react-native-simple-toast'
+  Dimensions,
+  Platform,
+} from 'react-native';
+import resp from 'rn-responsive-font';
+
+import CustomMenuIcon from './CustomMenuIcon';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
-import {wp,hp} from '../Component/hightWidthRatio';
-let width=Dimensions.get('window').width;
+import {wp, hp} from '../Component/hightWidthRatio';
+let width = Dimensions.get('window').width;
+
 class CartPlaceScreen extends Component {
   constructor(props) {
-    super(props)
-    this.CartListCall = this.CartListCall.bind(this),
-    this.AddFavourite = this.AddFavourite.bind(this);
+    super(props);
+    (this.CartListCall = this.CartListCall.bind(this)),
+      (this.AddFavourite = this.AddFavourite.bind(this));
     this.AskForStautsCall = this.AskForStautsCall.bind(this);
-      this.state = {
-        OderRecevieProduct: '',
-        spinner: '',
-        userAccessToken:'',
-      userNo:'',
-      favourite:'',
-      ButtomTab:false,
-        NoData: '',
-        quantity:'',
-        Oder_id:'',
-        block_id:'',
-        total_price:'',
-        fcmToken:'',
-        redIcon:require('../images/Heart_icon.png'),
-        whiteIcon:require('../images/dislike.png'),
-        pickedImage:require('../images/default_user.png'),
-        avatar:'',
-        acceptText:'Accepted'
-      }
+    this.state = {
+      OderRecevieProduct: '',
+      spinner: false,
+      userAccessToken: '',
+      userNo: '',
+      favourite: '',
+      ButtomTab: false,
+      NoData: '',
+      quantity: '',
+      Oder_id: '',
+      block_id: '',
+      total_price: '',
+      fcmToken: '',
+      redIcon: require('../images/Heart_icon.png'),
+      whiteIcon: require('../images/dislike.png'),
+      pickedImage: require('../images/default_user.png'),
+      avatar: '',
+      acceptText: 'Accepted',
+    };
   }
 
   showLoading() {
-    this.setState({ spinner: true });
+    this.setState({spinner: true});
   }
 
   hideLoading() {
-    this.setState({ spinner: false });
+    this.setState({spinner: false});
   }
 
-  GotoNextScreen(item) {
+  GotoNextScreen(item) {}
+  actionOnRow(item) {}
 
-    // this.props.navigation.navigate('CartViewScreen');
-    console.log('Selected Item :', item)
-  }
-  actionOnRow(item) {
-    console.log('Selected Item :', item)
-  }
   async componentDidMount() {
     this.showLoading();
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + accessToken);
+        this.setState({userAccessToken: accessToken});
       }
     });
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
       if (token) {
-        this.setState({ fcmToken: token });
+        this.setState({fcmToken: token});
       }
     });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-          this.setState({ userNo: userId });
-          console.log(" id from login  user id ====" + this.state.userNo);
-          this.CartListCall();
-      }else{
-        console.log("else is executed");
+        this.setState({userNo: userId});
+        console.log(' id from login  user id ====' + this.state.userNo);
+        this.CartListCall();
+      } else {
+        console.log('else is executed');
         this.hideLoading();
       }
-  });
-   
-
-    //   AsyncStorage.getItem('@user_id').then((userId) => {
-    //     if (userId) {
-    //         this.setState( { userId: userId });
-    //         console.log("Edit user id Dhasbord ====" + this.state.userId);
-    //        // this.CartListCall();
-    //     }
-    // });
-
+    });
   }
-  addQuantity=(data)=>{
-    console.log("the data",data);
-    let cart_quantity=0;
-    let total_price=0;
-      data.map(item=>{
-        console.log(item.cartitem);
-        cart_quantity=cart_quantity+item.cartitem;
-        total_price=total_price+item.cartvalue;
-      });
-      console.log("the value of quantity"+cart_quantity);
-      this.setState({quantity:cart_quantity});
-      this.setState({total_price:total_price});
-  }
+
+  addQuantity = (data) => {
+    let cart_quantity = 0;
+    let total_price = 0;
+    data.map((item) => {
+      console.log(item.cartitem);
+      cart_quantity = cart_quantity + item.cartitem;
+      total_price = total_price + item.cartvalue;
+    });
+    this.setState({quantity: cart_quantity});
+    this.setState({total_price: total_price});
+  };
+
   ListEmpty = () => {
     return (
-
-      <View style={{justifyContent:'center',alignItems:'center'}}>
-      <Text style={{ marginTop:120
-   }}>{this.state.NoData?'No Record':null} </Text>
-  </View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{marginTop: 120}}>
+          {this.state.NoData ? 'No Record' : null}{' '}
+        </Text>
+      </View>
     );
   };
+
   CartListCall() {
-    let userAccessToken,fcmToken,userNo;
+    let userAccessToken, fcmToken, userNo;
     AsyncStorage.getItem('@access_token').then((accessToken) => {
-      userAccessToken= accessToken
-  AsyncStorage.getItem('@fcmtoken').then((token) => {
-    console.log("Edit user id token=" +token);
-      fcmToken= token;
-  AsyncStorage.getItem('@user_id').then((userId) => {
-      userNo= userId;
-    let formData = new FormData()
-    formData.append('user_id',userNo)
-    formData.append('type', 2)
-    // formData.append('order_id','CRTPDL08')
-    console.log('form data==' + JSON.stringify(formData))
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var CartList = `${BASE_URL}api-product/cart-list`
-    console.log('Add product Url:' + CartList)
-    fetch(CartList, {
+      userAccessToken = accessToken;
+      AsyncStorage.getItem('@fcmtoken').then((token) => {
+        fcmToken = token;
+        AsyncStorage.getItem('@user_id').then((userId) => {
+          userNo = userId;
+          let formData = new FormData();
+          formData.append('user_id', userNo);
+          formData.append('type', 2);
+          var CartList = `${BASE_URL}api-product/cart-list`;
+          fetch(CartList, {
+            method: 'Post',
+            headers: new Headers({
+              'Content-Type': 'multipart/form-data',
+              device_id: '1111',
+              device_token: fcmToken,
+              device_type: Platform.OS,
+              Authorization: JSON.parse(userAccessToken),
+            }),
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((responseData) => {
+              this.hideLoading();
+              if (responseData.code == '200') {
+                if (responseData.data[0].avatar == null) {
+                  this.setState({avatar: ''});
+                } else {
+                  this.setState({avatar: responseData.data[0].avatar});
+                }
+                if (
+                  responseData.data !== undefined &&
+                  responseData.data.length > 0
+                ) {
+                  this.setState({ButtomTab: true});
+                  this.setState({OderRecevieProduct: responseData.data});
+                  this.addQuantity(responseData.data);
+                  this.setState({block_id: responseData.data[0].id});
+                  this.setState({Oder_id: responseData.data[0].orderid});
+                } else {
+                }
+              } else {
+                this.setState({NoData: true});
+              }
+            })
+            .catch((error) => {
+              this.hideLoading();
+              console.error(error);
+            })
+            .done();
+        });
+      });
+    });
+  }
+
+  AskForStautsCall(orderID, blockID) {
+    this.showLoading();
+    let formData = new FormData();
+    formData.append('user_id', this.state.userNo);
+    formData.append('type', 1);
+    formData.append('order_id', orderID);
+    formData.append('block_id', blockID);
+    var AskForStautsURL = `${BASE_URL}api-product/order-status`;
+    fetch(AskForStautsURL, {
       method: 'Post',
       headers: new Headers({
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
-        device_token:fcmToken,
-        device_type: 'android',
-        Authorization: JSON.parse(userAccessToken),  
-        // Authorization: 'Bearer k42uBT6HNYRZup8taAw3p5J8HsbUd50wBZ1VLSba'
-
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
     })
-
-      .then(response => response.json())
-      .then(responseData => {
+      .then((response) => response.json())
+      .then((responseData) => {
         this.hideLoading();
+        console.log(responseData);
         if (responseData.code == '200') {
-          //  this.props.navigation.navigate('StoryViewScreen')
-         // Toast.show(responseData.message);
-          if(responseData.data[0].avatar==null){
-            this.setState({avatar:''})
-          }else{
-            this.setState({avatar:responseData.data[0].avatar});
-          }
-          if(responseData.data!==undefined&&responseData.data.length>0){
-            console.log('if executed');
-            this.setState({ButtomTab:true})
-            this.setState({ OderRecevieProduct: responseData.data });
-            this.addQuantity(responseData.data);
-            console.log("blockId===",responseData.data[0].id);
-            this.setState({block_id:responseData.data[0].id});
-            this.setState({Oder_id:responseData.data[0].orderid})
-            console.log('oderiD',responseData.data[0].orderid)
-        }else{
-        }
-
+          alert('Order has been accepted');
         } else {
-          this.setState({ NoData: true });
+          alert(responseData.message);
         }
-
-        // console.log('response object:', responseData)
-        // console.log('User user ID==', JSON.stringify(responseData))
       })
-      .catch(error => {
+      .catch((error) => {
         this.hideLoading();
-        console.error(error)
       })
+      .done();
+  }
 
-      .done()
-    });
-  });
-});
-  }
-  AskForStautsCall(orderID,blockID) {
-    let formData = new FormData()
-      
-      formData.append('user_id', this.state.userNo)
-      formData.append('type', 1)
-      formData.append('order_id', orderID)
-      formData.append('block_id', blockID)
-  
-  
-      console.log('form data for ask==' + JSON.stringify(formData))
-     // var CartList = this.state.baseUrl + 'api-product/cart-list'
-      var AskForStautsURL = `${BASE_URL}api-product/order-status`
-      console.log(' AskForStautsURL :' + AskForStautsURL)
-      fetch(AskForStautsURL, {
-        method: 'Post',
-        headers: new Headers({
-          'Content-Type': 'multipart/form-data',
-          device_id: '1111',
-          device_token:this.state.fcmToken,
-          device_type: 'android',
-          Authorization: JSON.parse(this.state.userAccessToken),  
-          // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
-  
-        }),
-        body: formData,
-      })
-  
-        .then(response => response.json())
-        .then(responseData => {
-          this.hideLoading();
-          if (responseData.code == '200') {
-             //  this.props.navigation.navigate('StoryViewScreen')
-             //   Toast.show(responseData.message);
-            //  this.setState({acceptText:'Accepted'});
-                alert('Your order has been accepted successfully');
-          } else {
-            // alert(responseData.data);
-            // alert(responseData.data.password)
-            alert(responseData.message);
-          }
-  
-          console.log('response object ask for:', responseData)
-           console.log('User user ID==', JSON.stringify(responseData))
-          //  console.log('response ID:', responseData.data[0].id)
-          // console.log('access_token ', this.state.access_token)
-          //   console.log('User Phone Number==' + formData.phone_number)
-        })
-        .catch(error => {
-         this.hideLoading();
-          console.error(error)
-        })
-  
-        .done()
-  
-  }
-  AddFavourite(block_id){
+  AddFavourite(block_id) {
     this.showLoading();
-    let id=this.state.userNo;
+    let id = this.state.userNo;
     let formData = new FormData();
-      
     formData.append('user_id', id);
-    formData.append('block_id',block_id);
-    formData.append('type', 1);
-    console.log('form data==' + JSON.stringify(formData));
-    console.log('blcok_ID====',block_id);
-
-
-  // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var fav = `${BASE_URL}api-user/block-fav-user`
-    console.log('Add product Url:' + fav)
+    formData.append('block_id', block_id);
+    formData.append('type', 2);
+    var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',
       headers: new Headers({
         'Content-Type': 'multipart/form-data',
         device_id: '1111',
         device_token: this.state.fcmToken,
-        device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,  
-        Authorization:JSON.parse(this.state.userAccessToken), 
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
       }),
       body: formData,
     })
-      .then(response => response.json())
-      .then(responseData => {
-      this.hideLoading();
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
         if (responseData.code == '200') {
-        //  this.props.navigation.navigate('StoryViewScreen')
-       //   Toast.show(responseData.message);
-          // this.RecentShareCall();
           this.CartListCall();
         } else {
-          // alert(responseData.data);
-          // alert(responseData.data.password)
-           this.setState({NoData:true});
+          this.setState({NoData: true});
         }
-        console.log('response object:', responseData)
-        console.log('User user ID==', JSON.stringify(responseData))
       })
-      .catch(error => {
+      .catch((error) => {
         this.hideLoading();
-        console.error(error)
       })
       .done();
   }
 
   async SaveLoginUserData(responseData) {
     await AsyncStorage.setItem('@user_id', responseData.data.userid.toString());
-    await AsyncStorage.setItem('@access_token', responseData.data.access_token.toString());
-
-
+    await AsyncStorage.setItem(
+      '@access_token',
+      responseData.data.access_token.toString(),
+    );
   }
+
   onShare = async (links) => {
     try {
       const result = await Share.share({
-        message:
-          `Get the product at ${links}`,
-          url:`${links}`
+        message: `Get the product at ${links}`,
+        url: `${links}`,
       });
 
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // shared with activity type of result.activityType
         } else {
-          // shared
         }
       } else if (result.action === Share.dismissedAction) {
-        // dismissed
       }
     } catch (error) {
       alert(error.message);
     }
   };
-  link =async(id,name,orderID)=>{
+
+  link = async (id, name, orderID) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
     ).android
-    .setPackageName('in.cartpedal')
-    .ios.setBundleId('com.ios.cartpadle')
-    .ios.setAppStoreId('1539321365');
-  
-  firebase.links()
-    .createDynamicLink(link)
-    .then((url) => {
-      console.log('the url',url);
-      this.onShare(url);
-    });
-  }
-forwardlink =async(userid,name,orderID)=>{
-  const link = new firebase.links.DynamicLink(
-    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
-    'https://cartpedal.page.link',
-  ).android
-  .setPackageName('in.cartpedal')
-  .ios.setBundleId('com.ios.cartpadle')
-  .ios.setAppStoreId('1539321365');
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
-  firebase
-    .links()
-    .createDynamicLink(link)
-    .then((url) => {
-      console.log('the url', url);
-    AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
-      if(NumberFormat){
-        let numID=JSON.parse(NumberFormat)
-      //   this.setState({PhoneNumber:numID})
-  this.props.navigation.navigate('ForwardLinkScreen', {
-    fcmToken: this.state.fcmToken,
-    PhoneNumber: numID,
-    userId: this.state.userNo,
-    userAccessToken: this.state.userAccessToken,
-    msgids:  url,
-  });
-}
-}));
-   });
- }
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        this.onShare(url);
+      });
+  };
 
+  forwardlink = async (userid, name, orderID) => {
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
+    ).android
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
+
+    firebase
+      .links()
+      .createDynamicLink(link)
+      .then((url) => {
+        AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
+          if (NumberFormat) {
+            let numID = JSON.parse(NumberFormat);
+            this.props.navigation.navigate('ForwardLinkScreen', {
+              fcmToken: this.state.fcmToken,
+              PhoneNumber: numID,
+              userId: this.state.userNo,
+              userAccessToken: this.state.userAccessToken,
+              msgids: url,
+            });
+          }
+        });
+      });
+  };
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
           visible={this.state.spinner}
-          color='#F01738'
-          // textContent={'Loading...'}
+          color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
 
         <View style={styles.MainContentBox}>
-
           <View style={styles.hairline} />
 
           <FlatList
-            style={{ flex: .85 }}
+            style={{flex: 0.85}}
             data={this.state.OderRecevieProduct}
-            // renderItem={({ item }) => <ParsonProfile item={item} />}
-            keyExtractor={(item,index) =>index}
-            renderItem={({ item,index }) => {
-              // console.log('order recevied',JSON.stringify(item));
-              return(
+            initialNumToRender={20}
+            keyExtractor={(item, index) => index}
+            renderItem={({item}) => {
+              return (
                 <View>
-                {item.products[0]?(<TouchableOpacity style={styles.itemBox} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,order_id:item.orderid })}}>
-                <View style={styles.box}>
-                  <View style={styles.ProfileImageContainer}>
-                    <TouchableOpacity>
-                      <Image
-                       source={item.avatar==null?(this.state.pickedImage):{uri:item.avatar}}
-                        style={styles.ProfileImageViewStyle}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.ProfileInfoContainer}>
-                    <Text style={styles.PersonNameStyle}>{item.name}</Text>
-                    <View style={{width:wp(520)}}>
-                    {item.about? (<SeeMore style={styles.ProfileDescription} numberOfLines={2}  linkColor="red" seeMoreText="read more" seeLessText="read less">
-                        {item.about.substring(0,55)+"..."}
-                  </SeeMore>):null}
-                  <Text style={{color:'grey',marginBottom:10}}>Order id:{item.orderid}  {item.date},{item.time}</Text>
-                  </View>
-                  </View> 
-                  <View style={{width:width-160}}>
-                  <View style={styles.ListMenuContainer}>
-                    <TouchableOpacity style={styles.messageButtonContainer} onPress={() => {
-                      console.log('id of user',item.id);
-                      this.props.navigation.navigate('ChatDetailScreen',{userid:item.id, username:item.name,userabout:item.about,useravatar:item.avatar, groupexit:false,groupId:"0",msg_type:"0",userphone:item.mobile})
-                      }}>
-                        <Image
-                          source={require('../images/message_icon.png')}
-                          style={styles.messageButtonStyle}></Image>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{this.AddFavourite(item.id)}} style={styles.messageButtonContainer}>
-                  <Image
-                source={item.favourite==1?this.state.redIcon:this.state.whiteIcon}
-                style={[styles.heartButtonStyle,{width:item.favourite==1?resp(11):resp(18),height:item.favourite==1?resp(9):resp(18),marginTop:item.favourite==1?resp(4):resp(0)}]}></Image>
-            </TouchableOpacity>
-                    <TouchableOpacity style={styles.ViewButtonContainer} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,order_id:item.orderid})}}> 
-                        <Text style={styles.viewButtonStyle}>View All</Text>
-                    </TouchableOpacity>
-                    <CustomMenuIcon
-                      //Menu Text
-                      menutext='Menu'
-                      //Menu View Style
-                      menustyle={{
-                        justifyContent:'center',
-                        alignItems:'center',
-                        marginBottom:4,
-                        flexDirection: 'row',
-                        // justifyContent: 'flex-end',
-                      }}
-                      //Menu Text Style
-                      textStyle={{
-                        color: 'white',
-                      }}
-                      //Click functions for the menu items
-                      option1Click={() => {
-                        let name="OrderRecievedViewScreen"
-                        this.link(item.id,name,item.orderid)
-                        // Toast.show('CLicked Shared Link', Toast.LONG)
-                      }}
-                      option2Click={() => {
-                        let name="OrderRecievedViewScreen"
-                        this.forwardlink(item.id,name,item.orderid)
-                        // Toast.show('CLicked Forward Link', Toast.LONG)
-                      }}
-                    />
-                  </View>
-                  </View>
-                </View>
-                {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> */}
-                  <View style={styles.columnView}>
-                    <View style={{justifyContent:'center',alignItems:'center',flexDirection:'row'}}>
-                   <View style={styles.ImageContainer}>
-                      <Image
-                        source={{ uri: item.products[0].image }}
-                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[0].name}</Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[0].price}
-                      </Text>
-                    </View>
-                    {item.products[1]?(<View style={styles.ImageContainer}>
-                      <Image
-                        source={{ uri: item.products[1].image }}
-                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[1].name}</Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[1].price}
-                      </Text>
-                    </View>):null}
-                    {item.products[2]?(<View style={styles.ImageContainer}>
-                      <Image
-                        source={{ uri: item.products[2].image }}
-                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[2].name}</Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[2].price}
-                      </Text>
-                    </View>):null}
-                    {item.products[3]?(<View style={styles.ImageContainer}>
-                      <Image
-                        source={{ uri: item.products[3].image }}
-                        style={{width:wp(90),height:hp(130),borderRadius:5}}></Image>
-                      <Text style={styles.itemNameStyle}>{item.products[3].name}</Text>
-                      <Text style={styles.itemPriceStyle}>
-                        {'\u20B9'}
-                        {item.products[3].price}
-                      </Text>
-                    </View>):null}
-                    </View>
-                  </View>
-                {/* </ScrollView> */}
-                <View style={styles.ItemCountContainer}>
-                  <View style={styles.CartValueContainer}>
-                    <View style={styles.CartItemContainer}>
-                      <Text style={styles.CartItemTextStyle}>Cart Item</Text>
-                      <Text style={styles.CartValueTextStyle}>{item.cartitem}</Text>
-                    </View>
-                    <View style={styles.CartItemContainer}>
-                      <Text style={styles.CartItemTextStyle}>Cart Value</Text>
-                      <Text style={styles.CartValueTextStyle}>{item.cartvalue}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.PlacedHolderButtonContainer}>
+                  {item.products[0] ? (
                     <TouchableOpacity
-                     onPress={() => {
-                      this.AskForStautsCall(item.orderid,item.id)
-                  }}>
-                      <View style={styles.PlacedButtonStyle}>
-                        <Text style={styles.PlaceHolderTextStyle}>{this.state.acceptText}</Text>
+                      style={styles.itemBox}
+                      onPress={() => {
+                        this.props.navigation.navigate(
+                          'OrderRecievedViewScreen',
+                          {
+                            order_id: item.orderid,
+                          },
+                        );
+                      }}>
+                      <View style={styles.box}>
+                        <View style={styles.ProfileImageContainer}>
+                          <TouchableOpacity>
+                            <Image
+                              source={
+                                item.avatar == null
+                                  ? this.state.pickedImage
+                                  : {uri: item.avatar}
+                              }
+                              style={styles.ProfileImageViewStyle}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.ProfileInfoContainer}>
+                          <Text style={styles.PersonNameStyle}>
+                            {item.name}
+                          </Text>
+                          <View style={{width: wp(520)}}>
+                            {item.about ? (
+                              <SeeMore
+                                style={styles.ProfileDescription}
+                                numberOfLines={2}
+                                linkColor="red"
+                                seeMoreText="read more"
+                                seeLessText="read less">
+                                {item.about.substring(0, 55) + '...'}
+                              </SeeMore>
+                            ) : null}
+                            <Text style={{color: 'grey', marginBottom: 10}}>
+                              Order id:{item.orderid} {item.date},{item.time}
+                            </Text>
+                          </View>
+                        </View>
+                        <View style={{width: width - 160}}>
+                          <View style={styles.ListMenuContainer}>
+                            <TouchableOpacity
+                              style={styles.messageButtonContainer}
+                              onPress={() => {
+                                console.log('id of user', item.id);
+                                this.props.navigation.navigate(
+                                  'ChatDetailScreen',
+                                  {
+                                    userid: item.id,
+                                    username: item.name,
+                                    userabout: item.about,
+                                    useravatar: item.avatar,
+                                    groupexit: false,
+                                    groupId: '0',
+                                    msg_type: '0',
+                                    userphone: item.mobile,
+                                  },
+                                );
+                              }}>
+                              <Image
+                                source={require('../images/message_icon.png')}
+                                style={styles.messageButtonStyle}
+                              />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => {
+                                this.AddFavourite(item.id);
+                              }}
+                              style={styles.messageButtonContainer}>
+                              <Image
+                                source={
+                                  item.favourite == 1
+                                    ? this.state.redIcon
+                                    : this.state.whiteIcon
+                                }
+                                style={[
+                                  styles.heartButtonStyle,
+                                  {
+                                    width:
+                                      item.favourite == 1 ? resp(11) : resp(18),
+                                    height:
+                                      item.favourite == 1 ? resp(9) : resp(18),
+                                    marginTop:
+                                      item.favourite == 1 ? resp(4) : resp(0),
+                                  },
+                                ]}
+                              />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={styles.ViewButtonContainer}
+                              onPress={() => {
+                                this.props.navigation.navigate(
+                                  'OrderRecievedViewScreen',
+                                  {
+                                    order_id: item.orderid,
+                                  },
+                                );
+                              }}>
+                              <Text style={styles.viewButtonStyle}>
+                                View All
+                              </Text>
+                            </TouchableOpacity>
+                            <CustomMenuIcon
+                              menutext="Menu"
+                              menustyle={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginBottom: 4,
+                                flexDirection: 'row',
+                              }}
+                              textStyle={{
+                                color: 'white',
+                              }}
+                              option1Click={() => {
+                                let name = 'OderPlacedViewScreen';
+                                this.link(item.id, name, item.orderid);
+                              }}
+                              option2Click={() => {
+                                let name = 'OderPlacedViewScreen';
+                                this.forwardlink(item.id, name, item.orderid);
+                              }}
+                            />
+                          </View>
+                        </View>
                       </View>
+                      <View style={styles.columnView}>
+                        <View
+                          style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                          }}>
+                          <View style={styles.ImageContainer}>
+                            <Image
+                              source={{uri: item.products[0].image}}
+                              style={{
+                                width: wp(90),
+                                height: hp(130),
+                                borderRadius: 5,
+                              }}
+                            />
+                            <Text style={styles.itemNameStyle}>
+                              {item.products[0].name}
+                            </Text>
+                            <Text style={styles.itemPriceStyle}>
+                              {'\u20B9'}
+                              {item.products[0].price}
+                            </Text>
+                          </View>
+                          {item.products[1] ? (
+                            <View style={styles.ImageContainer}>
+                              <Image
+                                source={{uri: item.products[1].image}}
+                                style={{
+                                  width: wp(90),
+                                  height: hp(130),
+                                  borderRadius: 5,
+                                }}
+                              />
+                              <Text style={styles.itemNameStyle}>
+                                {item.products[1].name}
+                              </Text>
+                              <Text style={styles.itemPriceStyle}>
+                                {'\u20B9'}
+                                {item.products[1].price}
+                              </Text>
+                            </View>
+                          ) : null}
+                          {item.products[2] ? (
+                            <View style={styles.ImageContainer}>
+                              <Image
+                                source={{uri: item.products[2].image}}
+                                style={{
+                                  width: wp(90),
+                                  height: hp(130),
+                                  borderRadius: 5,
+                                }}
+                              />
+                              <Text style={styles.itemNameStyle}>
+                                {item.products[2].name}
+                              </Text>
+                              <Text style={styles.itemPriceStyle}>
+                                {'\u20B9'}
+                                {item.products[2].price}
+                              </Text>
+                            </View>
+                          ) : null}
+                          {item.products[3] ? (
+                            <View style={styles.ImageContainer}>
+                              <Image
+                                source={{uri: item.products[3].image}}
+                                style={{
+                                  width: wp(90),
+                                  height: hp(130),
+                                  borderRadius: 5,
+                                }}
+                              />
+                              <Text style={styles.itemNameStyle}>
+                                {item.products[3].name}
+                              </Text>
+                              <Text style={styles.itemPriceStyle}>
+                                {'\u20B9'}
+                                {item.products[3].price}
+                              </Text>
+                            </View>
+                          ) : null}
+                        </View>
+                      </View>
+                      <View style={styles.ItemCountContainer}>
+                        <View style={styles.CartValueContainer}>
+                          <View style={styles.CartItemContainer}>
+                            <Text style={styles.CartItemTextStyle}>
+                              Cart Item
+                            </Text>
+                            <Text style={styles.CartValueTextStyle}>
+                              {item.cartitem}
+                            </Text>
+                          </View>
+                          <View style={styles.CartItemContainer}>
+                            <Text style={styles.CartItemTextStyle}>
+                              Cart Value
+                            </Text>
+                            <Text style={styles.CartValueTextStyle}>
+                              {item.cartvalue}
+                            </Text>
+                          </View>
+                        </View>
+                        <View style={styles.PlacedHolderButtonContainer}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.AskForStautsCall(item.orderid, item.id);
+                            }}>
+                            <View style={styles.PlacedButtonStyle}>
+                              <Text style={styles.PlaceHolderTextStyle}>
+                                {this.state.acceptText}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+
+                      <View style={styles.hairline} />
                     </TouchableOpacity>
-                  </View>
+                  ) : null}
                 </View>
-
-
-                <View style={styles.hairline} />
-              </TouchableOpacity>
-                ):null}
-                </View>
-            )}
-                }
-                 ListEmptyComponent={this.ListEmpty}
+              );
+            }}
+            ListEmptyComponent={this.ListEmpty}
           />
-        {this.state.ButtomTab==true?(
-          <View style={styles.BottomContainer}>
-            <View style={styles.BottomQuanitityContainer}>
-              <Text style={styles.OderTextStyle}>Total Order Quanitity</Text>
-              <Text style={styles.OderTextNumberStyle}>{this.state.quantity}</Text>
+          {this.state.ButtomTab === true ? (
+            <View style={styles.BottomContainer}>
+              <View style={styles.BottomQuanitityContainer}>
+                <Text style={styles.OderTextStyle}>Total Order Quanitity</Text>
+                <Text style={styles.OderTextNumberStyle}>
+                  {this.state.quantity}
+                </Text>
+              </View>
+              <View style={styles.BottomValueContainer}>
+                <Text style={styles.OderValueTextStyle}>Total Order Value</Text>
+                <Text style={styles.OderValueTextNumberStyle}>
+                  {'\u20B9'}
+                  {this.state.total_price}
+                </Text>
+              </View>
             </View>
-            <View style={styles.BottomValueContainer}>
-              <Text style={styles.OderValueTextStyle}>Total Order Value</Text>
-              <Text style={styles.OderValueTextNumberStyle}>{'\u20B9'}{this.state.total_price}</Text>
-            </View>
-
-          </View>
-        ):null}
-          
+          ) : null}
         </View>
-
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -582,11 +621,10 @@ const styles = StyleSheet.create({
 
   PersonNameStyle: {
     marginTop: resp(10),
-    // width: resp(80),
-    // height: resp(20),
     color: '#000',
     fontWeight: 'bold',
   },
+
   ProfileDescription: {
     marginRight: resp(-2),
     width: resp(260),
@@ -594,6 +632,7 @@ const styles = StyleSheet.create({
     color: '#7F7F7F',
     fontSize: resp(12),
   },
+
   Profile2ImageContainer: {
     margin: resp(10),
     flexDirection: 'column',
@@ -601,95 +640,84 @@ const styles = StyleSheet.create({
     width: resp(70),
     height: resp(70),
   },
+
   ProfileImageContainer: {
     flexDirection: 'column',
-    // flex: 0.2,
     width: wp(60),
     height: hp(60),
-    // marginRight:10
   },
+
   spinnerTextStyle: {
-    color: '#F01738'
+    color: '#F01738',
   },
+
   box: {
     marginTop: resp(5),
     width: width,
     height: hp(75),
     backgroundColor: 'white',
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
+
   ItemCountContainer: {
     marginLeft: wp(20),
-    marginTop: hp(5),
+
     width: wp(415),
-    height: hp(75),
+    height: hp(80),
     flexDirection: 'row',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
     elevation: 0,
   },
+
   CartItemContainer: {
     flex: 0.5,
     height: hp(22),
     width: wp(130),
     margin: resp(5),
     flexDirection: 'row',
-
   },
+
   PlacedButtonStyle: {
     marginLeft: resp(40),
-    height: hp(40),
+    height: 40,
     width: wp(130),
     marginTop: resp(20),
     backgroundColor: '#FFCF33',
-
-
   },
+
   PlaceHolderTextStyle: {
     marginTop: resp(10),
     alignSelf: 'center',
     height: resp(25),
     fontWeight: 'bold',
     fontSize: 15,
-    color: "#2B2B2B",
-
+    color: '#2B2B2B',
   },
+
   PlaceHolderTextStyle2: {
     marginTop: resp(20),
     alignSelf: 'center',
-
     height: resp(18),
     fontWeight: 'bold',
     fontSize: 15,
-    color: "#2B2B2B",
-
+    color: '#2B2B2B',
   },
+
   CartItemTextStyle: {
     width: resp(80),
     height: resp(18),
-
     fontSize: 15,
-    color: "#2B2B2B"
+    color: '#2B2B2B',
   },
+
   CartValueTextStyle: {
     marginLeft: resp(20),
     width: resp(50),
     height: resp(18),
     fontWeight: 'bold',
     fontSize: 15,
-    color: "#2B2B2B",
-
+    color: '#2B2B2B',
   },
 
   CartValueContainer: {
@@ -698,14 +726,10 @@ const styles = StyleSheet.create({
     height: resp(65),
     flex: 0.5,
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
+
   PlacedHolderButtonContainer: {
     marginBottom: resp(20),
     margin: resp(5),
@@ -713,16 +737,12 @@ const styles = StyleSheet.create({
     height: hp(70),
     flex: 0.7,
     flexDirection: 'column',
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    shadowOffset: {
-      height: 2,
-      width: 5,
-    },
+
     elevation: 0,
   },
+
   itemBox: {
-    height: hp(400),
+    height: resp(410),
     backgroundColor: 'white',
     flexDirection: 'column',
     shadowColor: 'black',
@@ -742,7 +762,7 @@ const styles = StyleSheet.create({
   },
   ProfileImageViewStyle: {
     marginLeft: resp(5),
-    marginTop:wp(15),
+    marginTop: wp(15),
     width: wp(50),
     height: hp(50),
     // justifyContent:'center',
@@ -867,12 +887,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   ImageContainer: {
-    marginTop: resp(-8),
     flexDirection: 'column',
-    width: wp(90),
-    height: hp(133),
-    borderRadius: resp(15),
-    marginLeft:wp(2)
+    width: wp(95),
+    marginTop: wp(10),
+    height: hp(160),
+    marginLeft: resp(2),
+    borderRadius: resp(5),
   },
   bottomInactiveTextStyleChart: {
     color: '#887F82',
@@ -950,8 +970,8 @@ const styles = StyleSheet.create({
     // marginTop: hp(20),
     // marginLeft:wp(20),
     flexDirection: 'row',
-    justifyContent:'flex-end',
-    alignItems:'flex-end',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
     height: resp(40),
   },
   openButtonStyle: {
@@ -963,13 +983,13 @@ const styles = StyleSheet.create({
   viewButtonStyle: {
     color: '#000',
     // marginRight: -20,
-    fontSize:resp(14),
+    fontSize: resp(14),
     flexDirection: 'row',
     // alignItems: 'center',
     // justifyContent: 'center',
-    marginBottom:4,
+    marginBottom: 4,
     marginLeft: wp(2),
-    marginRight:wp(5)
+    marginRight: wp(5),
   },
 
   openButtonContainer: {
@@ -1005,8 +1025,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   ViewButtonContainer: {
-    // width: wp(65),
-    // height: hp(24),
     backgroundColor: '#fff',
   },
 
@@ -1062,7 +1080,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#ecf6fb',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
@@ -1074,8 +1091,7 @@ const styles = StyleSheet.create({
   columnView: {
     flexDirection: 'row',
     width: '100%',
-    height:'40%',
-    marginTop:hp(5)
+    marginTop: hp(5),
   },
   tabButtonStyle: {
     flex: 0.25,
@@ -1096,7 +1112,6 @@ const styles = StyleSheet.create({
     color: '#887F82',
     fontSize: resp(12),
     marginLeft: resp(15),
-
   },
   itemPriceStyle: {
     color: '#000',
@@ -1104,25 +1119,22 @@ const styles = StyleSheet.create({
     marginLeft: resp(17),
     fontSize: resp(12),
     alignItems: 'center',
-
-
   },
   BottomContainer: {
-    flex: .15,
+    flex: 0.15,
     width: '100%',
     flexDirection: 'row',
     margin: resp(2),
-
   },
   BottomQuanitityContainer: {
     flex: 0.5,
     flexDirection: 'column',
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   BottomValueContainer: {
     flex: 0.5,
     flexDirection: 'column',
-    backgroundColor: '#F01738'
+    backgroundColor: '#F01738',
   },
 
   OderTextStyle: {
@@ -1165,5 +1177,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
   },
-})
+});
 export default CartPlaceScreen;

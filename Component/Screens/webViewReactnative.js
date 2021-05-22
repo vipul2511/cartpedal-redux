@@ -1,24 +1,37 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View,TouchableOpacity,Image } from 'react-native';
-import { WebView } from 'react-native-webview';
-import resp from 'rn-responsive-font' 
-// ...
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-did-mount-set-state */
+
+import React, {Component} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Platform,
+} from 'react-native';
+import {WebView} from 'react-native-webview';
+import resp from 'rn-responsive-font';
 export default class MyWebComponent extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-     link:'https://cartpedal.com/page/privacy'
-    }
+    this.state = {
+      link: 'https://cartpedal.com/page/privacy',
+    };
   }
-  componentDidMount(){
-    console.log('props',JSON.stringify(this.props));
-    if(this.props.route.params.screenSide=='Signup') this.setState({link:'https://cartpedal.com/page/terms-condition'})
-    if(this.props.route.params.screenSide=='Signup1') this.setState({link:'https://cartpedal.com/page/privacy'})
+  componentDidMount() {
+    if (this.props.route.params.screenSide == 'Signup') {
+      this.setState({link: 'https://cartpedal.com/page/terms-condition'});
+    }
+    if (this.props.route.params.screenSide == 'Signup1') {
+      this.setState({link: 'https://cartpedal.com/page/privacy'});
+    }
   }
   render() {
     return (
-      <View style={{flex:1}}>
-         <View style={styles.headerView}>
+      <View style={{flex: 1}}>
+        <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
@@ -39,20 +52,14 @@ export default class MyWebComponent extends Component {
           </View>
           <TouchableOpacity
             style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </TouchableOpacity>
+            onPress={() => {}}></TouchableOpacity>
         </View>
-    <WebView source={{ uri:this.state.link  }} />
-    </View>
+        <WebView source={{uri: this.state.link}} />
+      </View>
     );
   }
 }
+
 const styles = StyleSheet.create({
   headerView: {
     flex: 0.1,
@@ -62,6 +69,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     elevation: 20,
+    marginTop: Platform.OS === 'android' ? 0 : 24,
   },
   BackButtonContainer: {
     flex: 0.2,
@@ -102,4 +110,4 @@ const styles = StyleSheet.create({
     width: 25,
     alignSelf: 'flex-end',
   },
-})
+});

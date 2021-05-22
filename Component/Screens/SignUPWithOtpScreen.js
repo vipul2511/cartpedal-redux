@@ -1,108 +1,89 @@
-import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
-import resp from 'rn-responsive-font'
+/* eslint-disable no-alert */
+/* eslint-disable react/no-did-mount-set-state */
+import React, {Component} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
+import resp from 'rn-responsive-font';
 import OTPTextView from 'react-native-otp-textinput';
 import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL} from '../Component/ApiClient';
-var mobileNumber, otp
+var mobileNumber, otp;
 
-console.disableYellowBox = true
+console.disableYellowBox = true;
 class SignUPWithOtpScreen extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       phone_number: '',
       otp: '',
       baseUrl: `${BASE_URL}`,
-      fcmToken:''
-    }
+      fcmToken: '',
+    };
   }
   showLoading() {
-    this.setState({ loading: true });
+    this.setState({loading: true});
   }
 
   hideLoading() {
-    this.setState({ loading: false });
+    this.setState({loading: false});
   }
   componentDidMount() {
-    const { navigation } = this.props
     mobileNumber = this.props.route.params.mobile;
-    // mobileNumber = navigation.getParam('mobile', 'no-mobile')
     otp = this.props.route.params.otp;
-    // otp = navigation.getParam('otp', 'no-otp')
-
-    this.setState({ otp: otp })
-    console.log(" in next screenfghj ", mobileNumber)
-
+    this.setState({otp: otp});
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" +token);
       if (token) {
-        this.setState({ fcmToken: JSON.parse(token) });
+        this.setState({fcmToken: JSON.parse(token)});
       }
     });
-
   }
-  resendopt=()=>{
-      let formData = new FormData()
-      formData.append('mobile', '+91' +mobileNumber)
-      console.log('form data==' + formData)
-  
-      var otpUrl = this.state.baseUrl + 'api-user/send-otp'
-      console.log('url:' + otpUrl)
-      fetch(otpUrl, {
-        method: 'Post',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          device_id: '1234',
-          device_token: '1111',
-          device_type: 'android',
-        },
-        body: formData,
+
+  resendopt = () => {
+    let formData = new FormData();
+    formData.append('mobile', '+91' + mobileNumber);
+    formData.append('type', '0');
+    var otpUrl = this.state.baseUrl + 'api-user/send-otp';
+    fetch(otpUrl, {
+      method: 'Post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        device_id: '1234',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
+        if (responseData.code == '200') {
+          this.setState({otp: responseData.data.otp});
+        } else {
+        }
       })
-        .then(response => response.json())
-        .then(responseData => {
-          this.hideLoading();
-          if (responseData.code == '200') {
-            this.setState({otp:responseData.data.otp});
-            // this.props.navigation.navigate('SignUPWithOtpScreen', {
-            //   mobile: responseData.data.mobile,
-            //   otp: responseData.data.otp,
-            // })
-          } else {
-  
-            // alert(JSON.stringify(responseData.data))
-          }
-  
-          console.log('response object:', responseData)
-        })
-        .catch(error => {
-          this.hideLoading();
-          console.error(error)
-        })
-  
-        .done()
-    }
-  
+      .catch((error) => {
+        this.hideLoading();
+      })
+      .done();
+  };
+
   CheckTextInput = () => {
-
-
     if (this.state.otpInput === '') {
-
       alert('Please Enter OTP');
-
-    }
-    else if (this.state.otpInput != this.state.otp) {
+    } else if (this.state.otpInput != this.state.otp) {
       alert('Please Enter Valid OTP');
+    } else {
+      this.props.navigation.navigate('SignUPScreen', {mobile: mobileNumber});
     }
-
-    else {
-      this.props.navigation.navigate('SignUPScreen', { mobile: mobileNumber })
-    }
-
   };
 
   render() {
-
     return (
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -113,35 +94,24 @@ class SignUPWithOtpScreen extends Component {
               We have sent an otp on your mobile number{' '}
             </Text>
             <Text style={styles.forgotDescription2}>{mobileNumber}</Text>
-            <Text style={styles.forgotDescription2}>{'OTP:' +this.state.otp}</Text>
-            {/* <OTPTextView
-              ref={e => (this.input1 = e)}
+            <Text style={styles.forgotDescription2}>
+              {'OTP:' + this.state.otp}
+            </Text>
+            <OTPTextView
+              handleTextChange={(otp) => this.setState({otpInput: otp})}
               containerStyle={styles.textInputContainer}
-              handleTextChange={otp => this.setState({ otpInput: otp })}
               textInputStyle={styles.roundedTextInput}
-               inputCount={4}
-              inputCellLength={2}
-              keyboardType='numeric'
+              inputCount={4}
               color={'white'}
-              tintColor='#FB6C6A'
-              offTintColor='#BBBCBE'
-              textInputStyle=''
-            /> */}
-                    <OTPTextView
-                    handleTextChange={otp => this.setState({ otpInput: otp })}
-                    containerStyle={styles.textInputContainer}
-                    textInputStyle={styles.roundedTextInput}
-                    inputCount={4}
-                    color={'white'}
-                    tintColor='#FB6C6A'
-                    offTintColor='#BBBCBE'
-                    inputCellLength={1}
-                  />
+              tintColor="#FB6C6A"
+              offTintColor="#BBBCBE"
+              inputCellLength={1}
+            />
 
             <View style={styles.horizontal}>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate('PhoneScreen')
+                  this.props.navigation.navigate('PhoneScreen');
                 }}>
                 <Text style={styles.EditPhoneStyle}>Edit Phone Number</Text>
               </TouchableOpacity>
@@ -154,9 +124,8 @@ class SignUPWithOtpScreen extends Component {
               style={styles.loginButtonStyle}
               activeOpacity={0.2}
               onPress={() => {
-                this.CheckTextInput()
+                this.CheckTextInput();
               }}>
-
               <Text style={styles.buttonWhiteTextStyle}>Verify</Text>
             </TouchableOpacity>
             {this.state.loading && (
@@ -167,7 +136,7 @@ class SignUPWithOtpScreen extends Component {
           </View>
         </ScrollView>
       </View>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -257,6 +226,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
-})
+});
 
-export default SignUPWithOtpScreen
+export default SignUPWithOtpScreen;

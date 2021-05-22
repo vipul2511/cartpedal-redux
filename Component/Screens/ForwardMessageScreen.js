@@ -1,6 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
-
 import {
   StyleSheet,
   View,
@@ -9,11 +9,13 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Fab, Icon} from 'native-base';
+import {Button, Fab, Header, Icon, Input, Item} from 'native-base';
 import {BASE_URL} from '../Component/ApiClient';
+
 class ForwardMessageScreen extends Component {
   constructor(props) {
     super(props);
@@ -21,10 +23,14 @@ class ForwardMessageScreen extends Component {
       list: [],
       spinner: false,
       toids: [],
-      groups:[],
-      groupID:[]
+      groups: [],
+      groupID: [],
+      searching: false,
+      text: '',
+      singleForward: [],
     };
   }
+
   showLoading() {
     this.setState({spinner: true});
   }
@@ -42,56 +48,48 @@ class ForwardMessageScreen extends Component {
   }
 
   forwardMessages = () => {
-    // console.log('to id',toids)
-    const {
-      fcmToken,
-      userId,
-      userAccessToken,
-      msgids,
-    } = this.props.route.params;
-    let toids=this.state.toids.join(',');
+    const {fcmToken, userId, userAccessToken, msgids} = this.props.route.params;
+    let toids = this.state.toids.join(',');
     let grpId;
-    if(this.state.groupID.length>0) grpId=this.state.groupID.join(',')
+    if (this.state.groupID.length > 0) {
+      grpId = this.state.groupID.join(',');
+    }
     this.showLoading();
     const data = new FormData();
     data.append('user_id', userId);
     data.append('msgids', msgids);
-    data.append('toids',toids );
-    data.append('groupids',grpId)
-    console.log('form data',JSON.stringify(data));
-    var EditProfileUrl =
-      `${BASE_URL}api-message/forword-message`;
-    console.log('Add product Url:' + EditProfileUrl);
+    data.append('toids', toids);
+    data.append('groupids', grpId);
+    var EditProfileUrl = `${BASE_URL}api-message/forword-message`;
     fetch(EditProfileUrl, {
       method: 'POST',
       headers: {
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: data,
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
-          //  Toast.show(responseData.message);
-          this.props.navigation.goBack();
+          if (this.state.singleForward.length === 1) {
+            this.props.navigation.replace('ChatDetailScreen', {
+              userid: this.state.singleForward[0].id,
+              username: this.state.singleForward[0].name,
+              useravatar: this.state.singleForward[0].avatar,
+              groupexit: false,
+              groupId: 0,
+              msg_type: '0',
+            });
+          } else {
+            this.props.navigation.goBack();
+          }
         } else {
-          console.log(responseData.data);
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log(
-          'contact list response object:',
-          JSON.stringify(responseData),
-        );
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
       .catch((error) => {
-        //  this.hideLoading();
         console.error(error);
       })
       .finally(() => {
@@ -105,26 +103,17 @@ class ForwardMessageScreen extends Component {
       PhoneNumber,
       userId,
       userAccessToken,
-      msgids,
     } = this.props.route.params;
 
-    // console.log(fcmToken, 'FCM TOKEN');
-    // console.log(PhoneNumber, 'phone Number');
-    // console.log(userId, 'userID');
-    // console.log(userAccessToken, 'user access token');
-    // console.log(msgids, 'Message IDS');
-
     this.showLoading();
-    var EditProfileUrl =
-      `${BASE_URL}api-product/contact-list`;
-    console.log('Add product Url:' + EditProfileUrl);
+    var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: fcmToken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
       body: JSON.stringify({
@@ -136,26 +125,13 @@ class ForwardMessageScreen extends Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        //   this.hideLoading();
         if (responseData.code == '200') {
-          //  Toast.show(responseData.message);
-          console.log(JSON.stringify(responseData.data, null, 2));
           this.setState({list: responseData.data.appcontact});
-          this.setState({groups:responseData.data.groups})
+          this.setState({groups: responseData.data.groups});
         } else {
-          console.log(responseData.data);
         }
-
-        //console.log('Edit profile response object:', responseData)
-        console.log(
-          'contact list response object:',
-          JSON.stringify(responseData),
-        );
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
       .catch((error) => {
-        //  this.hideLoading();
         console.error(error);
       })
       .finally(() => {
@@ -164,8 +140,9 @@ class ForwardMessageScreen extends Component {
   };
 
   render() {
-    const funct = this;
-
+    const filteredData = this.state.list.filter((i) =>
+      `${i.name}`.includes(this.state.text),
+    );
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -173,7 +150,6 @@ class ForwardMessageScreen extends Component {
           color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
-        {/* <TouchableOpacity onPress={()=>{console.log('this group',this.state.groupID)}}><Text>hello</Text></TouchableOpacity> */}
         {this.state.toids.length !== 0 && (
           <Fab
             onPress={() => {
@@ -185,41 +161,68 @@ class ForwardMessageScreen extends Component {
             <Icon name="chevron-forward" />
           </Fab>
         )}
-        <View style={styles.headerView}>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+        {this.state.searching ? (
+          <Header
+            androidStatusBarColor="#F01738"
+            style={{backgroundColor: '#F01738'}}
+            searchBar
+            rounded>
+            <Item>
+              <TouchableOpacity
+                onPress={() => this.setState({searching: false})}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+              <Input
+                autoFocus
+                onChangeText={(text) => this.setState({text})}
+                value={this.state.text}
+                placeholder="Search"
+              />
+            </Item>
+            <Button transparent>
+              <Text>Search</Text>
+            </Button>
+          </Header>
+        ) : (
+          <View style={styles.headerView}>
+            <View style={styles.BackButtonContainer}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../images/back_blck_icon.png')}
+                  style={styles.backButtonStyle}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.TitleContainer}>
               <Image
-                source={require('../images/back_blck_icon.png')}
-                style={styles.backButtonStyle}
+                source={require('../images/logo_cart_paddle.png')}
+                style={styles.LogoIconStyle}
+              />
+              <TouchableOpacity
+                style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={styles.TitleStyle}>CartPadle</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.SearchContainer}
+              onPress={() => {
+                this.setState({searching: true});
+              }}>
+              <Image
+                source={require('../images/search.png')}
+                style={styles.SearchIconStyle}
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.TitleContainer}>
-            <Image
-              source={require('../images/logo_cart_paddle.png')}
-              style={styles.LogoIconStyle}
-            />
-            <TouchableOpacity
-              style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={styles.TitleStyle}>CartPadle</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            style={styles.SearchContainer}
-            onPress={() => {
-              // this.props.navigation.navigate('SearchBarScreen')
-            }}>
-            <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            />
-          </TouchableOpacity>
-        </View>
+        )}
 
         <View style={styles.MainContentBox}>
           <ScrollView>
             <View>
-              {this.state.list.map((v, i) => {
+              {filteredData.map((v, i) => {
                 const inList = this.state.toids.indexOf(v.id) !== -1;
                 return (
                   <TouchableOpacity
@@ -229,58 +232,64 @@ class ForwardMessageScreen extends Component {
                         this.setState((p) => ({
                           ...p,
                           toids: [...p.toids, v.id],
+                          singleForward: [...p.singleForward, v],
                         }));
                       } else {
                         this.setState((p) => ({
                           ...p,
                           toids: p.toids.filter((i) => i !== v.id),
+                          singleForward: p.singleForward.filter(
+                            (i) => i.id !== v.id,
+                          ),
                         }));
                       }
                     }}>
-                      <View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        borderBottomWidth: 1,
-                        color: 'grey',
-                      }}>
+                    <View>
                       <View
                         style={{
-                          alignSelf: 'center',
-                          width: '95%',
                           flexDirection: 'row',
-                          alignItems: 'center',
-                          backgroundColor: inList ? 'lightgrey' : 'white',
+                          justifyContent: 'center',
+                          borderBottomWidth: 1,
+                          color: 'grey',
                         }}>
-                        <View style={{padding: 10}}>
-                          <Image
-                            source={
-                              v.image
-                                ? {uri: v.image}
-                                : require('../images/default_user.png')
-                            }
-                            style={styles.Styleimage}
-                          />
-                        </View>
                         <View
                           style={{
+                            alignSelf: 'center',
+                            width: '95%',
                             flexDirection: 'row',
-                            width: '84%',
                             alignItems: 'center',
-                            justifyContent: 'space-between',
+                            backgroundColor: inList ? 'lightgrey' : 'white',
                           }}>
-                          <View>
-                            <Text style={styles.PersonNameStyle}>{v.name}</Text>
+                          <View style={{padding: 10}}>
+                            <Image
+                              source={
+                                v.image
+                                  ? {uri: v.image}
+                                  : require('../images/default_user.png')
+                              }
+                              style={styles.Styleimage}
+                            />
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              width: '84%',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                            }}>
+                            <View>
+                              <Text style={styles.PersonNameStyle}>
+                                {v.name}
+                              </Text>
+                            </View>
                           </View>
                         </View>
                       </View>
                     </View>
-                    </View>
                   </TouchableOpacity>
                 );
               })}
-               {this.state.groups.map((v, i) => {
+              {this.state.groups.map((v, i) => {
                 const inList = this.state.toids.indexOf(v.grpid) !== -1;
                 return (
                   <TouchableOpacity
@@ -290,55 +299,57 @@ class ForwardMessageScreen extends Component {
                         this.setState((p) => ({
                           ...p,
                           toids: [...p.toids, v.grpid],
-                          groupID:[...p.groupID,v.grpid]
+                          groupID: [...p.groupID, v.grpid],
                         }));
                       } else {
                         this.setState((p) => ({
                           ...p,
                           toids: p.toids.filter((i) => i !== v.grpid),
-                          groupID:p.groupID.filter((i) => i !== v.grpid)
+                          groupID: p.groupID.filter((i) => i !== v.grpid),
                         }));
                       }
                     }}>
-                      <View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        borderBottomWidth: 1,
-                        color: 'grey',
-                      }}>
+                    <View>
                       <View
                         style={{
-                          alignSelf: 'center',
-                          width: '95%',
                           flexDirection: 'row',
-                          alignItems: 'center',
-                          backgroundColor: inList ? 'lightgrey' : 'white',
+                          justifyContent: 'center',
+                          borderBottomWidth: 1,
+                          color: 'grey',
                         }}>
-                        <View style={{padding: 10}}>
-                          <Image
-                            source={
-                              v.image
-                                ? {uri: v.image}
-                                : require('../images/default_user.png')
-                            }
-                            style={styles.Styleimage}
-                          />
-                        </View>
                         <View
                           style={{
+                            alignSelf: 'center',
+                            width: '95%',
                             flexDirection: 'row',
-                            width: '84%',
                             alignItems: 'center',
-                            justifyContent: 'space-between',
+                            backgroundColor: inList ? 'lightgrey' : 'white',
                           }}>
-                          <View>
-                            <Text style={styles.PersonNameStyle}>{v.name}</Text>
+                          <View style={{padding: 10}}>
+                            <Image
+                              source={
+                                v.image
+                                  ? {uri: v.image}
+                                  : require('../images/default_user.png')
+                              }
+                              style={styles.Styleimage}
+                            />
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              width: '84%',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                            }}>
+                            <View>
+                              <Text style={styles.PersonNameStyle}>
+                                {v.name}
+                              </Text>
+                            </View>
                           </View>
                         </View>
                       </View>
-                    </View>
                     </View>
                   </TouchableOpacity>
                 );
@@ -511,7 +522,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#ecf6fb',
+
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',

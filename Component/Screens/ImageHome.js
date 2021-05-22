@@ -1,13 +1,30 @@
-import React, { Component } from 'react';
-import { SafeAreaView, Dimensions, View, Text, FlatList, Modal, StyleSheet, StatusBar, Image, ScrollView, TouchableOpacity, YellowBox } from 'react-native'
-import AppConst from '../Component/AppConst';
-import AppHeader from '../Component/AppHeader';
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
+import {
+  SafeAreaView,
+  Dimensions,
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  StatusBar,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import AppImageSlider from '../Component/AppImageSlider';
-import { backIcon, logo, closeIcon, tickIcon, addIcon, editIcon, submitIcon, addIconPink, imagePlaceholder } from '../Component/Images';
+import {
+  closeIcon,
+  tickIcon,
+  addIcon,
+  editIcon,
+  submitIcon,
+  addIconPink,
+  imagePlaceholder,
+} from '../Component/Images';
 import ImageSelectDialog from '../Component/ImageSelectDialog';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Toast from 'react-native-simple-toast'
 import resp from 'rn-responsive-font';
 const MAX_IMAGE_SIZE = 5;
 const MAX_INNER_IMAGE_SIZE = 5;
@@ -24,49 +41,40 @@ export default class ImageHome extends React.Component {
       isProductEdit: false,
       userId: '',
       userAccessToken: '',
-      spinner: '',
+      spinner: false,
       showTick: null,
       fcmToken: '',
-    }
+    };
   }
 
   componentDidMount() {
-    // this.showLoading();
     AsyncStorage.getItem('@fcmtoken').then((token) => {
-      console.log("Edit user id token=" + token);
       if (token) {
-        this.setState({ fcmToken: token });
-        if(this.props.route.params){
-          if(this.props.route.params.imageUri){
-            let item=this.props.route.params.imageUri
-            this.state.imageList.push(item)
+        this.setState({fcmToken: token});
+        if (this.props.route.params) {
+          if (this.props.route.params.imageUri) {
+            let item = this.props.route.params.imageUri;
+            this.state.imageList.push(item);
           }
         }
       }
     });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-        this.setState({ userId: userId });
-        console.log(" Edit user id ====" + this.state.userId);
-        // this.ProductListCall()
+        this.setState({userId: userId});
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + this.state.userAccessToken);
-        //this.RecentUpdateCall();
-        // this.NotSharedProduct();
-
+        this.setState({userAccessToken: accessToken});
       }
-
     });
   }
   showLoading() {
-    this.setState({ spinner: true });
+    this.setState({spinner: true});
   }
   hideLoading() {
-    this.setState({ spinner: false });
+    this.setState({spinner: false});
   }
   onImagePick(response) {
     const source = response;
@@ -74,156 +82,191 @@ export default class ImageHome extends React.Component {
       path: response.path,
       type: response.mime,
       data: response.data,
-      fileName: response.modificationDate
-    }
+      fileName: response.modificationDate,
+    };
 
     if (!this.state.isInnerImageSelect) {
       let newImageArray = [];
 
       newImageArray.push(imgOjc);
-      this.state.imageList.push(newImageArray)
-      console.log('image list-----', this.state.imageList)
+      this.state.imageList.push(newImageArray);
+
       if (this.state.imageList.length == 0) {
-        this.setState({ selectedImageIndex: 0 })
+        this.setState({selectedImageIndex: 0});
+      } else {
+        this.setState({selectedImageIndex: this.state.selectedImageIndex + 1});
       }
-      else {
-        this.setState({ selectedImageIndex: this.state.selectedImageIndex + 1 })
-        console.log('image selceter-----', this.state.selectedImageIndex)
-      }
-    }
-    else {
+    } else {
       this.state.imageList[this.state.selectedImageIndex].push(source);
     }
-    this.setState({ isInnerImageSelect: false, showImageSelectDialog: false })
+    this.setState({isInnerImageSelect: false, showImageSelectDialog: false});
   }
+
   openImagePickerOption() {
-    this.setState({ showImageSelectDialog: !this.state.showImageSelectDialog, isInnerImageSelect: false })
-    this.imageSelectDialog.showMenu()
+    this.setState({
+      showImageSelectDialog: !this.state.showImageSelectDialog,
+      isInnerImageSelect: false,
+    });
+    this.imageSelectDialog.showMenu();
   }
+
   onImageSelect(index) {
-    console.log('index number ', index);
-    this.setState({ selectedImageIndex: index })
-    this.setState({ showTick: index })
+    this.setState({selectedImageIndex: index});
+    this.setState({showTick: index});
   }
+
   onInnerImageSelect() {
-    this.setState({ showImageSelectDialog: !this.state.showImageSelectDialog, isInnerImageSelect: true })
-    this.innerImageSelectDialog.showMenu()
+    this.setState({
+      showImageSelectDialog: !this.state.showImageSelectDialog,
+      isInnerImageSelect: true,
+    });
+    this.innerImageSelectDialog.showMenu();
   }
 
   removeInnerImage(index) {
     if (this.state.imageList[this.state.selectedImageIndex].length == 1) {
-      this.removeImageFromList(this.state.selectedImageIndex)
-      console.log('imageselecter====', this.state.selectedImageIndex)
-    }
-    else {
+      this.removeImageFromList(this.state.selectedImageIndex);
+    } else {
       this.state.imageList[this.state.selectedImageIndex].splice(index, 1);
     }
-    this.setState({ imageList: this.state.imageList });
+    this.setState({imageList: this.state.imageList});
   }
 
   removeImageFromList(index) {
-    this.state.imageList.splice(index, 1)
-    this.setState({ selectedImageIndex: this.state.selectedImageIndex - 1 })
+    this.state.imageList.splice(index, 1);
+    this.setState({selectedImageIndex: this.state.selectedImageIndex - 1});
   }
+
   onTickShow = () => {
-    this.setState({ showTick: !this.state.showTick })
-  }
+    this.setState({showTick: !this.state.showTick});
+  };
+
   renderImageList(item, index, separators) {
-    console.log('selected', this.state.showTick);
-    console.log('index inside', index);
     return (
-      <TouchableOpacity key={index} activeOpacity={1} onLongPress={() => this.onImageSelect(index)} style={[styles.imageListContainView, index == MAX_IMAGE_SIZE - 1 && { marginEnd: 10 }]}>
-        <Image style={styles.imageView} source={{ uri: this.state.imageList[index][0].path }} />
+      <TouchableOpacity
+        key={index}
+        activeOpacity={1}
+        onLongPress={() => this.onImageSelect(index)}
+        style={[
+          styles.imageListContainView,
+          index == MAX_IMAGE_SIZE - 1 && {marginEnd: 10},
+        ]}>
+        <Image
+          style={styles.imageView}
+          source={{uri: this.state.imageList[index][0].path}}
+        />
         <TouchableOpacity
-          onPress={() => { this.removeImageFromList(index) }}
-          style={[styles.imageOptionIcon, { position: 'absolute', top: 5, start: 5 }]}
-        >
+          onPress={() => {
+            this.removeImageFromList(index);
+          }}
+          style={[
+            styles.imageOptionIcon,
+            {position: 'absolute', top: 5, start: 5},
+          ]}>
           <Image style={styles.imageOptionIcon} source={closeIcon} />
         </TouchableOpacity>
 
-        {this.state.showTick == index ? (<TouchableOpacity
-          style={[styles.imageOptionIcon, { position: 'absolute', top: 5, end: 5 }]}
-        >
-          <Image style={styles.imageOptionIcon} source={tickIcon} />
-        </TouchableOpacity>) : null}
-
-        {(item.length < MAX_INNER_IMAGE_SIZE) ?
+        {this.state.showTick == index ? (
           <TouchableOpacity
-            style={[styles.imageOptionIcon, { height: 30, width: 30, position: 'absolute', bottom: 3, end: 3 }]}
-            onPress={() => { this.onInnerImageSelect() }}
-          >
-            <Image style={[styles.imageOptionIcon, { height: 28, width: 28 }]} source={addIcon} />
-          </TouchableOpacity> : null}
-      </TouchableOpacity>
-    )
+            style={[
+              styles.imageOptionIcon,
+              {position: 'absolute', top: 5, end: 5},
+            ]}>
+            <Image style={styles.imageOptionIcon} source={tickIcon} />
+          </TouchableOpacity>
+        ) : null}
 
+        {item.length < MAX_INNER_IMAGE_SIZE ? (
+          <TouchableOpacity
+            style={[
+              styles.imageOptionIcon,
+              {height: 30, width: 30, position: 'absolute', bottom: 3, end: 3},
+            ]}
+            onPress={() => {
+              this.onInnerImageSelect();
+            }}>
+            <Image
+              style={[styles.imageOptionIcon, {height: 28, width: 28}]}
+              source={addIcon}
+            />
+          </TouchableOpacity>
+        ) : null}
+      </TouchableOpacity>
+    );
   }
 
   renderInnerImageList(item, index, separators) {
-    //    console.log('render Inner Images',item);
     return (
-      <TouchableOpacity key={index} activeOpacity={1} style={[styles.imageListContainView, index == MAX_IMAGE_SIZE - 1 && { marginEnd: 10 }]}>
-        <Image style={styles.innerImageView} source={{ uri: item.path }} />
+      <TouchableOpacity
+        key={index}
+        activeOpacity={1}
+        style={[
+          styles.imageListContainView,
+          index == MAX_IMAGE_SIZE - 1 && {marginEnd: 10},
+        ]}>
+        <Image style={styles.innerImageView} source={{uri: item.path}} />
         <TouchableOpacity
-          onPress={() => { this.removeInnerImage(index) }}
-          style={[styles.imageOptionIcon, { position: 'absolute', top: 5, start: 5 }]}
-        >
+          onPress={() => {
+            this.removeInnerImage(index);
+          }}
+          style={[
+            styles.imageOptionIcon,
+            {position: 'absolute', top: 5, start: 5},
+          ]}>
           <Image style={styles.imageOptionIcon} source={closeIcon} />
         </TouchableOpacity>
-
-      </TouchableOpacity>)
+      </TouchableOpacity>
+    );
   }
 
   rendorImageSlider(item, index) {
-    console.log('big silder', this.state.imageList[this.state.selectedImageIndex][index].path);
     return (
       <View key={index} style={styles.imageSliderBig}>
-        <View style={{ flex: 1 }}>
-          <Image style={{ flex: 1 }} source={{ uri: this.state.imageList[this.state.selectedImageIndex][index].path }} />
+        <View style={{flex: 1}}>
+          <Image
+            style={{flex: 1}}
+            source={{
+              uri: this.state.imageList[this.state.selectedImageIndex][index]
+                .path,
+            }}
+          />
         </View>
       </View>
-    )
+    );
   }
 
-  onEditProduct() {
+ async onEditProduct() {
     if (this.state.showTick != null) {
-      console.log('edit product', this.state.imageList[this.state.selectedImageIndex]);
-      AsyncStorage.setItem('@imageData', JSON.stringify(this.state.imageList[this.state.selectedImageIndex])).then(succ => {
-        this.props.navigation.navigate('EditProductScreen');
-      });
+      let image=this.state.imageList[this.state.selectedImageIndex]
+      this.props.navigation.navigate('EditProductScreen',{image:image,ScreenName:'ImageHome'});
     } else {
-      alert("Please select one product to edit");
-      console.log('imageselecterd===', this.state.imageList[this.state.selectedImageIndex])
+      alert('Please select one product to edit');
     }
   }
+
   shareProduct = () => {
-    // this.props.navigation.navigate('ShareWithScreen');
     AsyncStorage.getItem('@product_id').then((id) => {
       if (id) {
-        console.log('share product id',id)
+        console.log('share product id', id);
         this.props.navigation.navigate('ShareWithScreen');
       } else {
         alert('Please upload the product');
       }
     });
-  }
+  };
+
   render() {
-    console.log("render() --------------->")
-    console.log("this.state.imageList.length" + this.state.imageList.length)
     return (
       <SafeAreaView style={styles.mainContainer}>
-        <Spinner
-          visible={this.state.spinner}
-          color='#F01738'
-        />
+        <Spinner visible={this.state.spinner} color="#F01738" />
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity
               onPress={() => {
-                AsyncStorage.removeItem('@product_id').then(succ=>{
+                AsyncStorage.removeItem('@product_id').then((succ) => {
                   this.props.navigation.goBack();
-                }); 
+                });
               }}>
               <Image
                 source={require('../images/back_blck_icon.png')}
@@ -237,25 +280,32 @@ export default class ImageHome extends React.Component {
               style={styles.LogoIconStyle}
             />
             <TouchableOpacity
-              style={{ alignItems: 'center', justifyContent: 'center' }}>
+              style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}></View>
+          <View style={styles.SearchContainer} />
         </View>
 
-
         <View style={[styles.container]}>
-          <View style={{ flex: 1 }}>
-            {(this.state.selectedImageIndex >= 0) ?
+          <View style={{flex: 1}}>
+            {this.state.selectedImageIndex >= 0 ? (
               <AppImageSlider
-                sliderImages={this.state.imageList[this.state.selectedImageIndex]}
-                // sliderImages={this.state.imageList}
-                rendorImages={(item, index) => this.rendorImageSlider(item, index)}
-              /> :
-              <View style={{ flex: 1 }}>
-                <Image source={imagePlaceholder} style={[styles.imagePlaceholder]} />
-              </View>}
+                sliderImages={
+                  this.state.imageList[this.state.selectedImageIndex]
+                }
+                rendorImages={(item, index) =>
+                  this.rendorImageSlider(item, index)
+                }
+              />
+            ) : (
+              <View style={{flex: 1}}>
+                <Image
+                  source={imagePlaceholder}
+                  style={[styles.imagePlaceholder]}
+                />
+              </View>
+            )}
           </View>
 
           <View style={[styles.imageSliderSmall]}>
@@ -264,70 +314,73 @@ export default class ImageHome extends React.Component {
                 horizontal={true}
                 data={this.state.imageList}
                 numColumns={1}
-                renderItem={({ item, index, separators }) => (
+                renderItem={({item, index, separators}) =>
                   this.renderImageList(item, index, separators)
-                )}
+                }
               />
 
-
-              {(this.state.imageList.length < MAX_IMAGE_SIZE) ?
-                <View style={{ alignSelf: 'center' }}>
-                  <TouchableOpacity style={[styles.addImageButton]} activeOpacity={1} onPress={() => this.openImagePickerOption()}>
-                    <Image source={addIconPink} style={styles.addImageButtonText} />
+              {this.state.imageList.length < MAX_IMAGE_SIZE ? (
+                <View style={{alignSelf: 'center'}}>
+                  <TouchableOpacity
+                    style={[styles.addImageButton]}
+                    activeOpacity={1}
+                    onPress={() => this.openImagePickerOption()}>
+                    <Image
+                      source={addIconPink}
+                      style={styles.addImageButtonText}
+                    />
                   </TouchableOpacity>
                   <ImageSelectDialog
-                    ref={(ref) => this.imageSelectDialog = ref}
-                    style={{ position: 'absolute', }}
+                    ref={(ref) => (this.imageSelectDialog = ref)}
+                    style={{position: 'absolute'}}
                     navigation={this.props.navigation}
-                    onImagePick={(response) => { this.onImagePick(response) }}
+                    onImagePick={(response) => {
+                      this.onImagePick(response);
+                    }}
                   />
                 </View>
-                : null}
-
+              ) : null}
             </ScrollView>
           </View>
 
-          <View style={{ flexDirection: 'row', }}>
-            {(this.state.selectedImageIndex >= 0) ?
+          <View style={{flexDirection: 'row'}}>
+            {this.state.selectedImageIndex >= 0 ? (
               <TouchableOpacity
-                style={{ alignSelf: 'flex-start', marginStart: 5 }}
-                onPress={() => { this.onEditProduct() }}
-              >
+                style={{alignSelf: 'flex-start', marginStart: 5}}
+                onPress={() => {
+                  this.onEditProduct();
+                }}>
                 <Image source={editIcon} style={styles.editIcon} />
-              </TouchableOpacity> : null}
-            <View style={{ flex: 1 }} />
+              </TouchableOpacity>
+            ) : null}
+            <View style={{flex: 1}} />
             <TouchableOpacity
               onPress={() => {
-                this.shareProduct()
+                this.shareProduct();
               }}
-              style={{ alignSelf: 'flex-end', marginEnd: 20 }}>
+              style={{alignSelf: 'flex-end', marginEnd: 20}}>
               <Image source={submitIcon} style={styles.submitIcon} />
-
             </TouchableOpacity>
           </View>
 
           <View style={[styles.imageSliderSmall]}>
-            <ScrollView
-              horizontal={true}
-            >
+            <ScrollView horizontal={true}>
               <ImageSelectDialog
-                ref={(ref) => this.innerImageSelectDialog = ref}
+                ref={(ref) => (this.innerImageSelectDialog = ref)}
                 navigation={this.props.navigation}
-                style={{ position: 'absolute', }}
-                onImagePick={(response) => { this.onImagePick(response) }}
+                style={{position: 'absolute'}}
+                onImagePick={(response) => {
+                  this.onImagePick(response);
+                }}
               />
               <FlatList
                 horizontal={true}
                 data={this.state.imageList[this.state.selectedImageIndex]}
                 numColumns={1}
-                renderItem={({ item, index, separators }) => (
+                renderItem={({item, index, separators}) =>
                   this.renderInnerImageList(item, index, separators)
-                )}
+                }
               />
-
-
-
-
             </ScrollView>
           </View>
         </View>
@@ -339,13 +392,15 @@ export default class ImageHome extends React.Component {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
   },
   centerRow: {
-    flexDirection: 'row', flex: 1, justifyContent: 'center'
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'center',
   },
   TitleStyle: {
     fontWeight: 'bold',
@@ -398,76 +453,80 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     padding: 10,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   headerLogo: {
     height: 30,
     width: 30,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   headerTitle: {
-    fontSize: 20
+    fontSize: 20,
   },
   backIcon: {
     height: 35,
     width: 35,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   imageSliderBig: {
     flex: 1,
-    backgroundColor: '#e3e3e3'
+    backgroundColor: '#e3e3e3',
   },
   imageSliderSmall: {
     justifyContent: 'center',
     marginTop: 5,
-    minHeight: (screenWidth / 4)
+    minHeight: screenWidth / 4,
   },
   imagePlaceholder: {
     width: screenWidth,
     height: 500,
     backgroundColor: '#fff',
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   addImageButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: (screenWidth / 4) - 50,
-    height: (screenWidth / 4) - 50,
+    width: screenWidth / 4 - 50,
+    height: screenWidth / 4 - 50,
     backgroundColor: 'pink',
     marginStart: 5,
     alignSelf: 'center',
-    borderRadius: 5
+    borderRadius: 5,
   },
   addImageButtonText: {
-    width: ((screenWidth / 4) - 25) / 3,
-    height: ((screenWidth / 4) - 25) / 3,
+    width: (screenWidth / 4 - 25) / 3,
+    height: (screenWidth / 4 - 25) / 3,
   },
   imageListContainView: {
-    borderRadius: 5, marginStart: 10,
-    marginBottom: 15
+    borderRadius: 5,
+    marginStart: 10,
+    marginBottom: 15,
   },
   imageView: {
     borderRadius: 5,
-    width: (screenWidth / 4) - 10,
-    height: (screenWidth / 4) + 10,
-    backgroundColor: 'red'
+    width: screenWidth / 4 - 10,
+    height: screenWidth / 4 + 10,
+    backgroundColor: 'red',
   },
-  innerImageView:
-  {
+  innerImageView: {
     borderRadius: 5,
-    width: (screenWidth / 4),
-    height: (screenWidth / 4),
-    backgroundColor: 'red'
+    width: screenWidth / 4,
+    height: screenWidth / 4,
+    backgroundColor: 'red',
   },
   imageOptionIcon: {
-    height: 20, width: 20,
-    resizeMode: 'contain'
+    height: 20,
+    width: 20,
+    resizeMode: 'contain',
   },
   editIcon: {
-    height: 60, width: 60, resizeMode: 'contain'
+    height: 60,
+    width: 60,
+    resizeMode: 'contain',
   },
   submitIcon: {
-    height: 55, width: 55, resizeMode: 'contain'
-  }
-
+    height: 55,
+    width: 55,
+    resizeMode: 'contain',
+  },
 });

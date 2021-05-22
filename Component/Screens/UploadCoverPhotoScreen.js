@@ -1,458 +1,410 @@
-import React, { Component } from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
   View,
-  Text,
   FlatList,
   TouchableOpacity,
   Image,
   SafeAreaView,
   StatusBar,
   Dimensions,
-  ScrollView 
-} from 'react-native'
-import resp from 'rn-responsive-font'
+  ScrollView,
+  Platform,
+  Text
+} from 'react-native';
+import resp from 'rn-responsive-font';
 
 import AppHeader from '../Component/AppHeader';
 import AppImageSlider from '../Component/AppImageSlider';
-import { backIcon, logo, closeIcon, tickIcon, addIcon, editIcon, submitIcon, addIconPink, imagePlaceholder } from '../Component/Images';
+import {closeIcon, imagePlaceholder} from '../Component/Images';
 import ImageSelectDialog from '../Component/ImageSelectDialog';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Toast from 'react-native-simple-toast'
+import Toast from 'react-native-simple-toast';
 import {BASE_URL} from '../Component/ApiClient';
 const MAX_IMAGE_SIZE = 5;
 const screenWidth = Dimensions.get('screen').width;
 
 class UploadCoverPhotoScreen extends Component {
   constructor(props) {
-    super(props)
-    this.DeleteCoverPhoto=this.DeleteCoverPhoto.bind(this)
+    super(props);
+    this.DeleteCoverPhoto = this.DeleteCoverPhoto.bind(this);
     this.state = {
-      userId:'',
-      userAccessToken:'',
+      userId: '',
+      userAccessToken: '',
       imageList: [],
-      UploadedImage:[],
+      UploadedImage: [],
       showImageSelectDialog: false,
       selectedImageIndex: -1,
       isInnerImageSelect: false,
       isProductEdit: false,
-      spinner:'',
-      fcmtoken:'',
-      imageID:[],
-      newImageArr:[],
-      coverImage:[require('../images/placeholder-image-2.png')],
-    }
+      spinner: false,
+      fcmtoken: '',
+      imageID: [],
+      newImageArr: [],
+      coverImage: [require('../images/placeholder-image-2.png')],
+    };
   }
   showLoading() {
-    this.setState({ spinner: true });
+    this.setState({spinner: true});
   }
 
   hideLoading() {
-    this.setState({ spinner: false });
+    this.setState({spinner: false});
   }
-   componentDidMount() {
-
-    AsyncStorage.getItem('@fcmtoken').then(token => {
+  componentDidMount() {
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
-        this.setState({fcmtoken: JSON.parse(token)})
-      //   console.log('covers',this.props.navigation.state.params.covers);
-      //   console.log('image ID',this.props.navigation.state.params.imageWithID);
-      //   if(this.props.navigation.state.params.imageWithID.length>0){
-      //     console.log('working Image ID');
-      //     this.state.imageID=this.props.navigation.state.params.imageWithID;
-      //     console.log('after push',this.state.imageID);
-      //   }
-      //  console.log('images',this.state.imageID);
-      //   let arr=this.state.imageList;
-        // let item=this.props.navigation.state.params.covers;
-        // console.log('items value',this.state.coverImage);
-        // if(JSON.stringify(item)!==JSON.stringify(this.state.coverImage)){
-        //   console.log('executing array value')
-        // this.EditMode(item)
-        // }
-        // item.map((itemID)=>{
-        //   arr.push(itemID);
-        // });
-        // this.setState({imageList:arr});
-        // console.log('list',this.state.imageList);
-
-        console.log('device fcm token ====' + this.state.fcmtoken);
-        console.log('upload Image',this.state.UploadedImage.length);
+        this.setState({fcmtoken: JSON.parse(token)});
       }
     });
     AsyncStorage.getItem('@user_id').then((userId) => {
       if (userId) {
-        this.setState({ userId: userId });
-        console.log(" Edit user id ====" + this.state.userId);
-        // this.ProductListCall()
+        this.setState({userId: userId});
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
       if (accessToken) {
-        this.setState({ userAccessToken: accessToken });
-        console.log("Edit access token ====" + this.state.userAccessToken);
-        //this.RecentUpdateCall();
+        this.setState({userAccessToken: accessToken});
         this.ProfileViewCall();
-        
       }
     });
     AsyncStorage.getItem('@user_name').then((userName) => {
       if (userName) {
-        this.setState({ userName: JSON.parse(userName) });
-        console.log("Edit user name profileScreen ====" + userName);
-      
+        this.setState({userName: JSON.parse(userName)});
       }
     });
   }
-  DeleteCoverPhoto=(data,itemIMg)=>{
-    console.log('data',data)
-    console.log('image',itemIMg);
-    this.showLoading();
 
-    // let formDataID = new FormData()
-    // formDataID.append('user_id', this.state.userId)
-    // formDataID.append('upload', []) 
-    // formDataID.append('type','0')
-    // formDataID.append('action','0')
-    // formDataID.append('imgid',data)
-    console.log('form data==' + JSON.stringify({user_id:this.state.userId,upload:[],type:0,action:0,imgid:data}))
-    // var CartList = this.state.baseUrl + 'api-product/cart-list'
-    var DeleteStoriiL=`${BASE_URL}api-user/update-image`
-    console.log('DeleteStory Url:' + DeleteStoriiL) 
+  DeleteCoverPhoto = (data, itemIMg) => {
+    this.showLoading();
+    var DeleteStoriiL = `${BASE_URL}api-user/update-image`;
     fetch(DeleteStoriiL, {
       method: 'POST',
-      headers:{
+      headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
-        // Authorization: 'Bearer' + this.state.access_token,
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
-      body: JSON.stringify({user_id:this.state.userId,upload:[],type:0,action:0,imgid:data}),
+      body: JSON.stringify({
+        user_id: this.state.userId,
+        upload: [],
+        type: 0,
+        action: 0,
+        imgid: data,
+      }),
     })
-    .then(response => response.json())
-      .then(responseData => {
+      .then((response) => response.json())
+      .then((responseData) => {
         this.hideLoading();
         if (responseData.code == '200') {
-          
-           let itemCover=this.state.UploadedImage;
-          let filteredData= itemCover.filter(item=>item!=itemIMg.image);
-             this.setState({UploadedImage:filteredData});
-             let filteredItem=this.state.imageID;
-             let filteredImageID=filteredItem.filter(items=>items.image!=itemIMg.image);
-             this.setState({imageID:filteredImageID});
-             console.log('filter data',filteredData);
-             console.log('image ID',filteredImageID);
-
-
-          //  this.props.navigation.navigate('StoryViewScreen')
-          // Toast.show(responseData.message)
-          // this.setState({isModalVisible: false})
-          console.log(responseData);
-          // this.ProfileViewCall()
-        // this.setState({loggeduserstory_avatar: responseData.data})
-          // this.SaveProductListData(responseData)
+          let itemCover = this.state.UploadedImage;
+          let filteredData = itemCover.filter((item) => item != itemIMg.image);
+          this.setState({UploadedImage: filteredData});
+          let filteredItem = this.state.imageID;
+          let filteredImageID = filteredItem.filter(
+            (items) => items.image != itemIMg.image,
+          );
+          this.setState({imageID: filteredImageID});
         } else {
-          console.log(responseData)
-          // alert(responseData.data.password)
-         
         }
-        //console.log('Edit profile response object:', responseData)
-        console.log('Edit profile response object:',JSON.stringify(responseData))
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch(error => {
-        this.hideLoading()
-        console.error(error)
+      .catch((error) => {
+        this.hideLoading();
       })
-      .done()
-  }
-  EditMode(response) {
-    const source = { uri: response.uri };
+      .done();
+  };
 
+  EditMode(response) {
     if (!this.state.isInnerImageSelect) {
       let newImageArray = [];
       newImageArray.push(response);
-      this.state.UploadedImage=response
-
+      this.state.UploadedImage = response;
       if (this.state.UploadedImage.length == 0) {
-        this.setState({ selectedImageIndex: 0 })
+        this.setState({selectedImageIndex: 0});
+      } else {
+        this.setState({selectedImageIndex: this.state.selectedImageIndex + 1});
       }
-      else {
-        this.setState({ selectedImageIndex: this.state.selectedImageIndex + 1 })
-      }
-    }
-    else {
+    } else {
       this.state.UploadedImage[this.state.selectedImageIndex].push(response);
     }
-    this.setState({ isInnerImageSelect: false, showImageSelectDialog: false })
+    this.setState({isInnerImageSelect: false, showImageSelectDialog: false});
   }
-  ProfileViewCall=()=>{
+
+  ProfileViewCall = () => {
     this.showLoading();
-    let formData = new FormData()
     var urlprofile =
-      `${BASE_URL}api-user/view-profile?user_id=`+this.state.userId
-    console.log('profileurl :' + urlprofile)
+      `${BASE_URL}api-user/view-profile?user_id=` + this.state.userId;
     fetch(urlprofile, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: this.state.fcmtoken,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
     })
-      .then(response => response.json())
-      .then(responseData => {
+      .then((response) => response.json())
+      .then((responseData) => {
         if (responseData.code == '200') {
-          console.log(JSON.stringify(responseData))
-          //this.props.navigation.navigate('DashBoardScreen')
-        
-              if (
+          if (
             responseData.data.covers !== undefined &&
             responseData.data.covers.length > 0
           ) {
-            console.log('if executed')
-            let imageArr =this.state.UploadedImage
-            responseData.data.covers.map(item => {
-              imageArr.push(item.image)
-              console.log('images', item.image)
-            })
+            let imageArr = this.state.UploadedImage;
+            responseData.data.covers.map((item) => {
+              imageArr.push(item.image);
+              console.log('images', item.image);
+            });
             this.setState({UploadedImage: imageArr});
-            this.setState({imageID:responseData.data.covers})
-            console.log('cover',responseData.data.covers);
-          }else{
-            console.log('cover back part executed');
-            this.setState({UploadedImage:[]});
+            this.setState({imageID: responseData.data.covers});
+          } else {
+            this.setState({UploadedImage: []});
           }
-            Toast.show(responseData.message)
-            this.hideLoading();
-          console.log('response profile object:', JSON.stringify(responseData))
-        } else {
-          // alert(responseData.data);
+          Toast.show(responseData.message);
           this.hideLoading();
-          console.log('profile')
-          console.log('profile Data' + responseData.data)
+        } else {
+          this.hideLoading();
         }
-        // console.log('User user ID==' + responseData.data.userid)
-        // console.log('access_token ',responseData.data.access_token)
       })
-      .catch(error => {
-         this.hideLoading();
-        console.error(error)
+      .catch((error) => {
+        this.hideLoading();
       })
-      .done()
-  }
+      .done();
+  };
+
   uploadProfilePic = () => {
-    console.log('upload profile pic',this.state.newImageArr);
     this.showLoading();
-    console.log("raw data",JSON.stringify({user_id:this.state.userId,type:0,upload:this.state.newImageArr}))
-    var EditProfileUrl = `${BASE_URL}api-user/upload-image`
-    console.log('Add product Url:' + EditProfileUrl)
+    var EditProfileUrl = `${BASE_URL}api-user/upload-image`;
     fetch(EditProfileUrl, {
       method: 'Post',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1111',
-        device_token:this.state.fcmtoken,
-        device_type: 'android',
+        device_token: this.state.fcmtoken,
+        device_type: Platform.OS,
         Authorization: JSON.parse(this.state.userAccessToken),
       },
-      body:JSON.stringify({user_id:this.state.userId,type:0,upload:this.state.newImageArr}),
+      body: JSON.stringify({
+        user_id: this.state.userId,
+        type: 0,
+        upload: this.state.newImageArr,
+      }),
     })
-      .then(response => response.json())
-      .then(responseData => {
-          this.hideLoading();
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
         if (responseData.code == '200') {
           Toast.show(responseData.message);
           this.props.navigation.navigate('ProfileScreen');
-          // this.SaveProductListData(responseData
         } else {
-          console.log(responseData.data);
-          // alert(responseData.data.password)
         }
-        //console.log('Edit profile response object:', responseData)
-        console.log('upload profile pic object:', JSON.stringify(responseData))
-        // console.log('access_token ', this.state.access_token)
-        //   console.log('User Phone Number==' + formData.phone_number)
       })
-      .catch(error => {
-         this.hideLoading();
-        console.error(error)
+      .catch((error) => {
+        this.hideLoading();
       })
-      .done()
-  }
-  onImagePick(response) {
-    const source = { uri: response.uri };
+      .done();
+  };
 
+  onImagePick(response) {
     if (!this.state.isInnerImageSelect) {
       let newImageArray = [];
       newImageArray.push(response);
       this.state.UploadedImage.push(response.path);
-      let newImage=this.state.newImageArr;
-      // response.map((item)=>{
-       let objImage={
-         path:response.path,
-         type:response.mime,
-         data:response.data,
-         fileName:response.modificationDate
-       }
-       newImage.push(objImage);
-       this.setState({newImageArr:newImage});
-      // });
-      console.log('image in array in different format',this.state.newImageArr);
-      this.state.imageList.push(response)
-      // console.log('images List in Image Picker',this.state.imageList);
-      let obj={
-        image:response.path
+      let newImage = this.state.newImageArr;
+      let objImage = {
+        path: response.path,
+        type: response.mime,
+        data: response.data,
+        fileName: response.modificationDate,
+      };
+      newImage.push(objImage);
+      this.setState({newImageArr: newImage});
+      this.state.imageList.push(response);
+      let obj = {
+        image: response.path,
       };
       this.state.imageID.push(obj);
       if (this.state.UploadedImage.length == 0) {
-        this.setState({ selectedImageIndex: 0 })
+        this.setState({selectedImageIndex: 0});
+      } else {
+        this.setState({selectedImageIndex: this.state.selectedImageIndex + 1});
       }
-      else {
-        this.setState({ selectedImageIndex: this.state.selectedImageIndex + 1 })
-      }
-    }
-    else {
+    } else {
       this.state.UploadedImage[this.state.selectedImageIndex].push(response);
     }
-    this.setState({ isInnerImageSelect: false, showImageSelectDialog: false })
+    this.setState({isInnerImageSelect: false, showImageSelectDialog: false});
   }
-
 
   openImagePickerOption() {
-    this.setState({ showImageSelectDialog: !this.state.showImageSelectDialog, isInnerImageSelect: false })
-    this.imageSelectDialog.openGalleryCoverPhoto()
-
+    this.setState({
+      showImageSelectDialog: !this.state.showImageSelectDialog,
+      isInnerImageSelect: false,
+    });
+    this.imageSelectDialog.openGalleryCoverPhoto();
   }
+
   openCamara() {
-    this.setState({ showImageSelectDialog: !this.state.showImageSelectDialog, isInnerImageSelect: false })
-    this.imageSelectDialog.openCameraCoverPhoto()
+    this.setState({
+      showImageSelectDialog: !this.state.showImageSelectDialog,
+      isInnerImageSelect: false,
+    });
+    this.imageSelectDialog.openCameraCoverPhoto();
+  }
 
-  }
   onImageSelect(index) {
-    this.setState({ selectedImageIndex: index })
+    this.setState({selectedImageIndex: index});
   }
+
   onInnerImageSelect() {
-    this.setState({ showImageSelectDialog: !this.state.showImageSelectDialog, isInnerImageSelect: true })
-    this.innerImageSelectDialog.showMenu()
+    this.setState({
+      showImageSelectDialog: !this.state.showImageSelectDialog,
+      isInnerImageSelect: true,
+    });
+    this.innerImageSelectDialog.showMenu();
   }
+
   removeInnerImage(index) {
     if (this.state.UploadedImage[this.state.selectedImageIndex].length == 1) {
-      this.removeImageFromList(this.state.selectedImageIndex)
+      this.removeImageFromList(this.state.selectedImageIndex);
+    } else {
+      this.state.UploadedImageist[this.state.selectedImageIndex].splice(
+        index,
+        1,
+      );
     }
-    else {
-      this.state.UploadedImageist[this.state.selectedImageIndex].splice(index, 1);
-    }
-    this.setState({ UploadedImage: this.state.UploadedImage });
+    this.setState({UploadedImage: this.state.UploadedImage});
   }
-  removeImageFromList(item,index) {
-    console.log('index item',item,index);
-    if(item.imgid){
-     console.log('working',item.imgid);
-     this.DeleteCoverPhoto(item.imgid,item);
-    }else{
-    this.state.UploadedImage.splice(index, 1)
-    this.state.imageID.splice(index, 1)
-    console.log('Images ID', this.state.UploadedImage.splice(index, 1));
-    this.setState({ selectedImageIndex: this.state.selectedImageIndex - 1 });
+
+  removeImageFromList(item, index) {
+    if (item.imgid) {
+      this.DeleteCoverPhoto(item.imgid, item);
+    } else {
+      this.state.UploadedImage.splice(index, 1);
+      this.state.imageID.splice(index, 1);
+      this.setState({selectedImageIndex: this.state.selectedImageIndex - 1});
     }
   }
-  renderImageList(item, index, separators) {
-    // console.log('renderImageLidst',this.state.imageList[index].uri)
-    // console.log('inner items',item);
+
+  renderImageList(item, index) {
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => this.onImageSelect(index)} style={[styles.imageListContainView, index == MAX_IMAGE_SIZE - 1 && { marginEnd: 10 }]}>
-        <Image style={styles.imageView} source={{uri:item.image}} />
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => this.onImageSelect(index)}
+        style={[
+          styles.imageListContainView,
+          index == MAX_IMAGE_SIZE - 1 && {marginEnd: 10},
+        ]}>
+        <Image style={styles.imageView} source={{uri: item.image}} />
         <TouchableOpacity
-          // onPress={() => { this.removeImageFromList(index) }}
-          onPress={() => { this.removeImageFromList(item,index) }}
-          style={[styles.imageOptionIcon, { position: 'absolute', top: 5, end: 5 }]}
-        >
+          onPress={() => {
+            this.removeImageFromList(item, index);
+          }}
+          style={[
+            styles.imageOptionIcon,
+            {position: 'absolute', top: 5, end: 5},
+          ]}>
           <Image style={styles.imageOptionIcon} source={closeIcon} />
         </TouchableOpacity>
       </TouchableOpacity>
-    )
+    );
   }
-  rendorImageSlider(item, index) {
-    console.log('rendor Image slider',item);
-    // console.log('item',item);
+
+  rendorImageSlider(item) {
     return (
       <View style={styles.imageSliderBig}>
-        <View style={{ flex: 1 }}>
-          <Image style={{ flex: 1 }} source={{uri:item}} />
+        <View style={{flex: 1}}>
+          <Image style={{flex: 1}} source={{uri: item}} />
         </View>
       </View>
-    )
+    );
   }
-  onEditProduct() {
-    console.log(this.state.imageList);
-    // this.props.navigation.navigate('EditProductScreen', { images: this.state.imageList[this.state.selectedImageIndex] })
-  }
+
+  onEditProduct() {}
+
   render() {
-    console.log("render() --------------->")
-    console.log("this.state.imageList.length" + this.state.imageList.length)
     return (
       <SafeAreaView style={styles.mainContainer}>
-         <Spinner
+        <Spinner
           visible={this.state.spinner}
-          color='#F01738'
-          // textContent={'Loading...'}
+          color="#F01738"
           textStyle={styles.spinnerTextStyle}
         />
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
-        <AppHeader />
+        <View style={styles.headerView}>
+          <View style={styles.BackButtonContainer}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <Image
+                source={require('../images/back_blck_icon.png')}
+                style={styles.backButtonStyle}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.TitleContainer}>
+            <Image
+              source={require('../images/logo_cart_paddle.png')}
+              style={styles.LogoIconStyle}
+            />
+            <TouchableOpacity
+              style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={styles.TitleStyle}>Cartpedal</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
+        </View>
         <View style={[styles.container]}>
-          <View style={{ flex: 1 }}>
-            {this.state.UploadedImage.length!==0?
-            (<AppImageSlider
+          <View style={{flex: 1}}>
+            {this.state.UploadedImage.length !== 0 ? (
+              <AppImageSlider
                 sliderImages={this.state.UploadedImage}
-                rendorImages={(item, index) => this.rendorImageSlider(item, index)}
-              />)
-             : 
-              (<View style={{ flex: 1 }}>
-                <Image source={imagePlaceholder} style={[styles.imagePlaceholder]} />
-              </View> )
-               } 
+                rendorImages={(item, index) => this.rendorImageSlider(item)}
+              />
+            ) : (
+              <View style={{flex: 1}}>
+                <Image
+                  source={imagePlaceholder}
+                  style={[styles.imagePlaceholder]}
+                />
+              </View>
+            )}
           </View>
 
-        
           <View style={[styles.imageSliderSmall]}>
-            <ScrollView
-              horizontal={true}
-            >
-            <FlatList
-              horizontal={true}
-              data={this.state.imageID}
-              numColumns={1}
-              renderItem={({ item, index, separators }) => (
-                this.renderImageList(item, index, separators)
-              )}
-            />
+            <ScrollView horizontal={true}>
+              <FlatList
+                horizontal={true}
+                data={this.state.imageID}
+                numColumns={1}
+                renderItem={({item, index, separators}) =>
+                  this.renderImageList(item, index)
+                }
+              />
               <ImageSelectDialog
-                ref={(ref) => this.innerImageSelectDialog = ref}
-                style={{ position: 'absolute', end: 10 }}
-                onImagePick={(response) => { this.onImagePick(response) }}
-              /> 
+                ref={(ref) => (this.innerImageSelectDialog = ref)}
+                style={{position: 'absolute', end: 10}}
+                onImagePick={(response) => {
+                  this.onImagePick(response);
+                }}
+              />
             </ScrollView>
           </View>
           <View style={styles.TabBox}>
             <View style={styles.tabStyle}>
               <TouchableOpacity
                 style={styles.tabButtonStyle}
-                onPress={() => this.openImagePickerOption()}
-                >
-                   <ImageSelectDialog
-                  ref={(ref) => this.imageSelectDialog = ref}
-                  style={{ position: 'absolute', end: 10 }}
-                  onImagePick={(response) => { this.onImagePick(response) }}
+                onPress={() => this.openImagePickerOption()}>
+                <ImageSelectDialog
+                  ref={(ref) => (this.imageSelectDialog = ref)}
+                  style={{position: 'absolute', end: 10}}
+                  onImagePick={(response) => {
+                    this.onImagePick(response);
+                  }}
                 />
                 <View style={styles.uploadContainer}>
                   <Image
@@ -464,12 +416,13 @@ class UploadCoverPhotoScreen extends Component {
 
               <TouchableOpacity
                 style={styles.tabButtonStyle}
-               onPress={() => this.openCamara()}
-                >
-                   <ImageSelectDialog
-                  ref={(ref) => this.imageSelectDialog = ref}
-                  style={{ position: 'absolute', end: 10 }}
-                  onImagePick={(response) => { this.onImagePick(response) }}
+                onPress={() => this.openCamara()}>
+                <ImageSelectDialog
+                  ref={(ref) => (this.imageSelectDialog = ref)}
+                  style={{position: 'absolute', end: 10}}
+                  onImagePick={(response) => {
+                    this.onImagePick(response);
+                  }}
                 />
                 <View style={styles.uploadContainer}>
                   <Image
@@ -483,99 +436,137 @@ class UploadCoverPhotoScreen extends Component {
                 style={styles.tabButtonStyle}
                 onPress={() => {
                   this.uploadProfilePic();
-                  // this.onEditProduct();
-                  // this.props.navigation.navigate('')
                 }}>
                 <View style={styles.uploadContainer}>
-                 <Image
-                  source={require('../images/upload_icon.png')}
-                  style={styles.styleChartTab}
-                />
-               </View> 
-               </TouchableOpacity>
+                  <Image
+                    source={require('../images/upload_icon.png')}
+                    style={styles.styleChartTab}
+                  />
+                </View>
+              </TouchableOpacity>
             </View>
-          </View> 
-        </View> 
+          </View>
+        </View>
       </SafeAreaView>
     );
   }
 }
 
-
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
-    backgroundColor:'#fff'
+    backgroundColor: '#fff',
   },
   centerRow: {
-    flexDirection: 'row', flex: 1, justifyContent: 'center'
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'center',
   },
   header: {
     width: '100%',
     height: 50,
     padding: 10,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   spinnerTextStyle: {
-    color: '#F01738'
+    color: '#F01738',
+  },
+  LogoIconStyle: {
+    margin: 5,
+    height: 30,
+    width: 30,
+  },
+  TitleStyle: {
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: resp(20),
+    textAlign: 'center',
+  },
+  SearchContainer: {
+    flex: 0.2,
+    backgroundColor: '#fff',
+  },
+  headerView: {
+    flex: 0.1,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    elevation: 20,
+  },
+  TitleContainer: {
+    flexDirection: 'row',
+    flex: 0.6,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  BackButtonContainer: {
+    flex: 0.2,
+    marginLeft: 10,
+    backgroundColor: 'white',
+  },
+  backButtonStyle: {
+    margin: 10,
+    height: 20,
+    width: 20,
   },
   headerLogo: {
     height: 30,
     width: 30,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   headerTitle: {
-    fontSize: 20
+    fontSize: 20,
   },
   backIcon: {
     height: 35,
     width: 35,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
   },
   imageSliderBig: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   imageSliderSmall: {
-    // justifyContent: 'center',
-    // marginTop:1,
-    // minHeight: (screenWidth / 4)
+
   },
   imagePlaceholder: {
-    
     width: screenWidth,
     height: 500,
     backgroundColor: '#fff',
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   addImageButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: (screenWidth / 4) - 10,
-    height: (screenWidth / 4) - 10,
+    width: screenWidth / 4 - 10,
+    height: screenWidth / 4 - 10,
     backgroundColor: 'pink',
     marginStart: 5,
     alignSelf: 'center',
-    borderRadius: 5
+    borderRadius: 5,
   },
   addImageButtonText: {
-    width: ((screenWidth / 4) - 10) / 3,
-    height: ((screenWidth / 4) - 10) / 3,
-    textAlign: 'center'
+    width: (screenWidth / 4 - 10) / 3,
+    height: (screenWidth / 4 - 10) / 3,
+    textAlign: 'center',
   },
   imageListContainView: {
-    borderRadius: 5, marginStart: 10,
-    marginTop:30,
+    borderRadius: 5,
+    marginStart: 10,
+    marginTop: 30,
   },
   imageView: {
     borderRadius: 5,
     width: resp(130),
     height: resp(70),
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   tabButtonStyle: {
     flex: 0.33,
@@ -621,7 +612,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   UploadImagesContainer: {
-    // flexDirection:'row',
     flex: 0.25,
     position: 'absolute',
     bottom: 100,
@@ -633,7 +623,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     shadowColor: 'black',
     shadowOpacity: 0.2,
-
     elevation: 2,
   },
   columnView: {
@@ -683,22 +672,26 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  innerImageView:
-  {
+  innerImageView: {
     borderRadius: 5,
-    width: (screenWidth / 4),
-    height: (screenWidth / 4),
-    backgroundColor: '#fff'
+    width: screenWidth / 4,
+    height: screenWidth / 4,
+    backgroundColor: '#fff',
   },
   imageOptionIcon: {
-    height: 20, width: 20,
-    resizeMode: 'contain'
+    height: 20,
+    width: 20,
+    resizeMode: 'contain',
   },
   editIcon: {
-    height: 60, width: 60, resizeMode: 'contain'
+    height: 60,
+    width: 60,
+    resizeMode: 'contain',
   },
   submitIcon: {
-    height: 55, width: 55, resizeMode: 'contain'
+    height: 55,
+    width: 55,
+    resizeMode: 'contain',
   },
   TabBox: {
     flex: 0.3,
@@ -707,7 +700,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     height: 60,
-    shadowColor: '#fff',
     elevation: 20,
     shadowColor: 'grey',
     width: '100%',
@@ -718,4 +710,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UploadCoverPhotoScreen
+export default UploadCoverPhotoScreen;

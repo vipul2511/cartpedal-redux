@@ -1,5 +1,6 @@
-import React, {Component} from 'react'
-console.disableYellowBox = true
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+console.disableYellowBox = true;
 
 import {
   StyleSheet,
@@ -9,24 +10,22 @@ import {
   Image,
   SafeAreaView,
   TextInput,
-  search,
-  ScrollView
-} from 'react-native'
-import resp from 'rn-responsive-font'
+  ScrollView,
+} from 'react-native';
+import resp from 'rn-responsive-font';
 
 class SearchBarScreen extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {}
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
-  render () {
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerView}>
           <View style={styles.BackButtonContainer}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../images/back_blck_icon.png')}
                 style={styles.backButtonStyle}
@@ -43,36 +42,25 @@ class SearchBarScreen extends Component {
               <Text style={styles.TitleStyle}>Cartpedal</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.SearchContainer}>
-            {/* <Image
-              source={require('../images/search.png')}
-              style={styles.SearchIconStyle}
-            /> */}
-          </View>
+          <View style={styles.SearchContainer} />
         </View>
 
         <View style={styles.MainContentBox}>
           <ScrollView>
-          <View
-                        style={styles.inputViewStyle}>
-                        <View style={{ flexDirection: 'row', marginLeft: 10 }}></View>
+            <View style={styles.inputViewStyle}>
+              <View style={{flexDirection: 'row', marginLeft: 10}} />
 
-
-                        <TextInput
-                            placeholder="Search"
-                            placeholderTextColor="#BEBEBE"
-                            underlineColorAndroid="transparent"
-                            style={styles.input}
-
-
-                        />
-                    </View>
-          
+              <TextInput
+                placeholder="Search"
+                placeholderTextColor="#BEBEBE"
+                underlineColorAndroid="transparent"
+                style={styles.input}
+              />
+            </View>
           </ScrollView>
         </View>
-       
       </SafeAreaView>
-    )
+    );
   }
 }
 
@@ -82,7 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
   },
- 
+
   MainContentBox: {
     flex: 1,
   },
@@ -252,17 +240,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000008',
     width: '85%',
     marginTop: resp(20),
-   alignContent:'center',
-   alignSelf:'center',
-},
-input: {
-  color: '#BEBEBE',
-  width: resp(339),
-  height: 50,
-  
-  fontSize:resp(14),
-alignSelf:'flex-start'
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+  input: {
+    color: '#BEBEBE',
+    width: resp(339),
+    height: 50,
 
-},
-})
+    fontSize: resp(14),
+    alignSelf: 'flex-start',
+  },
+});
 export default SearchBarScreen;

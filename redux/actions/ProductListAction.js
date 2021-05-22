@@ -5,26 +5,27 @@ import {
 } from './index.actions';
 import AsyncStorage from '@react-native-community/async-storage';
 import {API_URL} from '../../Config';
-const fcmToken = AsyncStorage.getItem('@fcmtoken');
-
+import {Platform} from 'react-native';
 export const productlistAction = (userId, userAccessToken) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({type: GET_PRODUCT_START});
     var urlProduct = `${API_URL}api-product/product-list?user_id=${userId}&type=2`;
-    const token = fcmToken ? fcmToken : '1111';
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+
+    const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     fetch(urlProduct, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
         device_token: token,
-        device_type: 'android',
+        device_type: Platform.OS,
         Authorization: JSON.parse(userAccessToken),
       },
     })
       .then((response) => response.json())
       .then((responseData) => {
-        if (responseData.code === '200') {
+        if (responseData.code == '200') {
           if (responseData.data !== undefined && responseData.data.length > 0) {
             dispatch({
               type: GET_PRODUCT_SUCCESS,
