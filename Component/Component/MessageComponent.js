@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useMemo, useState} from 'react';
-import Animated, {Easing} from 'react-native-reanimated';
 import {
   View,
   Text,
@@ -611,7 +610,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -631,9 +631,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -654,15 +655,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -681,7 +686,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: 'red'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -704,7 +709,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -724,7 +730,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : (
@@ -806,7 +812,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -827,9 +834,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -850,15 +858,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -877,7 +889,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: '#fff'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -902,7 +914,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -922,9 +935,9 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'location' ? (
-                    <View
+                    <TouchableOpacity
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -944,7 +957,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Location
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : (
@@ -1197,6 +1210,7 @@ export const MessageComponent = ({
               {message.reply_msg != '' ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: 'red',
@@ -1205,7 +1219,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1225,9 +1240,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1248,15 +1264,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -1275,7 +1295,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: 'red'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -1298,7 +1318,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -1318,7 +1339,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
@@ -1412,6 +1433,7 @@ export const MessageComponent = ({
               {message.reply_msg ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: '#fff',
@@ -1420,7 +1442,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1441,9 +1464,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1464,15 +1488,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -1491,7 +1519,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: '#fff'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -1516,7 +1544,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -1536,9 +1565,10 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'location' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -1558,7 +1588,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Location
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
@@ -1681,6 +1711,7 @@ export const MessageComponent = ({
               {message.reply_msg != '' ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: 'red',
@@ -1689,7 +1720,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1709,9 +1741,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1732,15 +1765,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -1759,7 +1796,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: 'red'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -1782,7 +1819,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -1802,7 +1840,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
@@ -1930,6 +1968,7 @@ export const MessageComponent = ({
               {message.reply_msg ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: '#fff',
@@ -1938,7 +1977,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1959,9 +1999,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -1982,15 +2023,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2009,7 +2054,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: '#fff'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -2034,7 +2079,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2054,9 +2100,10 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'location' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2076,7 +2123,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Location
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : (
@@ -2387,6 +2434,7 @@ export const MessageComponent = ({
               {message.reply_msg != '' ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: 'red',
@@ -2395,7 +2443,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -2415,9 +2464,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -2438,15 +2488,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2465,7 +2519,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: 'red'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -2488,7 +2542,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2508,7 +2563,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
@@ -2621,6 +2676,7 @@ export const MessageComponent = ({
               {message.reply_msg ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: '#fff',
@@ -2629,7 +2685,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -2650,9 +2707,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -2673,15 +2731,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2700,7 +2762,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: '#fff'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -2725,7 +2787,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2745,9 +2808,10 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'location' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -2767,7 +2831,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Location
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
@@ -3003,6 +3067,7 @@ export const MessageComponent = ({
               {message.reply_msg ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: '#fff',
@@ -3011,7 +3076,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -3032,9 +3098,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -3055,15 +3122,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3082,7 +3153,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: '#fff'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -3107,7 +3178,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3127,9 +3199,10 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'location' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3149,7 +3222,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Location
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
@@ -3301,6 +3374,7 @@ export const MessageComponent = ({
               {message.reply_msg != '' ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: 'red',
@@ -3309,7 +3383,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -3329,9 +3404,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -3352,15 +3428,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3379,7 +3459,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: 'red'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -3402,7 +3482,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3422,7 +3503,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
@@ -3547,6 +3628,7 @@ export const MessageComponent = ({
               {message.reply_msg ? (
                 message.reply_msg.msg_type == 'text' ? (
                   <Text
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       margin: 10,
                       color: '#fff',
@@ -3555,7 +3637,8 @@ export const MessageComponent = ({
                     {message.reply_msg.rmsg}
                   </Text>
                 ) : message.reply_msg.msg_type == 'contact' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -3576,9 +3659,10 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Contact
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.msg_type == 'location' ? (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
                     style={{
                       marginLeft: 10,
                       marginTop: 5,
@@ -3599,15 +3683,19 @@ export const MessageComponent = ({
                       style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                       Location
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : message.reply_msg.rimage ? (
                   message.reply_msg.msg_type == 'image' ? (
-                    <Image
-                      source={{uri: message.reply_msg.rimage.attach}}
-                      style={{width: 100, height: 80}}
-                    />
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'audio' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3626,7 +3714,7 @@ export const MessageComponent = ({
                       <Text style={{marginBottom: 5, color: '#fff'}}>
                         Voice message
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'video' ? (
                     <View
                       style={{
@@ -3651,7 +3739,8 @@ export const MessageComponent = ({
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3671,9 +3760,10 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Document
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : message.reply_msg.msg_type == 'location' ? (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
                       style={{
                         marginLeft: 10,
                         marginTop: 5,
@@ -3693,7 +3783,7 @@ export const MessageComponent = ({
                         style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
                         Location
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : null
                 ) : null
               ) : null}
