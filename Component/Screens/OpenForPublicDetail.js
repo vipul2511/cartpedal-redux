@@ -47,6 +47,7 @@ class OpenForPublicDetail extends Component {
       pickedImage:require('../images/default_user.png'),
       avatar:'',
       baseUrl: `${BASE_URL}`,
+      name:''
     }
   }
 
@@ -173,6 +174,9 @@ UserProfileCall() {
      this.hideLoading();
       if (responseData.code == '200') {
       //  Toast.show(responseData.message);
+      if(responseData.data.length>0){
+        this.setState({name:responseData.data[0].name});
+      }
       if(responseData.data[0].products!==undefined&&responseData.data[0].products.length>0){
         console.log('if executed',responseData.data[0].products);
         this.setState({ProfileData:responseData.data[0].products});
@@ -227,29 +231,31 @@ onShare = async (links) => {
     alert(error.message);
   }
 };
-link =async(id,name="OpenForPublicDetail")=>{
+link =async(id,name)=>{
   const link = new firebase.links.DynamicLink(
-    `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+id,
-    'cartpedal.page.link',
+    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
+    'https://cartpedal.page.link',
   ).android
-    .setPackageName('com.cart.android')
-    .ios.setBundleId('com.cart.ios');
+  .setPackageName('in.cartpedal')
+  .ios.setBundleId('com.ios.cartpadle')
+  .ios.setAppStoreId('1539321365');
 
 firebase.links()
   .createDynamicLink(link)
   .then((url) => {
     console.log('the url',url);
-    this.onShare('http://'+url);
+    this.onShare(url);
   });
 }
-forwardlink =async(userid,name="OpenForPublicDetail")=>{
+forwardlink =async(userid,name)=>{
   const link = new firebase.links.DynamicLink(
-    `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+
+    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
       userid,
-    'cartpedal.page.link',
+      'https://cartpedal.page.link',
   ).android
-    .setPackageName('com.cart.android')
-    .ios.setBundleId('com.cart.ios');
+  .setPackageName('in.cartpedal')
+  .ios.setBundleId('com.ios.cartpadle')
+  .ios.setAppStoreId('1539321365');
 
 firebase.links()
  .createDynamicLink(link)
@@ -265,7 +271,7 @@ this.props.navigation.navigate('ForwardLinkScreen', {
   PhoneNumber: numID,
   userId: this.state.userNo,
   userAccessToken: this.state.userAccessToken,
-  msgids: 'http://' + url,
+  msgids:  url,
 });
 }
 }));
@@ -325,7 +331,7 @@ this.props.navigation.navigate('ForwardLinkScreen', {
                 </TouchableOpacity>
                 </View>
               <View style={styles.ProfileInfoContainer}>
-              <Text style={styles.PersonNameStyle}>{this.props.route.params.name}</Text>
+              <Text style={styles.PersonNameStyle}>{this.state.name}</Text>
              
               <View style={styles.PersonInfoContainer}>
               <View style={{width:width*0.7}}>
@@ -392,11 +398,13 @@ this.props.navigation.navigate('ForwardLinkScreen', {
           color: 'white',
           }}
           option1Click={() => {
-            this.link(item.id)
+            let name="ProductDetailScreen"
+            this.link(item.id,name)
           
           }}
           option2Click={() => {
-            this.forwardlink(item.id)
+            let name="ProductDetailScreen"
+            this.forwardlink(item.id,name)
           
           }}
           />

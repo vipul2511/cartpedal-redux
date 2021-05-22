@@ -116,30 +116,31 @@ class DashBoardScreen extends Component {
 
   link = async (id, name) => {
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=` +
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         id,
-      'cartpedal.page.link',
+      'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
-
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
     firebase
       .links()
       .createDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
-        this.onShare('http://' + url);
+        this.onShare(url);
       });
   };
 
   forwardlink = async (userid, name) => {
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=` +
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         userid,
-      'cartpedal.page.link',
+      'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
 
     firebase
       .links()
@@ -152,7 +153,7 @@ class DashBoardScreen extends Component {
           PhoneNumber: this.state.phonenumber,
           userId: this.state.userId,
           userAccessToken: this.state.userAccessToken,
-          msgids: 'http://' + url,
+          msgids: url,
         });
       });
   };
@@ -852,7 +853,7 @@ class DashBoardScreen extends Component {
                       // Toast.show('CLicked Shared Link', Toast.LONG)
                     }}
                     option2Click={() => {
-                      let name = 'DashBoardScreen';
+                      let name = 'ProfileScreen';
                       this.forwardlink(this.state.userId, name);
                       // Toast.show('CLicked Forward Link', Toast.LONG)
                     }}
@@ -964,13 +965,13 @@ class DashBoardScreen extends Component {
                             this.blockuser(item.id, name);
                           }}
                           option2Click={() => {
-                            let name = 'DashBoardScreen';
-                            this.link(item.id, name);
+                            let name="OpenForProfileScreen";
+                            this.link(item.id,name)
                             // Toast.show('CLicked Shared Link', Toast.LONG)
                           }}
                           option3Click={() => {
-                            this.forwardlink(item.id);
-                            // Toast.show('CLicked Forward Link', Toast.LONG)
+                            let name="OpenForProfileScreen";
+                            this.forwardlink(item.id,name)
                           }}
                           option4Click={() => {
                             this.SendReportIssue();

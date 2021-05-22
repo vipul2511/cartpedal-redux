@@ -167,29 +167,31 @@ class OpenForProfileScreen extends Component {
       alert(error.message);
     }
   };
-  link =async(id,name="OpenForProfileScreen")=>{
+  link =async(id,name)=>{
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+id,
-      'cartpedal.page.link',
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+id,
+      'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
   
   firebase.links()
     .createDynamicLink(link)
     .then((url) => {
       console.log('the url',url);
-      this.onShare('http://'+url);
+      this.onShare(url);
     });
   }
-   forwardlink =async(userid,name="OpenForProfileScreen")=>{
+   forwardlink =async(userid,name)=>{
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=`+
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=`+
         userid,
-      'cartpedal.page.link',
+        'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
    
    firebase.links()
      .createDynamicLink(link)
@@ -205,7 +207,7 @@ class OpenForProfileScreen extends Component {
       PhoneNumber: numID,
       userId: this.state.userNo,
       userAccessToken: this.state.userAccessToken,
-      msgids: 'http://' + url,
+      msgids: url,
     });
     }
     }));
@@ -406,10 +408,12 @@ class OpenForProfileScreen extends Component {
             }}
             //Click functions for the menu items
             option1Click={() => {
-              this.link(this.props.route.params.id)
+              let name="OpenForProfileScreen"
+              this.link(this.props.route.params.id,name)
             }}
             option2Click={() => {
-              this.forwardlink(this.props.route.params.id)
+              let name="OpenForProfileScreen"
+              this.forwardlink(this.props.route.params.id,name)
               // Toast.show('CLicked Forward Link', Toast.LONG)
             }}
           />
@@ -450,7 +454,7 @@ class OpenForProfileScreen extends Component {
                   // <Text>hi</Text>
                 <TouchableOpacity style={styles.listItem}
                 onPress={() => {
-                  this.props.navigation.navigate('ProductDetailScreen',{whole_data:item,seller_id:this.state.wholeData.id,imageURL:item.image,name:this.props.route.params.name})
+                  this.props.navigation.navigate('ProductDetailScreen',{id:item.id})
                 }}>
               <Image source={item.image[0]?{uri:item.image[0].image}:this.state.pickedImage} style={styles.image} />
                {item.image[1]?(<View style={styles.MultipleOptionContainer}>
@@ -471,7 +475,7 @@ class OpenForProfileScreen extends Component {
                     </View>
                    
                     <TouchableOpacity style={styles.eyeButtonContainer}  onPress={() => {
-                  this.props.navigation.navigate('ProductDetailScreen',{whole_data:item,seller_id:this.state.wholeData.id,imageURL:item.image,name:this.props.route.params.name})
+                  this.props.navigation.navigate('ProductDetailScreen',{id:item.id})
                 }}>
                       <Image source={require('../images/shopping-cart-Icon.png')} style={styles.ShopingCartStyle}></Image>
           
@@ -491,10 +495,12 @@ class OpenForProfileScreen extends Component {
                             color: 'white',
                           }}
                           option1Click={() => {
-                            this.link(this.props.route.params.id)
+                            let name="ProductDetailScreen"
+                            this.link(this.props.route.params.id,name)
                           }}
                           option2Click={() => {
-                            this.forwardlink(this.props.route.params.id)
+                            let name="ProductDetailScreen"
+                            this.forwardlink(this.props.route.params.id,name)
           
                             // this.props.navigation.navigate('BluetoothDeviceList')
                           }}

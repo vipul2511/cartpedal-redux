@@ -137,6 +137,7 @@ class CartPlaceScreen extends Component {
     let formData = new FormData()
     formData.append('user_id',userNo)
     formData.append('type', 2)
+    // formData.append('order_id','CRTPDL08')
     console.log('form data==' + JSON.stringify(formData))
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
     var CartList = `${BASE_URL}api-product/cart-list`
@@ -327,32 +328,36 @@ class CartPlaceScreen extends Component {
       alert(error.message);
     }
   };
-link =async()=>{
- const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  .android.setPackageName('com.cart.android')
-  .ios.setBundleId('com.cart.ios');
-  // let url = await firebase.links().getInitialLink();
-  // console.log('incoming url', url);
+  link =async(id,name,orderID)=>{
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
+    ).android
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
+  
+  firebase.links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url',url);
+      this.onShare(url);
+    });
+  }
+forwardlink =async(userid,name,orderID)=>{
+  const link = new firebase.links.DynamicLink(
+    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
+    'https://cartpedal.page.link',
+  ).android
+  .setPackageName('in.cartpedal')
+  .ios.setBundleId('com.ios.cartpadle')
+  .ios.setAppStoreId('1539321365');
 
-firebase.links()
-  .createDynamicLink(link)
-  .then((url) => {
-    console.log('the url',url);
-    this.onShare(url);
-  });
-}
-forwardlink =async(userid)=>{
-  const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-   .android.setPackageName('com.cart.android')
-   .ios.setBundleId('com.cart.ios');
-   // let url = await firebase.links().getInitialLink();
-   // console.log('incoming url', url);
- 
- firebase.links()
-   .createDynamicLink(link)
-   .then((url) => {
-     console.log('the url',url);
-    //  this.sendMessage(url,userid);
+  firebase
+    .links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url', url);
     AsyncStorage.getItem('@Phonecontacts').then((NumberFormat=>{
       if(NumberFormat){
         let numID=JSON.parse(NumberFormat)
@@ -362,7 +367,7 @@ forwardlink =async(userid)=>{
     PhoneNumber: numID,
     userId: this.state.userNo,
     userAccessToken: this.state.userAccessToken,
-    msgids: url,
+    msgids:  url,
   });
 }
 }));
@@ -393,7 +398,7 @@ forwardlink =async(userid)=>{
               // console.log('order recevied',JSON.stringify(item));
               return(
                 <View>
-                {item.products[0]?(<TouchableOpacity style={styles.itemBox} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,wholeData:item.products })}}>
+                {item.products[0]?(<TouchableOpacity style={styles.itemBox} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,order_id:item.orderid })}}>
                 <View style={styles.box}>
                   <View style={styles.ProfileImageContainer}>
                     <TouchableOpacity>
@@ -427,7 +432,7 @@ forwardlink =async(userid)=>{
                 source={item.favourite==1?this.state.redIcon:this.state.whiteIcon}
                 style={[styles.heartButtonStyle,{width:item.favourite==1?resp(11):resp(18),height:item.favourite==1?resp(9):resp(18),marginTop:item.favourite==1?resp(4):resp(0)}]}></Image>
             </TouchableOpacity>
-                    <TouchableOpacity style={styles.ViewButtonContainer} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,wholeData:item.products})}}> 
+                    <TouchableOpacity style={styles.ViewButtonContainer} onPress={()=>{this.props.navigation.navigate('OrderRecievedViewScreen',{ id: item.id, name: item.name,order_id:item.orderid})}}> 
                         <Text style={styles.viewButtonStyle}>View All</Text>
                     </TouchableOpacity>
                     <CustomMenuIcon
@@ -447,11 +452,13 @@ forwardlink =async(userid)=>{
                       }}
                       //Click functions for the menu items
                       option1Click={() => {
-                        this.link()
+                        let name="OrderRecievedViewScreen"
+                        this.link(item.id,name,item.orderid)
                         // Toast.show('CLicked Shared Link', Toast.LONG)
                       }}
                       option2Click={() => {
-                        this.forwardlink()
+                        let name="OrderRecievedViewScreen"
+                        this.forwardlink(item.id,name,item.orderid)
                         // Toast.show('CLicked Forward Link', Toast.LONG)
                       }}
                     />

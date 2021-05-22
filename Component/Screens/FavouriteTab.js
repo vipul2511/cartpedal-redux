@@ -389,28 +389,30 @@ class FavouriteTab extends Component {
       };
       link =async(id)=>{
         const link = new firebase.links.DynamicLink(
-          'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+          'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
             id,
           'cartpedal.page.link',
         ).android
-          .setPackageName('com.cart.android')
-          .ios.setBundleId('com.cart.ios');
+        .setPackageName('in.cartpedal')
+        .ios.setBundleId('com.ios.cartpadle')
+        .ios.setAppStoreId('1539321365');
       
       firebase.links()
         .createDynamicLink(link)
         .then((url) => {
           console.log('the url',url);
-          this.onShare('http://'+url);
+          this.onShare(url);
         });
       }
     forwardlink =async(userid)=>{
       const link = new firebase.links.DynamicLink(
-        'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+        'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
           userid,
         'cartpedal.page.link',
       ).android
-        .setPackageName('com.cart.android')
-        .ios.setBundleId('com.cart.ios');
+      .setPackageName('in.cartpedal')
+      .ios.setBundleId('com.ios.cartpadle')
+      .ios.setAppStoreId('1539321365');
      
      firebase.links()
        .createDynamicLink(link)
@@ -426,7 +428,7 @@ class FavouriteTab extends Component {
         PhoneNumber: numID,
         userId: this.state.userNo,
         userAccessToken: this.state.userAccessToken,
-        msgids: 'http://' + url,
+        msgids:url,
       });
     }
     }));

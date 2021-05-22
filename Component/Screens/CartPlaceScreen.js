@@ -104,28 +104,30 @@ class CartPlaceScreen extends Component {
       alert(error.message);
     }
   };
-  link =async(id,name="CartScreen")=>{
+  link =async(id,name,orderID)=>{
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${id}&cartValue=1`,
-      'cartpedal.page.link',
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
   
   firebase.links()
     .createDynamicLink(link)
     .then((url) => {
       console.log('the url',url);
-      this.onShare('http://'+url);
+      this.onShare(url);
     });
   }
-forwardlink =async(userid,name="CartScreen")=>{
-  const link = new firebase.links.DynamicLink(
-    `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${userid}&cartValue=1`,
-    'cartpedal.page.link',
-  ).android
-    .setPackageName('com.cart.android')
-    .ios.setBundleId('com.cart.ios');
+  forwardlink =async(userid,name,orderID)=>{
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
+    ).android
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
 
   firebase
     .links()
@@ -141,7 +143,7 @@ forwardlink =async(userid,name="CartScreen")=>{
     PhoneNumber: numID,
     userId: this.state.userNo,
     userAccessToken: this.state.userAccessToken,
-    msgids: 'http://' + url,
+    msgids: url,
   });
 }
 }));
@@ -203,66 +205,7 @@ forwardlink =async(userid,name="CartScreen")=>{
   </View>
     );
   };
-  // favouriteProduct(item) {
-  //   console.log('item of fav',item);
-  //   let formData = new FormData()
 
-  //   formData.append('user_id', this.state.userNo)
-  //   formData.append('block_id', item.id)
-  //   formData.append('type', 1)
-  //   console.log('form data==' + JSON.stringify(formData))
-
-
-  //   // var CartList = this.state.baseUrl + 'api-product/cart-list'
-  //   var favouriteProductUrl = "${BASE_URL}frontend/web/api-product/cart-list"
-  //   console.log('BlockUser Url:' + favouriteProductUrl)
-  //   fetch(favouriteProductUrl, {
-  //     method: 'Post',
-  //     headers: new Headers({
-  //       'Content-Type': 'multipart/form-data',
-  //       device_id: '1111',
-  //       device_token: '1111',
-  //       device_type: 'android',
-  //       Authorization: JSON.parse(this.state.userAccessToken),
-  //       // Authorization: 'Bearer xriPJWJGsQT-dUgP4qH11EMM357_kEaan7zJ4Vty'
-
-  //     }),
-  //     body: formData,
-  //   })
-
-  //     .then(response => response.json())
-  //     .then(responseData => {
-  //       this.hideLoading();
-  //       if (responseData.code == '200') {
-  //         console.log('fevtert========',responseData.data[0].favourite);
-  //           this.setState({favourite:responseData.data[0].favourite})
-  //         //  this.props.navigation.navigate('StoryViewScreen')
-  //         Toast.show(responseData.message);
-  //         this.setState({ CartListProduct: responseData.data })
-  //         console.log('executed if the cart');
-  //         // this.SaveProductListData(responseData)
-
-  //       } else {
-  //         // alert(responseData.data);
-  //         // alert(responseData.data.password)
-  //         console.log('executed the cart');
-  //         this.setState({ NoData: true });
-
-  //       }
-
-  //       // console.log('response object:', responseData)
-  //       console.log('favouriteProduct', JSON.stringify(responseData))
-  //       // console.log('access_token ', this.state.access_token)
-  //       //   console.log('User Phone Number==' + formData.phone_number)
-  //     })
-  //     .catch(error => {
-  //       this.hideLoading();
-  //       console.error(error)
-  //     })
-
-  //     .done()
-
-  // }
 
   
   CartListCall() {
@@ -282,6 +225,7 @@ forwardlink =async(userid,name="CartScreen")=>{
 
     formData.append('user_id', userno)
     formData.append('type', 0)
+    formData.append('seller',0)
     console.log('form data==' + JSON.stringify(formData))
 
     // var CartList = this.state.baseUrl + 'api-product/cart-list'
@@ -594,7 +538,7 @@ forwardlink =async(userid,name="CartScreen")=>{
     return(
     <TouchableOpacity style={styles.itemBox}  onPress={() => {
       console.log('user data from api', item);
-      this.props.navigation.navigate('CartViewScreen',{ id: item.id, name: item.name,cartProduct:item } )
+      this.props.navigation.navigate('CartViewScreen',{ id: item.id, name: item.name,order_id:item.id } )
     }}>
          <View>
       <View style={styles.box}>
@@ -632,7 +576,7 @@ forwardlink =async(userid,name="CartScreen")=>{
           <TouchableOpacity
             onPress={() => {
               console.log('user data from api', item);
-              this.props.navigation.navigate('CartViewScreen',{ id: item.id, name: item.name,cartProduct:item } )
+              this.props.navigation.navigate('CartViewScreen',{ id: item.id, name: item.name,order_id:item.id} )
             }}>
             
             <View style={styles.ViewButtonContainer}>
@@ -659,11 +603,13 @@ forwardlink =async(userid,name="CartScreen")=>{
               Toast.show('CLicked Block', Toast.LONG)
             }}
             option2Click={() => {
-              this.link(item.id)
+              let name="CartViewScreen"
+              this.link(item.id,name,item.id)
               // Toast.show('CLicked Share Link', Toast.LONG)
             }}
             option3Click={() => {
-              this.forwardlink(item.id)
+              let name="CartViewScreen"
+              this.forwardlink(item.id,name,item.id)
               // Toast.show('CLicked Forward Link', Toast.LONG)
             }}
           />

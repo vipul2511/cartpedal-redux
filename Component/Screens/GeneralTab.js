@@ -359,13 +359,6 @@ class GeneralTab extends Component {
       .done();
   };
   link = async (id) => {
-    // const link = new firebase.links.DynamicLink(
-    //   'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
-    //     id,
-    //   'cartpedal.page.link',
-    // ).android
-    //   .setPackageName('com.cart.android')
-    //   .ios.setBundleId('com.cart.ios');
 
     const link = new firebase.links.DynamicLink(
       'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
@@ -386,12 +379,13 @@ class GeneralTab extends Component {
   };
   forwardlink = async (userid) => {
     const link = new firebase.links.DynamicLink(
-      'https://play.google.com/store/apps/details?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
+      'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
         userid,
-      'cartpedal.page.link',
+        'https://cartpedal.page.link',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
 
     firebase
       .links()
@@ -404,7 +398,7 @@ class GeneralTab extends Component {
           PhoneNumber: this.state.PhoneNumber,
           userId: this.state.userNo,
           userAccessToken: this.state.userAccessToken,
-          msgids: 'http://' + url,
+          msgids:url,
         });
       });
   };

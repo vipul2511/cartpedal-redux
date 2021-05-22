@@ -39,6 +39,7 @@ class OrderRecievedViewScreen extends Component {
       favourite:'',
       redIcon:require('../images/Heart_icon.png'),
       whiteIcon:require('../images/dislike.png'),
+      userNo:'',
       avatar:'',
       pickedImage:require('../images/default_user.png'),
      // userNo:'',
@@ -66,8 +67,8 @@ class OrderRecievedViewScreen extends Component {
         this.setState({ fcmToken: token });
         // let arr=[];
         // arr.push(this.props.route.params.wholeData);
-        this.setState({OderPlaceProduct:this.props.route.params.wholeData});
-        console.log('order data',this.props.route.params.wholeData)
+        // this.setState({OderPlaceProduct:this.props.route.params.wholeData});
+        // console.log('order data',this.props.route.params.wholeData)
       }
     });
     AsyncStorage.getItem('@access_token').then((accessToken) => {
@@ -81,7 +82,7 @@ class OrderRecievedViewScreen extends Component {
       if (userId) {
           this.setState({ userNo: userId });
           console.log(" id from login  user id ====" + userId);
-          // this.CartListCall();
+          this.CartListCall();
           this.UserProfileCall();
           setTimeout(() => {
             this.hideLoading()
@@ -173,26 +174,30 @@ class OrderRecievedViewScreen extends Component {
       alert(error.message);
     }
   };
-link =async()=>{
- const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-  .android.setPackageName('com.cart.android')
-  .ios.setBundleId('com.cart.ios');
-  // let url = await firebase.links().getInitialLink();
-  // console.log('incoming url', url);
-
-firebase.links()
-  .createDynamicLink(link)
-  .then((url) => {
-    console.log('the url',url);
-    this.onShare(url);
-  });
-}
-forwardlink =async(userid)=>{
-  const link= new firebase.links.DynamicLink('https://play.google.com/store/apps/details?id=in.cartpedal', 'cartpedal.page.link')
-   .android.setPackageName('com.cart.android')
-   .ios.setBundleId('com.cart.ios');
-   // let url = await firebase.links().getInitialLink();
-   // console.log('incoming url', url);
+  link =async(id,name,orderID)=>{
+    const link = new firebase.links.DynamicLink(
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
+      'https://cartpedal.page.link',
+    ).android
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
+  
+  firebase.links()
+    .createDynamicLink(link)
+    .then((url) => {
+      console.log('the url',url);
+      this.onShare(url);
+    });
+  }
+forwardlink =async(userid,name,orderID)=>{
+  const link = new firebase.links.DynamicLink(
+    `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
+    'https://cartpedal.page.link',
+  ).android
+  .setPackageName('in.cartpedal')
+  .ios.setBundleId('com.ios.cartpadle')
+  .ios.setAppStoreId('1539321365');
  
  firebase.links()
    .createDynamicLink(link)
@@ -208,7 +213,7 @@ forwardlink =async(userid)=>{
     PhoneNumber: numID,
     userId: this.state.userNo,
     userAccessToken: this.state.userAccessToken,
-    msgids: url,
+    msgids:  url,
   });
 }
 }));
@@ -218,6 +223,7 @@ forwardlink =async(userid)=>{
     let formData = new FormData()
       formData.append('user_id', this.state.userNo)
       formData.append('type', 2)
+      formData.append('order_id',this.props.route.params.order_id)
       console.log('form data==' + JSON.stringify(formData))
      // var CartList = this.state.baseUrl + 'api-product/cart-list'
       var CartList = `${BASE_URL}api-product/cart-list`
@@ -242,8 +248,7 @@ forwardlink =async(userid)=>{
           if (responseData.code == '200') {
           //  this.props.navigation.navigate('StoryViewScreen')
           //  Toast.show(responseData.message);
-            // this.setState({OderPlaceProduct:responseData.data})
-           // this.SaveProductListData(responseData)
+          this.setState({OderPlaceProduct:responseData.data[0].products});
           } else {
             this.setState({ NoData: true });
             // alert(responseData.data);
@@ -421,32 +426,27 @@ forwardlink =async(userid)=>{
             </TouchableOpacity>
 
                 <View style={styles.MenuStyleContanier}>
-                <MenuIcon
-                  //Menu Text
-                  menutext='Menu'
-                  //Menu View Style
+                <CustomMenuIcon
+                    menutext='Menu'
+                   
+                    //Menu View Style
                   menustyle={{
                     marginRight: 5,
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
                   }}
-                  //Menu Text Style
-                  textStyle={{
-                    color: 'white',
-                  }}
-                  //Click functions for the menu items
-                  option1Click={() => {
-                    Toast.show('CLicked Block', Toast.LONG)
-                  }}
-                  option2Click={() => {
-                    this.link()
-                    // Toast.show('CLicked Shared Link', Toast.LONG)
-                  }}
-                  option3Click={() => {
-                    this.forwardlink()
-                    // Toast.show('CLicked Forward Link', Toast.LONG)
-                  }}
-                />
+                    textStyle={{
+                      color: 'white',
+                    }}
+                    option1Click={() => {
+                      let name="OderPlacedViewScreen"
+                      this.link(this.props.route.params.id,name,this.props.route.params.order_id)
+                    }}
+                    option2Click={() => {
+                      let name="OderPlacedViewScreen"
+                      this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
+                    }}
+                  />
                 </View>
               </View>
 
@@ -463,7 +463,7 @@ forwardlink =async(userid)=>{
               keyExtractor={({item,index})=> index}
               numColumns={1}
               renderItem={({ item }) =>{
-                console.log('item',item);
+                // console.log('item',item);
                return(
                 <View style={styles.listItem}>
                 <Image source={{uri:item.image}} style={styles.image} />
@@ -501,13 +501,12 @@ forwardlink =async(userid)=>{
                       color: 'white',
                     }}
                     option1Click={() => {
-                      this.link()
-                      // Toast.show('CLicked Shared Link', Toast.LONG)
+                      let name="OderPlacedViewScreen"
+                      this.link(this.props.route.params.id,name,this.props.route.params.order_id)
                     }}
                     option2Click={() => {
-                      this.forwardlink()
-                      // Toast.show('CLicked Forward Link', Toast.LONG)
-          
+                      let name="OderPlacedViewScreen"
+                      this.forwardlink(this.props.route.params.id,name,this.props.route.params.order_id)
                       
                     }}
                   />
