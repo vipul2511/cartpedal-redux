@@ -190,12 +190,14 @@ export const MessageComponent = ({
   }, [scrollMessageId]);
 
   useEffect(() => {
-    if (
-      message.isread.split(',').length !== membersCount &&
-      !messageIdList.includes(message.id) &&
-      message.fmsg !== ''
-    ) {
-      startMessageCaller(message.id);
+    if (message.id) {
+      if (
+        message.isread.split(',').length !== membersCount &&
+        !messageIdList.includes(message.id) &&
+        message.fmsg !== ''
+      ) {
+        startMessageCaller(message.id);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [message, messageIdList]);
@@ -209,6 +211,8 @@ export const MessageComponent = ({
   let content = null;
 
   const {msg_type} = message;
+
+  console.log(message);
 
   if (msg_type === 'accept') {
     if (message.tmsg !== '') {

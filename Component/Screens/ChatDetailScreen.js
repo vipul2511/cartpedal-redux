@@ -3708,7 +3708,7 @@ const newMessage = {
   fattach: null,
   fmsg: '',
   id: 42,
-  isread: '0',
+  isread: '',
   msg_type: '',
   reply_id: 0,
   tattach: '',
@@ -3722,7 +3722,7 @@ const replyNewMessage = {
   fattach: null,
   fmsg: '',
   id: 42,
-  isread: '0',
+  isread: '',
   msg_type: '',
   reply_id: 0,
   reply_msg: {
