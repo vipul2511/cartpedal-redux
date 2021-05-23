@@ -340,6 +340,7 @@ class DashBoardScreen extends Component {
         msg_type,
         groupname,
         groupavatar,
+        member,
       } = notificationOpen.notification.data;
       this.props.navigation.navigate('ChatDetailScreen', {
         userid: groupid != '0' ? groupid : fromid,
@@ -350,6 +351,7 @@ class DashBoardScreen extends Component {
         msg_type: msg_type,
         groupId: groupid != '0' ? groupid : fromid,
         groupexit: false,
+        membersCount: !member || member == '' ? 2 : member.split(',').length,
       });
     }
 
@@ -390,6 +392,7 @@ class DashBoardScreen extends Component {
           groupid,
           groupname,
           groupavatar,
+          member,
         } = m.notification.data;
         this.props.navigation.navigate('ChatDetailScreen', {
           userid: groupid != '0' ? groupid : fromid,
@@ -400,6 +403,7 @@ class DashBoardScreen extends Component {
           msg_type: msg_type,
           groupId: groupid != '0' ? groupid : fromid,
           groupexit: false,
+          membersCount: !member || member == '' ? 2 : member.split(',').length,
         });
       });
   };

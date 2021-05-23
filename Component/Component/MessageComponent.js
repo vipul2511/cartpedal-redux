@@ -50,6 +50,9 @@ export const MessageComponent = ({
   scrollToID,
   scrollMessageId,
   setScrollMessageUndefined,
+  messageIdList,
+  membersCount,
+  startMessageCaller,
 }) => {
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(initialize(message.sending));
@@ -185,6 +188,17 @@ export const MessageComponent = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollMessageId]);
+
+  useEffect(() => {
+    if (
+      message.isread.split(',').length !== membersCount &&
+      !messageIdList.includes(message.id) &&
+      message.fmsg !== ''
+    ) {
+      startMessageCaller(message.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [message, messageIdList]);
 
   const inList = useMemo(() => {
     return forwardMessageIds.indexOf(message.id) !== -1;
@@ -378,7 +392,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length > 1 ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -561,7 +578,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -1026,7 +1046,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -1168,7 +1191,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -1667,7 +1693,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -2253,7 +2282,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -2393,7 +2425,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -2943,7 +2978,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -3326,7 +3364,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}
@@ -3881,7 +3922,10 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length > 1 ? '#34B7F1' : 'grey',
+                    message.isread.split(',').length === membersCount ||
+                    messageIdList.includes(message.id)
+                      ? '#34B7F1'
+                      : 'grey',
                 }}
               />
             )}

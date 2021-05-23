@@ -55,6 +55,7 @@ import {
 } from '../Component/Permissions';
 import {PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import {ListFiles} from '../utils/FilesCaching';
+import {API_URL} from '../../Config';
 
 let height = Dimensions.get('window').height;
 
@@ -112,8 +113,73 @@ class ChatDetailScreen extends React.Component {
       scrollToId: undefined,
       useravatar: this.props.route.params.useravatar,
       username: this.props.route.params.username,
+      lastMessageId: undefined,
+      messageIdList: [],
     };
   }
+
+  lastMessageCall = async (id) => {
+    let formData = new FormData();
+    formData.append('msgid', id);
+    formData.append('user_id', this.state.userId);
+    formData.append('toid', this.props.route.params.userid);
+    formData.append('type', this.props.route.params.msg_type);
+    formData.append('msg_type', '0');
+    const token = this.state.fcmToken != '' ? this.state.fcmToken : '1111';
+    fetch(`${API_URL}api-message/conversation`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        device_id: '1234',
+        device_token: token,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.code == '200') {
+          const readIds = responseData.data.read.split(',');
+          if (
+            readIds.length === 1 &&
+            this.props.route.params.userid == readIds[0]
+          ) {
+            this.setState((p) => ({
+              messageIdList: p.chatList.messages.map((i) => i.id),
+              lastMessageId: undefined,
+            }));
+            clearInterval(this.timer);
+            this.timer = undefined;
+          }
+          if (readIds.length === this.props.route.params.membersCount) {
+            this.setState((p) => ({
+              messageIdList: p.chatList.messages.map((i) => i.id),
+              lastMessageId: undefined,
+            }));
+            clearInterval(this.timer);
+            this.timer = undefined;
+          }
+        } else {
+        }
+      })
+      .catch((error) => {});
+  };
+
+  startMessageCaller = async (id) => {
+    await this.setState({lastMessageId: id});
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = undefined;
+    }
+    if (!this.timer) {
+      this.timer = setInterval(() => {
+        if (this.state.lastMessageId) {
+          this.lastMessageCall(this.state.lastMessageId);
+        }
+      }, 1000);
+    }
+  };
 
   changeProfile = (avatar, name) => {
     this.setState({useravatar: avatar, username: name});
@@ -247,6 +313,9 @@ class ChatDetailScreen extends React.Component {
     this.props.toggleChatting(false, undefined);
     this.listener1();
     this.listener2();
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -408,6 +477,8 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
+
+          // this.startMessageCaller(responseData.data[0].id);
 
           replyID = '0';
           this.setState({selectedMode: false, forwardMessageIds: []});
@@ -578,6 +649,7 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
+          // this.startMessageCaller(responseData.data[0].id);
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
             showRelymsg: false,
@@ -782,7 +854,7 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
-
+          // this.startMessageCaller(responseData.data[0].id);
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
             showRelymsg: false,
@@ -1101,6 +1173,9 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
+
+          // this.startMessageCaller(responseData.data[0].id);
+
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
             showRelymsg: false,
@@ -1273,6 +1348,9 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
+
+          // this.startMessageCaller(responseData.data[0].id);
+
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
             showRelymsg: false,
@@ -1463,6 +1541,9 @@ class ChatDetailScreen extends React.Component {
             }),
             () => setTimeout(() => tick.play(), 1000),
           );
+
+          // this.startMessageCaller(responseData.data[0].id);
+
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
             showRelymsg: false,
@@ -2048,6 +2129,9 @@ class ChatDetailScreen extends React.Component {
                         setScrollMessageUndefined={
                           this.setScrollMessageUndefined
                         }
+                        messageIdList={this.state.messageIdList}
+                        membersCount={this.props.route.params.membersCount}
+                        startMessageCaller={this.startMessageCaller}
                       />
                     );
                   }}

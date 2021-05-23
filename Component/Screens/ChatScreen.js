@@ -333,6 +333,10 @@ class ChatScreen extends Component {
                           msg_type: v.msg_type,
                           groupId: v.id,
                           groupexit: v.lastmsg.group_id !== 0 ? v.exit : '',
+                          membersCount:
+                            !v.member || v.member == ''
+                              ? 2
+                              : v.member.split(',').length,
                         });
                       }}>
                       <View

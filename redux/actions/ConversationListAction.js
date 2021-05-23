@@ -11,6 +11,7 @@ export const ConversationListAction = (userID, type, toid, userAccessToken) => {
   return async (dispatch) => {
     dispatch({type: CONVERSION_LIST_START});
     let formData = new FormData();
+    formData.append('msgid', '0');
     formData.append('user_id', userID);
     formData.append('toid', toid);
     formData.append('type', type);
