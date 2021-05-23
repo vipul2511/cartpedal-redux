@@ -1913,9 +1913,7 @@ class ChatDetailScreen extends React.Component {
                     }}>
                     <View style={styles.BackButtonContainer}>
                       <TouchableOpacity
-                        onPress={() =>
-                          this.props.navigation.navigate('ChatScreen')
-                        }>
+                        onPress={() => this.props.navigation.goBack()}>
                         <Image
                           source={require('../images/back_blck_icon.png')}
                           style={styles.backButtonStyle}

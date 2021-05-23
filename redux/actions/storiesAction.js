@@ -64,7 +64,7 @@ export const loggedStoriesAction = (userId, userAccessToken) => {
   return async (dispatch) => {
     dispatch({type: GET_LOGGED_STORIES_START});
     var urlprofile = `${API_URL}api-user/user-stories?user_id=${userId}&type=1`;
-    const fcmToken = AsyncStorage.getItem('@fcmtoken');
+    const fcmToken = await AsyncStorage.getItem('@fcmtoken');
 
     const token = fcmToken ? JSON.parse(fcmToken) : '1111';
     return fetch(urlprofile, {

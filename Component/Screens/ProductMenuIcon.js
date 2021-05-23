@@ -45,7 +45,7 @@ class ProductMenuIcon extends Component {
               />
             </TouchableOpacity>
           }>
-          <MenuItem onPress={this.option1Click}>Unshow</MenuItem>
+          {/* <MenuItem onPress={this.option1Click}>Unshow</MenuItem> */}
           <MenuItem onPress={this.option2Click}>Share Link</MenuItem>
           <MenuItem onPress={this.option3Click}>Forward Link</MenuItem>
           <MenuItem onPress={this.option4Click}>Edit</MenuItem>
