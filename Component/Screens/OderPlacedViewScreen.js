@@ -408,7 +408,7 @@ class OderPlacedViewScreen extends Component {
                       Toast.show('CLicked Block', Toast.LONG);
                     }}
                     option2Click={() => {
-                      let name = 'OderPlacedViewScreen';
+                      let name = 'OrderRecievedViewScreen';
                       this.link(
                         this.state.ProfileData.block_id,
                         name,
@@ -416,7 +416,7 @@ class OderPlacedViewScreen extends Component {
                       );
                     }}
                     option3Click={() => {
-                      let name = 'OderPlacedViewScreen';
+                      let name = 'OrderRecievedViewScreen';
                       this.forwardlink(
                         this.state.ProfileData.block_id,
                         name,
@@ -482,7 +482,7 @@ class OderPlacedViewScreen extends Component {
                             color: 'white',
                           }}
                           option1Click={() => {
-                            let name = 'OderPlacedViewScreen';
+                            let name = 'OrderRecievedViewScreen';
                             this.link(
                               this.state.ProfileData.block_id,
                               name,
@@ -490,7 +490,7 @@ class OderPlacedViewScreen extends Component {
                             );
                           }}
                           option2Click={() => {
-                            let name = 'OderPlacedViewScreen';
+                            let name = 'OrderRecievedViewScreen';
                             this.forwardlink(
                               this.state.ProfileData.block_id,
                               name,

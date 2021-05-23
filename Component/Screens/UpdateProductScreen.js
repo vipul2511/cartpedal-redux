@@ -477,10 +477,12 @@ export default class UpdateProductScreen extends React.Component {
               source={require('../images/edit_product.png')}
             />
           </TouchableOpacity>
+          <View style={{flex:1}}>
           <AppImageSlider
             sliderImages={this.state.imageList}
             rendorImages={(item, index) => this.renderInnerImageList(item)}
           />
+          </View>
         </View>
         <Modal
           animationType="slide"
@@ -529,7 +531,7 @@ export default class UpdateProductScreen extends React.Component {
         </Modal>
 
         <View style={styles.container2}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView keyboardShouldPersistTaps="always" >
             <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
               <TouchableOpacity
                 onPress={() => {
@@ -580,23 +582,31 @@ export default class UpdateProductScreen extends React.Component {
                 })}
               </Picker>
             </View>
-
+            <TouchableOpacity onPress={()=>this.input.focus()}>
+            <View pointerEvents="none">
             <TextInput
               style={styles.input1TextView}
+              ref = {(input) => this.input = input}
               placeholder={AppConst.inputPH_enter_name}
               value={this.state.Name}
               onChangeText={this._handleMultiInput('Name')}
               editable={true}
             />
+            </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>this.input2.focus()}>
+            <View pointerEvents="none">
             <TextInput
               style={styles.inputTextView}
+              ref = {(input) => this.input2 = input}
               placeholder={AppConst.inputPH_price}
               value={this.state.price}
               keyboardType={'numeric'}
               onChangeText={this._handleMultiInput('price')}
               editable={true}
             />
-
+             </View>
+            </TouchableOpacity>
             <View style={styles.pickerStyle}>
               <Picker
                 selectedValue={this.state.Unitid}
@@ -620,25 +630,37 @@ export default class UpdateProductScreen extends React.Component {
                 })}
               </Picker>
             </View>
+            <TouchableOpacity onPress={()=>this.input3.focus()}>
+            <View pointerEvents="none">
             <TextInput
               style={styles.inputTextView}
+              ref = {(input) => this.input3 = input}
               placeholder={AppConst.inputPH_bunch}
               value={this.state.bunch}
               onChangeText={this._handleMultiInput('bunch')}
               editable={true}
             />
+            </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>this.input4.focus()}>
+            <View pointerEvents="none">
             <TextInput
               style={styles.inputTextView}
+              ref = {(input) => this.input4 = input}
               placeholder={AppConst.inputPH_detail}
               value={this.state.Details_1}
               maxLength={50}
               onChangeText={this._handleMultiInput('Details_1')}
               editable={true}
             />
-
+</View>
+</TouchableOpacity>
+<TouchableOpacity onPress={()=>this.input5.focus()}>
+            <View pointerEvents="none">
             <TextInput
               style={styles.inputTextView}
               placeholder={'Details 2'}
+              ref = {(input) => this.input5 = input}
               multiline={true}
               numberOfLines={4}
               maxLength={50}
@@ -646,15 +668,23 @@ export default class UpdateProductScreen extends React.Component {
               value={this.state.Details_2}
               editable={true}
             />
+            </View>
+            </TouchableOpacity>
+
             <Text style={styles.DescriptionStyle}>Description </Text>
+            <TouchableOpacity onPress={()=>this.input6.focus()}>
+            <View pointerEvents="none">
             <TextInput
               style={styles.DescriptionInputTextView}
+              ref = {(input) => this.input6 = input}
               placeholder={'(Maximum 150 characters)'}
               multiline={true}
               value={this.state.Description}
               onChangeText={this._handleMultiInput('Description')}
               editable={true}
             />
+            </View>
+            </TouchableOpacity>
             <Text style={styles.DescriptionStyle}>Shared With</Text>
             <TouchableOpacity
               style={styles.openButtonContainer}

@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
+import {wp, hp} from '../Component/hightWidthRatio';
 class OrderRecievedViewScreen extends Component {
   constructor(props) {
     super(props);
@@ -197,7 +198,7 @@ class OrderRecievedViewScreen extends Component {
   CartListCall() {
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
-    formData.append('type', 1);
+    formData.append('type', 2);
     formData.append('order_id', this.props.route.params.order_id);
     console.log('form data==' + JSON.stringify(formData));
     var CartList = 'https://www.cartpedal.com/api-product/cart-list';
@@ -220,10 +221,48 @@ class OrderRecievedViewScreen extends Component {
         } else {
           this.setState({NoData: true});
         }
+        console.log('response',responseData);
       })
       .catch((error) => {
         // this.hideLoading();
         console.error(error);
+      })
+      .done();
+  }
+
+
+  AskForStautsCall(blockID,orderID ) {
+    this.showLoading();
+    let formData = new FormData();
+    formData.append('user_id', this.state.userNo);
+    formData.append('type', 1);
+    formData.append('order_id', orderID);
+    formData.append('block_id', blockID);
+    console.log(JSON.stringify(formData));
+    var AskForStautsURL = `${BASE_URL}api-product/order-status`;
+    fetch(AskForStautsURL, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.hideLoading();
+        console.log(responseData);
+        if (responseData.code == '200') {
+          alert('Order has been accepted');
+        } else {
+          alert(responseData.message);
+        }
+      })
+      .catch((error) => {
+        this.hideLoading();
       })
       .done();
   }
@@ -403,7 +442,7 @@ class OrderRecievedViewScreen extends Component {
                       Toast.show('CLicked Block', Toast.LONG);
                     }}
                     option2Click={() => {
-                      let name = 'OrderRecievedViewScreen';
+                      let name = 'OderPlacedViewScreen';
                       this.link(
                         this.state.ProfileData.block_id,
                         name,
@@ -411,7 +450,7 @@ class OrderRecievedViewScreen extends Component {
                       );
                     }}
                     option3Click={() => {
-                      let name = 'OrderRecievedViewScreen';
+                      let name = 'OderPlacedViewScreen';
                       this.forwardlink(
                         this.state.ProfileData.block_id,
                         name,
@@ -422,7 +461,16 @@ class OrderRecievedViewScreen extends Component {
                 </View>
               </View>
             </View>
-
+            <TouchableOpacity
+                            onPress={() => {
+                              this.AskForStautsCall(this.state.ProfileData.id, this.props.route.params.order_id);
+                            }}>
+                            <View style={styles.PlacedButtonStyle}>
+                              <Text style={styles.PlaceHolderTextStyle}>
+                                Accepted
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
             <View style={styles.horizontalLine}>
               <View style={styles.hairline} />
             </View>
@@ -477,7 +525,7 @@ class OrderRecievedViewScreen extends Component {
                           color: 'white',
                         }}
                         option1Click={() => {
-                          let name = 'OrderRecievedViewScreen';
+                          let name = 'OderPlacedViewScreen';
                           this.link(
                             this.state.ProfileData.block_id,
                             name,
@@ -485,7 +533,7 @@ class OrderRecievedViewScreen extends Component {
                           );
                         }}
                         option2Click={() => {
-                          let name = 'OrderRecievedViewScreen';
+                          let name = 'OderPlacedViewScreen';
                           this.forwardlink(
                             this.state.ProfileData.block_id,
                             name,
@@ -541,7 +589,7 @@ class OrderRecievedViewScreen extends Component {
               <Text style={styles.bottomActiveTextStyle}>Cart</Text>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
                 this.props.navigation.navigate('ChatScreen');
@@ -551,7 +599,7 @@ class OrderRecievedViewScreen extends Component {
                 style={styles.StyleChatTab}
               />
               <Text style={styles.bottomInactiveTextStyle}>Chat</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.tabButtonStyle}
               onPress={() => {
@@ -575,6 +623,22 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#fff',
+  },
+  PlacedButtonStyle: {
+    marginLeft: resp(10),
+    
+    height: 40,
+    width: wp(130),
+    backgroundColor: '#FFCF33',
+  },
+
+  PlaceHolderTextStyle: {
+    marginTop: resp(10),
+    alignSelf: 'center',
+    height: resp(25),
+    fontWeight: 'bold',
+    fontSize: 15,
+    color: '#2B2B2B',
   },
   headerView: {
     flex: 0.1,

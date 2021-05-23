@@ -424,11 +424,11 @@ class CartPlaceScreen extends Component {
                             color: 'white',
                           }}
                           option1Click={() => {
-                            let name = 'OderPlacedViewScreen';
+                            let name = 'OrderRecievedViewScreen';
                             this.link(item.id, name, item.orderid);
                           }}
                           option2Click={() => {
-                            let name = 'OderPlacedViewScreen';
+                            let name = 'OrderRecievedViewScreen';
                             this.forwardlink(item.id, name, item.orderid);
                           }}
                         />
@@ -460,8 +460,8 @@ class CartPlaceScreen extends Component {
                             <Image
                               source={{uri: item.products[1].image}}
                               style={{
-                                width: wp(95),
-                                height: hp(133),
+                                width: resp(95),
+                                height: resp(160),
                                 borderRadius: 5,
                               }}
                             />
@@ -479,8 +479,8 @@ class CartPlaceScreen extends Component {
                             <Image
                               source={{uri: item.products[2].image}}
                               style={{
-                                width: wp(95),
-                                height: hp(133),
+                                width: resp(95),
+                                height: resp(160),
                                 borderRadius: 5,
                               }}
                             />

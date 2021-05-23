@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast';
 import {Picker} from 'native-base';
 import {BASE_URL} from '../Component/ApiClient';
-
+import Spinner from 'react-native-loading-spinner-overlay';
 const screenWidth = Dimensions.get('screen').width;
 
 export default class EditProductScreen extends React.Component {
@@ -34,6 +34,7 @@ export default class EditProductScreen extends React.Component {
       userId: '',
       Category: '',
       access_token: '',
+      spinner: false,
       Name: '',
       language: '',
       totalPrice: '',
@@ -69,11 +70,11 @@ export default class EditProductScreen extends React.Component {
         this.setState({fcmToken: token});
       }
     });
-    AsyncStorage.getItem('@imageData').then((imageData) => {
-      if (imageData) {
-        this.setState({imageItem: JSON.parse(imageData)});
+    if (this.props.route.params) {
+      if (this.props.route.params.ScreenName == 'ImageHome') {
+        this.setState({imageItem:this.props.route.params.image });
       }
-    });
+    }
     AsyncStorage.getItem('@product_id').then((id) => {
       if (id) {
         this.setState({productid: JSON.parse(id)});
@@ -89,11 +90,11 @@ export default class EditProductScreen extends React.Component {
   }
 
   showLoading() {
-    this.setState({loading: true});
+    this.setState({spinner: true});
   }
 
   hideLoading() {
-    this.setState({loading: false});
+    this.setState({spinner: false});
   }
 
   CheckTextInput = () => {
@@ -194,13 +195,13 @@ export default class EditProductScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        this.hideLoading();
         if (responseData.code == '200') {
           Toast.show(responseData.message);
           let productID = this.state.productid;
           productID.push(responseData.data.id);
           if (this.props.route.params) {
             if (this.props.route.params.productMaster == 'ProductImage') {
+              this.hideLoading();
               AsyncStorage.setItem(
                 '@productMasterSave',
                 JSON.stringify(responseData.data.id),
@@ -208,6 +209,7 @@ export default class EditProductScreen extends React.Component {
                 this.props.navigation.goBack();
               });
             } else {
+              this.hideLoading();
               AsyncStorage.setItem(
                 '@product_id',
                 JSON.stringify(productID),
@@ -216,6 +218,7 @@ export default class EditProductScreen extends React.Component {
               });
             }
           } else {
+            this.hideLoading();
             AsyncStorage.setItem('@product_id', JSON.stringify(productID)).then(
               (succ) => {
                 this.props.navigation.goBack();
@@ -223,7 +226,9 @@ export default class EditProductScreen extends React.Component {
             );
           }
         } else {
+          this.hideLoading();
         }
+        console.log('product',responseData);
       })
       .catch((error) => {
         this.hideLoading();
@@ -278,6 +283,10 @@ export default class EditProductScreen extends React.Component {
     return (
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
+        <Spinner
+          visible={this.state.spinner}
+          color="#F01738"
+        />
         <View style={[styles.container, {backgroundColor: '#e3e3e3'}]}>
           <AppImageSlider
             sliderImages={this.state.imageItem}

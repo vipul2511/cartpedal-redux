@@ -360,15 +360,15 @@ export default class ProductDetailScreen extends React.Component {
 
             <Collapsible collapsed={!this.state.viewMore}>
               <View style={{height: 'auto', backgroundColor: '#fff'}}>
-                <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                {this.state.itemOfProduct.detailone?<Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
                   {this.state.itemOfProduct.detailone}
-                </Text>
-                <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                </Text>:null}
+                {this.state.itemOfProduct.detailtwo?<Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
                   {this.state.itemOfProduct.detailtwo}
-                </Text>
-                <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                </Text>:null}
+                {this.state.itemOfProduct.description?<Text style={{color: 'black', marginLeft: 30, marginTop: 5,marginBottom:5}}>
                   {this.state.itemOfProduct.description}
-                </Text>
+                </Text>:null}
               </View>
             </Collapsible>
 

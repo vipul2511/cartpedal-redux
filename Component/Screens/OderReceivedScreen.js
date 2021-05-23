@@ -188,9 +188,11 @@ class CartPlaceScreen extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         this.hideLoading();
+        console.log(responseData);
         if (responseData.code == '200') {
           alert('Order has been accepted');
         } else {
+          alert(responseData.message);
         }
       })
       .catch((error) => {
@@ -443,11 +445,11 @@ class CartPlaceScreen extends Component {
                                 color: 'white',
                               }}
                               option1Click={() => {
-                                let name = 'OrderRecievedViewScreen';
+                                let name = 'OderPlacedViewScreen';
                                 this.link(item.id, name, item.orderid);
                               }}
                               option2Click={() => {
-                                let name = 'OrderRecievedViewScreen';
+                                let name = 'OderPlacedViewScreen';
                                 this.forwardlink(item.id, name, item.orderid);
                               }}
                             />

@@ -45,7 +45,7 @@ class CartPlaceScreen extends Component {
       totalPrice: '',
       favourite: '',
       totalDataLength: '',
-      CartListProduct: '',
+      CartListProduct:[],
       fcmToken: '',
       pickedImage: require('../images/default_user.png'),
       avatar: '',
@@ -663,7 +663,7 @@ class CartPlaceScreen extends Component {
             renderItem={this._renderItem}
             ListEmptyComponent={this.ListEmpty}
           />
-          {this.state.ButtomTab == true ? (
+          {this.state.CartListProduct.length>0 ? (
             <View style={styles.BottomContainer}>
               <View style={styles.BottomQuanitityContainer}>
                 <Text style={styles.OderTextStyle}>Total Cart Quantity</Text>

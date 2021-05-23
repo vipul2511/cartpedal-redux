@@ -65,7 +65,7 @@ import ReportIssue from '../Component/Screens/ReportIssue';
 import ProductMasterSaveScreen from '../Component/Screens/ProductMatserSaveScreen';
 import ViewContact from '../Component/Screens/ViewContact';
 import {ViewAll} from '../Component/Screens/ViewAll';
-
+import EditImageUpdateProduct from '../Component/Screens/EditImageUpdateProduct';
 const Stack = createStackNavigator();
 
 export function MainStack() {
@@ -190,6 +190,7 @@ export function MainStack() {
         component={ForwardMessageScreen}
       />
       <Stack.Screen name="ProvideGroupName" component={ProvideGroupName} />
+      <Stack.Screen name="EditImageUpdateProduct" component={EditImageUpdateProduct} />
     </Stack.Navigator>
   );
 }

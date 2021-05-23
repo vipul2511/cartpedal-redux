@@ -12,7 +12,8 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
-  Platform
+  Platform,
+  Text
 } from 'react-native';
 import resp from 'rn-responsive-font';
 
@@ -348,7 +349,27 @@ class EditImageUpdateProduct extends Component {
           textStyle={styles.spinnerTextStyle}
         />
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
-        <AppHeader />
+        <View style={styles.headerView}>
+          <View style={styles.BackButtonContainer}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <Image
+                source={require('../images/back_blck_icon.png')}
+                style={styles.backButtonStyle}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.TitleContainer}>
+            <Image
+              source={require('../images/logo_cart_paddle.png')}
+              style={styles.LogoIconStyle}
+            />
+            <TouchableOpacity
+              style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={styles.TitleStyle}>Cartpedal</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.SearchContainer} onPress={() => {}} />
+        </View>
         <View style={[styles.container]}>
           <View style={{flex: 1}}>
             {this.state.UploadedImage.length > 0 ? (
@@ -396,6 +417,54 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  TitleStyle: {
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: resp(20),
+    textAlign: 'center',
+  },
+  SearchContainer: {
+    flex: 0.2,
+    backgroundColor: '#fff',
+  },
+  SearchIconStyle: {
+    margin: 5,
+    marginRight: 20,
+    height: 25,
+    width: 25,
+    alignSelf: 'flex-end',
+  },
+  headerView: {
+    flex: 0.1,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    elevation: 20,
+  },
+  TitleContainer: {
+    flexDirection: 'row',
+    flex: 0.6,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  LogoIconStyle: {
+    margin: 5,
+    height: 30,
+    width: 30,
+  },
+  BackButtonContainer: {
+    flex: 0.2,
+    marginLeft: 10,
+    backgroundColor: 'white',
+  },
+  backButtonStyle: {
+    margin: 10,
+    height: 20,
+    width: 20,
   },
   container: {
     flex: 1,

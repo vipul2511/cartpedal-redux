@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet,View,Image} from 'react-native';
 import Swiper from 'react-native-swiper';
 
 export default class AppImageSlider extends Component {
@@ -9,15 +9,13 @@ export default class AppImageSlider extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
   render() {
     const imagesView = [];
     for (let i = 0; i < this.props.sliderImages.length; i++) {
       imagesView.push(this.props.rendorImages(this.props.sliderImages[i], i));
     }
     return (
-      <Swiper style={styles.wrapper} showsButtons={true}>
+      <Swiper style={styles.wrapper} showsButtons={true} >
         {imagesView}
       </Swiper>
     );

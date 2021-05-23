@@ -916,11 +916,11 @@ class ProfileScreen extends Component {
                       color: 'white',
                     }}
                     option1Click={() => {
-                      let name = 'ProfileScreen';
+                      let name = 'OpenForProfileScreen';
                       this.link(this.state.userId, name);
                     }}
                     option2Click={() => {
-                      let name = 'ProfileScreen';
+                      let name = 'OpenForProfileScreen';
                       this.forwardlink(this.state.userId, name);
                     }}
                   />

@@ -235,14 +235,10 @@ export default class ImageHome extends React.Component {
     );
   }
 
-  onEditProduct() {
+ async onEditProduct() {
     if (this.state.showTick != null) {
-      AsyncStorage.setItem(
-        '@imageData',
-        JSON.stringify(this.state.imageList[this.state.selectedImageIndex]),
-      ).then((succ) => {
-        this.props.navigation.navigate('EditProductScreen');
-      });
+      let image=this.state.imageList[this.state.selectedImageIndex]
+      this.props.navigation.navigate('EditProductScreen',{image:image,ScreenName:'ImageHome'});
     } else {
       alert('Please select one product to edit');
     }
