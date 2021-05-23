@@ -10,7 +10,8 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Platform
+  Platform,
+  Alert,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -43,33 +44,50 @@ class BackUpChats extends Component {
     });
   }
   clearMessages = () => {
-    const {fcmToken, userId, userAccessToken} = this.state;
+    Alert.alert(
+      'Delete All Chat',
+      'Are you sure to delete whole chat ??',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            const {fcmToken, userId, userAccessToken} = this.state;
 
-    const data = new FormData();
+            const data = new FormData();
 
-    data.append('user_id', userId);
-    data.append('type', 'all');
-    data.append('toid', 0);
-    var EditProfileUrl = `${BASE_URL}api-message/clear-all`;
-    fetch(EditProfileUrl, {
-      method: 'POST',
-      headers: {
-        device_id: '1234',
-        device_token: fcmToken,
-        device_type: Platform.OS,
-        Authorization: JSON.parse(userAccessToken),
-      },
-      body: data,
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (responseData.code == '200') {
-          this.props.navigation.navigate('SettingScreen');
-        } else {
-        }
-      })
-      .catch((error) => {})
-      .finally(() => {});
+            data.append('user_id', userId);
+            data.append('type', 'all');
+            data.append('toid', 0);
+            var EditProfileUrl = `${BASE_URL}api-message/clear-all`;
+            fetch(EditProfileUrl, {
+              method: 'POST',
+              headers: {
+                device_id: '1234',
+                device_token: fcmToken,
+                device_type: Platform.OS,
+                Authorization: JSON.parse(userAccessToken),
+              },
+              body: data,
+            })
+              .then((response) => response.json())
+              .then((responseData) => {
+                if (responseData.code == '200') {
+                  this.props.navigation.navigate('SettingScreen');
+                } else {
+                }
+              })
+              .catch((error) => {})
+              .finally(() => {});
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   render() {

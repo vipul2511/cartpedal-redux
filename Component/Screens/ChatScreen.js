@@ -29,6 +29,8 @@ import NetInfo from '@react-native-community/netinfo';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import {BASE_URL} from '../Component/ApiClient';
+import firebase from 'react-native-firebase';
+
 class ChatScreen extends Component {
   constructor(props) {
     super(props);
@@ -90,6 +92,21 @@ class ChatScreen extends Component {
       if (mobile) {
         this.setState({PhoneNumber: JSON.parse(mobile)});
       }
+    });
+    this.listener1 = firebase.notifications().onNotification((notification) => {
+      NetInfo.fetch().then((state) => {
+        if (state.isConnected && this.state.mounted) {
+          this.getChatList();
+        }
+      });
+    });
+
+    this.listener2 = firebase.messaging().onMessage((m) => {
+      NetInfo.fetch().then((state) => {
+        if (state.isConnected && this.state.mounted) {
+          this.getChatList();
+        }
+      });
     });
   };
 
@@ -158,7 +175,10 @@ class ChatScreen extends Component {
     });
   };
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.listener1();
+    this.listener2();
+  }
 
   searchFilterFunction = (text) => {
     if (text) {

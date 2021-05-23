@@ -2108,6 +2108,11 @@ class ChatDetailScreen extends React.Component {
                   onContentSizeChange={() =>
                     this.scroll.scrollToEnd({animated: true})
                   }
+                  initialNumToRender={
+                    this.state.ischatList
+                      ? this.state.chatList.messages.length
+                      : [].length
+                  }
                   renderItem={({item: v, index: i}) => {
                     return (
                       <MessageComponent

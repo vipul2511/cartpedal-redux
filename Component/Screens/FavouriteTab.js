@@ -12,7 +12,7 @@ import {
   ScrollView,
   Dimensions,
   Share,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import SeeMore from 'react-native-see-more-inline';
@@ -512,6 +512,7 @@ class FavouriteTab extends Component {
                               groupId: '0',
                               msg_type: '0',
                               userphone: item.mobile,
+                              membersCount: 2,
                             });
                           }}>
                           <Image

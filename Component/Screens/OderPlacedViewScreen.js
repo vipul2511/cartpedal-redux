@@ -365,6 +365,7 @@ class OderPlacedViewScreen extends Component {
                       groupId: '0',
                       msg_type: '0',
                       userphone: this.state.ProfileData.mobile,
+                      membersCount: 2,
                     });
                   }}>
                   <Image

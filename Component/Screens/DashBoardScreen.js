@@ -410,6 +410,29 @@ class DashBoardScreen extends Component {
 
   customButton = () => {
     this.setState({isStoryModalVisible: false});
+    if (this.state.stories) {
+      if (this.state.loggeduserstory_avatar == null) {
+        const itemImage1 = null;
+        this.props.navigation.navigate('UserStoryPage', {
+          images: itemImage1,
+          storyImages: this.state.stories,
+          name: this.state.userStoryName,
+        });
+      } else {
+        const itemImage = this.state.loggeduserstory_avatar;
+        this.props.navigation.navigate('UserStoryPage', {
+          images: itemImage,
+          storyImages: this.state.stories,
+          name: this.state.userStoryName,
+        });
+      }
+    } else {
+      alert('No story available');
+    }
+  };
+
+  customButton = () => {
+    this.setState({isStoryModalVisible: false});
     if (JSON.stringify(this.props.loggedStoriesData) != JSON.stringify({})) {
       if (this.props.loggedStoriesData.data[0].stories != JSON.stringify({})) {
         if (this.state.loggeduserstory_avatar == null) {
@@ -935,6 +958,7 @@ class DashBoardScreen extends Component {
                               groupId: '0',
                               msg_type: '0',
                               userphone: item.mobile,
+                              membersCount: 2,
                             });
                           }}>
                           <Image
@@ -1483,11 +1507,13 @@ const styles = StyleSheet.create({
     marginTop: resp(5),
     flexDirection: 'row',
   },
+
   ListMenuContainer: {
     marginTop: resp(20),
     flexDirection: 'row',
     flex: 0.47,
     alignContent: 'flex-end',
+    justifyContent: 'center',
     width: resp(0),
     height: resp(45),
   },

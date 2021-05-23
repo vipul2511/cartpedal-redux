@@ -399,6 +399,7 @@ class OrderRecievedViewScreen extends Component {
                       groupexit: false,
                       groupId: 0,
                       msg_type: '0',
+                      membersCount:2,
                     });
                   }}>
                   <Image

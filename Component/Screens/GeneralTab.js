@@ -17,7 +17,7 @@ import {
   Dimensions,
   ScrollView,
   Share,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import MenuIcon from './MenuIcon';
@@ -430,6 +430,7 @@ class GeneralTab extends Component {
                               groupId: '0',
                               msg_type: '0',
                               userphone: item.mobile,
+                              membersCount: 2,
                             });
                           }}>
                           <Image
