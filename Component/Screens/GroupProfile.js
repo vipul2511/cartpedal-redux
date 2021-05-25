@@ -422,9 +422,14 @@ export default class GroupProfile extends React.Component {
           } else {
             this.AddCartProductCall();
           }
-          this.setState({isProfileModalVisible: false});
+          if (typeID === 1) {
+            this.setState({isProfileModalVisible: false});
+          }
+          if (typeID === 2) {
+            this.setState({isEditModalVisible: false});
+          }
+
           this.setState({isGroupModalVisible: false});
-          this.setState({isEditModalVisible: false});
           this.hideLoading();
         } else {
           this.hideLoading();
@@ -726,25 +731,8 @@ export default class GroupProfile extends React.Component {
                               source={{uri: item.attachment}}
                             />
                           </View>
-                        ) : item.type == 'audio' ? //   onPress={() => { // <TouchableOpacity
-                        //     this.downloadAndOpenDocument(
-                        //       isFileExist
-                        //         ? isFileExist.localPath
-                        //         : item.attachment,
-                        //     );
-                        //   }}
-                        //   style={{
-                        //     width: 45,
-                        //     height: 45,
-                        //     backgroundColor: 'red',
-                        //     margin: 5,
-                        //     borderRadius: 8,
-                        //     justifyContent: 'center',
-                        //     alignItems: 'center',
-                        //   }}>
-                        //   <Feather name="headphones" color="#fff" size={18} />
-                        // </TouchableOpacity>
-                        null : item.type == 'video' ? (
+                        ) : item.type == 'audio' ? null : item.type == //   onPress={() => { // <TouchableOpacity
+                          'video' ? (
                           <TouchableOpacity
                             onPress={() => {
                               this.downloadAndOpenDocument(
