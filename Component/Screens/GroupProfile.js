@@ -683,7 +683,7 @@ export default class GroupProfile extends React.Component {
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{marginLeft: 15, marginTop: 5}}>
                   <Text style={{fontSize: 15, color: '#F01738'}}>
-                    Media,links,and docs
+                    Media and docs
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -726,27 +726,25 @@ export default class GroupProfile extends React.Component {
                               source={{uri: item.attachment}}
                             />
                           </View>
-                        ) : item.type == 'audio' ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              this.downloadAndOpenDocument(
-                                isFileExist
-                                  ? isFileExist.localPath
-                                  : item.attachment,
-                              );
-                            }}
-                            style={{
-                              width: 45,
-                              height: 45,
-                              backgroundColor: 'red',
-                              margin: 5,
-                              borderRadius: 8,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Feather name="headphones" color="#fff" size={18} />
-                          </TouchableOpacity>
-                        ) : item.type == 'video' ? (
+                        ) : item.type == 'audio' ? //   onPress={() => { // <TouchableOpacity
+                        //     this.downloadAndOpenDocument(
+                        //       isFileExist
+                        //         ? isFileExist.localPath
+                        //         : item.attachment,
+                        //     );
+                        //   }}
+                        //   style={{
+                        //     width: 45,
+                        //     height: 45,
+                        //     backgroundColor: 'red',
+                        //     margin: 5,
+                        //     borderRadius: 8,
+                        //     justifyContent: 'center',
+                        //     alignItems: 'center',
+                        //   }}>
+                        //   <Feather name="headphones" color="#fff" size={18} />
+                        // </TouchableOpacity>
+                        null : item.type == 'video' ? (
                           <TouchableOpacity
                             onPress={() => {
                               this.downloadAndOpenDocument(

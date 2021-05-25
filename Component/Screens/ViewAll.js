@@ -17,6 +17,7 @@ import {DocumentDirectoryPath, downloadFile} from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {IsFileExist, ListFiles, saveFileInCache} from '../utils/FilesCaching';
+import {Tab, Tabs} from 'native-base';
 
 export const ViewAll = (props) => {
   const {width} = useWindowDimensions();
@@ -93,93 +94,98 @@ export const ViewAll = (props) => {
           </View>
           <TouchableOpacity style={styles.SearchContainer} />
         </View>
-        <FlatList
-          numColumns={3}
-          data={data}
-          renderItem={({item}) => {
-            const isFileExist = IsFileExist(FILES, item.attachment);
-            return (
-              <View style={{flexDirection: 'row'}}>
-                {item.type == 'image' ? (
-                  <ImageModal
-                    style={{
-                      width: width / 3.2,
-                      height: width / 3.2,
-                      borderRadius: 8,
-                      margin: '1%',
-                      marginVertical: 4,
-                    }}
-                    imageBackgroundColor="transparent"
-                    source={{uri: item.attachment}}
-                  />
-                ) : item.type == 'audio' ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (isFileExist) {
-                        downloadAndOpenDocument(isFileExist.localPath);
-                      } else {
-                        downloadAndOpenDocument(item.attachment);
-                      }
-                    }}
-                    style={{
-                      width: width / 3.2,
-                      height: width / 3.2,
-                      backgroundColor: 'red',
-                      borderRadius: 8,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      margin: '1%',
-                      marginVertical: 4,
-                    }}>
-                    <Feather name="headphones" color="#fff" size={18} />
-                  </TouchableOpacity>
-                ) : item.type == 'video' ? (
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (isFileExist) {
-                        downloadAndOpenDocument(isFileExist.localPath);
-                      } else {
-                        downloadAndOpenDocument(item.attachment);
-                      }
-                    }}
-                    style={{
-                      width: width / 3.2,
-                      height: width / 3.2,
-                      backgroundColor: 'red',
-                      margin: '1%',
-                      marginVertical: 4,
-                      borderRadius: 8,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Feather name="video" color="#fff" size={18} />
-                  </TouchableOpacity>
-                ) : item.type == 'file' ? (
-                  <TouchableOpacity
-                    style={{
-                      width: width / 3.2,
-                      height: width / 3.2,
-                      backgroundColor: 'red',
-                      margin: '1%',
-                      marginVertical: 4,
-                      borderRadius: 8,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      if (isFileExist) {
-                        downloadAndOpenDocument(isFileExist.localPath);
-                      } else {
-                        downloadAndOpenDocument(item.attachment);
-                      }
-                    }}>
-                    <Feather name="file" color="#fff" size={18} />
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-            );
-          }}
-        />
+        <Tabs tabBarUnderlineStyle={{backgroundColor: 'red'}}>
+          <Tab
+            heading="Media"
+            tabStyle={{backgroundColor: 'white'}}
+            activeTabStyle={{backgroundColor: 'white'}}
+            activeTextStyle={{color: 'red'}}>
+            <FlatList
+              numColumns={3}
+              data={data}
+              renderItem={({item}) => {
+                const isFileExist = IsFileExist(FILES, item.attachment);
+                return (
+                  <View style={{flexDirection: 'row'}}>
+                    {item.type == 'image' ? (
+                      <ImageModal
+                        style={{
+                          width: width / 3.2,
+                          height: width / 3.2,
+                          borderRadius: 8,
+                          margin: '1%',
+                          marginVertical: 4,
+                        }}
+                        imageBackgroundColor="transparent"
+                        source={{uri: item.attachment}}
+                      />
+                    ) : item.type == 'video' ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (isFileExist) {
+                            downloadAndOpenDocument(isFileExist.localPath);
+                          } else {
+                            downloadAndOpenDocument(item.attachment);
+                          }
+                        }}
+                        style={{
+                          width: width / 3.2,
+                          height: width / 3.2,
+                          backgroundColor: 'red',
+                          margin: '1%',
+                          marginVertical: 4,
+                          borderRadius: 8,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Feather name="video" color="#fff" size={18} />
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                );
+              }}
+            />
+          </Tab>
+          <Tab
+            heading="Document"
+            tabStyle={{backgroundColor: 'white'}}
+            activeTabStyle={{backgroundColor: 'white'}}
+            activeTextStyle={{color: 'red'}}>
+            <FlatList
+              numColumns={3}
+              data={data}
+              renderItem={({item}) => {
+                const isFileExist = IsFileExist(FILES, item.attachment);
+                return (
+                  <View style={{flexDirection: 'row'}}>
+                    {item.type == 'file' ? (
+                      <TouchableOpacity
+                        style={{
+                          width: width / 3.2,
+                          height: width / 3.2,
+                          backgroundColor: 'red',
+                          margin: '1%',
+                          marginVertical: 4,
+                          borderRadius: 8,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => {
+                          if (isFileExist) {
+                            downloadAndOpenDocument(isFileExist.localPath);
+                          } else {
+                            downloadAndOpenDocument(item.attachment);
+                          }
+                        }}>
+                        <Feather name="file" color="#fff" size={18} />
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                );
+              }}
+            />
+          </Tab>
+        </Tabs>
       </View>
     </SafeAreaView>
   );

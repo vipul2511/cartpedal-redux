@@ -663,17 +663,6 @@ class ChatDetailScreen extends React.Component {
       };
     }
 
-    // const messageToSent = {
-    //   ...newMessage,
-    //   msg_type: 'file',
-    //   fmsg: '',
-    //   fattach: {
-    //     ...newMessage.fattach,
-    //     attach: datas.path,
-    //   },
-    //   time: moment().format('hh:mm'),
-    // };
-
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
       this.setState((p) => ({
         chatList: {
