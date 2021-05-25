@@ -21,9 +21,9 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   FlatList,
+  TextInput,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {TextInput} from 'react-native-gesture-handler';
 import DocumentPicker from 'react-native-document-picker';
 import firebase from 'react-native-firebase';
 
@@ -115,8 +115,96 @@ class ChatDetailScreen extends React.Component {
       username: this.props.route.params.username,
       lastMessageId: undefined,
       messageIdList: [],
+      searching: false,
+      searchText: '',
+      currentSearchIdIndex: undefined,
+      currentIdsList: [],
     };
   }
+
+  makeCurrentIdsList = () => {
+    const messageIds = [];
+    for (let i = 0; i < this.state.chatList.messages.length; i++) {
+      const element = this.state.chatList.messages[i];
+
+      if (
+        element.msg_type === 'text' &&
+        element.fmsg != '' &&
+        element.fmsg
+          .toLowerCase()
+          .includes(this.state.searchText.toLowerCase().trim())
+      ) {
+        messageIds.push(element.id);
+      }
+      if (
+        element.msg_type === 'text' &&
+        element.tmsg != '' &&
+        element.tmsg
+          .toLowerCase()
+          .includes(this.state.searchText.toLowerCase().trim())
+      ) {
+        messageIds.push(element.id);
+      }
+    }
+
+    return messageIds.sort((a, b) => a - b);
+  };
+
+  search = async (type) => {
+    if (this.state.currentIdsList.length === 0) {
+      const messageIds = this.makeCurrentIdsList();
+      await this.setState({currentIdsList: messageIds});
+    }
+    if (type === 'up') {
+      if (this.state.currentSearchIdIndex === undefined) {
+        if (!(this.state.currentIdsList.length === 0)) {
+          await this.setState({
+            currentSearchIdIndex: this.state.currentIdsList.length - 1,
+          });
+          this.scrollToID(
+            this.state.currentIdsList[this.state.currentSearchIdIndex],
+          );
+        }
+      } else {
+        if (this.state.currentSearchIdIndex === 0) {
+          Toast.show('Not Found', 2000);
+        } else {
+          await this.setState((p) => ({
+            currentSearchIdIndex: p.currentSearchIdIndex - 1,
+          }));
+          this.scrollToID(
+            this.state.currentIdsList[this.state.currentSearchIdIndex],
+          );
+        }
+      }
+    }
+    if (type === 'down') {
+      if (this.state.currentSearchIdIndex === undefined) {
+        if (!(this.state.currentIdsList.length === 0)) {
+          await this.setState({
+            currentSearchIdIndex: this.state.currentIdsList.length - 1,
+          });
+          this.scrollToID(
+            this.state.currentIdsList[this.state.currentSearchIdIndex],
+          );
+        }
+      } else {
+        if (
+          this.state.currentSearchIdIndex + 1 ===
+          this.state.currentIdsList.length
+        ) {
+          Toast.show('Not Found', 2000);
+        } else {
+          await this.setState((p) => ({
+            currentSearchIdIndex: p.currentSearchIdIndex + 1,
+          }));
+          this.scrollToID(
+            this.state.currentIdsList[this.state.currentSearchIdIndex],
+          );
+        }
+      }
+    }
+  };
 
   lastMessageCall = async (id) => {
     let formData = new FormData();
@@ -1875,6 +1963,7 @@ class ChatDetailScreen extends React.Component {
   };
 
   render() {
+    const {searching} = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -1894,7 +1983,7 @@ class ChatDetailScreen extends React.Component {
                 <View
                   style={{
                     width: '100%',
-                    height: '10%',
+                    height: 72,
                     backgroundColor: '#FFFFFF',
                     zIndex: 2,
                     position: 'absolute',
@@ -1913,185 +2002,254 @@ class ChatDetailScreen extends React.Component {
                     }}>
                     <View style={styles.BackButtonContainer}>
                       <TouchableOpacity
-                        onPress={() => this.props.navigation.goBack()}>
+                        onPress={() => {
+                          if (this.state.searching) {
+                            this.setState({searching: false});
+                          } else {
+                            this.props.navigation.goBack();
+                          }
+                        }}>
                         <Image
                           source={require('../images/back_blck_icon.png')}
                           style={styles.backButtonStyle}
                         />
                       </TouchableOpacity>
                     </View>
-                    <View style={styles.TitleContainer}>
-                      <ImageModal
-                        imageBackgroundColor="transparent"
-                        source={
-                          this.state.useravatar
-                            ? {uri: this.state.useravatar}
-                            : require('../images/default_user.png')
-                        }
-                        style={styles.LogoIconStyle}
-                      />
-
-                      <TouchableOpacity
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          paddingLeft: 4,
-                        }}
-                        onPress={this.openProfile}>
-                        <Text
-                          style={[
-                            styles.TitleStyle,
-                            {textAlign: 'left', fontSize: resp(15)},
-                          ]}>
-                          {this.state.username}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      {this.state.selectedMode ? (
-                        <>
-                          {this.state.forwardMessageIds.length === 1 ? (
-                            <Icon
-                              name="reply"
-                              type="Entypo"
-                              onPress={() => {
-                                this.replytype();
-                              }}
-                              style={{
-                                color: '#2B2B2B',
-                                fontSize: 18,
-                                marginRight: 15,
-                              }}
-                            />
-                          ) : null}
-                          <Icon
-                            name="delete"
-                            type="MaterialCommunityIcons"
-                            onPress={() => {
-                              this.setState({deletemodal: true});
-                            }}
-                            style={{
-                              color: '#2B2B2B',
-                              fontSize: 18,
-                              marginRight: 15,
-                            }}
-                          />
-                          <Icon
-                            name="content-copy"
-                            type="MaterialCommunityIcons"
-                            onPress={() => {
-                              this.copyToClipboard();
-                            }}
-                            style={{
-                              color: '#2B2B2B',
-                              fontSize: 18,
-                              marginRight: 15,
-                            }}
-                          />
-                          <Icon
-                            name="forward"
-                            type="Entypo"
-                            onPress={() => {
-                              const msgids = JSON.stringify(
-                                this.state.forwardMessageIds,
-                              );
-                              this.setState({
-                                selectedMode: false,
-                                forwardMessageIds: [],
-                              });
-                              this.props.navigation.navigate(
-                                'ForwardMessageScreen',
-                                {
-                                  fcmToken: this.state.fcmToken,
-                                  PhoneNumber: this.state.PhoneNumber,
-                                  userId: this.state.userId,
-                                  userAccessToken: this.state.userAccessToken,
-                                  msgids: msgids.substring(
-                                    1,
-                                    msgids.length - 1,
-                                  ),
-                                },
-                              );
-                            }}
-                            style={{
-                              color: '#2B2B2B',
-                              fontSize: 18,
-                              marginHorizontal: 10,
-                              marginRight: 15,
-                            }}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <Icon
-                            name="video"
-                            onPress={() => {
-                              this.NotificationCallPhone(1);
-                            }}
-                            type="Feather"
-                            style={{
-                              color: '#2B2B2B',
-                              fontSize: 18,
-                              marginRight: 15,
-                            }}
-                          />
-                          <Icon
-                            name="phone"
-                            type="Feather"
-                            onPress={() => {
-                              this.NotificationCallPhone(0);
-                            }}
-                            style={{
-                              color: '#2B2B2B',
-                              fontSize: 18,
-                              marginHorizontal: 10,
-                              marginRight: 15,
-                            }}
+                    {!searching ? (
+                      <>
+                        <View style={styles.TitleContainer}>
+                          <ImageModal
+                            imageBackgroundColor="transparent"
+                            source={
+                              this.state.useravatar
+                                ? {uri: this.state.useravatar}
+                                : require('../images/default_user.png')
+                            }
+                            style={styles.LogoIconStyle}
                           />
 
-                          <Menu
-                            ref={(ref) => (this._menu = ref)}
-                            button={
-                              <TouchableOpacity
-                                onPress={() => {
-                                  this._menu.show();
-                                }}>
+                          <TouchableOpacity
+                            style={{
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              paddingLeft: 4,
+                            }}
+                            onPress={this.openProfile}>
+                            <Text
+                              style={[
+                                styles.TitleStyle,
+                                {textAlign: 'left', fontSize: resp(15)},
+                              ]}>
+                              {this.state.username}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          {this.state.selectedMode ? (
+                            <>
+                              {this.state.forwardMessageIds.length === 1 ? (
                                 <Icon
-                                  name="more-vertical"
-                                  type="Feather"
+                                  name="reply"
+                                  type="Entypo"
+                                  onPress={() => {
+                                    this.replytype();
+                                  }}
                                   style={{
                                     color: '#2B2B2B',
-                                    fontSize: 24,
-                                    marginRight: 5,
+                                    fontSize: 18,
+                                    marginRight: 15,
                                   }}
                                 />
-                              </TouchableOpacity>
-                            }>
-                            <MenuItem
-                              onPress={() => {
-                                this._menu.hide();
-                                this.openProfile();
-                              }}>
-                              Media,links,and docs
-                            </MenuItem>
-                            <MenuItem
-                              onPress={() => {
-                                this._menu.hide();
-                                this.clearMessages();
-                              }}>
-                              Clear Chat
-                            </MenuItem>
-                            <MenuItem
-                              onPress={() => {
-                                this._menu.hide();
-                                this.SendReportIssue();
-                              }}>
-                              Report user
-                            </MenuItem>
-                          </Menu>
-                        </>
-                      )}
-                    </View>
+                              ) : null}
+                              <Icon
+                                name="delete"
+                                type="MaterialCommunityIcons"
+                                onPress={() => {
+                                  this.setState({deletemodal: true});
+                                }}
+                                style={{
+                                  color: '#2B2B2B',
+                                  fontSize: 18,
+                                  marginRight: 15,
+                                }}
+                              />
+                              <Icon
+                                name="content-copy"
+                                type="MaterialCommunityIcons"
+                                onPress={() => {
+                                  this.copyToClipboard();
+                                }}
+                                style={{
+                                  color: '#2B2B2B',
+                                  fontSize: 18,
+                                  marginRight: 15,
+                                }}
+                              />
+                              <Icon
+                                name="forward"
+                                type="Entypo"
+                                onPress={() => {
+                                  const msgids = JSON.stringify(
+                                    this.state.forwardMessageIds,
+                                  );
+                                  this.setState({
+                                    selectedMode: false,
+                                    forwardMessageIds: [],
+                                  });
+                                  this.props.navigation.navigate(
+                                    'ForwardMessageScreen',
+                                    {
+                                      fcmToken: this.state.fcmToken,
+                                      PhoneNumber: this.state.PhoneNumber,
+                                      userId: this.state.userId,
+                                      userAccessToken: this.state
+                                        .userAccessToken,
+                                      msgids: msgids.substring(
+                                        1,
+                                        msgids.length - 1,
+                                      ),
+                                    },
+                                  );
+                                }}
+                                style={{
+                                  color: '#2B2B2B',
+                                  fontSize: 18,
+                                  marginHorizontal: 10,
+                                  marginRight: 15,
+                                }}
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <Icon
+                                name="video"
+                                onPress={() => {
+                                  this.NotificationCallPhone(1);
+                                }}
+                                type="Feather"
+                                style={{
+                                  color: '#2B2B2B',
+                                  fontSize: 18,
+                                  marginRight: 15,
+                                }}
+                              />
+                              <Icon
+                                name="phone"
+                                type="Feather"
+                                onPress={() => {
+                                  this.NotificationCallPhone(0);
+                                }}
+                                style={{
+                                  color: '#2B2B2B',
+                                  fontSize: 18,
+                                  marginHorizontal: 10,
+                                  marginRight: 15,
+                                }}
+                              />
+
+                              <Menu
+                                ref={(ref) => (this._menu = ref)}
+                                button={
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      this._menu.show();
+                                    }}>
+                                    <Icon
+                                      name="more-vertical"
+                                      type="Feather"
+                                      style={{
+                                        color: '#2B2B2B',
+                                        fontSize: 24,
+                                        marginRight: 5,
+                                      }}
+                                    />
+                                  </TouchableOpacity>
+                                }>
+                                <MenuItem
+                                  onPress={() => {
+                                    this._menu.hide();
+                                    this.openProfile();
+                                  }}>
+                                  Media,links,and docs
+                                </MenuItem>
+                                <MenuItem
+                                  onPress={() => {
+                                    this._menu.hide();
+                                    this.setState({searching: true});
+                                  }}>
+                                  Search
+                                </MenuItem>
+                                <MenuItem
+                                  onPress={() => {
+                                    this._menu.hide();
+                                    this.clearMessages();
+                                  }}>
+                                  Clear Chat
+                                </MenuItem>
+                                <MenuItem
+                                  onPress={() => {
+                                    this._menu.hide();
+                                    this.SendReportIssue();
+                                  }}>
+                                  Report user
+                                </MenuItem>
+                              </Menu>
+                            </>
+                          )}
+                        </View>
+                      </>
+                    ) : (
+                      <>
+                        <TextInput
+                          autoFocus={true}
+                          placeholder="Search"
+                          onChangeText={(text) =>
+                            this.setState({
+                              searchText: text,
+                              currentIdsList: [],
+                              currentSearchIdIndex: undefined,
+                            })
+                          }
+                          value={this.state.searchText}
+                          style={{
+                            width: '56%',
+                            height: 40,
+                            borderBottomColor: 'grey',
+                            borderBottomWidth: 2,
+                            marginLeft: 16,
+                          }}
+                        />
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Icon
+                            name="keyboard-arrow-up"
+                            type="MaterialIcons"
+                            onPress={() => {
+                              this.search('up');
+                            }}
+                            style={{
+                              color: '#2B2B2B',
+                              fontSize: 30,
+                            }}
+                          />
+                          <Icon
+                            name="keyboard-arrow-down"
+                            type="MaterialIcons"
+                            onPress={() => {
+                              this.search('down');
+                            }}
+                            style={{
+                              color: '#2B2B2B',
+                              fontSize: 30,
+                              marginHorizontal: 20,
+                              marginRight: 15,
+                            }}
+                          />
+                        </View>
+                      </>
+                    )}
                   </View>
                 </View>
                 <FlatList
@@ -2135,6 +2293,7 @@ class ChatDetailScreen extends React.Component {
                         messageIdList={this.state.messageIdList}
                         membersCount={this.props.route.params.membersCount}
                         startMessageCaller={this.startMessageCaller}
+                        searchText={this.state.searchText}
                       />
                     );
                   }}
@@ -3264,133 +3423,134 @@ class ChatDetailScreen extends React.Component {
                       ) : null
                     ) : null}
 
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        marginBottom: height * 0.001,
-                        alignItems: 'center',
-                      }}>
-                      <TextInput
-                        ref={(ref) => (this.inputRef = ref)}
-                        multiline={true}
-                        value={this.state.message}
-                        onContentSizeChange={(event) => {
-                          this.setState({
-                            height: event.nativeEvent.contentSize.height,
-                          });
-                        }}
-                        onChangeText={(text) => this.onChangeText(text)}
-                        placeholder="Type a message…"
-                        editable={this.state.editMode}
-                        style={{
-                          marginLeft: 10,
-                          marginRight: 10,
-                          backgroundColor: '#FFFFFF',
-                          color: '#0000008A',
-                          borderRadius: 1,
-                          width: '60%',
-                          height:
-                            Platform.OS === 'android'
-                              ? this.state.height
-                              : this.state.height + 20,
-                          fontSize: 15,
-                          paddingLeft: 10,
-                          borderWidth: 0,
-                          borderTopLeftRadius: this.state.borderval ? 0 : 15,
-                          borderBottomLeftRadius: 15,
-                        }}
-                      />
+                    {!searching && (
                       <View
                         style={{
-                          backgroundColor: '#FFFFFF',
-                          alignSelf: 'center',
-                          height:
-                            Platform.OS === 'android'
-                              ? this.state.height
-                              : this.state.height + 20,
-                          width: '20%',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          borderWidth: 0,
-                          marginLeft: -10,
-                          borderTopRightRadius: this.state.borderval ? 0 : 15,
-                          borderBottomRightRadius: 15,
-                          paddingBottom: 4,
+                          flexDirection: 'row',
                           marginBottom: height * 0.001,
+                          alignItems: 'center',
                         }}>
-                        <View style={{flexDirection: 'row'}}>
-                          <Icon
-                            onPress={() => {
-                              this.setState((p) => ({
-                                open: !p.open,
-                                editMode: !p.editMode,
-                                message: '',
-                              }));
-                            }}
-                            name="attachment"
-                            type="MaterialIcons"
-                            style={{color: '#0000008A', marginRight: 8}}
-                          />
-                          {!this.state.message.length > 0 ? (
+                        <TextInput
+                          ref={(ref) => (this.inputRef = ref)}
+                          multiline={true}
+                          value={this.state.message}
+                          onContentSizeChange={(event) => {
+                            this.setState({
+                              height: event.nativeEvent.contentSize.height,
+                            });
+                          }}
+                          onChangeText={(text) => this.onChangeText(text)}
+                          placeholder="Type a message…"
+                          editable={this.state.editMode}
+                          style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            backgroundColor: '#FFFFFF',
+                            color: '#0000008A',
+                            borderRadius: 1,
+                            width: '60%',
+                            height:
+                              Platform.OS === 'android'
+                                ? this.state.height
+                                : this.state.height + 20,
+                            fontSize: 15,
+                            paddingLeft: 10,
+                            borderWidth: 0,
+                            borderTopLeftRadius: this.state.borderval ? 0 : 15,
+                            borderBottomLeftRadius: 15,
+                          }}
+                        />
+                        <View
+                          style={{
+                            backgroundColor: '#FFFFFF',
+                            alignSelf: 'center',
+                            height:
+                              Platform.OS === 'android'
+                                ? this.state.height
+                                : this.state.height + 20,
+                            width: '20%',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderWidth: 0,
+                            marginLeft: -10,
+                            borderTopRightRadius: this.state.borderval ? 0 : 15,
+                            borderBottomRightRadius: 15,
+                            paddingBottom: 4,
+                            marginBottom: height * 0.001,
+                          }}>
+                          <View style={{flexDirection: 'row'}}>
                             <Icon
                               onPress={() => {
-                                this.launchCamera();
+                                this.setState((p) => ({
+                                  open: !p.open,
+                                  editMode: !p.editMode,
+                                  message: '',
+                                }));
                               }}
-                              name="photo-camera"
+                              name="attachment"
                               type="MaterialIcons"
                               style={{color: '#0000008A', marginRight: 8}}
                             />
-                          ) : null}
+                            {!this.state.message.length > 0 ? (
+                              <Icon
+                                onPress={() => {
+                                  this.launchCamera();
+                                }}
+                                name="photo-camera"
+                                type="MaterialIcons"
+                                style={{color: '#0000008A', marginRight: 8}}
+                              />
+                            ) : null}
+                          </View>
                         </View>
-                      </View>
-                      <View>
-                        <View
-                          style={{
-                            alignSelf: 'flex-end',
-                            width: this.state.recording ? 60 : 40,
-                            height: this.state.recording ? 60 : 40,
-                            margin: this.state.recording ? 0 : 10,
-                            borderRadius: this.state.recording ? 30 : 20,
-                            marginBottom: 8,
-                            backgroundColor: 'red',
-                            justifyContent: 'center',
-                          }}>
-                          <TouchableOpacity
-                            onLongPress={() => {
-                              this.startRecording();
-                              this.setState({recording: true});
-                            }}
-                            onPressOut={() => {
-                              this.createTwoButtonAlert();
-                              this.setState({recording: false});
-                            }}
-                            onPress={() => {
-                              if (this.state.message !== '') {
-                                this.sendMessage();
-                              }
+                        <View>
+                          <View
+                            style={{
+                              alignSelf: 'flex-end',
+                              width: this.state.recording ? 60 : 40,
+                              height: this.state.recording ? 60 : 40,
+                              margin: this.state.recording ? 0 : 10,
+                              borderRadius: this.state.recording ? 30 : 20,
+                              marginBottom: 8,
+                              backgroundColor: 'red',
+                              justifyContent: 'center',
                             }}>
-                            {this.state.message === '' ? (
-                              <Icon
-                                name="mic"
-                                type="Feather"
-                                style={{
-                                  color: '#FFFFFF',
-                                  fontSize: 18,
-                                  alignSelf: 'center',
-                                }}
-                              />
-                            ) : (
-                              <Icon
-                                name="arrowright"
-                                type="AntDesign"
-                                style={{
-                                  fontSize: 20,
-                                  color: '#FFFFFF',
-                                  alignSelf: 'center',
-                                }}
-                              />
-                            )}
-                            {/* <Icon
+                            <TouchableOpacity
+                              onLongPress={() => {
+                                this.startRecording();
+                                this.setState({recording: true});
+                              }}
+                              onPressOut={() => {
+                                this.createTwoButtonAlert();
+                                this.setState({recording: false});
+                              }}
+                              onPress={() => {
+                                if (this.state.message !== '') {
+                                  this.sendMessage();
+                                }
+                              }}>
+                              {this.state.message === '' ? (
+                                <Icon
+                                  name="mic"
+                                  type="Feather"
+                                  style={{
+                                    color: '#FFFFFF',
+                                    fontSize: 18,
+                                    alignSelf: 'center',
+                                  }}
+                                />
+                              ) : (
+                                <Icon
+                                  name="arrowright"
+                                  type="AntDesign"
+                                  style={{
+                                    fontSize: 20,
+                                    color: '#FFFFFF',
+                                    alignSelf: 'center',
+                                  }}
+                                />
+                              )}
+                              {/* <Icon
                               name="arrowright"
                               type="AntDesign"
                               style={{
@@ -3399,10 +3559,11 @@ class ChatDetailScreen extends React.Component {
                                 alignSelf: 'center',
                               }}
                             /> */}
-                          </TouchableOpacity>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       </View>
-                    </View>
+                    )}
                   </View>
                 ) : (
                   <Text style={{margin: 10, color: 'red'}}>

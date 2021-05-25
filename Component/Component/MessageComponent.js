@@ -23,6 +23,8 @@ import FileViewer from 'react-native-file-viewer';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import ImageModal from 'react-native-image-modal';
 import {IsFileExist, saveFileInCache} from '../utils/FilesCaching';
+import TextHighlight from '../Component/TextHighlight';
+import Highlighter from 'react-native-highlight-words';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
@@ -53,6 +55,7 @@ export const MessageComponent = ({
   messageIdList,
   membersCount,
   startMessageCaller,
+  searchText,
 }) => {
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(initialize(message.sending));
@@ -212,8 +215,6 @@ export const MessageComponent = ({
 
   const {msg_type} = message;
 
-  console.log(message);
-
   if (msg_type === 'accept') {
     if (message.tmsg !== '') {
       content = (
@@ -338,14 +339,19 @@ export const MessageComponent = ({
                 <Hyperlink
                   linkDefault={true}
                   linkStyle={{color: '#2980b9', fontSize: 20}}>
-                  <Text
+                  <TextHighlight
+                    highlight={'searchText'}
+                    highlightStyle={{
+                      color: 'green',
+                      backgroundColor: 'yellow',
+                    }}
                     style={{
                       margin: 10,
                       color: '#fff',
                       fontSize: 15,
                     }}>
-                    {message.fmsg}
-                  </Text>
+                    {'message.fmsg'}
+                  </TextHighlight>
                 </Hyperlink>
               )}
               {message.reply_msg ? (
@@ -761,7 +767,20 @@ export const MessageComponent = ({
                 <Hyperlink
                   linkDefault={true}
                   linkStyle={{color: '#2980b9', fontSize: 20}}>
-                  <Text
+                  <Highlighter
+                    style={{
+                      margin: 10,
+                      color: 'black',
+                      fontSize: 12,
+                      textDecorationLine: message.tmsg.includes('http')
+                        ? 'underline'
+                        : 'none',
+                    }}
+                    highlightStyle={{backgroundColor: 'yellow', color: 'black'}}
+                    searchWords={[searchText.trim()]}
+                    textToHighlight={message.tmsg}
+                  />
+                  {/* <Text
                     style={{
                       margin: 10,
                       color: 'black',
@@ -771,7 +790,7 @@ export const MessageComponent = ({
                         : 'none',
                     }}>
                     {message.tmsg}
-                  </Text>
+                  </Text> */}
                 </Hyperlink>
               )}
               {message.reply_msg ? (
@@ -988,7 +1007,7 @@ export const MessageComponent = ({
                 <Hyperlink
                   linkDefault={true}
                   linkStyle={{color: 'white', fontSize: 20}}>
-                  <Text
+                  {/* <Text
                     style={{
                       margin: 10,
                       color: '#fff',
@@ -998,7 +1017,20 @@ export const MessageComponent = ({
                         : 'none',
                     }}>
                     {message.fmsg}
-                  </Text>
+                  </Text> */}
+                  <Highlighter
+                    style={{
+                      margin: 10,
+                      color: '#fff',
+                      fontSize: 15,
+                      textDecorationLine: message.fmsg.includes('http')
+                        ? 'underline'
+                        : 'none',
+                    }}
+                    highlightStyle={{backgroundColor: 'yellow', color: 'black'}}
+                    searchWords={[searchText.trim()]}
+                    textToHighlight={message.fmsg}
+                  />
                 </Hyperlink>
               )}
               {message.reply_msg ? (
