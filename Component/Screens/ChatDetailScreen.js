@@ -2008,6 +2008,7 @@ class ChatDetailScreen extends React.Component {
                       <>
                         <View style={styles.TitleContainer}>
                           <ImageModal
+                            resizeMode="contain"
                             imageBackgroundColor="transparent"
                             source={
                               this.state.useravatar

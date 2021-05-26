@@ -35,6 +35,7 @@ class ProductDetailImageFullView extends Component {
         </TouchableOpacity>
         <View style={styles.ImageContainer}>
           <ImageModal
+            resizeMode="contain"
             imageBackgroundColor="transparent"
             source={
               this.props.route.params.images

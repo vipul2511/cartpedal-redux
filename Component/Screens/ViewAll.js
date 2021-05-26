@@ -109,6 +109,7 @@ export const ViewAll = (props) => {
                   <View style={{flexDirection: 'row'}}>
                     {item.type == 'image' ? (
                       <ImageModal
+                        resizeMode="contain"
                         style={{
                           width: width / 3.2,
                           height: width / 3.2,

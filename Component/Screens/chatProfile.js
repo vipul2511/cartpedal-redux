@@ -460,6 +460,7 @@ export default class ChatProfile extends React.Component {
                   </TouchableOpacity>
                 </View>
                 <ImageModal
+                  resizeMode="contain"
                   imageBackgroundColor="transparent"
                   source={
                     this.props.route.params.imageURL
@@ -521,6 +522,7 @@ export default class ChatProfile extends React.Component {
                               borderBottomLeftRadius: 0,
                             }}>
                             <ImageModal
+                              resizeMode="contain"
                               style={{
                                 height: 45,
                                 borderRadius: 8,

@@ -370,6 +370,7 @@ class ChatScreen extends Component {
                         }}>
                         <View style={{padding: 10}}>
                           <ImageModal
+                            resizeMode="contain"
                             imageBackgroundColor="transparent"
                             borderRadius={8}
                             style={styles.Styleimage}
