@@ -86,6 +86,7 @@ class ChatDetailScreen extends React.Component {
       recievedmsg: '',
       recording: false,
       forwardMessageIds: [],
+      forwardMessageTypes: [],
       userAccessToken: '',
       selectedMode: false,
       copyTexts: [],
@@ -285,17 +286,19 @@ class ChatDetailScreen extends React.Component {
     }));
   };
 
-  appendMessages = (messageId) => {
+  appendMessages = (messageId, type) => {
     this.setState((p) => ({
       ...p,
       forwardMessageIds: [...p.forwardMessageIds, messageId],
+      forwardMessageTypes: [...p.forwardMessageTypes, type],
     }));
   };
 
-  removeMessages = async (messageId) => {
+  removeMessages = async (messageId, type) => {
     await this.setState((p) => ({
       ...p,
       forwardMessageIds: p.forwardMessageIds.filter((i) => i !== messageId),
+      forwardMessageTypes: p.forwardMessageTypes.filter((i) => i !== type),
       copyTexts: p.copyTexts.filter((i) => i.id !== messageId),
     }));
     if (this.state.forwardMessageIds.length === 0) {
@@ -1952,7 +1955,7 @@ class ChatDetailScreen extends React.Component {
   };
 
   render() {
-    const {searching} = this.state;
+    const {searching, forwardMessageTypes} = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -2065,18 +2068,22 @@ class ChatDetailScreen extends React.Component {
                                   marginRight: 15,
                                 }}
                               />
-                              <Icon
-                                name="content-copy"
-                                type="MaterialCommunityIcons"
-                                onPress={() => {
-                                  this.copyToClipboard();
-                                }}
-                                style={{
-                                  color: '#2B2B2B',
-                                  fontSize: 18,
-                                  marginRight: 15,
-                                }}
-                              />
+                              {!forwardMessageTypes.some(
+                                (item) => item !== 'text',
+                              ) ? (
+                                <Icon
+                                  name="content-copy"
+                                  type="MaterialCommunityIcons"
+                                  onPress={() => {
+                                    this.copyToClipboard();
+                                  }}
+                                  style={{
+                                    color: '#2B2B2B',
+                                    fontSize: 18,
+                                    marginRight: 15,
+                                  }}
+                                />
+                              ) : null}
                               <Icon
                                 name="forward"
                                 type="Entypo"
