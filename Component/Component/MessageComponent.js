@@ -23,7 +23,6 @@ import FileViewer from 'react-native-file-viewer';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import ImageModal from 'react-native-image-modal';
 import {IsFileExist, saveFileInCache} from '../utils/FilesCaching';
-import TextHighlight from '../Component/TextHighlight';
 import Highlighter from 'react-native-highlight-words';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
@@ -339,19 +338,15 @@ export const MessageComponent = ({
                 <Hyperlink
                   linkDefault={true}
                   linkStyle={{color: '#2980b9', fontSize: 20}}>
-                  <TextHighlight
+                  <Text
                     highlight={'searchText'}
-                    highlightStyle={{
-                      color: 'green',
-                      backgroundColor: 'yellow',
-                    }}
                     style={{
                       margin: 10,
                       color: '#fff',
                       fontSize: 15,
                     }}>
-                    {'message.fmsg'}
-                  </TextHighlight>
+                    {message.fmsg}
+                  </Text>
                 </Hyperlink>
               )}
               {message.reply_msg ? (
