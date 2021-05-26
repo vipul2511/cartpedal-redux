@@ -214,7 +214,6 @@ export default class GroupProfile extends React.Component {
     let formData = new FormData();
     formData.append('user_id', this.state.userId);
     formData.append('groupid', this.props.route.params.groupId);
-    console.log(formData);
     var AddCartProductUrl = `${BASE_URL}api-message/group-details`;
     fetch(AddCartProductUrl, {
       method: 'Post',
@@ -484,6 +483,7 @@ export default class GroupProfile extends React.Component {
       userAccessToken: this.state.userAccessToken,
       screenName: 'GroupProfile',
       groupid: this.props.route.params.groupId,
+      updateParticipants: this.AddCartProductCall,
     });
   };
 

@@ -14,6 +14,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import {contactIcon, tickIcon, untickIcon} from '../Component/Images';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -450,7 +451,8 @@ export default class AddGroupMember extends React.Component {
       .then((responseData) => {
         if (responseData.code == '200') {
           Toast.show('Members are added successfully');
-          this.props.navigation.navigate('ChatScreen');
+          this.props.route.params.updateParticipants();
+          this.props.navigation.goBack();
           this.hideLoading();
         } else {
           this.hideLoading();
