@@ -121,6 +121,15 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
+  - libwebp (1.2.0):
+    - libwebp/demux (= 1.2.0)
+    - libwebp/mux (= 1.2.0)
+    - libwebp/webp (= 1.2.0)
+  - libwebp/demux (1.2.0):
+    - libwebp/webp
+  - libwebp/mux (1.2.0):
+    - libwebp/demux
+  - libwebp/webp (1.2.0)
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -412,6 +421,10 @@ PODS:
     - React-Core
   - RNCPushNotificationIOS (1.8.0):
     - React-Core
+  - RNFastImage (8.3.4):
+    - React-Core
+    - SDWebImage (~> 5.8)
+    - SDWebImageWebPCoder (~> 0.6.1)
   - RNFileViewer (2.1.4):
     - React-Core
   - RNFirebase (5.6.0):
@@ -451,6 +464,12 @@ PODS:
     - React
   - RNVectorIcons (7.1.0):
     - React
+  - SDWebImage (5.11.1):
+    - SDWebImage/Core (= 5.11.1)
+  - SDWebImage/Core (5.11.1)
+  - SDWebImageWebPCoder (0.6.1):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.7)
   - Toast (4.0.0)
   - TOCropViewController (2.6.0)
   - Yoga (1.14.0)
@@ -511,6 +530,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
+  - RNFastImage (from `../node_modules/react-native-fast-image`)
   - RNFileViewer (from `../node_modules/react-native-file-viewer`)
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
   - RNFS (from `../node_modules/react-native-fs`)
@@ -544,9 +564,12 @@ SPEC REPOS:
     - GoogleDataTransportCCTSupport
     - GoogleMaps
     - GoogleUtilities
+    - libwebp
     - nanopb
     - PromisesObjC
     - Protobuf
+    - SDWebImage
+    - SDWebImageWebPCoder
     - Toast
     - TOCropViewController
 
@@ -653,6 +676,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-picker/picker"
   RNCPushNotificationIOS:
     :path: "../node_modules/@react-native-community/push-notification-ios"
+  RNFastImage:
+    :path: "../node_modules/react-native-fast-image"
   RNFileViewer:
     :path: "../node_modules/react-native-file-viewer"
   RNFirebase:
@@ -702,6 +727,7 @@ SPEC CHECKSUMS:
   GoogleDataTransportCCTSupport: 0f39025e8cf51f168711bd3fb773938d7e62ddb5
   GoogleMaps: 32ca02de09de357a10ac773f2c70f1986751392d
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
+  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   Permission-Camera: 6abdb054620b2f6b3bf9e0b3842db246424d4d48
   Permission-Contacts: 6bcbdab0f0e11bc8db99e14bfe0dfff6188cb8a5
@@ -751,6 +777,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNCPicker: 5256da29a92406cac439ac6605719e233714a86a
   RNCPushNotificationIOS: 61a7c72bd1ebad3568025957d001e0f0e7b32191
+  RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
   RNFileViewer: 83cc066ad795b1f986791d03b56fe0ee14b6a69f
   RNFirebase: 37daa9a346d070f9f6ee1f3b4aaf4c8e3b1d5d1c
   RNFS: 93d5b5535eb39d98e6b19009faa8fe717f7ea45d
@@ -762,6 +789,8 @@ SPEC CHECKSUMS:
   RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
   RNTextSize: 7efa06531c6bb7ab6ed070b4ce0d1248cf06fcdf
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
+  SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598

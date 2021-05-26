@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
+import FastImage from 'react-native-fast-image';
 console.disableYellowBox = true;
 import {BASE_URL} from '../Component/ApiClient';
 let width = Dimensions.get('window').width;
@@ -426,7 +427,7 @@ class OpenForProfileScreen extends Component {
                         id: item.id,
                       });
                     }}>
-                    <Image
+                    <FastImage
                       source={
                         item.image[0]
                           ? {uri: item.image[0].image}

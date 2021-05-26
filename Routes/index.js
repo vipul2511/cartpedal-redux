@@ -171,6 +171,7 @@ export function MainStack() {
       <Stack.Screen name="FliterScreen" component={FliterScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatDetailScreen" component={ChatDetailScreen} />
+
       <Stack.Screen name="ChatProfile" component={ChatProfile} />
       <Stack.Screen
         name="ChatGroupListScreen"
@@ -190,7 +191,10 @@ export function MainStack() {
         component={ForwardMessageScreen}
       />
       <Stack.Screen name="ProvideGroupName" component={ProvideGroupName} />
-      <Stack.Screen name="EditImageUpdateProduct" component={EditImageUpdateProduct} />
+      <Stack.Screen
+        name="EditImageUpdateProduct"
+        component={EditImageUpdateProduct}
+      />
     </Stack.Navigator>
   );
 }

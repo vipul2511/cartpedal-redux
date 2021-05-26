@@ -38,6 +38,7 @@ import {
 } from '../../redux/actions';
 import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
+import FastImage from 'react-native-fast-image';
 
 let width = Dimensions.get('window').width;
 let height = Dimensions.get('window').height;

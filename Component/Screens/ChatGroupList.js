@@ -369,6 +369,9 @@ export default class AddGroupMember extends React.Component {
     );
   }
   rendorContactList(item) {
+    if (item.id === this.props.route.params.userId) {
+      return null;
+    }
     return (
       <View style={{marginBottom: 10}}>
         <View style={[styles.upperRowStyle]}>

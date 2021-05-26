@@ -41,6 +41,8 @@ import {connect} from 'react-redux';
 import {BASE_URL} from '../Component/ApiClient';
 import {hp, wp} from '../Component/hightWidthRatio';
 import {displayLocalNotification} from '../../PushNotification/DisplayLocalNotification';
+import FastImage from 'react-native-fast-image';
+
 const width = Dimensions.get('screen').width;
 console.disableYellowBox = true;
 
@@ -780,6 +782,7 @@ class DashBoardScreen extends Component {
                 showsHorizontalScrollIndicator={false}
                 style={{flex: 1, flexDirection: 'row'}}
                 data={this.props.storiesData}
+                // data={[]}
                 keyExtractor={(item, index) => {
                   return item.id.toString();
                 }}
@@ -798,7 +801,23 @@ class DashBoardScreen extends Component {
                             storyArray: this.props.storiesData,
                           });
                         }}>
-                        <Image
+                        {/* <Image
+                          source={
+                            item.avatar == null
+                              ? this.state.pickedImage
+                              : {uri: item.avatar}
+                          }
+                          style={[
+                            styles.ImageViewStyleStory,
+                            {
+                              borderColor:
+                                item.stories[0].viewer == 1
+                                  ? '#06BE7E'
+                                  : '#F01738',
+                            },
+                          ]}
+                        /> */}
+                        <FastImage
                           source={
                             item.avatar == null
                               ? this.state.pickedImage
@@ -1009,7 +1028,7 @@ class DashBoardScreen extends Component {
                       showsHorizontalScrollIndicator={false}>
                       <View style={styles.columnView}>
                         <View style={styles.ImageContainer}>
-                          <Image
+                          <FastImage
                             source={
                               item.products[0].image
                                 ? {uri: item.products[0].image}
@@ -1017,6 +1036,14 @@ class DashBoardScreen extends Component {
                             }
                             style={styles.Image2Container}
                           />
+                          {/* <Image
+                            source={
+                              item.products[0].image
+                                ? {uri: item.products[0].image}
+                                : null
+                            }
+                            style={styles.Image2Container}
+                          /> */}
                           <Text style={styles.itemNameStyle}>
                             {item.products[0].name}
                           </Text>
@@ -1027,7 +1054,15 @@ class DashBoardScreen extends Component {
                         </View>
                         {item.products[1] ? (
                           <View style={styles.ImageContainer2}>
-                            <Image
+                            {/* <Image
+                              source={
+                                item.products[1].image
+                                  ? {uri: item.products[1].image}
+                                  : null
+                              }
+                              style={styles.Image2Container}
+                            /> */}
+                            <FastImage
                               source={
                                 item.products[1].image
                                   ? {uri: item.products[1].image}
@@ -1046,7 +1081,15 @@ class DashBoardScreen extends Component {
                         ) : null}
                         {item.products[2] ? (
                           <View style={styles.ImageContainer2}>
-                            <Image
+                            {/* <Image
+                              source={
+                                item.products[2].image
+                                  ? {uri: item.products[2].image}
+                                  : null
+                              }
+                              style={styles.Image2Container}
+                            /> */}
+                            <FastImage
                               source={
                                 item.products[2].image
                                   ? {uri: item.products[2].image}
@@ -1065,7 +1108,15 @@ class DashBoardScreen extends Component {
                         ) : null}
                         {item.products[3] ? (
                           <View style={styles.ImageContainer2}>
-                            <Image
+                            {/* <Image
+                              source={
+                                item.products[3].image
+                                  ? {uri: item.products[3].image}
+                                  : null
+                              }
+                              style={styles.Image2Container}
+                            /> */}
+                            <FastImage
                               source={
                                 item.products[3].image
                                   ? {uri: item.products[3].image}

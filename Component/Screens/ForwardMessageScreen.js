@@ -15,6 +15,7 @@ import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Button, Fab, Header, Icon, Input, Item} from 'native-base';
 import {BASE_URL} from '../Component/ApiClient';
+import {CommonActions, StackActions} from '@react-navigation/native';
 
 class ForwardMessageScreen extends Component {
   constructor(props) {
@@ -75,7 +76,15 @@ class ForwardMessageScreen extends Component {
       .then((responseData) => {
         if (responseData.code == '200') {
           if (this.state.singleForward.length === 1) {
-            this.props.navigation.replace('ChatDetailScreen', {
+            this.props.navigation.dispatch((state) => {
+              const routes = state.routes.slice(0, -2);
+              return CommonActions.reset({
+                ...state,
+                index: routes.length - 1,
+                routes,
+              });
+            });
+            this.props.navigation.navigate('ChatDetailScreen', {
               userid: this.state.singleForward[0].id,
               username: this.state.singleForward[0].name,
               useravatar: this.state.singleForward[0].avatar,
