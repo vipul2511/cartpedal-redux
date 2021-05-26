@@ -1955,8 +1955,7 @@ class ChatDetailScreen extends React.Component {
   };
 
   render() {
-    const {searching, forwardMessageTypes, chatList} = this.state;
-    console.log(chatList?.messages.length, this.state.username);
+    const {searching, forwardMessageTypes} = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}

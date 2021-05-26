@@ -211,8 +211,17 @@ class DashBoardScreen extends Component {
           AsyncStorage.setItem('@Phonecontacts', JSON.stringify(sortData));
         });
       } else {
+        this.setState({newContacts: ''});
+        this.ContactListall([]);
+        this.setState({phonenumber: []});
+        AsyncStorage.setItem('@Phonecontacts', JSON.stringify([]));
       }
-    } catch (err) {}
+    } catch (err) {
+      this.setState({newContacts: ''});
+      this.ContactListall([]);
+      this.setState({phonenumber: []});
+      AsyncStorage.setItem('@Phonecontacts', JSON.stringify([]));
+    }
   }
 
   blockuser = (block_id) => {
@@ -249,6 +258,7 @@ class DashBoardScreen extends Component {
       .catch((error) => {
         this.hideLoading();
       })
+      .finally(() => this.setState({spinner: false}))
       .done();
   };
   ContactListall(contacts) {
@@ -284,6 +294,7 @@ class DashBoardScreen extends Component {
       .catch((error) => {
         this.hideLoading();
       })
+      .finally(() => this.setState({spinner: false}))
       .done();
   }
   requestCameraPermission = async () => {
@@ -381,7 +392,6 @@ class DashBoardScreen extends Component {
     this.listener3 = firebase
       .notifications()
       .onNotificationOpened(async (m) => {
-        console.log(JSON.stringify(m.notification.data, null, 2), Platform.OS);
         firebase.notifications().removeAllDeliveredNotifications();
         const {
           fromid,
@@ -499,9 +509,7 @@ class DashBoardScreen extends Component {
   ListEmpty = () => {
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{marginTop: 120}}>
-          {this.state.NoData ? 'No Record' : null}{' '}
-        </Text>
+        <Text style={{marginTop: 120}}>No Data Found</Text>
       </View>
     );
   };
@@ -575,7 +583,6 @@ class DashBoardScreen extends Component {
   ProfileViewCall = () => {
     var urlprofile =
       `${BASE_URL}api-user/view-profile?user_id=` + this.state.userId;
-    console.log(urlprofile);
     fetch(urlprofile, {
       method: 'GET',
       headers: {
@@ -608,6 +615,7 @@ class DashBoardScreen extends Component {
       .catch((error) => {
         console.log(error, 'ERROR');
       })
+      .finally(() => this.setState({spinner: false}))
       .done();
   };
   _renderTruncatedFooter = (handlePress) => {
@@ -690,6 +698,7 @@ class DashBoardScreen extends Component {
         }
       })
       .catch((error) => {})
+      .finally(() => this.setState({spinner: false}))
       .done();
   }
   render() {
