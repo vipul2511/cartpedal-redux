@@ -24,6 +24,7 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import ImageModal from 'react-native-image-modal';
 import {IsFileExist, saveFileInCache} from '../utils/FilesCaching';
 import Highlighter from 'react-native-highlight-words';
+import Video from 'react-native-video';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
@@ -730,7 +731,7 @@ export const MessageComponent = ({
                         }}
                       />
                       <Text style={{marginBottom: 5, color: 'red'}}>
-                        Voice message
+                        {'  Video'}
                       </Text>
                     </View>
                   ) : message.reply_msg.msg_type == 'file' ? (
@@ -2344,9 +2345,168 @@ export const MessageComponent = ({
                 </Text>
               </View>
             ) : null}
+            <View
+              style={{
+                borderWidth:
+                  message.reply_msg && message.reply_msg.length > 0 ? 5 : 0,
+                borderColor: '#fff',
+              }}>
+              {message.reply_msg != '' ? (
+                message.reply_msg.msg_type == 'text' ? (
+                  <Text
+                    onPress={() => scrollToID(message.reply_id)}
+                    style={{
+                      margin: 10,
+                      color: 'red',
+                      fontSize: 15,
+                    }}>
+                    {message.reply_msg.rmsg}
+                  </Text>
+                ) : message.reply_msg.msg_type == 'contact' ? (
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="user"
+                      type="Feather"
+                      style={{
+                        color: 'red',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+                    <Text
+                      style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                      Contact
+                    </Text>
+                  </TouchableOpacity>
+                ) : message.reply_msg.msg_type == 'location' ? (
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="location"
+                      type="Entypo"
+                      style={{
+                        color: 'red',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+
+                    <Text
+                      style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                      Location
+                    </Text>
+                  </TouchableOpacity>
+                ) : message.reply_msg.rimage ? (
+                  message.reply_msg.msg_type == 'image' ? (
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
+                  ) : message.reply_msg.msg_type == 'audio' ? (
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="mic"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: 'red'}}>
+                        Voice message
+                      </Text>
+                    </TouchableOpacity>
+                  ) : message.reply_msg.msg_type == 'video' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="video"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: 'red'}}>
+                        Voice message
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'file' ? (
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="file"
+                        type="Feather"
+                        style={{
+                          color: 'red',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: 'red', marginLeft: 5}}>
+                        Document
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null
+                ) : null
+              ) : null}
+              {message.reply_msg ? (
+                <View style={{backgroundColor: '#fff'}}>
+                  {message.tmsg != '' ? (
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        marginTop: 8,
+                        fontSize: 15,
+                        marginRight: 5,
+                        color: 'black',
+                      }}>
+                      {message.tmsg}
+                    </Text>
+                  ) : null}
+                </View>
+              ) : null}
+            </View>
             <View>
               <VideoPlayer
-                video={{uri: message.fattach.attach}}
+                video={{uri: message.tattach.attach}}
                 videoHeight={800}
                 videoWidth={800}
                 resizeMode="cover"
@@ -2396,6 +2556,189 @@ export const MessageComponent = ({
               width: '70%',
             }}
           />
+          <View
+            style={
+              message.reply_msg
+                ? {
+                    backgroundColor: 'red',
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
+                    elevation: 5,
+                  }
+                : {
+                    height: 0,
+                  }
+            }>
+            <View
+              style={{
+                borderWidth:
+                  message.reply_msg && message.reply_msg.length > 0 ? 5 : 0,
+                borderColor: '#fff',
+              }}>
+              {message.reply_msg ? (
+                message.reply_msg.msg_type == 'text' ? (
+                  <Text
+                    onPress={() => scrollToID(message.reply_id)}
+                    style={{
+                      margin: 10,
+                      color: '#fff',
+                      fontSize: 15,
+                    }}>
+                    {message.reply_msg.rmsg}
+                  </Text>
+                ) : message.reply_msg.msg_type == 'contact' ? (
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="user"
+                      type="Feather"
+                      style={{
+                        color: '#fff',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+
+                    <Text
+                      style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                      Contact
+                    </Text>
+                  </TouchableOpacity>
+                ) : message.reply_msg.msg_type == 'location' ? (
+                  <TouchableOpacity
+                    onPress={() => scrollToID(message.reply_id)}
+                    style={{
+                      marginLeft: 10,
+                      marginTop: 5,
+                      marginRight: 10,
+                      flexDirection: 'row',
+                    }}>
+                    <Icon
+                      name="location"
+                      type="Entypo"
+                      style={{
+                        color: '#fff',
+                        fontSize: 18,
+                        alignSelf: 'center',
+                      }}
+                    />
+
+                    <Text
+                      style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                      Location
+                    </Text>
+                  </TouchableOpacity>
+                ) : message.reply_msg.rimage ? (
+                  message.reply_msg.msg_type == 'image' ? (
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}>
+                      <Image
+                        source={{uri: message.reply_msg.rimage.attach}}
+                        style={{width: 100, height: 80}}
+                      />
+                    </TouchableOpacity>
+                  ) : message.reply_msg.msg_type == 'audio' ? (
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="mic"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text style={{marginBottom: 5, color: '#fff'}}>
+                        Voice message
+                      </Text>
+                    </TouchableOpacity>
+                  ) : message.reply_msg.msg_type == 'video' ? (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="video"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                          marginLeft: 5,
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: '#fff', marginLeft: 8}}>
+                        Video
+                      </Text>
+                    </View>
+                  ) : message.reply_msg.msg_type == 'file' ? (
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="file"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                        Document
+                      </Text>
+                    </TouchableOpacity>
+                  ) : message.reply_msg.msg_type == 'location' ? (
+                    <TouchableOpacity
+                      onPress={() => scrollToID(message.reply_id)}
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginRight: 10,
+                        flexDirection: 'row',
+                      }}>
+                      <Icon
+                        name="location"
+                        type="Feather"
+                        style={{
+                          color: '#fff',
+                          fontSize: 18,
+                          alignSelf: 'center',
+                        }}
+                      />
+                      <Text
+                        style={{marginBottom: 5, color: '#fff', marginLeft: 5}}>
+                        Location
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null
+                ) : null
+              ) : null}
+            </View>
+          </View>
           <View>
             <VideoPlayer
               video={{uri: message.fattach.attach}}
@@ -2406,6 +2749,7 @@ export const MessageComponent = ({
               onLoadStart={onLoadStart}
               onLoad={onLoad}
               disableControlsAutoHide={true}
+              disableFullscreen={false}
             />
             <ActivityIndicator
               animating

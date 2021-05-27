@@ -6362,10 +6362,9 @@ react-native-video-controls@^2.7.1:
   dependencies:
     lodash "^4.16.4"
 
-react-native-video-player@^0.10.1:
-  version "0.10.1"
-  resolved "https://registry.npmjs.org/react-native-video-player/-/react-native-video-player-0.10.1.tgz"
-  integrity sha512-VUTNHzpj81RSvR8nST+8LGhYpaMbs5ePNV/YWXqh3ogfqjMOpHlf5vFabhGLJEI6Md9KjL1cQ+4gblYjgmuH2Q==
+"react-native-video-player@https://github.com/ShariqMush/react-native-fullscreenvideo-player":
+  version "0.8.0"
+  resolved "https://github.com/ShariqMush/react-native-fullscreenvideo-player#9409ef08a294a9c05aaf659461d609c015f4bbc9"
 
 react-native-video@^5.1.0-alpha8:
   version "5.1.1"
@@ -6375,6 +6374,11 @@ react-native-video@^5.1.0-alpha8:
     keymirror "^0.1.1"
     prop-types "^15.7.2"
     shaka-player "^2.5.9"
+
+react-native-videoeditorsdk@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-videoeditorsdk/-/react-native-videoeditorsdk-2.9.0.tgz#070eb4f075dfd748009a4e87e22d5633ca29c3b3"
+  integrity sha512-gMJ9ysk4wSwqhDaDTTXxTi6VXVh5j2G2hgKtM8HuiAlAHtb/5pa7azVhupinfNnc6c7YJfwFVWfBMMrKn1Rxww==
 
 react-native-webview@^11.0.0:
   version "11.4.3"

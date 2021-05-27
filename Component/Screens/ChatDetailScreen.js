@@ -56,6 +56,7 @@ import {
 import {PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import {ListFiles} from '../utils/FilesCaching';
 import {API_URL} from '../../Config';
+import {Tool, VESDK} from 'react-native-videoeditorsdk';
 
 let height = Dimensions.get('window').height;
 
@@ -753,14 +754,78 @@ class ChatDetailScreen extends React.Component {
     } else {
       type = '0';
     }
+    let replyID = '0';
+    if (this.state.showRelymsg == true && this.state.replyMessage != '') {
+      if (
+        this.state.replyMessage.text.fmsg ||
+        this.state.replyMessage.text.tmsg
+      ) {
+        replyID = this.state.replyMessage.text.id;
+      }
+    }
+    if (this.state.showimagerply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showaudiorply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showlocationmsg == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showfilerply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showcontactrply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
+    if (this.state.showvideorply == true && this.state.replyMessage != '') {
+      replyID = this.state.replyMessage.text.id;
+    }
     await this.setState({open: false});
-    const messageToSent = {
-      ...newMessage,
-      msg_type: 'video',
-      fmsg: '',
-      fattach: {...newMessage.fattach, attach: data.path},
-      time: moment().format('hh:mm'),
-    };
+
+    let messageToSent = null;
+    if (replyID == '0') {
+      messageToSent = {
+        ...newMessage,
+        msg_type: 'video',
+        fmsg: '',
+        fattach: {...newMessage.fattach, attach: data.path},
+        time: moment().format('hh:mm'),
+      };
+    } else {
+      const rmsg =
+        this.state.replyMessage.text.tmsg == ''
+          ? this.state.replyMessage.text.fmsg
+          : this.state.replyMessage.text.tmsg;
+
+      const rimage =
+        this.state.replyMessage.text.tattach == ''
+          ? this.state.replyMessage.text.fattach
+          : this.state.replyMessage.text.tattach;
+
+      messageToSent = {
+        ...replyNewMessage,
+        msg_type: 'video',
+        fmsg: '',
+        fattach: {...newMessage.fattach, attach: data.path},
+        time: moment().format('hh:mm'),
+        reply_id: this.state.replyMessage.text.id,
+        reply_msg: {
+          ...this.state.replyMessage.text,
+          rmsg,
+          rimage,
+        },
+      };
+    }
+
+    // const messageToSent = {
+    //   ...newMessage,
+    //   msg_type: 'video',
+    //   fmsg: '',
+    //   fattach: {...newMessage.fattach, attach: data.path},
+    //   time: moment().format('hh:mm'),
+    // };
+
     if (this.state.ischatList && this.state.chatList.messages.length > 0) {
       this.setState((p) => ({
         chatList: {
@@ -780,7 +845,7 @@ class ChatDetailScreen extends React.Component {
       user_id: this.state.userId,
       toid: this.props.route.params.userid,
       msg_type: 'video',
-      reply_id: 0,
+      reply_id: replyID,
       type: this.props.route.params.msg_type,
       body: '',
       upload: [
@@ -806,7 +871,35 @@ class ChatDetailScreen extends React.Component {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code === 200) {
-          this.getConversationList();
+          // this.getConversationList();
+          const messages = this.state.chatList.messages;
+          messages[messages.length - 1] = {
+            ...messages[messages.length - 1],
+            id: responseData.data[0].id,
+            sending: false,
+          };
+          this.setState(
+            (p) => ({
+              chatList: {
+                ...p.chatList,
+                messages,
+              },
+              ischatList: true,
+              uploading: false,
+            }),
+            () => setTimeout(() => tick.play(), 1000),
+          );
+          // this.startMessageCaller(responseData.data[0].id);
+          this.setState({selectedMode: false, forwardMessageIds: []});
+          this.setState({
+            showRelymsg: false,
+            showaudiorply: false,
+            showimagerply: false,
+            showlocationmsg: false,
+            showfilerply: false,
+            showcontactrply: false,
+            showvideorply: false,
+          });
         } else {
         }
       })
@@ -1113,10 +1206,21 @@ class ChatDetailScreen extends React.Component {
       } else if (response.error) {
       } else if (response.customButton) {
       } else {
-        this.props.navigation.navigate('VideoProcessScreen', {
-          uri: response.path,
-          sendVideo: this.sendVideo,
-        });
+        VESDK.openEditor({uri: response.path}, {tools: [Tool.TRIM]}).then(
+          async (result) => {
+            if (result) {
+              const res = await readFile(result.video, 'base64');
+              const data = {
+                path: result.video,
+                data: res,
+              };
+              this.sendVideo(data);
+            }
+          },
+          (error) => {
+            alert('video could not be uploaded');
+          },
+        );
       }
     });
   };
@@ -2352,7 +2456,7 @@ class ChatDetailScreen extends React.Component {
                       <View>
                         <TouchableOpacity
                           onPress={() => {
-                            // this.videoPicker()
+                            this.videoPicker();
                           }}>
                           <View
                             style={{

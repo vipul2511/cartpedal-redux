@@ -76,6 +76,7 @@
 
 
 <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
+<activity android:name=".VideoActivity" android:screenOrientation="sensorPortrait" android:configChanges="orientation|screenSize" />
 
     </application>
 
