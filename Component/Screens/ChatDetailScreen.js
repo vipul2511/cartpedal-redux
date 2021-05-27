@@ -7,6 +7,7 @@ import React from 'react';
 import {Container, Icon, View} from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Sound from 'react-native-sound';
+import MediaMeta from 'react-native-media-meta';
 
 import {
   ScrollView,
@@ -30,7 +31,7 @@ import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-crop-picker';
 import resp from 'rn-responsive-font';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-import {DocumentDirectoryPath, readFile} from 'react-native-fs';
+import {DocumentDirectoryPath, readFile, stat} from 'react-native-fs';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import ImageModal from 'react-native-image-modal';
@@ -1206,15 +1207,26 @@ class ChatDetailScreen extends React.Component {
       } else if (response.error) {
       } else if (response.customButton) {
       } else {
-        VESDK.openEditor({uri: response.path}, {tools: [Tool.TRIM]}).then(
+        const path = Platform.OS === 'ios' ? response.sourceURL : response.path;
+        VESDK.openEditor({uri: path}, {tools: [Tool.TRIM]}).then(
           async (result) => {
             if (result) {
-              const res = await readFile(result.video, 'base64');
-              const data = {
-                path: result.video,
-                data: res,
-              };
-              this.sendVideo(data);
+              const uri = result.video.replace('file://', '');
+              const metadata = await MediaMeta.get(uri);
+              // eslint-disable-next-line radix
+              if (parseInt(metadata.duration) < 30000) {
+                const res = await readFile(result.video, 'base64');
+                const data = {
+                  path: result.video,
+                  data: res,
+                };
+                this.sendVideo(data);
+              } else {
+                alert(
+                  'You cannot upload video of duration more than 30 seconds',
+                );
+                this.setState({open: false});
+              }
             }
           },
           (error) => {
