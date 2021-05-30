@@ -60,9 +60,7 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <PersistGate
-        loading={() => <Text>Loading Persistence ...</Text>}
-        persistor={persistor}>
+      <PersistGate persistor={persistor}>
         <Provider store={store}>
           <ReduxNetworkProvider>
             <NavigationContainer>

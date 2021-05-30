@@ -58,8 +58,8 @@
 
         <data
           android:host="app"
-          android:scheme="demo" /> -->
-      </intent-filter>
+          android:scheme="demo" />
+      </intent-filter> -->
 
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

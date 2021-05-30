@@ -47,30 +47,14 @@ export default class ProductDetailScreen extends React.Component {
         imageList: [],
         itemOfProduct: '',
         nextId: '',
+        previousId: '',
         myText: '',
         bunch: '',
       });
     this.doubleClick = false;
     this.hidden = false;
   }
-  onSwipe(gestureName) {
-    const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
-    this.setState({gestureName: gestureName});
-    switch (gestureName) {
-      case SWIPE_UP:
-        this.setState({backgroundColor: 'red'});
-        break;
-      case SWIPE_DOWN:
-        this.setState({backgroundColor: 'green'});
-        break;
-      case SWIPE_LEFT:
-        this.setState({backgroundColor: 'blue'});
-        break;
-      case SWIPE_RIGHT:
-        this.setState({backgroundColor: 'yellow'});
-        break;
-    }
-  }
+
   componentDidMount() {
     AsyncStorage.getItem('@fcmtoken').then((token) => {
       if (token) {
@@ -92,7 +76,7 @@ export default class ProductDetailScreen extends React.Component {
     AsyncStorage.getItem('@user_name').then((userName) => {
       if (userName) {
         this.setState({userName: JSON.parse(userName)});
-        this.addViewAPI();
+        this.addViewAPI(this.props.route.params.id);
       }
     });
   }
@@ -117,9 +101,9 @@ export default class ProductDetailScreen extends React.Component {
     }
   };
 
-  onSwipeUp() {
-    this.props.navigation.goBack();
-  }
+  // onSwipeUp() {
+  //   this.props.navigation.goBack();
+  // }
 
   onImageClick(item) {
     if (this.doubleClick) {
@@ -146,10 +130,10 @@ export default class ProductDetailScreen extends React.Component {
       </TouchableOpacity>
     );
   }
-  addViewAPI = () => {
+  addViewAPI = (id) => {
     let formData = new FormData();
     formData.append('user_id', this.state.userNo);
-    formData.append('product_id', this.props.route.params.id);
+    formData.append('product_id', id);
     console.log(formData);
     var AddCartProductUrl = `${BASE_URL}api-product/add-views`;
     fetch(AddCartProductUrl, {
@@ -167,7 +151,6 @@ export default class ProductDetailScreen extends React.Component {
       .then((responseData) => {
         // console.log(JSON.stringify(responseData, null, 2));
         if (responseData.code == '200') {
-          console.log(JSON.stringify(responseData.data, null, 2));
           let nameId = responseData.data.name;
           this.setState({
             userNameProduct: nameId,
@@ -190,7 +173,10 @@ export default class ProductDetailScreen extends React.Component {
             });
             this.setState({imageList: imageURl});
           }
-          this.setState({nextId: responseData.data.prev});
+          this.setState({
+            nextId: responseData.data.next,
+            previousId: responseData.data.prev,
+          });
         } else {
         }
       })
@@ -269,162 +255,173 @@ export default class ProductDetailScreen extends React.Component {
       .done();
   };
 
+  onSwipe = async (direction) => {
+    const {previousId, nextId} = this.state;
+    if (direction === 'up' && nextId !== '' && nextId !== 0) {
+      this.addViewAPI(nextId);
+    }
+    if (direction === 'down' && previousId !== '' && previousId !== 0) {
+      this.addViewAPI(previousId);
+    }
+  };
+
   render() {
-    const config = {
-      velocityThreshold: 0.3,
-      directionalOffsetThreshold: 80,
-    };
     return (
-      <SafeAreaView style={styles.mainContainer}>
-        <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
-        <View style={[styles.container, {backgroundColor: '#e3e3e3'}]}>
-          <GestureRecognizer
-            onSwipe={(direction, state) => this.onSwipe(direction)}
-            onSwipeUp={(state) => this.onSwipeUp()}
-            config={config}
-            style={{
-              flex: 1,
-              backgroundColor: this.state.backgroundColor,
-            }}>
+      <GestureRecognizer
+        style={{flex: 1}}
+        onSwipeDown={(state) => this.onSwipe('down')}
+        onSwipeUp={(state) => this.onSwipe('up')}>
+        <SafeAreaView style={styles.mainContainer}>
+          <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
+          <View style={[styles.container, {backgroundColor: '#e3e3e3'}]}>
             <AppImageSlider
               sliderImages={this.state.imageList}
               rendorImages={(item, index) => this.renderInnerImageList(item)}
             />
-          </GestureRecognizer>
-        </View>
-        {!this.state.showFullImageView ? (
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderTopStartRadius: 30,
-              borderTopEndRadius: 30,
-              marginTop: -50,
-            }}>
-            <View
-              style={{
-                height: 7,
-                width: 50,
-                backgroundColor: '#e3e3e3',
-                alignSelf: 'center',
-                marginTop: 10,
-                marginBottom: 20,
-                borderRadius: 4,
-              }}
-            />
-
-            <View style={{flexDirection: 'row', marginStart: 30}}>
-              <Text style={styles.detailTextStyle}>
-                {AppConst.rupeeSym}
-                {this.state.price} ,
-              </Text>
-              <Text style={styles.detailTextStyle}>
-                {this.state.bunch} Bunch Price {this.state.price} x{' '}
-                {this.state.currentQuantity} = {AppConst.rupeeSym}
-                {this.state.totalPrice}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginStart: 30,
-                marginTop: 10,
-                marginBottom: 10,
-              }}>
-              <Text style={styles.detailTextStyle}>{this.state.name}</Text>
-
-              <Text style={[styles.detailTextStyle, {marginStart: 10}]}>
-                Quantity
-              </Text>
-              <TouchableOpacity onPress={this.lessTheQuantity}>
-                <Image style={styles.addLessIcon} source={lessRoundBlackIcon} />
-              </TouchableOpacity>
-              <Text style={styles.detailTextStyle}>
-                {this.state.currentQuantity}
-              </Text>
-              <TouchableOpacity onPress={this.addTheQuantity}>
-                <Image style={styles.addLessIcon} source={addRoundBlackIcon} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.setState({viewMore: !this.state.viewMore});
-                }}>
-                <Text
-                  style={[
-                    styles.detailTextStyle,
-                    {color: '#FFDF00', marginStart: 10},
-                  ]}>
-                  {this.state.viewMore ? 'View less' : 'View more'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <Collapsible collapsed={!this.state.viewMore}>
-              <View style={{height: 'auto', backgroundColor: '#fff'}}>
-                {this.state.itemOfProduct.detailone ? (
-                  <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
-                    {this.state.itemOfProduct.detailone}
-                  </Text>
-                ) : null}
-                {this.state.itemOfProduct.detailtwo ? (
-                  <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
-                    {this.state.itemOfProduct.detailtwo}
-                  </Text>
-                ) : null}
-                {this.state.itemOfProduct.description ? (
-                  <Text
-                    style={{
-                      color: 'black',
-                      marginLeft: 30,
-                      marginTop: 5,
-                      marginBottom: 5,
-                    }}>
-                    {this.state.itemOfProduct.description}
-                  </Text>
-                ) : null}
-              </View>
-            </Collapsible>
-
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                style={[styles.bottomButtonStyle, {backgroundColor: 'white'}]}
-                onPress={() => {
-                  this.AddToCart();
-                }}>
-                <Text style={styles.bottomButtonTextStyle}>
-                  {AppConst.btnTitleAddToCart}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.bottomButtonStyle,
-                  {backgroundColor: Colors.themeRed},
-                ]}
-                onPress={this.singleProductPlaceOrder}>
-                <Text style={[styles.bottomButtonTextStyle, {color: 'white'}]}>
-                  {AppConst.btnTitleBuyNow}
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
-        ) : null}
-        <TouchableOpacity
-          onPress={() => this.props.navigation.goBack()}
-          style={{
-            position: 'absolute',
-            start: 20,
-            top: Platform.OS === 'android' ? 30 : 60,
-          }}>
-          <Image
-            source={require('../images/back_blck_icon.png')}
-            style={styles.backIcon}
-          />
-        </TouchableOpacity>
-        <View style={{position: 'absolute', top: 30, start: 100}}>
-          <Text style={styles.TitleStyle}>{this.state.userNameProduct}</Text>
-        </View>
-      </SafeAreaView>
+          {!this.state.showFullImageView ? (
+            <View
+              style={{
+                backgroundColor: 'white',
+                borderTopStartRadius: 30,
+                borderTopEndRadius: 30,
+                marginTop: -50,
+              }}>
+              <View
+                style={{
+                  height: 7,
+                  width: 50,
+                  backgroundColor: '#e3e3e3',
+                  alignSelf: 'center',
+                  marginTop: 10,
+                  marginBottom: 20,
+                  borderRadius: 4,
+                }}
+              />
+
+              <View style={{flexDirection: 'row', marginStart: 30}}>
+                <Text style={styles.detailTextStyle}>
+                  {AppConst.rupeeSym}
+                  {this.state.price} ,
+                </Text>
+                <Text style={styles.detailTextStyle}>
+                  {this.state.bunch} Bunch Price {this.state.price} x{' '}
+                  {this.state.currentQuantity} = {AppConst.rupeeSym}
+                  {this.state.totalPrice}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginStart: 30,
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}>
+                <Text style={styles.detailTextStyle}>{this.state.name}</Text>
+
+                <Text style={[styles.detailTextStyle, {marginStart: 10}]}>
+                  Quantity
+                </Text>
+                <TouchableOpacity onPress={this.lessTheQuantity}>
+                  <Image
+                    style={styles.addLessIcon}
+                    source={lessRoundBlackIcon}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.detailTextStyle}>
+                  {this.state.currentQuantity}
+                </Text>
+                <TouchableOpacity onPress={this.addTheQuantity}>
+                  <Image
+                    style={styles.addLessIcon}
+                    source={addRoundBlackIcon}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({viewMore: !this.state.viewMore});
+                  }}>
+                  <Text
+                    style={[
+                      styles.detailTextStyle,
+                      {color: '#FFDF00', marginStart: 10},
+                    ]}>
+                    {this.state.viewMore ? 'View less' : 'View more'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <Collapsible collapsed={!this.state.viewMore}>
+                <View style={{height: 'auto', backgroundColor: '#fff'}}>
+                  {this.state.itemOfProduct.detailone ? (
+                    <Text
+                      style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                      {this.state.itemOfProduct.detailone}
+                    </Text>
+                  ) : null}
+                  {this.state.itemOfProduct.detailtwo ? (
+                    <Text
+                      style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                      {this.state.itemOfProduct.detailtwo}
+                    </Text>
+                  ) : null}
+                  {this.state.itemOfProduct.description ? (
+                    <Text
+                      style={{
+                        color: 'black',
+                        marginLeft: 30,
+                        marginTop: 5,
+                        marginBottom: 5,
+                      }}>
+                      {this.state.itemOfProduct.description}
+                    </Text>
+                  ) : null}
+                </View>
+              </Collapsible>
+
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity
+                  style={[styles.bottomButtonStyle, {backgroundColor: 'white'}]}
+                  onPress={() => {
+                    this.AddToCart();
+                  }}>
+                  <Text style={styles.bottomButtonTextStyle}>
+                    {AppConst.btnTitleAddToCart}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.bottomButtonStyle,
+                    {backgroundColor: Colors.themeRed},
+                  ]}
+                  onPress={this.singleProductPlaceOrder}>
+                  <Text
+                    style={[styles.bottomButtonTextStyle, {color: 'white'}]}>
+                    {AppConst.btnTitleBuyNow}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : null}
+          <TouchableOpacity
+            onPress={() => this.props.navigation.goBack()}
+            style={{
+              position: 'absolute',
+              start: 20,
+              top: Platform.OS === 'android' ? 30 : 60,
+            }}>
+            <Image
+              source={require('../images/back_blck_icon.png')}
+              style={styles.backIcon}
+            />
+          </TouchableOpacity>
+          <View style={{position: 'absolute', top: 30, start: 100}}>
+            <Text style={styles.TitleStyle}>{this.state.userNameProduct}</Text>
+          </View>
+        </SafeAreaView>
+      </GestureRecognizer>
     );
   }
 }
