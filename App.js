@@ -6,7 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {MainStack} from './Routes';
 import {initStore, initPersistor} from './redux/store';
 import {Provider} from 'react-redux';
-import {LogBox, Platform, Text} from 'react-native';
+import {LogBox, Platform} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {ReduxNetworkProvider} from 'react-native-offline';
 

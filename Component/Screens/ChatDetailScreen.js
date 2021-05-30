@@ -452,6 +452,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendMessage = () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let replyID = '0';
     let msg_type = 'text';
 
@@ -600,6 +604,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   uploadFileApi = (datas) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let type;
     this.setState({open: false});
     if (this.props.route.params.msg_type !== 0) {
@@ -757,6 +765,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendVideo = async (data) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let type;
     if (this.props.route.params.msg_type !== 0) {
       type = '1';
@@ -916,6 +928,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   selectOneFile = () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     try {
       DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -939,6 +955,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   selectOneFile1 = () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     try {
       const res = DocumentPicker.pick({
         type: [DocumentPicker.types.audio],
@@ -960,6 +980,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   selectOneFile2 = () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     try {
       const res = DocumentPicker.pick({
         type: [DocumentPicker.types.images],
@@ -974,6 +998,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   uploadImage = (datas, reply_id) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let type;
     this.setState({open: false});
     if (this.props.route.params.msg_type !== 0) {
@@ -1054,6 +1082,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   launchCamera = async () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     this.setState({message: ''});
     ImagePicker.openCamera({
       width: 300,
@@ -1081,6 +1113,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendImage = async () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let replyID = '0';
     if (this.state.showRelymsg == true && this.state.replyMessage != '') {
       if (
@@ -1181,6 +1217,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   imagepicker = () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
@@ -1208,6 +1248,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   videoPicker = async () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     ImagePicker.openPicker({
       mediaType: 'video',
     }).then(async (response) => {
@@ -1246,6 +1290,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendContact = (contact) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let type;
     if (this.props.route.params.msg_type !== 0) {
       type = '1';
@@ -1397,6 +1445,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   contactPicker = async () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     this.setState({open: false});
     const granted = await request(
       Platform.OS === 'android'
@@ -1413,6 +1465,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendAudio = (data) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let type;
     this.setState({open: false});
     if (this.props.route.params.msg_type !== 0) {
@@ -1616,6 +1672,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   sendLocation = (location) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let type;
     if (this.props.route.params.msg_type !== 0) {
       type = '1';
@@ -1768,6 +1828,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   locationPicker = async () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     try {
       this.setState({open: false});
       const granted = await locationPermission();
@@ -1797,6 +1861,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   NotificationCallPhone = (type) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     // if (type === 1) {
     //   this.props.navigation.navigate('VideoCallScreen', {
     //     useravatar: this.props.route.params.useravatar,
@@ -1841,6 +1909,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   deleteMessages = (type) => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     const {fcmToken, userId, userAccessToken, forwardMessageIds} = this.state;
     const msgids = JSON.stringify(forwardMessageIds);
     const data = new FormData();
@@ -1882,6 +1954,10 @@ class ChatDetailScreen extends React.Component {
   };
 
   clearMessages = () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     Alert.alert(
       'Clear Chat',
       'Are you sure to clear whole chat ??',
@@ -1959,6 +2035,10 @@ class ChatDetailScreen extends React.Component {
     });
   };
   openProfile = () => {
+    if (!this.props.isConnected) {
+      alert('It Seems that you are offline');
+      return;
+    }
     let items = this.props.route.params.useravatar;
     let id = this.props.route.params.userid;
     let name = this.props.route.params.username;
