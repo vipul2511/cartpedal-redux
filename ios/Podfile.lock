@@ -471,6 +471,8 @@ PODS:
     - React
     - React-RCTImage
     - VideoEditorSDK (~> 10.23)
+  - RNWifi (4.3.8):
+    - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
@@ -553,6 +555,7 @@ DEPENDENCIES:
   - RNTextSize (from `../node_modules/react-native-text-size/ios`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - RNVideoEditorSDK (from `../node_modules/react-native-videoeditorsdk`)
+  - RNWifi (from `../node_modules/react-native-wifi-reborn`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -717,6 +720,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-vector-icons"
   RNVideoEditorSDK:
     :path: "../node_modules/react-native-videoeditorsdk"
+  RNWifi:
+    :path: "../node_modules/react-native-wifi-reborn"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -809,6 +814,7 @@ SPEC CHECKSUMS:
   RNTextSize: 7efa06531c6bb7ab6ed070b4ce0d1248cf06fcdf
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   RNVideoEditorSDK: fd1e0b5636b54d895748ee1b87af578b256505a1
+  RNWifi: 24675a1ba35b74b6fbd3a05c384154833f8f9171
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196

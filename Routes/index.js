@@ -9,7 +9,6 @@ import SignUPWithOtpScreen from '../Component/Screens/SignUPWithOtpScreen';
 import PhoneScreen from '../Component/Screens/PhoneScreen';
 import ForgetOtpScreen from '../Component/Screens/ForgetOtpScreen';
 import DashBoardScreen from '../Component/Screens/DashBoardScreen';
-
 import StoryViewScreen from '../Component/Screens/StoryViewScreen';
 import ProfileScreen from '../Component/Screens/ProfileScreen';
 import UserStoryPage from '../Component/Screens/UserOwnStoryPage';
@@ -66,6 +65,8 @@ import ProductMasterSaveScreen from '../Component/Screens/ProductMatserSaveScree
 import ViewContact from '../Component/Screens/ViewContact';
 import {ViewAll} from '../Component/Screens/ViewAll';
 import EditImageUpdateProduct from '../Component/Screens/EditImageUpdateProduct';
+import VideoCall from '../Component/Screens/VideoCall';
+import VoiceCall from '../Component/Screens/voiceCall';
 const Stack = createStackNavigator();
 
 export function MainStack() {
@@ -171,6 +172,9 @@ export function MainStack() {
       <Stack.Screen name="FliterScreen" component={FliterScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatDetailScreen" component={ChatDetailScreen} />
+
+      <Stack.Screen name="VoiceCallScreen" component={VoiceCall} />
+      <Stack.Screen name="VideoCallScreen" component={VideoCall} />
 
       <Stack.Screen name="ChatProfile" component={ChatProfile} />
       <Stack.Screen

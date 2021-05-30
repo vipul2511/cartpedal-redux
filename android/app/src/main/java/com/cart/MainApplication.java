@@ -21,7 +21,14 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import io.invertase.firebase.links.RNFirebaseLinksPackage;
 
+
 public class MainApplication extends MultiDexApplication implements ReactApplication {
+
+  
+
+//if the user already granted the permission or the API is below Android 10 no need to ask for permission
+
+    
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {

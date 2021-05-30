@@ -18,6 +18,7 @@
 		3185370094579E40D1327238 /* libPods-cart-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD3DC936F576D82FDC33F0FE /* libPods-cart-tvOSTests.a */; };
 		49782A20264C45C900B3C1C9 /* received.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 49782A1F264C45C900B3C1C9 /* received.mp3 */; };
 		49782A22264C45E700B3C1C9 /* tick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 49782A21264C45E700B3C1C9 /* tick.mp3 */; };
+		498B6BA126613D5500FA4F54 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 498B6BA026613D5500FA4F54 /* NetworkExtension.framework */; };
 		49FE4FD12640A3180098624B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49FE4FD02640A3180098624B /* GoogleService-Info.plist */; };
 		60629513BD5F9C77839392D4 /* libPods-cart-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E70E423E2A59B30DE00C1BDB /* libPods-cart-tvOS.a */; };
 		66BDFCAFB3BD0F62FF98EE8F /* libPods-cart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29FC15FB4B1D6B326A67F40F /* libPods-cart.a */; };
@@ -68,6 +69,8 @@
 		417A85B78D6A41255C614424 /* Pods-cart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cart.release.xcconfig"; path = "Target Support Files/Pods-cart/Pods-cart.release.xcconfig"; sourceTree = "<group>"; };
 		49782A1F264C45C900B3C1C9 /* received.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = received.mp3; sourceTree = "<group>"; };
 		49782A21264C45E700B3C1C9 /* tick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = tick.mp3; sourceTree = "<group>"; };
+		498B6B9F26613D0800FA4F54 /* cart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = cart.entitlements; path = cart/cart.entitlements; sourceTree = "<group>"; };
+		498B6BA026613D5500FA4F54 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		49FE4F4C26405D440098624B /* cartRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = cartRelease.entitlements; path = cart/cartRelease.entitlements; sourceTree = "<group>"; };
 		49FE4FD02640A3180098624B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "cart/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		56C6E959886667272A95D72A /* Pods-cart-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cart-tvOS.release.xcconfig"; path = "Target Support Files/Pods-cart-tvOS/Pods-cart-tvOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -109,6 +112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				66BDFCAFB3BD0F62FF98EE8F /* libPods-cart.a in Frameworks */,
+				498B6BA126613D5500FA4F54 /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +155,7 @@
 		13B07FAE1A68108700A75B9A /* cart */ = {
 			isa = PBXGroup;
 			children = (
+				498B6B9F26613D0800FA4F54 /* cart.entitlements */,
 				49FE4FD02640A3180098624B /* GoogleService-Info.plist */,
 				49FE4F4C26405D440098624B /* cartRelease.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -167,6 +172,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				498B6BA026613D5500FA4F54 /* NetworkExtension.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				29FC15FB4B1D6B326A67F40F /* libPods-cart.a */,
@@ -833,6 +839,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = cart/cart.entitlements;
 				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = K4K53MG9H8;
 				ENABLE_BITCODE = NO;

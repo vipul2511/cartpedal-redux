@@ -17,6 +17,7 @@ import {
   Share,
   ScrollView,
   Platform,
+  Linking,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import CustomMenuIcon from './CustomMenuIcon';
@@ -368,6 +369,7 @@ class DashBoardScreen extends Component {
     }
 
     this.listener1 = firebase.notifications().onNotification((notification) => {
+      Linking.openURL('demo://app');
       if (
         this.props.chatting &&
         (notification.data.fromid == this.props.chattingUserId ||
@@ -379,6 +381,7 @@ class DashBoardScreen extends Component {
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
+      Linking.openURL('demo://app');
       if (
         this.props.chatting &&
         (m.data.fromid == this.props.chattingUserId ||

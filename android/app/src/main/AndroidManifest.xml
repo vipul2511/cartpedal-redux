@@ -35,6 +35,8 @@
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
         android:launchMode="singleTask"
+        android:showWhenLocked="true"
+    android:turnScreenOn="true"
         android:windowSoftInputMode="adjustResize">
 
         <intent-filter>
@@ -49,6 +51,15 @@
             <data android:host="cartpedal.page.link" android:scheme="http"/>
             <data android:host="cartpedal.page.link" android:scheme="https"/>
         </intent-filter>
+        <!-- <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="app"
+          android:scheme="demo" /> -->
+      </intent-filter>
 
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
@@ -77,6 +88,7 @@
 
 <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
 <activity android:name=".VideoActivity" android:screenOrientation="sensorPortrait" android:configChanges="orientation|screenSize" />
+
 
     </application>
 

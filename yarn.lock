@@ -6004,6 +6004,11 @@ react-is@^16.12.0, react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0, react
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-native-agora@^3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-agora/-/react-native-agora-3.4.2.tgz#b2588ba1350de3ebd2f1db9ed6ce9e9055ad53ed"
+  integrity sha512-zY2BIDCG9vEGQMW9oggsom9XHZJqETG/nafLsZx4z52TzHw9bipNypL/jXpE50Ofg+bS9YKYJaSZGy8M9dgKSA==
+
 react-native-animatable@1.3.3:
   version "1.3.3"
   resolved "https://registry.npmjs.org/react-native-animatable/-/react-native-animatable-1.3.3.tgz"
@@ -6156,6 +6161,11 @@ react-native-image-slider-box@^1.0.12:
   integrity sha512-Yq7xLmrAxNWjSAZJ78ZQkg13/30UJc17yvBwRFAidGrMaVo2Go9glRdRJ2U212APsQVHskAhSgW6YHinuTLoIA==
   dependencies:
     react-native-snap-carousel "*"
+
+react-native-invoke-app@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-invoke-app/-/react-native-invoke-app-1.0.6.tgz#5ea2fe6e498cee2214d04afbd8d0005a8681ca36"
+  integrity sha512-+kpgr+trccd1R+ZxTnIOpGWVsr/W+JXUKiNibgwwx+KbdTxMgQCt47/mb2Z6/nMCVgTBXP5MSCpDGJ6II1byrw==
 
 react-native-iphone-x-helper@^1.0.2, react-native-iphone-x-helper@^1.0.3, react-native-iphone-x-helper@^1.2.1, react-native-iphone-x-helper@^1.3.0:
   version "1.3.1"
@@ -6392,6 +6402,11 @@ react-native-webview@^11.0.0:
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
+
+react-native-wifi-reborn@^4.3.8:
+  version "4.3.8"
+  resolved "https://registry.yarnpkg.com/react-native-wifi-reborn/-/react-native-wifi-reborn-4.3.8.tgz#17578fa868847e2332ce129101ed6efa76d8f813"
+  integrity sha512-tmjujHusq/LU4SIFykXwyU7hR64k/vesXuFZlxg1/ZHibhPwb4Lx9zM4YIasJ4tQtzFHklxedygCk++oLYK+fg==
 
 react-native@0.63.2:
   version "0.63.2"
