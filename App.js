@@ -4,9 +4,10 @@ import NotificationSetting from 'react-native-open-notification';
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {MainStack} from './Routes';
-import {initStore} from './redux/store';
+import {initStore, initPersistor} from './redux/store';
 import {Provider} from 'react-redux';
-import {LogBox, Platform} from 'react-native';
+import {LogBox, Platform, Text} from 'react-native';
+import {PersistGate} from 'redux-persist/integration/react';
 
 if (Platform.OS === 'android') {
   const channel = new firebase.notifications.Android.Channel(
@@ -48,6 +49,7 @@ messaging
   .catch((error) => {});
 
 const store = initStore();
+const persistor = initPersistor(store);
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -57,11 +59,15 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <Provider store={store}>
-        <NavigationContainer>
-          <MainStack />
-        </NavigationContainer>
-      </Provider>
+      <PersistGate
+        loading={() => <Text>Loading Persistence ...</Text>}
+        persistor={persistor}>
+        <Provider store={store}>
+          <NavigationContainer>
+            <MainStack />
+          </NavigationContainer>
+        </Provider>
+      </PersistGate>
     );
   }
 }

@@ -1789,47 +1789,47 @@ class ChatDetailScreen extends React.Component {
   };
 
   NotificationCallPhone = (type) => {
-    if (type === 1) {
-      this.props.navigation.navigate('VideoCallScreen', {
-        useravatar: this.props.route.params.useravatar,
-      });
-    }
-    if (type === 0) {
-      this.props.navigation.navigate('VoiceCallScreen', {
-        useravatar: this.props.route.params.useravatar,
-      });
-    }
-    // let formData = new FormData();
-    // formData.append('user_id', this.state.userId);
-    // formData.append('toid', this.props.route.params.userid);
-    // formData.append('calltype', type);
-    // formData.append('type', type);
-    // var RecentShare = `${BASE_URL}api-user/call-notification`;
-    // fetch(RecentShare, {
-    //   method: 'Post',
-    //   headers: new Headers({
-    //     'Content-Type': 'multipart/form-data',
-    //     device_id: '1111',
-    //     device_token: this.state.fcmToken,
-    //     device_type: Platform.OS,
-    //     Authorization: JSON.parse(this.state.userAccessToken),
-    //   }),
-    //   body: formData,
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseData) => {
-    //     console.log(JSON.stringify(responseData, null, 2));
-    //     if (responseData.code == '200') {
-    //       if (type == 1) {
-    //       } else {
-    //       }
-    //     } else {
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   })
-    //   .done();
+    // if (type === 1) {
+    //   this.props.navigation.navigate('VideoCallScreen', {
+    //     useravatar: this.props.route.params.useravatar,
+    //   });
+    // }
+    // if (type === 0) {
+    //   this.props.navigation.navigate('VoiceCallScreen', {
+    //     useravatar: this.props.route.params.useravatar,
+    //   });
+    // }
+    let formData = new FormData();
+    formData.append('user_id', this.state.userId);
+    formData.append('toid', this.props.route.params.userid);
+    formData.append('calltype', type);
+    formData.append('type', type);
+    var RecentShare = `${BASE_URL}api-user/call-notification`;
+    fetch(RecentShare, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(JSON.stringify(responseData, null, 2));
+        if (responseData.code == '200') {
+          if (type == 1) {
+          } else {
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .done();
   };
 
   deleteMessages = (type) => {

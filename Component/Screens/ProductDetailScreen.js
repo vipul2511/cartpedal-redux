@@ -167,6 +167,7 @@ export default class ProductDetailScreen extends React.Component {
       .then((responseData) => {
         // console.log(JSON.stringify(responseData, null, 2));
         if (responseData.code == '200') {
+          console.log(JSON.stringify(responseData.data, null, 2));
           let nameId = responseData.data.name;
           this.setState({
             userNameProduct: nameId,
@@ -360,15 +361,27 @@ export default class ProductDetailScreen extends React.Component {
 
             <Collapsible collapsed={!this.state.viewMore}>
               <View style={{height: 'auto', backgroundColor: '#fff'}}>
-                {this.state.itemOfProduct.detailone?<Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
-                  {this.state.itemOfProduct.detailone}
-                </Text>:null}
-                {this.state.itemOfProduct.detailtwo?<Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
-                  {this.state.itemOfProduct.detailtwo}
-                </Text>:null}
-                {this.state.itemOfProduct.description?<Text style={{color: 'black', marginLeft: 30, marginTop: 5,marginBottom:5}}>
-                  {this.state.itemOfProduct.description}
-                </Text>:null}
+                {this.state.itemOfProduct.detailone ? (
+                  <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                    {this.state.itemOfProduct.detailone}
+                  </Text>
+                ) : null}
+                {this.state.itemOfProduct.detailtwo ? (
+                  <Text style={{color: 'black', marginLeft: 30, marginTop: 5}}>
+                    {this.state.itemOfProduct.detailtwo}
+                  </Text>
+                ) : null}
+                {this.state.itemOfProduct.description ? (
+                  <Text
+                    style={{
+                      color: 'black',
+                      marginLeft: 30,
+                      marginTop: 5,
+                      marginBottom: 5,
+                    }}>
+                    {this.state.itemOfProduct.description}
+                  </Text>
+                ) : null}
               </View>
             </Collapsible>
 

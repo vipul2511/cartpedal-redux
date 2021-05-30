@@ -921,6 +921,7 @@ const styles = StyleSheet.create({
   },
 });
 function mapStateToProps(state) {
+  console.log(JSON.stringify(state, null, 2));
   const {
     data: chatListData,
     success: chatlistsuccess,
