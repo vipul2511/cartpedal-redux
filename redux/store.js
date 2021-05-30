@@ -8,7 +8,7 @@ import rootReducer from './reducers/root.reducer.js';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['ChatlistReducer'],
+  whitelist: ['ChatlistReducer', 'ConversationListReducer'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

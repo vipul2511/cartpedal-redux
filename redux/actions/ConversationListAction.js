@@ -35,7 +35,7 @@ export const ConversationListAction = (userID, type, toid, userAccessToken) => {
         if (responseData.code == '200') {
           dispatch({
             type: CONVERSION_LIST_SUCCESS,
-            payload: responseData.data,
+            payload: {data: responseData.data, id: toid},
           });
           return Promise.resolve(responseData.data);
         } else {

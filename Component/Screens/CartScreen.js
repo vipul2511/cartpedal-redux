@@ -15,6 +15,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import resp from 'rn-responsive-font';
+import {connect} from 'react-redux';
+import OfflineUserScreen from './OfflineUserScreen';
 
 class CartScreen extends Component {
   constructor(props) {
@@ -34,6 +36,9 @@ class CartScreen extends Component {
     }
   };
   render() {
+    if (!this.props.isConnected) {
+      return <OfflineUserScreen />;
+    }
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerView}>
@@ -317,4 +322,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CartScreen;
+const mapStateToProps = (state) => {
+  return {isConnected: state.network.isConnected};
+};
+
+export default connect(mapStateToProps, null)(CartScreen);

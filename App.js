@@ -8,6 +8,7 @@ import {initStore, initPersistor} from './redux/store';
 import {Provider} from 'react-redux';
 import {LogBox, Platform, Text} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
+import {ReduxNetworkProvider} from 'react-native-offline';
 
 if (Platform.OS === 'android') {
   const channel = new firebase.notifications.Android.Channel(
@@ -63,9 +64,11 @@ export default class App extends React.Component {
         loading={() => <Text>Loading Persistence ...</Text>}
         persistor={persistor}>
         <Provider store={store}>
-          <NavigationContainer>
-            <MainStack />
-          </NavigationContainer>
+          <ReduxNetworkProvider>
+            <NavigationContainer>
+              <MainStack />
+            </NavigationContainer>
+          </ReduxNetworkProvider>
         </Provider>
       </PersistGate>
     );

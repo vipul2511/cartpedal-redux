@@ -9,6 +9,7 @@ const initialState = {
   success: false,
   error: false,
   data: {messages: []},
+  dataById: {},
   errorMessage: '',
 };
 
@@ -22,7 +23,8 @@ export default function (state = initialState, action) {
     case CONVERSION_LIST_SUCCESS:
       return {
         ...state,
-        data: action.payload,
+        data: action.payload.data,
+        dataById: {...state.dataById, [action.payload.id]: action.payload.data},
         isLoading: false,
         success: true,
         error: false,

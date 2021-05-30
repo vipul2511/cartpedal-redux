@@ -43,6 +43,7 @@ import {BASE_URL} from '../Component/ApiClient';
 import {hp, wp} from '../Component/hightWidthRatio';
 import {displayLocalNotification} from '../../PushNotification/DisplayLocalNotification';
 import FastImage from 'react-native-fast-image';
+import OfflineUserScreen from './OfflineUserScreen';
 
 const width = Dimensions.get('screen').width;
 console.disableYellowBox = true;
@@ -369,7 +370,6 @@ class DashBoardScreen extends Component {
     }
 
     this.listener1 = firebase.notifications().onNotification((notification) => {
-      Linking.openURL('demo://app');
       if (
         this.props.chatting &&
         (notification.data.fromid == this.props.chattingUserId ||
@@ -381,7 +381,6 @@ class DashBoardScreen extends Component {
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
-      Linking.openURL('demo://app');
       if (
         this.props.chatting &&
         (m.data.fromid == this.props.chattingUserId ||
@@ -705,6 +704,9 @@ class DashBoardScreen extends Component {
       .done();
   }
   render() {
+    if (!this.props.isConnected) {
+      return <OfflineUserScreen />;
+    }
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -1720,6 +1722,7 @@ function mapStateToProps(state) {
   } = state.RecentDataReducer;
   const {success: addStorySuccess} = state.addStoryReducer;
   const {chatting, chattingUserId} = state.ChatlistReducer;
+  const {isConnected} = state.network;
   return {
     isLoading,
     data,
@@ -1735,6 +1738,7 @@ function mapStateToProps(state) {
     addStorySuccess,
     chatting,
     chattingUserId,
+    isConnected,
   };
 }
 

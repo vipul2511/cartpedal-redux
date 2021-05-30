@@ -419,6 +419,14 @@ class ChatDetailScreen extends React.Component {
     if (!equalArray) {
       this.setState({chatList: nextProps.conversationData});
     }
+    if (
+      !this.props.isConnected &&
+      this.props.dataById[this.props.route.params.userid] !== undefined
+    ) {
+      this.setState({
+        chatList: this.props.dataById[this.props.route.params.userid],
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -3972,6 +3980,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
   const {
     data: conversationData,
+    dataById,
     success: conversationSuccess,
     isLoading: conversationLoading,
     error: conversationError,
@@ -3981,6 +3990,8 @@ function mapStateToProps(state) {
     conversationSuccess,
     conversationLoading,
     conversationError,
+    dataById,
+    isConnected: state.network.isConnected,
   };
 }
 export default connect(mapStateToProps, {

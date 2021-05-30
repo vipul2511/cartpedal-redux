@@ -21,6 +21,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-simple-toast';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {BASE_URL} from '../Component/ApiClient';
+import {connect} from 'react-redux';
+import OfflineUserScreen from './OfflineUserScreen';
 console.disableYellowBox = true;
 
 function Item({item}) {
@@ -304,6 +306,9 @@ class OpenForPublicScreen extends Component {
   }
 
   render() {
+    if (!this.props.isConnected) {
+      return <OfflineUserScreen />;
+    }
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -819,4 +824,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OpenForPublicScreen;
+const mapStateToProps = (state) => {
+  return {isConnected: state.network.isConnected};
+};
+
+export default connect(mapStateToProps, null)(OpenForPublicScreen);

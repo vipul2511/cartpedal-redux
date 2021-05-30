@@ -152,6 +152,12 @@ class ChatScreen extends Component {
     if (!equalArray) {
       this.setState({chatList: nextProps.chatListData, ischatList: true});
     }
+    if (!this.props.isConnected) {
+      this.setState({
+        chatList: this.props.chatListData,
+        ischatList: true,
+      });
+    }
   }
   componentDidUpdate() {
     //  console.log(this.props.chatlistsuccess);
@@ -198,20 +204,22 @@ class ChatScreen extends Component {
     const funct = this;
     return (
       <SafeAreaView style={styles.container}>
-        <Fab
-          onPress={() => {
-            this.props.navigation.navigate('NewContactListScreen', {
-              userId: this.state.userId,
-              PhoneNumber: this.state.PhoneNumber,
-              fcmToken: this.state.fcmToken,
-              userAccessToken: this.state.userAccessToken,
-            });
-          }}
-          style={{backgroundColor: 'red'}}
-          containerStyle={{marginBottom: 64, zIndex: 4}}
-          position="bottomRight">
-          <Icon type="MaterialCommunityIcons" name="message-text-outline" />
-        </Fab>
+        {this.props.isConnected && (
+          <Fab
+            onPress={() => {
+              this.props.navigation.navigate('NewContactListScreen', {
+                userId: this.state.userId,
+                PhoneNumber: this.state.PhoneNumber,
+                fcmToken: this.state.fcmToken,
+                userAccessToken: this.state.userAccessToken,
+              });
+            }}
+            style={{backgroundColor: 'red'}}
+            containerStyle={{marginBottom: 64, zIndex: 4}}
+            position="bottomRight">
+            <Icon type="MaterialCommunityIcons" name="message-text-outline" />
+          </Fab>
+        )}
         <Spinner
           visible={this.state.spinner}
           color="#F01738"
@@ -277,12 +285,14 @@ class ChatScreen extends Component {
                 }}
                 onPress={() => {
                   this._menu.hide();
-                  this.props.navigation.navigate('ChatGroupListScreen', {
-                    userId: this.state.userId,
-                    PhoneNumber: this.state.PhoneNumber,
-                    fcmToken: this.state.fcmToken,
-                    userAccessToken: this.state.userAccessToken,
-                  });
+                  if (this.props.isConnected) {
+                    this.props.navigation.navigate('ChatGroupListScreen', {
+                      userId: this.state.userId,
+                      PhoneNumber: this.state.PhoneNumber,
+                      fcmToken: this.state.fcmToken,
+                      userAccessToken: this.state.userAccessToken,
+                    });
+                  }
                 }}>
                 {'Create New Group'}
               </Text>
@@ -295,12 +305,14 @@ class ChatScreen extends Component {
                 }}
                 onPress={() => {
                   this._menu.hide();
-                  this.props.navigation.navigate('ChatGroupListScreen', {
-                    userId: this.state.userId,
-                    PhoneNumber: this.state.PhoneNumber,
-                    fcmToken: this.state.fcmToken,
-                    userAccessToken: this.state.userAccessToken,
-                  });
+                  if (this.props.isConnected) {
+                    this.props.navigation.navigate('ChatGroupListScreen', {
+                      userId: this.state.userId,
+                      PhoneNumber: this.state.PhoneNumber,
+                      fcmToken: this.state.fcmToken,
+                      userAccessToken: this.state.userAccessToken,
+                    });
+                  }
                 }}>
                 {'(for your personol use)'}
               </Text>
@@ -921,7 +933,6 @@ const styles = StyleSheet.create({
   },
 });
 function mapStateToProps(state) {
-  console.log(JSON.stringify(state, null, 2));
   const {
     data: chatListData,
     success: chatlistsuccess,

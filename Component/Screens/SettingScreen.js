@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL} from '../Component/ApiClient';
 import {resetStore} from '../../redux/actions';
 import {connect} from 'react-redux';
+import OfflineUserScreen from './OfflineUserScreen';
 class SettingScreen extends Component {
   constructor(props) {
     super(props);
@@ -174,6 +175,9 @@ class SettingScreen extends Component {
   };
 
   render() {
+    if (!this.props.isConnected) {
+      return <OfflineUserScreen />;
+    }
     return (
       <SafeAreaView style={styles.container}>
         <Spinner
@@ -700,7 +704,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 });
-function mapStateToProps(state) {}
+const mapStateToProps = (state) => {
+  return {isConnected: state.network.isConnected};
+};
+
 export default connect(mapStateToProps, {
   resetStore,
 })(SettingScreen);
