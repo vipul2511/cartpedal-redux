@@ -8,17 +8,17 @@ import RtcEngine, {
 } from 'react-native-agora';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const config = {
-  //Setting config of the app
-  appid: '0f8cb6d4df7f4f548daaf17f5f896413', //Enter the App ID generated from the Agora Website
-  channelProfile: 0, //Set channel profile as 0 for RTC
-  videoEncoderConfig: {
-    //Set Video feed encoder settings
-    width: 720,
-    height: 1080,
-    bitrate: 1,
-  },
-};
+// const config = {
+//   //Setting config of the app
+//   appid: '0f8cb6d4df7f4f548daaf17f5f896413', //Enter the App ID generated from the Agora Website
+//   channelProfile: 0, //Set channel profile as 0 for RTC
+//   videoEncoderConfig: {
+//     //Set Video feed encoder settings
+//     width: 720,
+//     height: 1080,
+//     bitrate: 1,
+//   },
+// };
 
 class VideoCall extends Component {
   _engine;
@@ -26,13 +26,17 @@ class VideoCall extends Component {
     super(props);
     this.state = {
       appId: 'b1ff97b3e47244eaa4c0177359705c0f',
-      channelName: 'yashpk2128',
+      // channelName: 'yashpk2128',
+      // token:
+      //   '006b1ff97b3e47244eaa4c0177359705c0fIAAi7fTiSfrOlbRxKJsMTYAAwRwbAvhZGz2ceZuvEz2po83fcWcAAAAAEAD/3NMfiFy2YAEAAQCIXLZg',
+      channelName: '+919630884259',
       token:
-        '006b1ff97b3e47244eaa4c0177359705c0fIAACx5nTOdANr/ndyXkwt2dsXjePx86R3mRRKHi5uCb/zs3fcWcAAAAAEAAAQmFyAHG0YAEAAQAAcbRg',
+        '006b1ff97b3e47244eaa4c0177359705c0fIAD7FAdMgt5SUlRLjU7/fDRPTFhPTAY5WKbFXQeAA2utrMqpoY0AAAAAIgClrUYA36S2YAQAAQBvYbVgAwBvYbVgAgBvYbVgBABvYbVg',
+      // channelName: this.props.route.params.channel,
+      // token: this.props.route.params.token,
       joinSucceed: false,
       peerIds: [],
       uid: Math.floor(Math.random() * 100), //Generate a UID for local user
-      appid: config.appid,
       Password: '', //Channel Name for the current session
       vidMute: false, //State variable for Video Mute
       audMute: false,
@@ -46,6 +50,7 @@ class VideoCall extends Component {
     // await this._engine.enableAudio();
 
     this._engine.addListener('UserJoined', (uid, elapsed) => {
+      console.log('UserJOINED');
       const {peerIds} = this.state;
       if (peerIds.indexOf(uid) === -1) {
         this.setState({
@@ -76,12 +81,18 @@ class VideoCall extends Component {
       });
     });
 
-    await this._engine?.joinChannel(
-      this.state.token,
-      this.state.channelName,
-      null,
-      0,
-    );
+    try {
+      console.log(this.state.token, this.state.channelName);
+      const isJoined = await this._engine?.joinChannel(
+        this.state.token,
+        this.state.channelName,
+        null,
+        0,
+      );
+      console.log(isJoined, 'joinChannel');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   endCall = async () => {
@@ -187,6 +198,7 @@ class VideoCall extends Component {
     );
   }
   render() {
+    console.log(this.props.route.params);
     return this.videoView();
   }
 }

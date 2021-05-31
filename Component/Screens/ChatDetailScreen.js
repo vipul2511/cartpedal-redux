@@ -1224,6 +1224,7 @@ class ChatDetailScreen extends React.Component {
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     }).then(async (response) => {
       this.setState({imageshow: false});
       this.setState({imageView: response});
@@ -1865,47 +1866,94 @@ class ChatDetailScreen extends React.Component {
       alert('It Seems that you are offline');
       return;
     }
-    // if (type === 1) {
-    //   this.props.navigation.navigate('VideoCallScreen', {
-    //     useravatar: this.props.route.params.useravatar,
-    //   });
-    // }
-    // if (type === 0) {
-    //   this.props.navigation.navigate('VoiceCallScreen', {
-    //     useravatar: this.props.route.params.useravatar,
-    //   });
-    // }
-    let formData = new FormData();
-    formData.append('user_id', this.state.userId);
-    formData.append('toid', this.props.route.params.userid);
-    formData.append('calltype', type);
-    formData.append('type', type);
-    var RecentShare = `${BASE_URL}api-user/call-notification`;
-    fetch(RecentShare, {
-      method: 'Post',
-      headers: new Headers({
-        'Content-Type': 'multipart/form-data',
-        device_id: '1111',
-        device_token: this.state.fcmToken,
-        device_type: Platform.OS,
-        Authorization: JSON.parse(this.state.userAccessToken),
-      }),
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(JSON.stringify(responseData, null, 2));
-        if (responseData.code == '200') {
-          if (type == 1) {
-          } else {
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .done();
+    if (type === 1) {
+      // const uid = Math.floor(Math.random() * 100);
+      // // const token = BuildToken('yashpk2128', uid);
+      // console.log(token);
+      this.props.navigation.navigate('VideoCallScreen', {
+        useravatar: this.props.route.params.useravatar,
+        token: '',
+        channel: '',
+        calling: true,
+        receiving: false,
+      });
+      // let formData = new FormData();
+      // formData.append('user_id', this.state.userId);
+      // formData.append('calling_id', this.props.route.params.userid);
+      // var RecentShare = `${BASE_URL}api-user/generate-token`;
+      // fetch(RecentShare, {
+      //   method: 'Post',
+      //   headers: new Headers({
+      //     'Content-Type': 'multipart/form-data',
+      //     device_id: '1111',
+      //     device_token: this.state.fcmToken,
+      //     device_type: Platform.OS,
+      //     Authorization: JSON.parse(this.state.userAccessToken),
+      //   }),
+      //   body: formData,
+      // })
+      //   .then((response) => response.json())
+      //   .then((responseData) => {
+      //     console.log(JSON.stringify(responseData.data.channel, null, 2));
+      //     if (responseData.code == '200') {
+      // this.props.navigation.navigate('VideoCallScreen', {
+      //   useravatar: this.props.route.params.useravatar,
+      //   token: responseData.data.token,
+      //   channel: responseData.data.channel,
+      //   calling: true,
+      //   receiving: false,
+      // });
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   })
+      //   .done();
+    }
+    if (type === 0) {
+      this.props.navigation.navigate('VoiceCallScreen', {
+        useravatar: this.props.route.params.useravatar,
+      });
+    }
+    // let formData = new FormData();
+    // formData.append('user_id', this.state.userId);
+    // formData.append('toid', this.props.route.params.userid);
+    // formData.append('calltype', type);
+    // formData.append('type', type);
+    // var RecentShare = `${BASE_URL}api-user/call-notification`;
+    // console.log({
+    //   'Content-Type': 'multipart/form-data',
+    //   device_id: '1111',
+    //   device_token: this.state.fcmToken,
+    //   device_type: Platform.OS,
+    //   Authorization: JSON.parse(this.state.userAccessToken),
+    // });
+    // console.log(formData);
+    // fetch(RecentShare, {
+    //   method: 'Post',
+    //   headers: new Headers({
+    //     'Content-Type': 'multipart/form-data',
+    //     device_id: '1111',
+    //     device_token: this.state.fcmToken,
+    //     device_type: Platform.OS,
+    //     Authorization: JSON.parse(this.state.userAccessToken),
+    //   }),
+    //   body: formData,
+    // })
+    //   .then((response) => response.json())
+    //   .then((responseData) => {
+    //     console.log(JSON.stringify(responseData, null, 2));
+    //     if (responseData.code == '200') {
+    //       if (type == 1) {
+    //       } else {
+    //       }
+    //     } else {
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   })
+    //   .done();
   };
 
   deleteMessages = (type) => {

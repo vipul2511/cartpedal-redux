@@ -49,6 +49,7 @@ export default class ImageSelectDialogs extends Component {
       height: 220,
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     })
       .then((image) => {
         this.hideMenu();
@@ -61,6 +62,7 @@ export default class ImageSelectDialogs extends Component {
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     })
       .then((image) => {
         this.hideMenu();
