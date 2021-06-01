@@ -344,41 +344,87 @@ class DashBoardScreen extends Component {
       .getInitialNotification();
     if (notificationOpen) {
       firebase.notifications().removeAllDeliveredNotifications();
-      console.log(notificationOpen.notification);
-      console.log(notificationOpen.notification.data);
-      // const {
-      //   groupid,
-      //   fromid,
-      //   name,
-      //   mobile,
-      //   avatar,
-      //   about,
-      //   msg_type,
-      //   groupname,
-      //   groupavatar,
-      //   member,
-      // } = notificationOpen.notification.data;
-      // this.props.navigation.navigate('ChatDetailScreen', {
-      //   userid: groupid != '0' ? groupid : fromid,
-      //   username: groupname != '' ? groupname : name,
-      //   useravatar: groupavatar != '' ? groupavatar : avatar,
-      //   userabout: about,
-      //   userphone: mobile,
-      //   msg_type: msg_type,
-      //   groupId: groupid != '0' ? groupid : fromid,
-      //   groupexit: false,
-      //   membersCount: !member || member == '' ? 2 : member.split(',').length,
-      // });
+      const {
+        groupid,
+        fromid,
+        name,
+        mobile,
+        avatar,
+        about,
+        msg_type,
+        groupname,
+        groupavatar,
+        member,
+        type,
+      } = notificationOpen.notification.data;
+      if (type === '') {
+        this.props.navigation.navigate('ChatDetailScreen', {
+          userid: groupid != '0' ? groupid : fromid,
+          username: groupname != '' ? groupname : name,
+          useravatar: groupavatar != '' ? groupavatar : avatar,
+          userabout: about,
+          userphone: mobile,
+          msg_type: msg_type,
+          groupId: groupid != '0' ? groupid : fromid,
+          groupexit: false,
+          membersCount: !member || member == '' ? 2 : member.split(',').length,
+        });
+      } else {
+        const {
+          fromid,
+          toid,
+          avatar,
+          type,
+          token,
+          channelName,
+          calltype,
+        } = notificationOpen.notification.data;
+        if (calltype == '1' && type == '0') {
+          this.props.navigation.navigate('VideoCallScreen', {
+            fromid,
+            toid,
+            useravatar: avatar,
+            token,
+            channel: channelName,
+            calling: false,
+            receiving: true,
+          });
+        }
+      }
     }
 
     this.listener1 = firebase.notifications().onNotification((notification) => {
-      if (
-        this.props.chatting &&
-        (notification.data.fromid == this.props.chattingUserId ||
-          notification.data.groupid == this.props.chattingUserId)
-      ) {
+      if (notification.data.type === '') {
+        if (
+          this.props.chatting &&
+          (notification.data.fromid == this.props.chattingUserId ||
+            notification.data.groupid == this.props.chattingUserId)
+        ) {
+        } else {
+          displayLocalNotification(notification);
+        }
       } else {
-        displayLocalNotification(notification);
+        const {
+          fromid,
+          toid,
+          avatar,
+          type,
+          token,
+          channelName,
+          calltype,
+        } = notification.data;
+        console.log(JSON.stringify(notification.data, null, 2));
+        if (calltype == '1' && type == '0') {
+          this.props.navigation.navigate('VideoCallScreen', {
+            fromid,
+            toid,
+            useravatar: avatar,
+            token,
+            channel: channelName,
+            calling: false,
+            receiving: true,
+          });
+        }
       }
     });
 
@@ -408,18 +454,43 @@ class DashBoardScreen extends Component {
           groupname,
           groupavatar,
           member,
+          type,
         } = m.notification.data;
-        this.props.navigation.navigate('ChatDetailScreen', {
-          userid: groupid != '0' ? groupid : fromid,
-          username: groupname != '' ? groupname : name,
-          useravatar: groupavatar != '' ? groupavatar : avatar,
-          userabout: about,
-          userphone: mobile,
-          msg_type: msg_type,
-          groupId: groupid != '0' ? groupid : fromid,
-          groupexit: false,
-          membersCount: !member || member == '' ? 2 : member.split(',').length,
-        });
+        if (type === '') {
+          this.props.navigation.navigate('ChatDetailScreen', {
+            userid: groupid != '0' ? groupid : fromid,
+            username: groupname != '' ? groupname : name,
+            useravatar: groupavatar != '' ? groupavatar : avatar,
+            userabout: about,
+            userphone: mobile,
+            msg_type: msg_type,
+            groupId: groupid != '0' ? groupid : fromid,
+            groupexit: false,
+            membersCount:
+              !member || member == '' ? 2 : member.split(',').length,
+          });
+        } else {
+          const {
+            fromid,
+            toid,
+            avatar,
+            type,
+            token,
+            channelName,
+            calltype,
+          } = m.notification.data;
+          if (calltype == '1' && type == '0') {
+            this.props.navigation.navigate('VideoCallScreen', {
+              fromid,
+              toid,
+              useravatar: avatar,
+              token,
+              channel: channelName,
+              calling: false,
+              receiving: true,
+            });
+          }
+        }
       });
   };
 

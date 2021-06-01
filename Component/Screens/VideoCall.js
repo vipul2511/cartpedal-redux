@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+import AsyncStorage from '@react-native-community/async-storage';
 import {Text} from 'native-base';
 import React, {Component} from 'react';
 import {
@@ -7,25 +8,16 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import RtcEngine, {
   RtcLocalView,
   RtcRemoteView,
   VideoRenderMode,
 } from 'react-native-agora';
+import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-// const config = {
-//   //Setting config of the app
-//   appid: '0f8cb6d4df7f4f548daaf17f5f896413', //Enter the App ID generated from the Agora Website
-//   channelProfile: 0, //Set channel profile as 0 for RTC
-//   videoEncoderConfig: {
-//     //Set Video feed encoder settings
-//     width: 720,
-//     height: 1080,
-//     bitrate: 1,
-//   },
-// };
+import {BASE_URL} from '../Component/ApiClient';
 
 class VideoCall extends Component {
   _engine;
@@ -33,12 +25,6 @@ class VideoCall extends Component {
     super(props);
     this.state = {
       appId: 'b1ff97b3e47244eaa4c0177359705c0f',
-      // channelName: 'yashpk2128',
-      // token:
-      //   '006b1ff97b3e47244eaa4c0177359705c0fIAAi7fTiSfrOlbRxKJsMTYAAwRwbAvhZGz2ceZuvEz2po83fcWcAAAAAEAD/3NMfiFy2YAEAAQCIXLZg',
-      // channelName: '+919630884259',
-      // token:
-      //   '006b1ff97b3e47244eaa4c0177359705c0fIAAFmc/lMiZYWsYn3OzB+A2qpu+YRZXZFNikCccP7DGIAcqpoY0AAAAAIgB1sAAA9+q2YAQAAQCHp7VgAwCHp7VgAgCHp7VgBACHp7Vg',
       channelName: this.props.route.params.channel,
       token: this.props.route.params.token,
       joinSucceed: false,
@@ -48,9 +34,34 @@ class VideoCall extends Component {
       vidMute: false, //State variable for Video Mute
       audMute: false,
       color: false, //State variable for storing success
+      fcmToken: '',
+      userAccessToken: '',
     };
   }
   componentDidMount = async () => {
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
+      if (token) {
+        this.setState({fcmToken: token});
+      }
+    });
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      if (accessToken) {
+        this.setState({userAccessToken: accessToken});
+      }
+    });
+
+    this.listener1 = firebase.notifications().onNotification((notification) => {
+      if (notification.data.type === '2') {
+        this.rejectCall();
+      }
+    });
+
+    this.listener2 = firebase.messaging().onMessage((m) => {
+      if (m.data.type === '2') {
+        this.rejectCall();
+      }
+    });
+
     const {calling, receiving} = this.props.route.params;
     this._engine = await RtcEngine.create(this.state.appId);
     await this._engine.enableVideo();
@@ -76,7 +87,6 @@ class VideoCall extends Component {
         joinSucceed: true,
       });
     });
-
     if (calling && !receiving) {
       this._engine?.joinChannel(
         this.state.token,
@@ -87,6 +97,11 @@ class VideoCall extends Component {
     }
   };
 
+  componentWillUnmount() {
+    this.listener1();
+    this.listener2();
+  }
+
   acceptCall = () => {
     this._engine?.joinChannel(
       this.state.token,
@@ -96,7 +111,38 @@ class VideoCall extends Component {
     );
   };
 
+  sendNotification = async () => {
+    const headers = new Headers({
+      'Content-Type': 'multipart/form-data',
+      device_id: '1111',
+      device_token: this.state.fcmToken,
+      device_type: Platform.OS,
+      Authorization: JSON.parse(this.state.userAccessToken),
+    });
+    try {
+      let formData = new FormData();
+      formData.append('user_id', this.props.route.params.toid);
+      formData.append('toid', this.props.route.params.fromid);
+      formData.append('calltype', 1);
+      formData.append('type', 2);
+      formData.append('token', this.state.token);
+      formData.append('channel', this.state.channelName);
+      console.log(formData, 'REJECTING');
+      var RecentShare = `${BASE_URL}api-user/call-notification`;
+      const response2 = await fetch(RecentShare, {
+        method: 'Post',
+        headers,
+        body: formData,
+      });
+      const result = await response2.json();
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   rejectCall = async () => {
+    await this.sendNotification();
     this.setState({color: true});
     this.setState(
       {
@@ -268,7 +314,6 @@ class VideoCall extends Component {
     );
   }
   render() {
-    console.log(this.props.route.params);
     return this.videoView();
   }
 }

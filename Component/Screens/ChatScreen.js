@@ -94,19 +94,23 @@ class ChatScreen extends Component {
       }
     });
     this.listener1 = firebase.notifications().onNotification((notification) => {
-      NetInfo.fetch().then((state) => {
-        if (state.isConnected && this.state.mounted) {
-          this.getChatList();
-        }
-      });
+      if (notification.data.type === '') {
+        NetInfo.fetch().then((state) => {
+          if (state.isConnected && this.state.mounted) {
+            this.getChatList();
+          }
+        });
+      }
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
-      NetInfo.fetch().then((state) => {
-        if (state.isConnected && this.state.mounted) {
-          this.getChatList();
-        }
-      });
+      if (m.data.type === '') {
+        NetInfo.fetch().then((state) => {
+          if (state.isConnected && this.state.mounted) {
+            this.getChatList();
+          }
+        });
+      }
     });
   };
 
@@ -944,6 +948,7 @@ function mapStateToProps(state) {
     chatlistsuccess,
     loadingChatList,
     chatlisterror,
+    isConnected: state.network.isConnected,
   };
 }
 export default connect(mapStateToProps, {ChatlistAction})(ChatScreen);

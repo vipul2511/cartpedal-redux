@@ -349,29 +349,33 @@ class ChatDetailScreen extends React.Component {
     this.props.toggleChatting(true, this.props.route.params.userid);
     this.requestCameraPermission();
     this.listener1 = firebase.notifications().onNotification((notification) => {
-      if (
-        notification.data.fromid == this.props.route.params.userid ||
-        notification.data.groupid == this.props.route.params.userid
-      ) {
-        this.setState({live: true});
-        this.getConversationList();
-        setTimeout(
-          () => received.play((d) => console.log(d, Platform.OS)),
-          1000,
-        );
+      if (notification.data.type === '') {
+        if (
+          notification.data.fromid == this.props.route.params.userid ||
+          notification.data.groupid == this.props.route.params.userid
+        ) {
+          this.setState({live: true});
+          this.getConversationList();
+          setTimeout(
+            () => received.play((d) => console.log(d, Platform.OS)),
+            1000,
+          );
+        }
       }
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
-      if (
-        m.data.fromid == this.props.route.params.userid ||
-        m.data.groupid == this.props.route.params.userid
-      ) {
-        this.setState({live: true});
-        this.getConversationList();
-        setTimeout(() => {
-          received.play((d) => console.log(d, Platform.OS));
-        }, 1000);
+      if (m.data.type === '') {
+        if (
+          m.data.fromid == this.props.route.params.userid ||
+          m.data.groupid == this.props.route.params.userid
+        ) {
+          this.setState({live: true});
+          this.getConversationList();
+          setTimeout(() => {
+            received.play((d) => console.log(d, Platform.OS));
+          }, 1000);
+        }
       }
     });
 
@@ -1896,6 +1900,7 @@ class ChatDetailScreen extends React.Component {
           formData.append('token', result1.data.token);
           formData.append('channel', result1.data.channel);
           var RecentShare = `${BASE_URL}api-user/call-notification`;
+          console.log(formData, 'CALLING');
           const response2 = await fetch(RecentShare, {
             method: 'Post',
             headers,
@@ -1908,8 +1913,8 @@ class ChatDetailScreen extends React.Component {
               useravatar: this.props.route.params.useravatar,
               token: result1.data.token,
               channel: result1.data.channel,
-              calling: false,
-              receiving: true,
+              calling: true,
+              receiving: false,
             });
           } else {
             alert('something went wrong');
