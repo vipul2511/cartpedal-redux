@@ -31,7 +31,7 @@ class VideoCall extends Component {
       //   '006b1ff97b3e47244eaa4c0177359705c0fIAAi7fTiSfrOlbRxKJsMTYAAwRwbAvhZGz2ceZuvEz2po83fcWcAAAAAEAD/3NMfiFy2YAEAAQCIXLZg',
       channelName: '+919630884259',
       token:
-        '006b1ff97b3e47244eaa4c0177359705c0fIAD7FAdMgt5SUlRLjU7/fDRPTFhPTAY5WKbFXQeAA2utrMqpoY0AAAAAIgClrUYA36S2YAQAAQBvYbVgAwBvYbVgAgBvYbVgBABvYbVg',
+        '006b1ff97b3e47244eaa4c0177359705c0fIAAFmc/lMiZYWsYn3OzB+A2qpu+YRZXZFNikCccP7DGIAcqpoY0AAAAAIgB1sAAA9+q2YAQAAQCHp7VgAwCHp7VgAgCHp7VgBACHp7Vg',
       // channelName: this.props.route.params.channel,
       // token: this.props.route.params.token,
       joinSucceed: false,

@@ -648,6 +648,7 @@ class DashBoardScreen extends Component {
       mediaType: 'photo',
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     }).then((image) => {
       this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onImagePick(image);

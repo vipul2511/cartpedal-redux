@@ -207,6 +207,7 @@ export default class ProductMasterUpdate extends React.Component {
       height: 400,
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     }).then((image) => {
       let newImage = this.state.newImageArr;
       let imagePervious = this.state.imageList;

@@ -252,6 +252,7 @@ class ProfileScreen extends Component {
       height: 400,
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     }).then((image) => {
       this.setState({isProfileModalVisible: !this.state.isProfileModalVisible});
 
@@ -264,6 +265,7 @@ class ProfileScreen extends Component {
       height: 400,
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     }).then((image) => {
       this.setState({isStoryModalVisible: !this.state.isStoryModalVisible});
       this.onStoryPick(image);

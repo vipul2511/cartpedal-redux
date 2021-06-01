@@ -14,7 +14,7 @@ import {
   ScrollView,
   Alert,
   PermissionsAndroid,
-  Platform
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import {SliderBox} from 'react-native-image-slider-box';
@@ -365,6 +365,7 @@ class StoryViewScreen extends Component {
     ImagePicker.openPicker({
       cropping: true,
       includeBase64: true,
+      compressImageQuality: 0.4,
     }).then(async (response) => {
       console.log('pickimage==', response);
       this.setState({imageshow: false});

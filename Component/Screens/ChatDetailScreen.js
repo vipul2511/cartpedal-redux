@@ -1867,16 +1867,13 @@ class ChatDetailScreen extends React.Component {
       return;
     }
     if (type === 1) {
-      // const uid = Math.floor(Math.random() * 100);
-      // // const token = BuildToken('yashpk2128', uid);
-      // console.log(token);
-      this.props.navigation.navigate('VideoCallScreen', {
-        useravatar: this.props.route.params.useravatar,
-        token: '',
-        channel: '',
-        calling: true,
-        receiving: false,
-      });
+      // this.props.navigation.navigate('VideoCallScreen', {
+      //   useravatar: this.props.route.params.useravatar,
+      //   token: '',
+      //   channel: '',
+      //   calling: true,
+      //   receiving: false,
+      // });
       // let formData = new FormData();
       // formData.append('user_id', this.state.userId);
       // formData.append('calling_id', this.props.route.params.userid);
@@ -1896,13 +1893,13 @@ class ChatDetailScreen extends React.Component {
       //   .then((responseData) => {
       //     console.log(JSON.stringify(responseData.data.channel, null, 2));
       //     if (responseData.code == '200') {
-      // this.props.navigation.navigate('VideoCallScreen', {
-      //   useravatar: this.props.route.params.useravatar,
-      //   token: responseData.data.token,
-      //   channel: responseData.data.channel,
-      //   calling: true,
-      //   receiving: false,
-      // });
+      //       this.props.navigation.navigate('VideoCallScreen', {
+      //         useravatar: this.props.route.params.useravatar,
+      //         token: responseData.data.token,
+      //         channel: responseData.data.channel,
+      //         calling: true,
+      //         receiving: false,
+      //       });
       //     }
       //   })
       //   .catch((error) => {
@@ -1915,45 +1912,45 @@ class ChatDetailScreen extends React.Component {
         useravatar: this.props.route.params.useravatar,
       });
     }
-    // let formData = new FormData();
-    // formData.append('user_id', this.state.userId);
-    // formData.append('toid', this.props.route.params.userid);
-    // formData.append('calltype', type);
-    // formData.append('type', type);
-    // var RecentShare = `${BASE_URL}api-user/call-notification`;
-    // console.log({
-    //   'Content-Type': 'multipart/form-data',
-    //   device_id: '1111',
-    //   device_token: this.state.fcmToken,
-    //   device_type: Platform.OS,
-    //   Authorization: JSON.parse(this.state.userAccessToken),
-    // });
-    // console.log(formData);
-    // fetch(RecentShare, {
-    //   method: 'Post',
-    //   headers: new Headers({
-    //     'Content-Type': 'multipart/form-data',
-    //     device_id: '1111',
-    //     device_token: this.state.fcmToken,
-    //     device_type: Platform.OS,
-    //     Authorization: JSON.parse(this.state.userAccessToken),
-    //   }),
-    //   body: formData,
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseData) => {
-    //     console.log(JSON.stringify(responseData, null, 2));
-    //     if (responseData.code == '200') {
-    //       if (type == 1) {
-    //       } else {
-    //       }
-    //     } else {
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   })
-    //   .done();
+    let formData = new FormData();
+    formData.append('user_id', this.state.userId);
+    formData.append('toid', this.props.route.params.userid);
+    formData.append('calltype', type);
+    formData.append('type', type);
+    var RecentShare = `${BASE_URL}api-user/call-notification`;
+    console.log({
+      'Content-Type': 'multipart/form-data',
+      device_id: '1111',
+      device_token: this.state.fcmToken,
+      device_type: Platform.OS,
+      Authorization: JSON.parse(this.state.userAccessToken),
+    });
+    console.log(formData);
+    fetch(RecentShare, {
+      method: 'Post',
+      headers: new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      }),
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(JSON.stringify(responseData, null, 2));
+        if (responseData.code == '200') {
+          if (type == 1) {
+          } else {
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .done();
   };
 
   deleteMessages = (type) => {

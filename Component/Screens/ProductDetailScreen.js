@@ -6,7 +6,6 @@ import {
   Image,
   Platform,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -20,7 +19,8 @@ import {lessRoundBlackIcon, addRoundBlackIcon} from '../Component/Images';
 import Collapsible from 'react-native-collapsible';
 import AsyncStorage from '@react-native-community/async-storage';
 import resp from 'rn-responsive-font';
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import FastImage from 'react-native-fast-image';
 import {BASE_URL} from '../Component/ApiClient';
 const screenWidth = Dimensions.get('screen').width;
 
@@ -126,7 +126,7 @@ export default class ProductDetailScreen extends React.Component {
         style={{flex: 1}}
         activeOpacity={1}
         onPress={() => this.onImageClick(item)}>
-        <Image style={styles.imageView} source={{uri: item}} />
+        <FastImage style={styles.imageView} source={{uri: item}} />
       </TouchableOpacity>
     );
   }
