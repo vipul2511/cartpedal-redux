@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
+import {Text} from 'native-base';
 import React, {Component} from 'react';
-import {View, Image, Dimensions, StyleSheet} from 'react-native';
+import {
+  View,
+  Image,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import RtcEngine, {
   RtcLocalView,
   RtcRemoteView,
@@ -29,11 +36,11 @@ class VideoCall extends Component {
       // channelName: 'yashpk2128',
       // token:
       //   '006b1ff97b3e47244eaa4c0177359705c0fIAAi7fTiSfrOlbRxKJsMTYAAwRwbAvhZGz2ceZuvEz2po83fcWcAAAAAEAD/3NMfiFy2YAEAAQCIXLZg',
-      channelName: '+919630884259',
-      token:
-        '006b1ff97b3e47244eaa4c0177359705c0fIAAFmc/lMiZYWsYn3OzB+A2qpu+YRZXZFNikCccP7DGIAcqpoY0AAAAAIgB1sAAA9+q2YAQAAQCHp7VgAwCHp7VgAgCHp7VgBACHp7Vg',
-      // channelName: this.props.route.params.channel,
-      // token: this.props.route.params.token,
+      // channelName: '+919630884259',
+      // token:
+      //   '006b1ff97b3e47244eaa4c0177359705c0fIAAFmc/lMiZYWsYn3OzB+A2qpu+YRZXZFNikCccP7DGIAcqpoY0AAAAAIgB1sAAA9+q2YAQAAQCHp7VgAwCHp7VgAgCHp7VgBACHp7Vg',
+      channelName: this.props.route.params.channel,
+      token: this.props.route.params.token,
       joinSucceed: false,
       peerIds: [],
       uid: Math.floor(Math.random() * 100), //Generate a UID for local user
@@ -44,13 +51,10 @@ class VideoCall extends Component {
     };
   }
   componentDidMount = async () => {
+    const {calling, receiving} = this.props.route.params;
     this._engine = await RtcEngine.create(this.state.appId);
-    // Enable the video module.
     await this._engine.enableVideo();
-    // await this._engine.enableAudio();
-
     this._engine.addListener('UserJoined', (uid, elapsed) => {
-      console.log('UserJOINED');
       const {peerIds} = this.state;
       if (peerIds.indexOf(uid) === -1) {
         this.setState({
@@ -58,41 +62,51 @@ class VideoCall extends Component {
         });
       }
     });
-
-    // Listen for the UserOffline callback.
-    // This callback occurs when the remote user leaves the channel or drops offline.
     this._engine.addListener('UserOffline', async (uid, reason) => {
       const {peerIds} = this.state;
       await this.setState({
-        // Remove peer ID from state array
         peerIds: peerIds.filter((id) => id !== uid),
       });
       if (this.state.peerIds.length === 0) {
         this.endCall();
       }
     });
-
-    // Listen for the JoinChannelSuccess callback.
-    // This callback occurs when the local user successfully joins the channel.
     this._engine.addListener('JoinChannelSuccess', (channel, uid, elapsed) => {
-      console.log('JoinChannelSuccess', channel, uid, elapsed);
       this.setState({
         joinSucceed: true,
       });
     });
 
-    try {
-      console.log(this.state.token, this.state.channelName);
-      const isJoined = await this._engine?.joinChannel(
+    if (calling && !receiving) {
+      this._engine?.joinChannel(
         this.state.token,
         this.state.channelName,
         null,
         0,
       );
-      console.log(isJoined, 'joinChannel');
-    } catch (error) {
-      console.log(error);
     }
+  };
+
+  acceptCall = () => {
+    this._engine?.joinChannel(
+      this.state.token,
+      this.state.channelName,
+      null,
+      0,
+    );
+  };
+
+  rejectCall = async () => {
+    this.setState({color: true});
+    this.setState(
+      {
+        peerIds: [],
+        joinSucceed: false,
+      },
+      () => {
+        this.props.navigation.goBack();
+      },
+    );
   };
 
   endCall = async () => {
@@ -126,12 +140,30 @@ class VideoCall extends Component {
   }
 
   videoView() {
+    const {calling, receiving} = this.props.route.params;
     return (
       <View style={styles.max}>
         {
           <View style={styles.max}>
             {!this.state.joinSucceed ? (
-              <View />
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: 'black',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={
+                    this.props.route.params.useravatar
+                      ? {
+                          uri: this.props.route.params.useravatar,
+                        }
+                      : require('../images/default_user.png')
+                  }
+                  style={{width: 220, height: 220}}
+                />
+              </View>
             ) : (
               <View style={styles.fullView}>
                 {this.state.peerIds.length > 0 ? (
@@ -173,27 +205,65 @@ class VideoCall extends Component {
             )}
           </View>
         }
-        <View style={styles.buttonBar}>
-          <Icon.Button
-            style={styles.iconStyle}
-            backgroundColor="#0093E9"
-            name={this.state.audMute ? 'mic-off' : 'mic'}
-            onPress={() => this.toggleAudio()}
-          />
-          <Icon.Button
-            style={styles.iconStyle}
-            backgroundColor="#0093E9"
-            name="call-end"
-            color={this.state.color ? 'red' : 'white'}
-            onPress={() => this.endCall()}
-          />
-          <Icon.Button
-            style={styles.iconStyle}
-            backgroundColor="#0093E9"
-            name={this.state.vidMute ? 'videocam-off' : 'videocam'}
-            onPress={() => this.toggleVideo()}
-          />
-        </View>
+        {!calling && receiving && !this.state.joinSucceed ? (
+          <View
+            style={{
+              width: '100%',
+              position: 'absolute',
+              bottom: '12%',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: '12%',
+            }}>
+            <TouchableOpacity
+              onPress={this.acceptCall}
+              style={{
+                height: 80,
+                width: 80,
+                borderRadius: 40,
+                backgroundColor: 'green',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Icon name="call" style={{color: 'white', fontSize: 48}} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.rejectCall}
+              style={{
+                height: 80,
+                width: 80,
+                borderRadius: 40,
+                backgroundColor: 'red',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Icon name="call-end" style={{color: 'white', fontSize: 48}} />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.buttonBar}>
+            <Icon.Button
+              style={styles.iconStyle}
+              backgroundColor="#0093E9"
+              name={this.state.audMute ? 'mic-off' : 'mic'}
+              onPress={() => this.toggleAudio()}
+            />
+            <Icon.Button
+              style={styles.iconStyle}
+              backgroundColor="#0093E9"
+              name="call-end"
+              color={this.state.color ? 'red' : 'white'}
+              onPress={() => this.endCall()}
+            />
+            <Icon.Button
+              style={styles.iconStyle}
+              backgroundColor="#0093E9"
+              name={this.state.vidMute ? 'videocam-off' : 'videocam'}
+              onPress={() => this.toggleVideo()}
+            />
+          </View>
+        )}
       </View>
     );
   }

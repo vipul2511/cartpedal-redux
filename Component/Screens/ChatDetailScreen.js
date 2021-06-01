@@ -122,6 +122,7 @@ class ChatDetailScreen extends React.Component {
       searchText: '',
       currentSearchIdIndex: undefined,
       currentIdsList: [],
+      calling: false,
     };
   }
 
@@ -1861,96 +1862,73 @@ class ChatDetailScreen extends React.Component {
     this.setState({message: text});
   };
 
-  NotificationCallPhone = (type) => {
+  NotificationCallPhone = async (type) => {
     if (!this.props.isConnected) {
       alert('It Seems that you are offline');
       return;
     }
-    if (type === 1) {
-      // this.props.navigation.navigate('VideoCallScreen', {
-      //   useravatar: this.props.route.params.useravatar,
-      //   token: '',
-      //   channel: '',
-      //   calling: true,
-      //   receiving: false,
-      // });
-      // let formData = new FormData();
-      // formData.append('user_id', this.state.userId);
-      // formData.append('calling_id', this.props.route.params.userid);
-      // var RecentShare = `${BASE_URL}api-user/generate-token`;
-      // fetch(RecentShare, {
-      //   method: 'Post',
-      //   headers: new Headers({
-      //     'Content-Type': 'multipart/form-data',
-      //     device_id: '1111',
-      //     device_token: this.state.fcmToken,
-      //     device_type: Platform.OS,
-      //     Authorization: JSON.parse(this.state.userAccessToken),
-      //   }),
-      //   body: formData,
-      // })
-      //   .then((response) => response.json())
-      //   .then((responseData) => {
-      //     console.log(JSON.stringify(responseData.data.channel, null, 2));
-      //     if (responseData.code == '200') {
-      //       this.props.navigation.navigate('VideoCallScreen', {
-      //         useravatar: this.props.route.params.useravatar,
-      //         token: responseData.data.token,
-      //         channel: responseData.data.channel,
-      //         calling: true,
-      //         receiving: false,
-      //       });
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //   })
-      //   .done();
-    }
-    if (type === 0) {
-      this.props.navigation.navigate('VoiceCallScreen', {
-        useravatar: this.props.route.params.useravatar,
-      });
-    }
-    let formData = new FormData();
-    formData.append('user_id', this.state.userId);
-    formData.append('toid', this.props.route.params.userid);
-    formData.append('calltype', type);
-    formData.append('type', type);
-    var RecentShare = `${BASE_URL}api-user/call-notification`;
-    console.log({
+    const headers = new Headers({
       'Content-Type': 'multipart/form-data',
       device_id: '1111',
       device_token: this.state.fcmToken,
       device_type: Platform.OS,
       Authorization: JSON.parse(this.state.userAccessToken),
     });
-    console.log(formData);
-    fetch(RecentShare, {
-      method: 'Post',
-      headers: new Headers({
-        'Content-Type': 'multipart/form-data',
-        device_id: '1111',
-        device_token: this.state.fcmToken,
-        device_type: Platform.OS,
-        Authorization: JSON.parse(this.state.userAccessToken),
-      }),
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log(JSON.stringify(responseData, null, 2));
-        if (responseData.code == '200') {
-          if (type == 1) {
+    if (type === 1) {
+      try {
+        this.setState({calling: true});
+        let formData = new FormData();
+        formData.append('user_id', this.state.userId);
+        formData.append('calling_id', this.props.route.params.userid);
+        var RecentShare = `${BASE_URL}api-user/generate-token`;
+        const response1 = await fetch(RecentShare, {
+          method: 'Post',
+          headers: headers,
+          body: formData,
+        });
+        const result1 = await response1.json();
+        if (result1.code == '200') {
+          let formData = new FormData();
+          formData.append('user_id', this.state.userId);
+          formData.append('toid', this.props.route.params.userid);
+          formData.append('calltype', 1);
+          formData.append('type', 0);
+          formData.append('token', result1.data.token);
+          formData.append('channel', result1.data.channel);
+          var RecentShare = `${BASE_URL}api-user/call-notification`;
+          const response2 = await fetch(RecentShare, {
+            method: 'Post',
+            headers,
+            body: formData,
+          });
+          const result2 = await response2.json();
+          if (result2.code == '200') {
+            this.setState({calling: false});
+            this.props.navigation.navigate('VideoCallScreen', {
+              useravatar: this.props.route.params.useravatar,
+              token: result1.data.token,
+              channel: result1.data.channel,
+              calling: false,
+              receiving: true,
+            });
           } else {
+            alert('something went wrong');
+            this.setState({calling: false});
           }
         } else {
+          alert('something went wrong');
+          this.setState({calling: false});
         }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .done();
+      } catch (error) {
+        alert('something went wrong');
+        this.setState({calling: false});
+      }
+    }
+    if (type === 0) {
+      // this.props.navigation.navigate('VoiceCallScreen', {
+      //   useravatar: this.props.route.params.useravatar,
+      // });
+    }
   };
 
   deleteMessages = (type) => {
@@ -2224,7 +2202,8 @@ class ChatDetailScreen extends React.Component {
           <Spinner
             visible={
               (this.props.conversationLoading && !this.state.live) ||
-              this.state.uploading
+              this.state.uploading ||
+              this.state.calling
             }
             color="#F01738"
             textStyle={styles.spinnerTextStyle}

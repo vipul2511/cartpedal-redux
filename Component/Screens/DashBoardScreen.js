@@ -344,29 +344,31 @@ class DashBoardScreen extends Component {
       .getInitialNotification();
     if (notificationOpen) {
       firebase.notifications().removeAllDeliveredNotifications();
-      const {
-        groupid,
-        fromid,
-        name,
-        mobile,
-        avatar,
-        about,
-        msg_type,
-        groupname,
-        groupavatar,
-        member,
-      } = notificationOpen.notification.data;
-      this.props.navigation.navigate('ChatDetailScreen', {
-        userid: groupid != '0' ? groupid : fromid,
-        username: groupname != '' ? groupname : name,
-        useravatar: groupavatar != '' ? groupavatar : avatar,
-        userabout: about,
-        userphone: mobile,
-        msg_type: msg_type,
-        groupId: groupid != '0' ? groupid : fromid,
-        groupexit: false,
-        membersCount: !member || member == '' ? 2 : member.split(',').length,
-      });
+      console.log(notificationOpen.notification);
+      console.log(notificationOpen.notification.data);
+      // const {
+      //   groupid,
+      //   fromid,
+      //   name,
+      //   mobile,
+      //   avatar,
+      //   about,
+      //   msg_type,
+      //   groupname,
+      //   groupavatar,
+      //   member,
+      // } = notificationOpen.notification.data;
+      // this.props.navigation.navigate('ChatDetailScreen', {
+      //   userid: groupid != '0' ? groupid : fromid,
+      //   username: groupname != '' ? groupname : name,
+      //   useravatar: groupavatar != '' ? groupavatar : avatar,
+      //   userabout: about,
+      //   userphone: mobile,
+      //   msg_type: msg_type,
+      //   groupId: groupid != '0' ? groupid : fromid,
+      //   groupexit: false,
+      //   membersCount: !member || member == '' ? 2 : member.split(',').length,
+      // });
     }
 
     this.listener1 = firebase.notifications().onNotification((notification) => {
