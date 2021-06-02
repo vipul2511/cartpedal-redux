@@ -413,7 +413,6 @@ class DashBoardScreen extends Component {
           channelName,
           calltype,
         } = notification.data;
-        console.log(JSON.stringify(notification.data, null, 2));
         if (calltype == '1' && type == '0') {
           this.props.navigation.navigate('VideoCallScreen', {
             fromid,

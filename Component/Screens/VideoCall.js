@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
 import AsyncStorage from '@react-native-community/async-storage';
-import {Text} from 'native-base';
 import React, {Component} from 'react';
 import {
   View,
@@ -39,29 +38,6 @@ class VideoCall extends Component {
     };
   }
   componentDidMount = async () => {
-    AsyncStorage.getItem('@fcmtoken').then((token) => {
-      if (token) {
-        this.setState({fcmToken: token});
-      }
-    });
-    AsyncStorage.getItem('@access_token').then((accessToken) => {
-      if (accessToken) {
-        this.setState({userAccessToken: accessToken});
-      }
-    });
-
-    this.listener1 = firebase.notifications().onNotification((notification) => {
-      if (notification.data.type === '2') {
-        this.rejectCall();
-      }
-    });
-
-    this.listener2 = firebase.messaging().onMessage((m) => {
-      if (m.data.type === '2') {
-        this.rejectCall();
-      }
-    });
-
     const {calling, receiving} = this.props.route.params;
     this._engine = await RtcEngine.create(this.state.appId);
     await this._engine.enableVideo();
@@ -95,6 +71,29 @@ class VideoCall extends Component {
         0,
       );
     }
+
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
+      if (token) {
+        this.setState({fcmToken: token});
+      }
+    });
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      if (accessToken) {
+        this.setState({userAccessToken: accessToken});
+      }
+    });
+
+    this.listener1 = firebase.notifications().onNotification((notification) => {
+      if (notification.data.type === '2') {
+        this.rejectCall();
+      }
+    });
+
+    this.listener2 = firebase.messaging().onMessage((m) => {
+      if (m.data.type === '2') {
+        this.rejectCall();
+      }
+    });
   };
 
   componentWillUnmount() {
@@ -127,15 +126,13 @@ class VideoCall extends Component {
       formData.append('type', 2);
       formData.append('token', this.state.token);
       formData.append('channel', this.state.channelName);
-      console.log(formData, 'REJECTING');
       var RecentShare = `${BASE_URL}api-user/call-notification`;
       const response2 = await fetch(RecentShare, {
         method: 'Post',
         headers,
         body: formData,
       });
-      const result = await response2.json();
-      console.log(result);
+      await response2.json();
     } catch (error) {
       console.log(error);
     }

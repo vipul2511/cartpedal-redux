@@ -1900,7 +1900,6 @@ class ChatDetailScreen extends React.Component {
           formData.append('token', result1.data.token);
           formData.append('channel', result1.data.channel);
           var RecentShare = `${BASE_URL}api-user/call-notification`;
-          console.log(formData, 'CALLING');
           const response2 = await fetch(RecentShare, {
             method: 'Post',
             headers,
