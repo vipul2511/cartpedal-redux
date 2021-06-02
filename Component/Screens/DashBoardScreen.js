@@ -234,7 +234,7 @@ class DashBoardScreen extends Component {
     formData.append('user_id', id);
     formData.append('block_id', block_id);
     formData.append('type', 0);
-
+    console.log(block_id);
     var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',

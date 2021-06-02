@@ -67,6 +67,7 @@ import {ViewAll} from '../Component/Screens/ViewAll';
 import EditImageUpdateProduct from '../Component/Screens/EditImageUpdateProduct';
 import VideoCall from '../Component/Screens/VideoCall';
 import VoiceCall from '../Component/Screens/voiceCall';
+import BlockedUsers from '../Component/Screens/BlockedUsers';
 const Stack = createStackNavigator();
 
 export function MainStack() {
@@ -75,7 +76,7 @@ export function MainStack() {
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="ViewContact" component={ViewContact} />
       <Stack.Screen name="ViewAll" component={ViewAll} />
-
+      <Stack.Screen name="BlockedUsers" component={BlockedUsers} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen
         name="ForgotPasswordScreen"

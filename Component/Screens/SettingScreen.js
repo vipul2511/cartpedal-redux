@@ -21,6 +21,8 @@ import {BASE_URL} from '../Component/ApiClient';
 import {resetStore} from '../../redux/actions';
 import {connect} from 'react-redux';
 import OfflineUserScreen from './OfflineUserScreen';
+import {Icon} from 'native-base';
+
 class SettingScreen extends Component {
   constructor(props) {
     super(props);
@@ -411,6 +413,46 @@ class SettingScreen extends Component {
               </View>
               <View style={styles.Profile2InfoContainer}>
                 <Text style={styles.PersonNameStyle}>Report an Issue</Text>
+                <Text style={styles.ProfileDescription} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.Profile2Container}
+              onPress={() => {
+                this.props.navigation.navigate('BlockedUsers');
+              }}>
+              <View
+                style={[
+                  styles.Profile2ImageContainer,
+                  {justifyContent: 'center', alignItems: 'center'},
+                ]}>
+                <TouchableOpacity
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    this.props.navigation.navigate('BlockedUsers');
+                  }}>
+                  <View
+                    style={[
+                      styles.Profile2ImageViewStyle,
+                      {
+                        backgroundColor: 'red',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      },
+                    ]}>
+                    <Icon
+                      type="MaterialIcons"
+                      name="block"
+                      style={{color: 'white'}}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.Profile2InfoContainer}>
+                <Text style={styles.PersonNameStyle}>Blocked Users</Text>
                 <Text style={styles.ProfileDescription} />
               </View>
             </TouchableOpacity>
