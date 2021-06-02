@@ -1892,33 +1892,16 @@ class ChatDetailScreen extends React.Component {
         });
         const result1 = await response1.json();
         if (result1.code == '200') {
-          let formData = new FormData();
-          formData.append('user_id', this.state.userId);
-          formData.append('toid', this.props.route.params.userid);
-          formData.append('calltype', 1);
-          formData.append('type', 0);
-          formData.append('token', result1.data.token);
-          formData.append('channel', result1.data.channel);
-          var RecentShare = `${BASE_URL}api-user/call-notification`;
-          const response2 = await fetch(RecentShare, {
-            method: 'Post',
-            headers,
-            body: formData,
+          this.setState({calling: false});
+          this.props.navigation.navigate('VideoCallScreen', {
+            fromid: this.state.userId,
+            toid: this.props.route.params.userid,
+            useravatar: this.props.route.params.useravatar,
+            token: result1.data.token,
+            channel: result1.data.channel,
+            calling: true,
+            receiving: false,
           });
-          const result2 = await response2.json();
-          if (result2.code == '200') {
-            this.setState({calling: false});
-            this.props.navigation.navigate('VideoCallScreen', {
-              useravatar: this.props.route.params.useravatar,
-              token: result1.data.token,
-              channel: result1.data.channel,
-              calling: true,
-              receiving: false,
-            });
-          } else {
-            alert('something went wrong');
-            this.setState({calling: false});
-          }
         } else {
           alert('something went wrong');
           this.setState({calling: false});
@@ -1929,9 +1912,37 @@ class ChatDetailScreen extends React.Component {
       }
     }
     if (type === 0) {
-      // this.props.navigation.navigate('VoiceCallScreen', {
-      //   useravatar: this.props.route.params.useravatar,
-      // });
+      try {
+        this.setState({calling: true});
+        let formData = new FormData();
+        formData.append('user_id', this.state.userId);
+        formData.append('calling_id', this.props.route.params.userid);
+        var RecentShare = `${BASE_URL}api-user/generate-token`;
+        const response1 = await fetch(RecentShare, {
+          method: 'Post',
+          headers: headers,
+          body: formData,
+        });
+        const result1 = await response1.json();
+        if (result1.code == '200') {
+          this.setState({calling: false});
+          this.props.navigation.navigate('VoiceCallScreen', {
+            fromid: this.state.userId,
+            toid: this.props.route.params.userid,
+            useravatar: this.props.route.params.useravatar,
+            token: result1.data.token,
+            channel: result1.data.channel,
+            calling: true,
+            receiving: false,
+          });
+        } else {
+          alert('something went wrong');
+          this.setState({calling: false});
+        }
+      } catch (error) {
+        alert('something went wrong');
+        this.setState({calling: false});
+      }
     }
   };
 

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import RtcEngine, {
   RtcLocalView,
@@ -36,8 +37,23 @@ class VideoCall extends Component {
       fcmToken: '',
       userAccessToken: '',
     };
+    if (Platform.OS === 'android') {
+      this.requestCameraAndAudioPermission().then(() => {
+        console.log('requested!');
+      });
+    }
   }
   componentDidMount = async () => {
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
+      if (token) {
+        this.setState({fcmToken: token});
+      }
+    });
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      if (accessToken) {
+        this.setState({userAccessToken: accessToken});
+      }
+    });
     const {calling, receiving} = this.props.route.params;
     this._engine = await RtcEngine.create(this.state.appId);
     await this._engine.enableVideo();
@@ -64,36 +80,48 @@ class VideoCall extends Component {
       });
     });
     if (calling && !receiving) {
-      this._engine?.joinChannel(
+      await this._engine?.joinChannel(
         this.state.token,
         this.state.channelName,
         null,
         0,
       );
+      this.requestCallNotification();
     }
-
-    AsyncStorage.getItem('@fcmtoken').then((token) => {
-      if (token) {
-        this.setState({fcmToken: token});
-      }
-    });
-    AsyncStorage.getItem('@access_token').then((accessToken) => {
-      if (accessToken) {
-        this.setState({userAccessToken: accessToken});
-      }
-    });
 
     this.listener1 = firebase.notifications().onNotification((notification) => {
       if (notification.data.type === '2') {
-        this.rejectCall();
+        // this.rejectCall();
+        this.endCall();
       }
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
       if (m.data.type === '2') {
-        this.rejectCall();
+        // this.rejectCall();
       }
     });
+  };
+
+  requestCameraAndAudioPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      ]);
+      if (
+        granted['android.permission.RECORD_AUDIO'] ===
+          PermissionsAndroid.RESULTS.GRANTED &&
+        granted['android.permission.CAMERA'] ===
+          PermissionsAndroid.RESULTS.GRANTED
+      ) {
+        console.log('You can use the cameras & mic');
+      } else {
+        console.log('Permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   componentWillUnmount() {
@@ -133,6 +161,34 @@ class VideoCall extends Component {
         body: formData,
       });
       await response2.json();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  requestCallNotification = async () => {
+    try {
+      const headers = new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      });
+      let formData = new FormData();
+      formData.append('user_id', this.props.route.params.fromid);
+      formData.append('toid', this.props.route.params.toid);
+      formData.append('calltype', 1);
+      formData.append('type', 0);
+      formData.append('token', this.state.token);
+      formData.append('channel', this.state.channelName);
+      var RecentShare = `${BASE_URL}api-user/call-notification`;
+      const response2 = await fetch(RecentShare, {
+        method: 'Post',
+        headers,
+        body: formData,
+      });
+      const result2 = await response2.json();
     } catch (error) {
       console.log(error);
     }

@@ -379,8 +379,15 @@ class DashBoardScreen extends Component {
           channelName,
           calltype,
         } = notificationOpen.notification.data;
-        if (calltype == '1' && type == '0') {
-          this.props.navigation.navigate('VideoCallScreen', {
+        if (type == '0') {
+          let screen = null;
+          if (calltype == '1') {
+            screen = 'VideoCallScreen';
+          }
+          if (calltype == '0') {
+            screen = 'VoiceCallScreen';
+          }
+          this.props.navigation.navigate(screen, {
             fromid,
             toid,
             useravatar: avatar,
@@ -413,8 +420,15 @@ class DashBoardScreen extends Component {
           channelName,
           calltype,
         } = notification.data;
-        if (calltype == '1' && type == '0') {
-          this.props.navigation.navigate('VideoCallScreen', {
+        if (type == '0') {
+          let screen = null;
+          if (calltype == '1') {
+            screen = 'VideoCallScreen';
+          }
+          if (calltype == '0') {
+            screen = 'VoiceCallScreen';
+          }
+          this.props.navigation.navigate(screen, {
             fromid,
             toid,
             useravatar: avatar,
@@ -478,8 +492,15 @@ class DashBoardScreen extends Component {
             channelName,
             calltype,
           } = m.notification.data;
-          if (calltype == '1' && type == '0') {
-            this.props.navigation.navigate('VideoCallScreen', {
+          if (type == '0') {
+            let screen = null;
+            if (calltype == '1') {
+              screen = 'VideoCallScreen';
+            }
+            if (calltype == '0') {
+              screen = 'VoiceCallScreen';
+            }
+            this.props.navigation.navigate(screen, {
               fromid,
               toid,
               useravatar: avatar,
