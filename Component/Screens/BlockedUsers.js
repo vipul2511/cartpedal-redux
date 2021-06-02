@@ -23,29 +23,29 @@ import resp from 'rn-responsive-font';
 import {BASE_URL} from '../Component/ApiClient';
 
 const BlockedUsers = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
-  //   const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [contacts, setContacts] = useState([]);
   const [fcmToken, setFcmToken] = useState('');
   const [userId, setUserId] = useState('');
   const [userAccessToken, setUserAccessToken] = useState('');
 
   useEffect(() => {
-    AsyncStorage.getItem('@fcmtoken').then((token) => {
+    async function foo() {
+      const token = await AsyncStorage.getItem('@fcmtoken');
       if (token) {
         setFcmToken(JSON.parse(token));
       }
-    });
-    AsyncStorage.getItem('@user_id').then((uid) => {
+      const uid = await AsyncStorage.getItem('@user_id');
       if (uid) {
         setUserId(uid);
       }
-    });
-    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      const accessToken = await AsyncStorage.getItem('@access_token');
       if (accessToken) {
         setUserAccessToken(accessToken);
-        // fetchContacts();
       }
-    });
+      fetchContacts(token, uid, accessToken);
+    }
+    foo();
   }, []);
 
   const unblock = (block_id) => {
@@ -71,45 +71,41 @@ const BlockedUsers = ({navigation}) => {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          // eslint-disable-next-line no-alert
           alert('User is unblocked');
         } else {
         }
       })
       .catch((error) => {})
-      .finally(() => setLoading(false))
+      .finally(() => fetchContacts())
       .done();
   };
 
-  const fetchContacts = () => {
+  const fetchContacts = (
+    token = fcmToken,
+    uid = userId,
+    accessToken = userAccessToken,
+  ) => {
     setLoading(true);
-    console.log({
-      'Content-Type': 'application/json',
-      device_id: '1234',
-      device_token: fcmToken,
-      device_type: Platform.OS,
-      Authorization: JSON.parse(userAccessToken),
-    });
-    console.log(`${BASE_URL}api-user/block-user?user_id=${userId}`);
-    fetch(`${BASE_URL}api-user/block-user?user_id=${userId}`, {
+    fetch(`${BASE_URL}api-user/block-users?user_id=${uid}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         device_id: '1234',
-        device_token: fcmToken,
+        device_token: token,
         device_type: Platform.OS,
-        Authorization: JSON.parse(userAccessToken),
+        Authorization: JSON.parse(accessToken),
       },
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         if (responseData.code === 200) {
-          console.log(JSON.stringify(responseData.data));
+          setContacts(responseData.data);
         } else {
+          setContacts([]);
         }
       })
       .catch((error) => {
+        setContacts([]);
         console.log(error);
       })
       .finally(() => setLoading(false));
@@ -140,87 +136,38 @@ const BlockedUsers = ({navigation}) => {
           </View>
           <View style={styles.SearchContainer} />
         </View>
-        <List style={{flex: 1}}>
-          <ListItem avatar>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://c.ndtvimg.com/2020-07/m7opt04g_ms-dhoni-afp_625x300_06_July_20.jpg',
-                }}
-              />
-            </Left>
-            <Body style={{height: 72, justifyContent: 'center'}}>
-              <Text>Gaurav Jain</Text>
-              <Text note>+91 9399729705</Text>
-            </Body>
-            <Right style={{height: 72, justifyContent: 'center'}}>
-              <Button
-                onPress={() => unblock(170)}
-                danger
-                style={{paddingHorizontal: '8%', borderRadius: 8}}>
-                <Text style={{color: 'white'}}>UNBLOCK</Text>
-              </Button>
-            </Right>
-          </ListItem>
-          <ListItem avatar>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://c.ndtvimg.com/2020-07/m7opt04g_ms-dhoni-afp_625x300_06_July_20.jpg',
-                }}
-              />
-            </Left>
-            <Body style={{height: 72, justifyContent: 'center'}}>
-              <Text>Gaurav Jain</Text>
-              <Text note>+91 9399729705</Text>
-            </Body>
-            <Right style={{height: 72, justifyContent: 'center'}}>
-              <Button danger style={{paddingHorizontal: '8%', borderRadius: 8}}>
-                <Text style={{color: 'white'}}>UNBLOCK</Text>
-              </Button>
-            </Right>
-          </ListItem>
-          <ListItem avatar>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://c.ndtvimg.com/2020-07/m7opt04g_ms-dhoni-afp_625x300_06_July_20.jpg',
-                }}
-              />
-            </Left>
-            <Body style={{height: 72, justifyContent: 'center'}}>
-              <Text>Gaurav Jain</Text>
-              <Text note>+91 9399729705</Text>
-            </Body>
-            <Right style={{height: 72, justifyContent: 'center'}}>
-              <Button danger style={{paddingHorizontal: '8%', borderRadius: 8}}>
-                <Text style={{color: 'white'}}>UNBLOCK</Text>
-              </Button>
-            </Right>
-          </ListItem>
-          <ListItem avatar>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://c.ndtvimg.com/2020-07/m7opt04g_ms-dhoni-afp_625x300_06_July_20.jpg',
-                }}
-              />
-            </Left>
-            <Body style={{height: 72, justifyContent: 'center'}}>
-              <Text>Gaurav Jain</Text>
-              <Text note>+91 9399729705</Text>
-            </Body>
-            <Right style={{height: 72, justifyContent: 'center'}}>
-              <Button danger style={{paddingHorizontal: '8%', borderRadius: 8}}>
-                <Text style={{color: 'white'}}>UNBLOCK</Text>
-              </Button>
-            </Right>
-          </ListItem>
-        </List>
+        {contacts.length === 0 && !loading ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text>No Blocked Users Found</Text>
+          </View>
+        ) : (
+          <List style={{flex: 1}}>
+            {contacts.map(({id, name, avatar, mobile}, index) => (
+              <ListItem avatar>
+                <Left>
+                  <Thumbnail
+                    source={{
+                      uri: avatar,
+                    }}
+                  />
+                </Left>
+                <Body style={{height: 72, justifyContent: 'center'}}>
+                  <Text>{name}</Text>
+                  <Text note>{mobile}</Text>
+                </Body>
+                <Right style={{height: 72, justifyContent: 'center'}}>
+                  <Button
+                    onPress={() => unblock(id)}
+                    danger
+                    style={{paddingHorizontal: '8%', borderRadius: 8}}>
+                    <Text style={{color: 'white'}}>UNBLOCK</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+            ))}
+          </List>
+        )}
       </View>
     </SafeAreaView>
   );
