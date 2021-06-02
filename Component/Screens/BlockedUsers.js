@@ -24,7 +24,7 @@ import {BASE_URL} from '../Component/ApiClient';
 
 const BlockedUsers = ({navigation}) => {
   const [loading, setLoading] = useState(false);
-  const [contacts, setContacts] = useState([]);
+  //   const [contacts, setContacts] = useState([]);
   const [fcmToken, setFcmToken] = useState('');
   const [userId, setUserId] = useState('');
   const [userAccessToken, setUserAccessToken] = useState('');
