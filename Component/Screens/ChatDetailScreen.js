@@ -1871,78 +1871,83 @@ class ChatDetailScreen extends React.Component {
       alert('It Seems that you are offline');
       return;
     }
-    const headers = new Headers({
-      'Content-Type': 'multipart/form-data',
-      device_id: '1111',
-      device_token: this.state.fcmToken,
-      device_type: Platform.OS,
-      Authorization: JSON.parse(this.state.userAccessToken),
-    });
-    if (type === 1) {
-      try {
-        this.setState({calling: true});
-        let formData = new FormData();
-        formData.append('user_id', this.state.userId);
-        formData.append('calling_id', this.props.route.params.userid);
-        var RecentShare = `${BASE_URL}api-user/generate-token`;
-        const response1 = await fetch(RecentShare, {
-          method: 'Post',
-          headers: headers,
-          body: formData,
-        });
-        const result1 = await response1.json();
-        if (result1.code == '200') {
-          this.setState({calling: false});
-          this.props.navigation.navigate('VideoCallScreen', {
-            fromid: this.state.userId,
-            toid: this.props.route.params.userid,
-            useravatar: this.props.route.params.useravatar,
-            token: result1.data.token,
-            channel: result1.data.channel,
-            calling: true,
-            receiving: false,
+    if (this.props.route.params.msg_type == '0') {
+      const headers = new Headers({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1111',
+        device_token: this.state.fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(this.state.userAccessToken),
+      });
+      if (type === 1) {
+        try {
+          this.setState({calling: true});
+          let formData = new FormData();
+          formData.append('user_id', this.state.userId);
+          formData.append('calling_id', this.props.route.params.userid);
+          var RecentShare = `${BASE_URL}api-user/generate-token`;
+          const response1 = await fetch(RecentShare, {
+            method: 'Post',
+            headers: headers,
+            body: formData,
           });
-        } else {
+          const result1 = await response1.json();
+          if (result1.code == '200') {
+            this.setState({calling: false});
+            this.props.navigation.navigate('VideoCallScreen', {
+              fromid: this.state.userId,
+              toid: this.props.route.params.userid,
+              useravatar: this.props.route.params.useravatar,
+              token: result1.data.token,
+              channel: result1.data.channel,
+              calling: true,
+              receiving: false,
+            });
+          } else {
+            alert('something went wrong');
+            this.setState({calling: false});
+          }
+        } catch (error) {
           alert('something went wrong');
           this.setState({calling: false});
         }
-      } catch (error) {
-        alert('something went wrong');
-        this.setState({calling: false});
+      }
+      if (type === 0) {
+        try {
+          this.setState({calling: true});
+          let formData = new FormData();
+          formData.append('user_id', this.state.userId);
+          formData.append('calling_id', this.props.route.params.userid);
+          var RecentShare = `${BASE_URL}api-user/generate-token`;
+          const response1 = await fetch(RecentShare, {
+            method: 'Post',
+            headers: headers,
+            body: formData,
+          });
+          const result1 = await response1.json();
+          if (result1.code == '200') {
+            this.setState({calling: false});
+            this.props.navigation.navigate('VoiceCallScreen', {
+              fromid: this.state.userId,
+              toid: this.props.route.params.userid,
+              useravatar: this.props.route.params.useravatar,
+              token: result1.data.token,
+              channel: result1.data.channel,
+              calling: true,
+              receiving: false,
+            });
+          } else {
+            alert('something went wrong');
+            this.setState({calling: false});
+          }
+        } catch (error) {
+          alert('something went wrong');
+          this.setState({calling: false});
+        }
       }
     }
-    if (type === 0) {
-      try {
-        this.setState({calling: true});
-        let formData = new FormData();
-        formData.append('user_id', this.state.userId);
-        formData.append('calling_id', this.props.route.params.userid);
-        var RecentShare = `${BASE_URL}api-user/generate-token`;
-        const response1 = await fetch(RecentShare, {
-          method: 'Post',
-          headers: headers,
-          body: formData,
-        });
-        const result1 = await response1.json();
-        if (result1.code == '200') {
-          this.setState({calling: false});
-          this.props.navigation.navigate('VoiceCallScreen', {
-            fromid: this.state.userId,
-            toid: this.props.route.params.userid,
-            useravatar: this.props.route.params.useravatar,
-            token: result1.data.token,
-            channel: result1.data.channel,
-            calling: true,
-            receiving: false,
-          });
-        } else {
-          alert('something went wrong');
-          this.setState({calling: false});
-        }
-      } catch (error) {
-        alert('something went wrong');
-        this.setState({calling: false});
-      }
+    if (this.props.route.params.msg_type == '1') {
+      alert('not implemented for group');
     }
   };
 
