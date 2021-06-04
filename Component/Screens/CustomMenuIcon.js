@@ -54,4 +54,43 @@ class CustomMenuIcon extends Component {
   }
 }
 
+export class CustomMenuIcon2 extends Component {
+  _menu = null;
+  setMenuRef = (ref) => {
+    this._menu = ref;
+  };
+  showMenu = () => {
+    this._menu.show();
+  };
+  hideMenu = () => {
+    this._menu.hide();
+  };
+  option1Click = () => {
+    this._menu.hide();
+    this.props.option1Click();
+  };
+
+  render() {
+    return (
+      <View style={this.props.menustyle}>
+        <Menu
+          ref={this.setMenuRef}
+          button={
+            <TouchableOpacity onPress={this.showMenu}>
+              <Image
+                source={{
+                  uri:
+                    'https://raw.githubusercontent.com/AboutReact/sampleresource/master/menu_icon.png',
+                }}
+                style={{width: 20, height: 20, tintColor: 'black'}}
+              />
+            </TouchableOpacity>
+          }>
+          <MenuItem onPress={this.option1Click}>Show Product</MenuItem>
+        </Menu>
+      </View>
+    );
+  }
+}
+
 export default CustomMenuIcon;

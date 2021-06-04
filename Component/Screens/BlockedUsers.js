@@ -106,7 +106,6 @@ const BlockedUsers = ({navigation}) => {
       })
       .catch((error) => {
         setContacts([]);
-        console.log(error);
       })
       .finally(() => setLoading(false));
   };

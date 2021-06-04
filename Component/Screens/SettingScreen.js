@@ -277,6 +277,26 @@ class SettingScreen extends Component {
                 <Text style={styles.ProfileDescription}>Save Your Uploads</Text>
               </TouchableOpacity>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.Profile2Container}>
+              <View style={styles.Profile2ImageContainer}>
+                <TouchableOpacity>
+                  <Image
+                    source={require('../images/product_icon.png')}
+                    style={styles.Profile2ImageViewStyle}
+                  />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={styles.Profile2InfoContainer}
+                onPress={() => {
+                  this.props.navigation.navigate('ProductListScreen2');
+                }}>
+                <Text style={styles.PersonNameStyle}>Hided Products</Text>
+                <Text style={styles.ProfileDescription}>
+                  Your hided products
+                </Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.Profile2Container}
               onPress={() => {

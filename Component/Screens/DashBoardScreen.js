@@ -17,7 +17,6 @@ import {
   Share,
   ScrollView,
   Platform,
-  Linking,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import CustomMenuIcon from './CustomMenuIcon';
@@ -234,7 +233,7 @@ class DashBoardScreen extends Component {
     formData.append('user_id', id);
     formData.append('block_id', block_id);
     formData.append('type', 0);
-    console.log(block_id);
+
     var fav = `${BASE_URL}api-user/block-fav-user`;
     fetch(fav, {
       method: 'Post',
@@ -263,6 +262,7 @@ class DashBoardScreen extends Component {
       .finally(() => this.setState({spinner: false}))
       .done();
   };
+
   ContactListall(contacts) {
     var EditProfileUrl = `${BASE_URL}api-product/contact-list`;
     fetch(EditProfileUrl, {
@@ -909,22 +909,6 @@ class DashBoardScreen extends Component {
                             storyArray: this.props.storiesData,
                           });
                         }}>
-                        {/* <Image
-                          source={
-                            item.avatar == null
-                              ? this.state.pickedImage
-                              : {uri: item.avatar}
-                          }
-                          style={[
-                            styles.ImageViewStyleStory,
-                            {
-                              borderColor:
-                                item.stories[0].viewer == 1
-                                  ? '#06BE7E'
-                                  : '#F01738',
-                            },
-                          ]}
-                        /> */}
                         <FastImage
                           source={
                             item.avatar == null

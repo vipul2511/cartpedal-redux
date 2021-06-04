@@ -68,6 +68,7 @@ import EditImageUpdateProduct from '../Component/Screens/EditImageUpdateProduct'
 import VideoCall from '../Component/Screens/VideoCall';
 import VoiceCall from '../Component/Screens/voiceCall';
 import BlockedUsers from '../Component/Screens/BlockedUsers';
+import ProductListScreen2 from '../Component/Screens/ProductListScreen2';
 const Stack = createStackNavigator();
 
 export function MainStack() {
@@ -147,6 +148,7 @@ export function MainStack() {
       <Stack.Screen name="SettingFullView" component={SettingFullView} />
       <Stack.Screen name="AccountScreen" component={AccountScreen} />
       <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
+      <Stack.Screen name="ProductListScreen2" component={ProductListScreen2} />
       <Stack.Screen
         name="ProductMasterUpdate"
         component={ProductMasterUpdate}
