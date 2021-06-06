@@ -69,6 +69,7 @@ import VideoCall from '../Component/Screens/VideoCall';
 import VoiceCall from '../Component/Screens/voiceCall';
 import BlockedUsers from '../Component/Screens/BlockedUsers';
 import ProductListScreen2 from '../Component/Screens/ProductListScreen2';
+import GroupSettingsScreen from '../Component/Screens/GroupSettingsScreen';
 const Stack = createStackNavigator();
 
 export function MainStack() {
@@ -185,6 +186,11 @@ export function MainStack() {
         component={ChatGroupListScreen}
       />
       <Stack.Screen name="GroupProfile" component={GroupProfile} />
+      <Stack.Screen
+        name="GroupSettingsScreen"
+        component={GroupSettingsScreen}
+      />
+
       <Stack.Screen
         name="NewContactListScreen"
         component={NewContactListScreen}

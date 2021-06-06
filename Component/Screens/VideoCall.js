@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Platform,
   PermissionsAndroid,
+  SafeAreaView,
 } from 'react-native';
 import RtcEngine, {
   RtcLocalView,
@@ -99,6 +100,7 @@ class VideoCall extends Component {
     this.listener2 = firebase.messaging().onMessage((m) => {
       if (m.data.type === '2') {
         // this.rejectCall();
+        this.endCall();
       }
     });
   };
@@ -125,6 +127,7 @@ class VideoCall extends Component {
   };
 
   componentWillUnmount() {
+    // this._engine.destroy();
     this.listener1();
     this.listener2();
   }
@@ -241,129 +244,131 @@ class VideoCall extends Component {
   videoView() {
     const {calling, receiving} = this.props.route.params;
     return (
-      <View style={styles.max}>
-        {
-          <View style={styles.max}>
-            {!this.state.joinSucceed ? (
-              <View
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.max}>
+          {
+            <View style={styles.max}>
+              {!this.state.joinSucceed ? (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: 'black',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Image
+                    source={
+                      this.props.route.params.useravatar
+                        ? {
+                            uri: this.props.route.params.useravatar,
+                          }
+                        : require('../images/default_user.png')
+                    }
+                    style={{width: 220, height: 220}}
+                  />
+                </View>
+              ) : (
+                <View style={styles.fullView}>
+                  {this.state.peerIds.length > 0 ? (
+                    <View style={styles.full}>
+                      <RtcRemoteView.SurfaceView
+                        style={styles.full}
+                        uid={this.state.peerIds[0]}
+                        channelId={this.state.channelName}
+                        renderMode={VideoRenderMode.Hidden}
+                      />
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        flex: 1,
+                        backgroundColor: 'black',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Image
+                        source={
+                          this.props.route.params.useravatar
+                            ? {
+                                uri: this.props.route.params.useravatar,
+                              }
+                            : require('../images/default_user.png')
+                        }
+                        style={{width: 220, height: 220}}
+                      />
+                    </View>
+                  )}
+                  <RtcLocalView.SurfaceView
+                    style={[styles.localVideoStyle, {width: 120, height: 180}]}
+                    zOrderMediaOverlay={true}
+                    channelId={this.state.channelName}
+                    renderMode={VideoRenderMode.Hidden}
+                  />
+                </View>
+              )}
+            </View>
+          }
+          {!calling && receiving && !this.state.joinSucceed ? (
+            <View
+              style={{
+                width: '100%',
+                position: 'absolute',
+                bottom: '12%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: '12%',
+              }}>
+              <TouchableOpacity
+                onPress={this.acceptCall}
                 style={{
-                  flex: 1,
-                  backgroundColor: 'black',
+                  height: 80,
+                  width: 80,
+                  borderRadius: 40,
+                  backgroundColor: 'green',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Image
-                  source={
-                    this.props.route.params.useravatar
-                      ? {
-                          uri: this.props.route.params.useravatar,
-                        }
-                      : require('../images/default_user.png')
-                  }
-                  style={{width: 220, height: 220}}
-                />
-              </View>
-            ) : (
-              <View style={styles.fullView}>
-                {this.state.peerIds.length > 0 ? (
-                  <View style={styles.full}>
-                    <RtcRemoteView.SurfaceView
-                      style={styles.full}
-                      uid={this.state.peerIds[0]}
-                      channelId={this.state.channelName}
-                      renderMode={VideoRenderMode.Hidden}
-                    />
-                  </View>
-                ) : (
-                  <View
-                    style={{
-                      flex: 1,
-                      backgroundColor: 'black',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      source={
-                        this.props.route.params.useravatar
-                          ? {
-                              uri: this.props.route.params.useravatar,
-                            }
-                          : require('../images/default_user.png')
-                      }
-                      style={{width: 220, height: 220}}
-                    />
-                  </View>
-                )}
-                <RtcLocalView.SurfaceView
-                  style={[styles.localVideoStyle, {width: 120, height: 180}]}
-                  zOrderMediaOverlay={true}
-                  channelId={this.state.channelName}
-                  renderMode={VideoRenderMode.Hidden}
-                />
-              </View>
-            )}
-          </View>
-        }
-        {!calling && receiving && !this.state.joinSucceed ? (
-          <View
-            style={{
-              width: '100%',
-              position: 'absolute',
-              bottom: '12%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: '12%',
-            }}>
-            <TouchableOpacity
-              onPress={this.acceptCall}
-              style={{
-                height: 80,
-                width: 80,
-                borderRadius: 40,
-                backgroundColor: 'green',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon name="call" style={{color: 'white', fontSize: 48}} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.rejectCall}
-              style={{
-                height: 80,
-                width: 80,
-                borderRadius: 40,
-                backgroundColor: 'red',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon name="call-end" style={{color: 'white', fontSize: 48}} />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.buttonBar}>
-            <Icon.Button
-              style={styles.iconStyle}
-              backgroundColor="#0093E9"
-              name={this.state.audMute ? 'mic-off' : 'mic'}
-              onPress={() => this.toggleAudio()}
-            />
-            <Icon.Button
-              style={styles.iconStyle}
-              backgroundColor="#0093E9"
-              name="call-end"
-              color={this.state.color ? 'red' : 'white'}
-              onPress={() => this.endCall()}
-            />
-            <Icon.Button
-              style={styles.iconStyle}
-              backgroundColor="#0093E9"
-              name={this.state.vidMute ? 'videocam-off' : 'videocam'}
-              onPress={() => this.toggleVideo()}
-            />
-          </View>
-        )}
-      </View>
+                <Icon name="call" style={{color: 'white', fontSize: 48}} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.rejectCall}
+                style={{
+                  height: 80,
+                  width: 80,
+                  borderRadius: 40,
+                  backgroundColor: 'red',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Icon name="call-end" style={{color: 'white', fontSize: 48}} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.buttonBar}>
+              <Icon.Button
+                style={styles.iconStyle}
+                backgroundColor="#0093E9"
+                name={this.state.audMute ? 'mic-off' : 'mic'}
+                onPress={() => this.toggleAudio()}
+              />
+              <Icon.Button
+                style={styles.iconStyle}
+                backgroundColor="#0093E9"
+                name="call-end"
+                color={this.state.color ? 'red' : 'white'}
+                onPress={() => this.endCall()}
+              />
+              <Icon.Button
+                style={styles.iconStyle}
+                backgroundColor="#0093E9"
+                name={this.state.vidMute ? 'videocam-off' : 'videocam'}
+                onPress={() => this.toggleVideo()}
+              />
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
     );
   }
   render() {

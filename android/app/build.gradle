@@ -130,12 +130,12 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = false
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 /**
  * The preferred build flavor of JavaScriptCore.
@@ -170,15 +170,15 @@ android {
        javaMaxHeapSize "3g"
     }
     defaultConfig {
-        ndk {
-             abiFilters 'armeabi-v7a'
-        }
+        // ndk {
+        //      abiFilters 'armeabi-v7a'
+        // }
         applicationId "in.cartpedal"
         minSdkVersion rootProject.ext.minSdkVersion
          vectorDrawables.useSupportLibrary = true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
-        versionName "12.0"
+        versionCode 13
+        versionName "13.0"
         multiDexEnabled true
     }
     splits {

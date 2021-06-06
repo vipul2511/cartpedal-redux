@@ -782,6 +782,19 @@ export default class GroupProfile extends React.Component {
                 </ScrollView>
               </View>
             </View>
+            {this.state.showOptions && (
+              <View style={styles.Name}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('GroupSettingsScreen')
+                  }
+                  style={{paddingVertical: 18, paddingHorizontal: 14}}>
+                  <Text style={{fontSize: 15, color: '#F01738'}}>
+                    Group Settings
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <View style={styles.Name2}>
               <View style={{flexDirection: 'row'}}>
                 <View style={{marginLeft: 15, marginTop: 5}}>
@@ -820,7 +833,6 @@ export default class GroupProfile extends React.Component {
                         item.admin == true &&
                         this.state.showOptions == false
                       ) {
-                        console.log('working');
                         this.setState({showOptions: true});
                       }
 

@@ -8,7 +8,7 @@ import {Container, Icon, View} from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Sound from 'react-native-sound';
 import MediaMeta from 'react-native-media-meta';
-
+import LottieView from 'lottie-react-native';
 import {
   ScrollView,
   Image,
@@ -23,6 +23,7 @@ import {
   KeyboardAvoidingView,
   FlatList,
   TextInput,
+  Animated,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import DocumentPicker from 'react-native-document-picker';
@@ -58,6 +59,8 @@ import {PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import {ListFiles} from '../utils/FilesCaching';
 import {API_URL} from '../../Config';
 import {Tool, VESDK} from 'react-native-videoeditorsdk';
+import Draggable from 'react-native-draggable';
+import {Easing} from 'react-native-reanimated';
 
 let height = Dimensions.get('window').height;
 
@@ -69,10 +72,25 @@ const received = new Sound('received.mp3', Sound.MAIN_BUNDLE, (err) => {
   console.log(err, Platform.OS, 'YYYY');
 });
 
+function format(time) {
+  // Hours, minutes and seconds
+  var hrs = ~~(time / 3600);
+  var mins = ~~((time % 3600) / 60);
+  var secs = ~~time % 60;
+
+  // Output like "1:01" or "4:03:59" or "123:03:59"
+  var ret = '';
+  if (hrs > 0) {
+    ret += '' + hrs + ':' + (mins < 10 ? '0' : '');
+  }
+  ret += '' + String(mins).padStart(2, '0') + ':' + (secs < 10 ? '0' : '');
+  ret += '' + secs;
+  return ret;
+}
+
 class ChatDetailScreen extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       height: 40,
       open: false,
@@ -123,6 +141,11 @@ class ChatDetailScreen extends React.Component {
       currentSearchIdIndex: undefined,
       currentIdsList: [],
       calling: false,
+      locked: false,
+      timer: 0,
+      bottom: new Animated.Value(0),
+      spinValue: new Animated.Value(0),
+      progress: new Animated.Value(0),
     };
   }
 
@@ -343,6 +366,38 @@ class ChatDetailScreen extends React.Component {
     this.setState((p) => ({FILES: [...p.FILES, file]}));
   };
 
+  animateAndThenCancel = () => {
+    setTimeout(() => this.onCancel(), 2400);
+    Animated.parallel([
+      Animated.timing(this.state.bottom, {
+        toValue: -180,
+        duration: 800,
+        useNativeDriver: true,
+      }).start(() => {
+        Animated.timing(this.state.bottom, {
+          toValue: 0,
+          duration: 1200,
+          useNativeDriver: true,
+        }).start();
+      }),
+      Animated.timing(this.state.progress, {
+        toValue: 1,
+        duration: Platform.OS === 'android' ? 5000 : 4400,
+        useNativeDriver: true,
+      }).start(() => {
+        this.setState({
+          progress: new Animated.Value(0),
+        });
+        // this.onCancel();
+      }),
+      Animated.timing(this.state.spinValue, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }).start(() => this.setState({spinValue: new Animated.Value(0)})),
+    ]);
+  };
+
   componentDidMount = async () => {
     const FILES = await ListFiles();
     this.setState({FILES});
@@ -497,7 +552,7 @@ class ChatDetailScreen extends React.Component {
       type = '1';
     }
 
-    this.setState({message: '', height: 40});
+    // this.setState({message: '', height: 40});
     let messageToSent = null;
     if (replyID == '0') {
       messageToSent = {
@@ -593,6 +648,7 @@ class ChatDetailScreen extends React.Component {
           replyID = '0';
           this.setState({selectedMode: false, forwardMessageIds: []});
           this.setState({
+            message: '',
             showRelymsg: false,
             showaudiorply: false,
             showimagerply: false,
@@ -1638,6 +1694,15 @@ class ChatDetailScreen extends React.Component {
     const result = await audioRecorderPlayer.startRecorder(
       DocumentDirectoryPath + '/sample.mp4',
     );
+    if (this.interval) {
+      this.setState({timer: 0});
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    this.interval = setInterval(
+      () => this.setState((p) => ({timer: p.timer + 1})),
+      1000,
+    );
     audioRecorderPlayer.addRecordBackListener((e) => {
       return;
     });
@@ -1667,6 +1732,11 @@ class ChatDetailScreen extends React.Component {
   };
 
   onStopRecord = async () => {
+    this.setState({timer: 0, locked: false, recording: false});
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     const base64string = await readFile(result, 'base64');
@@ -1675,6 +1745,16 @@ class ChatDetailScreen extends React.Component {
       path: result,
     };
     this.sendAudio(data);
+  };
+
+  onCancel = async () => {
+    this.setState({timer: 0, locked: false, recording: false});
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    await audioRecorderPlayer.stopRecorder();
+    audioRecorderPlayer.removeRecordBackListener();
   };
 
   sendLocation = (location) => {
@@ -2213,7 +2293,11 @@ class ChatDetailScreen extends React.Component {
   };
 
   render() {
-    const {searching, forwardMessageTypes} = this.state;
+    const spin = this.state.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg'],
+    });
+    const {searching, forwardMessageTypes, message} = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -3686,36 +3770,93 @@ class ChatDetailScreen extends React.Component {
                           marginBottom: height * 0.001,
                           alignItems: 'center',
                         }}>
-                        <TextInput
-                          ref={(ref) => (this.inputRef = ref)}
-                          multiline={true}
-                          value={this.state.message}
-                          onContentSizeChange={(event) => {
-                            this.setState({
-                              height: event.nativeEvent.contentSize.height,
-                            });
-                          }}
-                          onChangeText={(text) => this.onChangeText(text)}
-                          placeholder="Type a message…"
-                          editable={this.state.editMode}
+                        <LottieView
                           style={{
-                            marginLeft: 10,
-                            marginRight: 10,
-                            backgroundColor: '#FFFFFF',
-                            color: '#0000008A',
-                            borderRadius: 1,
-                            width: '60%',
-                            height:
-                              Platform.OS === 'android'
-                                ? this.state.height
-                                : this.state.height + 20,
-                            fontSize: 15,
-                            paddingLeft: 10,
-                            borderWidth: 0,
-                            borderTopLeftRadius: this.state.borderval ? 0 : 15,
-                            borderBottomLeftRadius: 15,
+                            position: 'absolute',
+                            width: 36,
+                            height: 36,
+                            zIndex: 5,
+                            left: Platform.OS === 'android' ? 6 : 4,
+                            bottom: Platform.OS === 'android' ? 4 : 2,
                           }}
+                          progress={this.state.progress}
+                          source={require('../lottie/lf30_editor_usyzjoyb.json')}
                         />
+                        {this.state.recording ? (
+                          <View
+                            style={{
+                              width: '60%',
+                              backgroundColor: '#FFFFFF',
+                              color: '#0000008A',
+                              height:
+                                Platform.OS === 'android'
+                                  ? this.state.height
+                                  : this.state.height + 20,
+                              borderTopLeftRadius: this.state.borderval
+                                ? 0
+                                : 15,
+                              borderBottomLeftRadius: 15,
+                              marginLeft: 10,
+                              borderRadius: 1,
+                              paddingLeft: 10,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
+                            <Animated.View
+                              style={{
+                                zIndex: 10,
+                                transform: [{translateY: this.state.bottom}],
+                              }}>
+                              <Animated.View
+                                style={{transform: [{rotate: spin}]}}>
+                                <Icon
+                                  name="mic"
+                                  type="Ionicons"
+                                  style={{
+                                    color: 'red',
+                                    fontSize: 24,
+                                  }}
+                                />
+                              </Animated.View>
+                            </Animated.View>
+                            <Text style={{marginLeft: 4}}>
+                              {format(this.state.timer)}
+                            </Text>
+                          </View>
+                        ) : (
+                          <TextInput
+                            ref={(ref) => (this.inputRef = ref)}
+                            multiline={true}
+                            value={this.state.message}
+                            onContentSizeChange={(event) => {
+                              this.setState({
+                                height: event.nativeEvent.contentSize.height,
+                              });
+                            }}
+                            onChangeText={(text) => this.onChangeText(text)}
+                            placeholder="Type a message…"
+                            editable={this.state.editMode}
+                            style={{
+                              marginLeft: 10,
+                              marginRight: 10,
+                              backgroundColor: '#FFFFFF',
+                              color: '#0000008A',
+                              borderRadius: 1,
+                              width: '60%',
+                              height:
+                                Platform.OS === 'android'
+                                  ? this.state.height
+                                  : this.state.height + 20,
+                              fontSize: 15,
+                              paddingLeft: 10,
+                              borderWidth: 0,
+                              borderTopLeftRadius: this.state.borderval
+                                ? 0
+                                : 15,
+                              borderBottomLeftRadius: 15,
+                            }}
+                          />
+                        )}
                         <View
                           style={{
                             backgroundColor: '#FFFFFF',
@@ -3735,19 +3876,37 @@ class ChatDetailScreen extends React.Component {
                             marginBottom: height * 0.001,
                           }}>
                           <View style={{flexDirection: 'row'}}>
-                            <Icon
-                              onPress={() => {
-                                this.setState((p) => ({
-                                  open: !p.open,
-                                  editMode: !p.editMode,
-                                  message: '',
-                                }));
-                              }}
-                              name="attachment"
-                              type="MaterialIcons"
-                              style={{color: '#0000008A', marginRight: 8}}
-                            />
-                            {!this.state.message.length > 0 ? (
+                            {this.state.recording && !this.state.locked ? (
+                              <Icon
+                                name="chevron-back"
+                                type="Ionicons"
+                                style={{
+                                  fontSize: 24,
+                                  alignSelf: 'center',
+                                }}
+                              />
+                            ) : this.state.locked ? (
+                              <Text
+                                onPress={() => this.animateAndThenCancel()}
+                                style={{color: 'red'}}>
+                                CANCEL
+                              </Text>
+                            ) : (
+                              <Icon
+                                onPress={() => {
+                                  this.setState((p) => ({
+                                    open: !p.open,
+                                    editMode: !p.editMode,
+                                    message: '',
+                                  }));
+                                }}
+                                name="attachment"
+                                type="MaterialIcons"
+                                style={{color: '#0000008A', marginRight: 8}}
+                              />
+                            )}
+                            {!this.state.message.length > 0 &&
+                            !this.state.recording ? (
                               <Icon
                                 onPress={() => {
                                   this.launchCamera();
@@ -3757,66 +3916,164 @@ class ChatDetailScreen extends React.Component {
                                 style={{color: '#0000008A', marginRight: 8}}
                               />
                             ) : null}
+                            {this.state.recording && !this.state.locked && (
+                              <Text
+                                style={{
+                                  width: 200,
+                                  paddingHorizontal: 8,
+                                  alignSelf: 'center',
+                                }}>
+                                Slide to cancel
+                              </Text>
+                            )}
                           </View>
                         </View>
                         <View>
-                          <View
-                            style={{
-                              alignSelf: 'flex-end',
-                              width: this.state.recording ? 60 : 40,
-                              height: this.state.recording ? 60 : 40,
-                              margin: this.state.recording ? 0 : 10,
-                              borderRadius: this.state.recording ? 30 : 20,
-                              marginBottom: 8,
-                              backgroundColor: 'red',
-                              justifyContent: 'center',
-                            }}>
-                            <TouchableOpacity
-                              onLongPress={() => {
-                                this.startRecording();
-                                this.setState({recording: true});
-                              }}
-                              onPressOut={() => {
-                                this.createTwoButtonAlert();
-                                this.setState({recording: false});
-                              }}
-                              onPress={() => {
-                                if (this.state.message !== '') {
-                                  this.sendMessage();
-                                }
-                              }}>
-                              {this.state.message === '' ? (
-                                <Icon
-                                  name="mic"
-                                  type="Feather"
-                                  style={{
-                                    color: '#FFFFFF',
-                                    fontSize: 18,
-                                    alignSelf: 'center',
-                                  }}
-                                />
-                              ) : (
-                                <Icon
-                                  name="arrowright"
-                                  type="AntDesign"
-                                  style={{
-                                    fontSize: 20,
-                                    color: '#FFFFFF',
-                                    alignSelf: 'center',
-                                  }}
-                                />
-                              )}
-                              {/* <Icon
-                              name="arrowright"
-                              type="AntDesign"
+                          {this.state.recording && !this.state.locked ? (
+                            <View
                               style={{
-                                fontSize: 20,
-                                color: '#FFFFFF',
-                                alignSelf: 'center',
-                              }}
-                            /> */}
-                            </TouchableOpacity>
-                          </View>
+                                position: 'absolute',
+                                backgroundColor: 'white',
+                                height: 180,
+                                width: 60,
+                                zIndex: 0,
+                                bottom: 8,
+                                left: 0,
+                                borderRadius: 30,
+                                justifyContent: 'space-around',
+                                alignItems: 'center',
+                              }}>
+                              <Icon
+                                name="lock-open"
+                                type="Ionicons"
+                                style={{
+                                  fontSize: 26,
+                                  alignSelf: 'center',
+                                }}
+                              />
+                              <Icon
+                                name="chevron-up"
+                                type="Ionicons"
+                                style={{
+                                  fontSize: 24,
+                                  alignSelf: 'center',
+                                  marginBottom: 24,
+                                }}
+                              />
+                              <Icon
+                                name="chevron-up"
+                                type="Ionicons"
+                                style={{
+                                  color: '#FFFFFF',
+                                  fontSize: 18,
+                                  alignSelf: 'center',
+                                }}
+                              />
+                            </View>
+                          ) : null}
+                          <Draggable
+                            minX={-100}
+                            minY={-100}
+                            renderSize={this.state.recording ? 80 : 120}
+                            x={0}
+                            y={-32}
+                            // disabled={!this.state.recording}
+                            shouldReverse={true}
+                            onRelease={(e, wasDragging) => {
+                              // this.animate();
+                              // return;
+                              if (!wasDragging && this.state.recording) {
+                                this.onStopRecord();
+                                this.setState({recording: false});
+                                return;
+                              }
+                              if (
+                                this.state.recording &&
+                                e.nativeEvent.pageX / e.nativeEvent.pageY < 0.4
+                              ) {
+                                this.animateAndThenCancel();
+                                // this.onCancel();
+                              }
+                              if (
+                                this.state.recording &&
+                                e.nativeEvent.pageX / e.nativeEvent.pageY > 0.4
+                              ) {
+                                this.setState({locked: true});
+                              }
+                              if (
+                                !this.state.recording &&
+                                this.state.message !== ''
+                              ) {
+                                this.sendMessage();
+                              }
+                            }}
+                            onLongPress={() => {
+                              this.startRecording();
+                              this.setState({recording: true});
+                            }}
+                            onPress={() => {
+                              if (this.state.locked) {
+                                this.onStopRecord();
+                                return;
+                              }
+                              // if (this.state.message !== '') {
+                              //   this.sendMessage();
+                              // }
+                            }}>
+                            <View
+                              style={{
+                                alignSelf: 'flex-end',
+                                width:
+                                  this.state.recording && !this.state.locked
+                                    ? 60
+                                    : 40,
+                                height:
+                                  this.state.recording && !this.state.locked
+                                    ? 60
+                                    : 40,
+                                margin:
+                                  this.state.recording && !this.state.locked
+                                    ? 0
+                                    : 10,
+                                borderRadius:
+                                  this.state.recording && !this.state.locked
+                                    ? 30
+                                    : 20,
+                                marginBottom: 8,
+                                backgroundColor: 'red',
+                                justifyContent: 'center',
+                              }}>
+                              <View>
+                                {this.state.message === '' ? (
+                                  <Icon
+                                    name={
+                                      this.state.locked ? 'arrowright' : 'mic'
+                                    }
+                                    type={
+                                      this.state.locked
+                                        ? 'AntDesign'
+                                        : 'Feather'
+                                    }
+                                    style={{
+                                      color: '#FFFFFF',
+                                      fontSize: 18,
+                                      alignSelf: 'center',
+                                    }}
+                                  />
+                                ) : (
+                                  <Icon
+                                    name="arrowright"
+                                    type="AntDesign"
+                                    style={{
+                                      fontSize: 20,
+                                      color: '#FFFFFF',
+                                      alignSelf: 'center',
+                                    }}
+                                  />
+                                )}
+                              </View>
+                            </View>
+                          </Draggable>
                         </View>
                       </View>
                     )}

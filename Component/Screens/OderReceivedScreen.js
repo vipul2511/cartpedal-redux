@@ -190,9 +190,9 @@ class CartPlaceScreen extends Component {
         this.hideLoading();
         console.log(responseData);
         if (responseData.code == '200') {
-          alert('Order has been accepted');
+          setTimeout(() => alert('Order has been accepted'), 10);
         } else {
-          alert(responseData.message);
+          setTimeout(() => alert(responseData.message), 10);
         }
       })
       .catch((error) => {

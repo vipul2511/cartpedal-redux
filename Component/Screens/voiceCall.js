@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Platform,
   PermissionsAndroid,
+  SafeAreaView,
 } from 'react-native';
 import RtcEngine from 'react-native-agora';
 import firebase from 'react-native-firebase';
@@ -252,107 +253,109 @@ class VoiceCall extends Component {
   videoView() {
     const {calling, receiving} = this.props.route.params;
     return (
-      <View style={styles.max}>
-        {
-          <View style={styles.max}>
-            {!this.state.joinSucceed ? (
-              <View
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.max}>
+          {
+            <View style={styles.max}>
+              {!this.state.joinSucceed ? (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: 'black',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Image
+                    source={
+                      this.props.route.params.useravatar
+                        ? {
+                            uri: this.props.route.params.useravatar,
+                          }
+                        : require('../images/default_user.png')
+                    }
+                    style={{width: 220, height: 220}}
+                  />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: 'black',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Image
+                    source={
+                      this.props.route.params.useravatar
+                        ? {uri: this.props.route.params.useravatar}
+                        : require('../images/default_user.png')
+                    }
+                    style={{width: 220, height: 220}}></Image>
+                </View>
+              )}
+            </View>
+          }
+          {!calling && receiving && !this.state.joinSucceed ? (
+            <View
+              style={{
+                width: '100%',
+                position: 'absolute',
+                bottom: '12%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: '12%',
+              }}>
+              <TouchableOpacity
+                onPress={this.acceptCall}
                 style={{
-                  flex: 1,
-                  backgroundColor: 'black',
+                  height: 80,
+                  width: 80,
+                  borderRadius: 40,
+                  backgroundColor: 'green',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Image
-                  source={
-                    this.props.route.params.useravatar
-                      ? {
-                          uri: this.props.route.params.useravatar,
-                        }
-                      : require('../images/default_user.png')
-                  }
-                  style={{width: 220, height: 220}}
-                />
-              </View>
-            ) : (
-              <View
+                <Icon name="call" style={{color: 'white', fontSize: 48}} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.rejectCall}
                 style={{
-                  flex: 1,
-                  backgroundColor: 'black',
+                  height: 80,
+                  width: 80,
+                  borderRadius: 40,
+                  backgroundColor: 'red',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Image
-                  source={
-                    this.props.route.params.useravatar
-                      ? {uri: this.props.route.params.useravatar}
-                      : require('../images/default_user.png')
-                  }
-                  style={{width: 220, height: 220}}></Image>
-              </View>
-            )}
-          </View>
-        }
-        {!calling && receiving && !this.state.joinSucceed ? (
-          <View
-            style={{
-              width: '100%',
-              position: 'absolute',
-              bottom: '12%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: '12%',
-            }}>
-            <TouchableOpacity
-              onPress={this.acceptCall}
-              style={{
-                height: 80,
-                width: 80,
-                borderRadius: 40,
-                backgroundColor: 'green',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon name="call" style={{color: 'white', fontSize: 48}} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.rejectCall}
-              style={{
-                height: 80,
-                width: 80,
-                borderRadius: 40,
-                backgroundColor: 'red',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon name="call-end" style={{color: 'white', fontSize: 48}} />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.buttonBar}>
-            <Icon.Button
-              style={styles.iconStyle}
-              backgroundColor="#0093E9"
-              name={this.state.audMute ? 'mic-off' : 'mic'}
-              onPress={() => this.toggleAudio()}
-            />
-            <Icon.Button
-              style={styles.iconStyle}
-              backgroundColor="#0093E9"
-              name="call-end"
-              color={this.state.color ? 'red' : 'white'}
-              onPress={() => this.endCall()}
-            />
-            <Icon.Button
-              style={styles.iconStyle}
-              backgroundColor="#0093E9"
-              name={!this.state.vidMute ? 'volume-mute' : 'volume-up'}
-              onPress={() => this.toggleVideo()}
-            />
-          </View>
-        )}
-      </View>
+                <Icon name="call-end" style={{color: 'white', fontSize: 48}} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.buttonBar}>
+              <Icon.Button
+                style={styles.iconStyle}
+                backgroundColor="#0093E9"
+                name={this.state.audMute ? 'mic-off' : 'mic'}
+                onPress={() => this.toggleAudio()}
+              />
+              <Icon.Button
+                style={styles.iconStyle}
+                backgroundColor="#0093E9"
+                name="call-end"
+                color={this.state.color ? 'red' : 'white'}
+                onPress={() => this.endCall()}
+              />
+              <Icon.Button
+                style={styles.iconStyle}
+                backgroundColor="#0093E9"
+                name={!this.state.vidMute ? 'volume-mute' : 'volume-up'}
+                onPress={() => this.toggleVideo()}
+              />
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
     );
   }
   render() {

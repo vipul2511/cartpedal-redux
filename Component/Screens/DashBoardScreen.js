@@ -442,13 +442,43 @@ class DashBoardScreen extends Component {
     });
 
     this.listener2 = firebase.messaging().onMessage((m) => {
-      if (
-        this.props.chatting &&
-        (m.data.fromid == this.props.chattingUserId ||
-          m.data.groupid == this.props.chattingUserId)
-      ) {
+      if (m.data.type === '') {
+        if (
+          this.props.chatting &&
+          (m.data.fromid == this.props.chattingUserId ||
+            m.data.groupid == this.props.chattingUserId)
+        ) {
+        } else {
+          displayLocalNotification(m.data);
+        }
       } else {
-        displayLocalNotification(m.data);
+        const {
+          fromid,
+          toid,
+          avatar,
+          type,
+          token,
+          channelName,
+          calltype,
+        } = m.data;
+        if (type == '0') {
+          let screen = null;
+          if (calltype == '1') {
+            screen = 'VideoCallScreen';
+          }
+          if (calltype == '0') {
+            screen = 'VoiceCallScreen';
+          }
+          this.props.navigation.navigate(screen, {
+            fromid,
+            toid,
+            useravatar: avatar,
+            token,
+            channel: channelName,
+            calling: false,
+            receiving: true,
+          });
+        }
       }
     });
 
