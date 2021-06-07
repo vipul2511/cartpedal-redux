@@ -2253,6 +2253,32 @@ class ChatDetailScreen extends React.Component {
 
       .done();
   }
+
+  swipeToShowReply = (replymsg) => {
+    this.setState({replyMessage: replymsg});
+    if (replymsg.text.msg_type == 'text') {
+      this.setState({showRelymsg: true, borderval: true});
+    }
+    if (replymsg.text.msg_type == 'location') {
+      this.setState({showlocationmsg: true, borderval: true});
+    }
+    if (replymsg.text.msg_type == 'image') {
+      this.setState({showimagerply: true, borderval: true});
+    }
+    if (replymsg.text.msg_type == 'audio') {
+      this.setState({showaudiorply: true, borderval: true});
+    }
+    if (replymsg.text.msg_type == 'video') {
+      this.setState({showvideorply: true, borderval: true});
+    }
+    if (replymsg.text.msg_type == 'contact') {
+      this.setState({showcontactrply: true, borderval: true});
+    }
+    if (replymsg.text.msg_type == 'file') {
+      this.setState({showfilerply: true, borderval: true});
+    }
+  };
+
   replytype = () => {
     let replymsg = this.state.replyMessage;
     if (replymsg.text.msg_type == 'text') {
@@ -2297,7 +2323,7 @@ class ChatDetailScreen extends React.Component {
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg'],
     });
-    const {searching, forwardMessageTypes, message} = this.state;
+    const {searching, forwardMessageTypes} = this.state;
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -2593,6 +2619,7 @@ class ChatDetailScreen extends React.Component {
                   </View>
                 </View>
                 <FlatList
+                  scrollEnabled={true}
                   nestedScrollEnabled={true}
                   style={{paddingHorizontal: 10, marginTop: '20%', flex: 1}}
                   data={
@@ -2634,6 +2661,7 @@ class ChatDetailScreen extends React.Component {
                         membersCount={this.props.route.params.membersCount}
                         startMessageCaller={this.startMessageCaller}
                         searchText={this.state.searchText}
+                        swipeToShowReply={this.swipeToShowReply}
                       />
                     );
                   }}

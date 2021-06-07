@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,13 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Platform,
+  Animated,
 } from 'react-native';
 import Hyperlink from 'react-native-hyperlink';
 import {useNavigation} from '@react-navigation/native';
 import ProgressCircle from 'react-native-progress-circle';
-
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {RectButton} from 'react-native-gesture-handler';
 import Lightbox from 'react-native-lightbox';
 import VideoPlayer from 'react-native-video-player';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
@@ -56,7 +58,9 @@ export const MessageComponent = ({
   membersCount,
   startMessageCaller,
   searchText,
+  swipeToShowReply,
 }) => {
+  const swiper = useRef();
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(initialize(message.sending));
   const [pause, setpause] = useState(false);
@@ -67,6 +71,21 @@ export const MessageComponent = ({
   });
   const [opacity, setOpacity] = useState(0);
   const [download, setDownload] = useState({downloaded: false, percentage: 0});
+
+  const renderLeftActions = (progress, dragX) => {
+    const trans = dragX.interpolate({
+      inputRange: [0, 50, 51],
+      outputRange: [-50, 0, 1],
+    });
+    return (
+      <Animated.View style={{transform: [{translateX: trans}], width: 50}}>
+        <RectButton style={styles.replyAction}>
+          <Icon type="MaterialIcons" name="reply" />
+          <Text>Reply</Text>
+        </RectButton>
+      </Animated.View>
+    );
+  };
 
   const onLoadStart = () => {
     setOpacity(1);
@@ -4311,18 +4330,45 @@ export const MessageComponent = ({
   }
 
   return (
-    <TouchableOpacity
-      activeOpacity={1}
-      style={
-        inList
-          ? {
-              backgroundColor: `rgba(0,0,0,0.2)`,
+    <Swipeable
+      ref={swiper}
+      friction={2}
+      leftThreshold={20}
+      renderLeftActions={renderLeftActions}
+      onSwipeableLeftOpen={() => {
+        swiper.current.close();
+        swipeToShowReply({text: message});
+      }}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={
+          inList
+            ? {
+                backgroundColor: `rgba(0,0,0,0.2)`,
+              }
+            : {}
+        }
+        onPress={() => {
+          if (selectedMode) {
+            if (!inList) {
+              appendMessages(message.id, message.msg_type);
+              replyMessage({
+                text: message,
+              });
+              if (message.msg_type === 'text') {
+                copyText({
+                  id: message.id,
+                  text: message.fmsg !== '' ? message.fmsg : message.tmsg,
+                });
+              }
+            } else {
+              removeMessages(message.id, message.msg_type);
             }
-          : {}
-      }
-      onPress={() => {
-        if (selectedMode) {
-          if (!inList) {
+          }
+        }}
+        onLongPress={() => {
+          if (!selectedMode) {
+            toggleSelectedMode();
             appendMessages(message.id, message.msg_type);
             replyMessage({
               text: message,
@@ -4333,37 +4379,20 @@ export const MessageComponent = ({
                 text: message.fmsg !== '' ? message.fmsg : message.tmsg,
               });
             }
-          } else {
-            removeMessages(message.id, message.msg_type);
           }
-        }
-      }}
-      onLongPress={() => {
-        if (!selectedMode) {
-          toggleSelectedMode();
-          appendMessages(message.id, message.msg_type);
-          replyMessage({
-            text: message,
-          });
-          if (message.msg_type === 'text') {
-            copyText({
-              id: message.id,
-              text: message.fmsg !== '' ? message.fmsg : message.tmsg,
-            });
-          }
-        }
-      }}>
-      <View
-        style={
-          message.id === scrollMessageId
-            ? {
-                backgroundColor: 'rgba(0,0,0,0.2)',
-              }
-            : {}
-        }>
-        {content}
-      </View>
-    </TouchableOpacity>
+        }}>
+        <View
+          style={
+            message.id === scrollMessageId
+              ? {
+                  backgroundColor: 'rgba(0,0,0,0.2)',
+                }
+              : {}
+          }>
+          {content}
+        </View>
+      </TouchableOpacity>
+    </Swipeable>
   );
 };
 
@@ -4374,5 +4403,11 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     padding: 15,
+  },
+  replyAction: {
+    flex: 1,
+    alignItems: 'center',
+    fontSize: 12,
+    justifyContent: 'center',
   },
 });
