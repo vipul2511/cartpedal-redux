@@ -1955,7 +1955,7 @@ export const MessageComponent = ({
                 onLongPressOriginImage={() => {
                   if (!selectedMode) {
                     toggleSelectedMode();
-                    appendMessages(message.id, message.msg_type);
+                    appendMessages(message.id, message.msg_type, false);
                     replyMessage({
                       text: message,
                     });
@@ -2251,7 +2251,7 @@ export const MessageComponent = ({
               onLongPressOriginImage={() => {
                 if (!selectedMode) {
                   toggleSelectedMode();
-                  appendMessages(message.id, message.msg_type);
+                  appendMessages(message.id, message.msg_type, true);
                   replyMessage({
                     text: message,
                   });
@@ -3960,7 +3960,7 @@ export const MessageComponent = ({
                   onPress={() => {
                     if (selectedMode) {
                       if (!inList) {
-                        appendMessages(message.id, message.msg_type);
+                        appendMessages(message.id, message.msg_type, false);
                         replyMessage({
                           text: message,
                         });
@@ -3972,14 +3972,14 @@ export const MessageComponent = ({
                           });
                         }
                       } else {
-                        removeMessages(message.id, message.msg_type);
+                        removeMessages(message.id, message.msg_type, false);
                       }
                     }
                   }}
                   onLongPress={() => {
                     if (!selectedMode) {
                       toggleSelectedMode();
-                      appendMessages(message.id, message.msg_type);
+                      appendMessages(message.id, message.msg_type, false);
                       replyMessage({
                         text: message,
                       });
@@ -4239,7 +4239,11 @@ export const MessageComponent = ({
                 onPress={() => {
                   if (selectedMode) {
                     if (!inList) {
-                      appendMessages(message.id, message.msg_type);
+                      appendMessages(
+                        message.id,
+                        message.msg_type,
+                        message.fmsg !== '',
+                      );
                       replyMessage({
                         text: message,
                       });
@@ -4251,14 +4255,22 @@ export const MessageComponent = ({
                         });
                       }
                     } else {
-                      removeMessages(message.id, message.msg_type);
+                      removeMessages(
+                        message.id,
+                        message.msg_type,
+                        message.fmsg !== '',
+                      );
                     }
                   }
                 }}
                 onLongPress={() => {
                   if (!selectedMode) {
                     toggleSelectedMode();
-                    appendMessages(message.id, message.msg_type);
+                    appendMessages(
+                      message.id,
+                      message.msg_type,
+                      message.fmsg !== '',
+                    );
                     replyMessage({
                       text: message,
                     });
@@ -4351,7 +4363,11 @@ export const MessageComponent = ({
         onPress={() => {
           if (selectedMode) {
             if (!inList) {
-              appendMessages(message.id, message.msg_type);
+              appendMessages(
+                message.id,
+                message.msg_type,
+                message.fmsg !== '' || message.fattach !== '',
+              );
               replyMessage({
                 text: message,
               });
@@ -4362,14 +4378,22 @@ export const MessageComponent = ({
                 });
               }
             } else {
-              removeMessages(message.id, message.msg_type);
+              removeMessages(
+                message.id,
+                message.msg_type,
+                message.fmsg !== '' || message.fattach !== '',
+              );
             }
           }
         }}
         onLongPress={() => {
           if (!selectedMode) {
             toggleSelectedMode();
-            appendMessages(message.id, message.msg_type);
+            appendMessages(
+              message.id,
+              message.msg_type,
+              message.fmsg !== '' || message.fattach !== '',
+            );
             replyMessage({
               text: message,
             });

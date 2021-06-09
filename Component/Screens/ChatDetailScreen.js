@@ -107,6 +107,7 @@ class ChatDetailScreen extends React.Component {
       recording: false,
       forwardMessageIds: [],
       forwardMessageTypes: [],
+      isFrom: [],
       userAccessToken: '',
       selectedMode: false,
       copyTexts: [],
@@ -312,19 +313,21 @@ class ChatDetailScreen extends React.Component {
     }));
   };
 
-  appendMessages = (messageId, type) => {
+  appendMessages = (messageId, type, isFrom = false) => {
     this.setState((p) => ({
       ...p,
       forwardMessageIds: [...p.forwardMessageIds, messageId],
       forwardMessageTypes: [...p.forwardMessageTypes, type],
+      isFrom: [...p.isFrom, isFrom],
     }));
   };
 
-  removeMessages = async (messageId, type) => {
+  removeMessages = async (messageId, type, isFrom = false) => {
     await this.setState((p) => ({
       ...p,
       forwardMessageIds: p.forwardMessageIds.filter((i) => i !== messageId),
       forwardMessageTypes: p.forwardMessageTypes.filter((i) => i !== type),
+      isFrom: p.isFrom.filter((i) => i !== isFrom),
       copyTexts: p.copyTexts.filter((i) => i.id !== messageId),
     }));
     if (this.state.forwardMessageIds.length === 0) {
@@ -2412,18 +2415,36 @@ class ChatDetailScreen extends React.Component {
                           {this.state.selectedMode ? (
                             <>
                               {this.state.forwardMessageIds.length === 1 ? (
-                                <Icon
-                                  name="reply"
-                                  type="Entypo"
-                                  onPress={() => {
-                                    this.replytype();
-                                  }}
-                                  style={{
-                                    color: '#2B2B2B',
-                                    fontSize: 18,
-                                    marginRight: 15,
-                                  }}
-                                />
+                                <>
+                                  <Icon
+                                    name="reply"
+                                    type="Entypo"
+                                    onPress={() => {
+                                      this.replytype();
+                                    }}
+                                    style={{
+                                      color: '#2B2B2B',
+                                      fontSize: 18,
+                                      marginRight: 15,
+                                    }}
+                                  />
+                                  {this.state.isFrom[0] && (
+                                    <Icon
+                                      name="information-circle-outline"
+                                      type="Ionicons"
+                                      onPress={() => {
+                                        this.props.navigation.navigate(
+                                          'MessageInfoScreen',
+                                        );
+                                      }}
+                                      style={{
+                                        color: '#2B2B2B',
+                                        fontSize: 24,
+                                        marginRight: 15,
+                                      }}
+                                    />
+                                  )}
+                                </>
                               ) : null}
                               <Icon
                                 name="delete"
@@ -3103,7 +3124,6 @@ class ChatDetailScreen extends React.Component {
                             <Image
                               style={{
                                 marginBottom: 5,
-                                color: '#191919',
                                 width: 40,
                                 height: 40,
                                 alignSelf: 'flex-end',

@@ -70,12 +70,15 @@ import VoiceCall from '../Component/Screens/voiceCall';
 import BlockedUsers from '../Component/Screens/BlockedUsers';
 import ProductListScreen2 from '../Component/Screens/ProductListScreen2';
 import GroupSettingsScreen from '../Component/Screens/GroupSettingsScreen';
+import MessageInfoScreen from '../Component/Screens/MessageInfoScreen';
 const Stack = createStackNavigator();
 
 export function MainStack() {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      <Stack.Screen name="MessageInfoScreen" component={MessageInfoScreen} />
+
       <Stack.Screen name="ViewContact" component={ViewContact} />
       <Stack.Screen name="ViewAll" component={ViewAll} />
       <Stack.Screen name="BlockedUsers" component={BlockedUsers} />
