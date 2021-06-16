@@ -215,11 +215,7 @@ export const MessageComponent = ({
     if (message.id) {
       const length =
         message.isread === null ? 0 : message.isread.split(',').length;
-      if (
-        length !== membersCount &&
-        !messageIdList.includes(message.id) &&
-        message.fmsg !== ''
-      ) {
+      if (length !== membersCount && !messageIdList.includes(message.id)) {
         startMessageCaller(message.id);
       }
     }

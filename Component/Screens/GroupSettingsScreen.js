@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Body, List, ListItem, Text} from 'native-base';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   SafeAreaView,

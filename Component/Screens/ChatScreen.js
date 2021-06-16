@@ -372,7 +372,7 @@ class ChatScreen extends Component {
                           membersCount:
                             !v.member || v.member == ''
                               ? 1
-                              : v.member.split(',').length,
+                              : v.member.split(',').length - 1,
                         });
                       }}>
                       <View

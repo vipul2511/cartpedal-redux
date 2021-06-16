@@ -2345,8 +2345,13 @@ class ChatDetailScreen extends React.Component {
       outputRange: ['0deg', '360deg'],
     });
     const {searching, forwardMessageTypes, chatList} = this.state;
+
     const isAllowed =
-      chatList.msgsend === undefined || chatList.msgsend == '0' ? true : false;
+      chatList.msgsend === undefined ||
+      chatList.msgsend == '0' ||
+      !!chatList.isAdmin
+        ? true
+        : false;
 
     return (
       <KeyboardAvoidingView
@@ -4174,7 +4179,7 @@ class ChatDetailScreen extends React.Component {
                       !isAllowed && (
                         <Text style={{margin: 10, color: 'red'}}>
                           You can't sent message to this group because only
-                          admin is alowed to send message in this group
+                          admin is allowed to send message in this group
                         </Text>
                       )}
                   </>
