@@ -605,7 +605,6 @@ class ChatDetailScreen extends React.Component {
       }));
     }
 
-    
     var raw = JSON.stringify({
       user_id: this.state.userId,
       toid: this.props.route.params.userid,
@@ -2161,6 +2160,15 @@ class ChatDetailScreen extends React.Component {
       return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
     });
   };
+
+  changeUpdateSettings = (param) => {
+    this.setState((p) => ({...p, chatList: {...p.chatList, isupdate: param}}));
+  };
+
+  changeMessageSettings = (param) => {
+    this.setState((p) => ({...p, chatList: {...p.chatList, msgsend: param}}));
+  };
+
   openProfile = () => {
     if (!this.props.isConnected) {
       alert('It Seems that you are offline');
@@ -2181,6 +2189,7 @@ class ChatDetailScreen extends React.Component {
     // console.log(groupid, '!!!');
 
     if (this.props.route.params.msg_type == '1') {
+      const {isupdate, msgsend} = this.state.chatList;
       if (this.state.useravatar) {
         this.props.navigation.navigate('GroupProfile', {
           imageURL: this.state.useravatar,
@@ -2189,6 +2198,10 @@ class ChatDetailScreen extends React.Component {
           phone: phone,
           groupId: groupid,
           changeProfile: this.changeProfile,
+          isupdate,
+          msgsend,
+          changeUpdateSettings: this.changeUpdateSettings,
+          changeMessageSettings: this.changeMessageSettings,
         });
       } else {
         this.props.navigation.navigate('GroupProfile', {
@@ -2198,6 +2211,10 @@ class ChatDetailScreen extends React.Component {
           phone: phone,
           groupId: groupid,
           changeProfile: this.changeProfile,
+          isupdate,
+          msgsend,
+          changeUpdateSettings: this.changeUpdateSettings,
+          changeMessageSettings: this.changeMessageSettings,
         });
       }
     } else {
@@ -2327,7 +2344,10 @@ class ChatDetailScreen extends React.Component {
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg'],
     });
-    const {searching, forwardMessageTypes} = this.state;
+    const {searching, forwardMessageTypes, chatList} = this.state;
+    const isAllowed =
+      chatList.msgsend === undefined || chatList.msgsend == '0' ? true : false;
+
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -2916,8 +2936,9 @@ class ChatDetailScreen extends React.Component {
                     </View>
                   </View>
                 )}
-                {this.props.route.params.groupexit == false ||
-                this.props.route.params.groupexit == undefined ? (
+                {(this.props.route.params.groupexit == false ||
+                  this.props.route.params.groupexit == undefined) &&
+                isAllowed ? (
                   <View>
                     {this.state.showRelymsg == true ? (
                       this.state.replyMessage.text.fmsg !== '' ? (
@@ -4138,10 +4159,25 @@ class ChatDetailScreen extends React.Component {
                     )}
                   </View>
                 ) : (
-                  <Text style={{margin: 10, color: 'red'}}>
-                    You can't sent message to this group because you're no
-                    longer a Participant
-                  </Text>
+                  <>
+                    {!(
+                      this.props.route.params.groupexit == false ||
+                      this.props.route.params.groupexit == undefined
+                    ) && (
+                      <Text style={{margin: 10, color: 'red'}}>
+                        You can't sent message to this group because you're no
+                        longer a Participant
+                      </Text>
+                    )}
+                    {(this.props.route.params.groupexit == false ||
+                      this.props.route.params.groupexit == undefined) &&
+                      !isAllowed && (
+                        <Text style={{margin: 10, color: 'red'}}>
+                          You can't sent message to this group because only
+                          admin is alowed to send message in this group
+                        </Text>
+                      )}
+                  </>
                 )}
               </View>
             ) : (

@@ -71,10 +71,16 @@ export default class GroupProfile extends React.Component {
         downloading: false,
         FILES: [],
         imageURL: this.props.route.params.imageURL,
+        isUpdateAllowed: this.props.route.params.isupdate == '0',
       });
     this.doubleClick = false;
     this.hidden = false;
   }
+
+  changeUpdateAllowed = (params) => {
+    this.setState({isUpdateAllowed: params});
+  };
+
   async componentDidMount() {
     const FILES = await ListFiles();
     this.setState({FILES});
@@ -505,6 +511,7 @@ export default class GroupProfile extends React.Component {
   };
 
   render() {
+    const isUpdateAllow = this.state.isUpdateAllowed || this.state.showOptions;
     return (
       <SafeAreaView style={styles.mainContainer}>
         <StatusBar barStyle="dark-content" backgroundColor={'#fff'} />
@@ -540,21 +547,23 @@ export default class GroupProfile extends React.Component {
                   }
                   style={{width: width, height: 300}}
                 />
-                <TouchableOpacity
-                  style={{
-                    position: 'absolute',
-                    right: 0,
-                    marginTop: 8,
-                    marginRight: 15,
-                  }}
-                  onPress={() => {
-                    this.setState({isImageModalVisible: true});
-                  }}>
-                  <Image
-                    source={require('../images/edit-tool_icon.png')}
-                    style={styles.EditButtonStyle}
-                  />
-                </TouchableOpacity>
+                {isUpdateAllow && (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      marginTop: 8,
+                      marginRight: 15,
+                    }}
+                    onPress={() => {
+                      this.setState({isImageModalVisible: true});
+                    }}>
+                    <Image
+                      source={require('../images/edit-tool_icon.png')}
+                      style={styles.EditButtonStyle}
+                    />
+                  </TouchableOpacity>
+                )}
               </TouchableOpacity>
             </View>
             <View style={styles.Description}>
@@ -562,7 +571,7 @@ export default class GroupProfile extends React.Component {
                 <View style={{marginLeft: 15, marginTop: 5}}>
                   <Text style={{fontSize: 15, color: '#F01738'}}>Name</Text>
                 </View>
-                {!this.state.isProfileModalVisible ? (
+                {!this.state.isProfileModalVisible && isUpdateAllow ? (
                   <TouchableOpacity
                     style={styles.EditbuttonContainer1}
                     onPress={() => {
@@ -629,7 +638,7 @@ export default class GroupProfile extends React.Component {
                     Description
                   </Text>
                 </View>
-                {!this.state.isEditModalVisible ? (
+                {!this.state.isEditModalVisible && isUpdateAllow ? (
                   <TouchableOpacity
                     style={styles.EditbuttonContainer}
                     onPress={() => {
@@ -785,9 +794,11 @@ export default class GroupProfile extends React.Component {
             {this.state.showOptions && (
               <View style={styles.Name}>
                 <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('GroupSettingsScreen')
-                  }
+                  onPress={() => {
+                    this.props.navigation.navigate('GroupSettingsScreen', {
+                      ...this.props.route.params,
+                    });
+                  }}
                   style={{paddingVertical: 18, paddingHorizontal: 14}}>
                   <Text style={{fontSize: 15, color: '#F01738'}}>
                     Group Settings

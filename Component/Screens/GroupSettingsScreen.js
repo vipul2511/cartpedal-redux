@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Body, List, ListItem, Text} from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -8,18 +8,95 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import RadioForm from 'react-native-simple-radio-button';
+import AsyncStorage from '@react-native-community/async-storage';
+import {BASE_URL} from '../Component/ApiClient';
 
 const radio_props = [
   {label: 'All participants', value: 0},
   {label: 'Only admins', value: 1},
 ];
 
-const GroupSettingsScreen = ({navigation}) => {
+const GroupSettingsScreen = ({
+  navigation,
+  route: {
+    params: {
+      isupdate,
+      msgsend,
+      groupId,
+      changeMessageSettings,
+      changeUpdateSettings,
+    },
+  },
+}) => {
+  const [userId, setUserId] = useState();
+  const [accessToken, setAccessToken] = useState();
+  const [fcmToken, setFcmToken] = useState('1234');
   const [groupInfo, setGroupInfo] = useState(false);
   const [sendMessage, setSendMessage] = useState(false);
+  const [groupInfoFlag, setGroupInfoFlag] = useState(isupdate);
+  const [sendMessageFlag, setSendMessageFlag] = useState(msgsend);
+
+  const update = (type, param) => {
+    let data = {user_id: userId, type, groupid: groupId};
+    if (type == '8') {
+      data = {...data, is_update: `${param}`, is_send: `${sendMessageFlag}`};
+    }
+    if (type == '9') {
+      data = {...data, is_send: `${param}`, is_update: `${groupInfoFlag}`};
+    }
+
+    var url = `${BASE_URL}api-message/update-group`;
+    fetch(url, {
+      method: 'Post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        device_id: '1234',
+        device_token: fcmToken,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(accessToken),
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.code == '200') {
+          if (type == '8') {
+            changeUpdateSettings(param);
+          }
+          if (type == '9') {
+            changeMessageSettings(param);
+          }
+        } else {
+        }
+      })
+      .catch((error) => {})
+      .done();
+  };
+
+  useEffect(() => {
+    AsyncStorage.getItem('@user_id').then((userId) => {
+      if (userId) {
+        setUserId(userId);
+      }
+    });
+
+    AsyncStorage.getItem('@fcmtoken').then((token) => {
+      if (token) {
+        setFcmToken(token);
+      }
+    });
+
+    AsyncStorage.getItem('@access_token').then((accessToken) => {
+      if (accessToken) {
+        setAccessToken(accessToken);
+      }
+    });
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.headerView}>
@@ -86,8 +163,10 @@ const GroupSettingsScreen = ({navigation}) => {
                 buttonColor="#F01738"
                 selectedButtonColor="#F01738"
                 radio_props={radio_props}
-                initial={0}
-                onPress={(value) => {}}
+                initial={groupInfoFlag}
+                onPress={(value) => {
+                  update(8, value);
+                }}
               />
             </View>
             <View
@@ -126,8 +205,10 @@ const GroupSettingsScreen = ({navigation}) => {
                 buttonColor="#F01738"
                 selectedButtonColor="#F01738"
                 radio_props={radio_props}
-                initial={0}
-                onPress={(value) => {}}
+                initial={sendMessageFlag}
+                onPress={(value) => {
+                  update(9, value);
+                }}
               />
             </View>
             <View
