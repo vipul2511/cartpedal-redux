@@ -8,7 +8,8 @@ import {
   ListItem,
   Thumbnail,
 } from 'native-base';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import moment from 'moment';
 import {
   SafeAreaView,
   StyleSheet,
@@ -62,7 +63,7 @@ const ForUser = () => {
   );
 };
 
-const ForGroup = () => {
+const ForGroup = ({read, delivered, remainigReads}) => {
   return (
     <Content>
       <View
@@ -88,55 +89,30 @@ const ForGroup = () => {
           <Icon name="checkmark-done" style={{color: '#34B7F1'}} />
         </View>
         <List>
-          <ListItem avatar style={{height: 84}}>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://cdn.britannica.com/25/222725-050-170F622A/Indian-cricketer-Mahendra-Singh-Dhoni-2011.jpg',
-                }}
-              />
-            </Left>
-            <Body>
-              <Text>Kumar Pratik</Text>
-              <Text note>Today, 11:50 am</Text>
-            </Body>
-          </ListItem>
-          <ListItem avatar style={{height: 84}}>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://cdn.britannica.com/25/222725-050-170F622A/Indian-cricketer-Mahendra-Singh-Dhoni-2011.jpg',
-                }}
-              />
-            </Left>
-            <Body>
-              <Text>Kumar Pratik</Text>
-              <Text note>Today, 11:50 am</Text>
-            </Body>
-          </ListItem>
-          <ListItem avatar style={{height: 84}}>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://cdn.britannica.com/25/222725-050-170F622A/Indian-cricketer-Mahendra-Singh-Dhoni-2011.jpg',
-                }}
-              />
-            </Left>
-            <Body>
-              <Text>Kumar Pratik</Text>
-              <Text note>Today, 11:50 am</Text>
-            </Body>
-          </ListItem>
+          {read.map((item, index) => (
+            <ListItem key={'read' + index} avatar style={{height: 84}}>
+              <Left>
+                <Thumbnail
+                  source={{
+                    uri: item.image,
+                  }}
+                />
+              </Left>
+              <Body>
+                <Text>{item.username}</Text>
+                <Text note>{moment(item.read).calendar()}</Text>
+              </Body>
+            </ListItem>
+          ))}
         </List>
         <View
           style={{
             paddingHorizontal: '4%',
             paddingVertical: 8,
           }}>
-          <Text style={{color: 'grey', fontSize: 16}}>1 Remaining</Text>
+          <Text style={{color: 'grey', fontSize: 16}}>
+            {remainigReads} Remaining
+          </Text>
         </View>
       </View>
       <View
@@ -162,48 +138,22 @@ const ForGroup = () => {
           <Icon name="checkmark-done" style={{color: 'grey'}} />
         </View>
         <List>
-          <ListItem avatar style={{height: 84}}>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://cdn.britannica.com/25/222725-050-170F622A/Indian-cricketer-Mahendra-Singh-Dhoni-2011.jpg',
-                }}
-              />
-            </Left>
-            <Body>
-              <Text>Kumar Pratik</Text>
-              <Text note>Today, 11:50 am</Text>
-            </Body>
-          </ListItem>
-          <ListItem avatar style={{height: 84}}>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://cdn.britannica.com/25/222725-050-170F622A/Indian-cricketer-Mahendra-Singh-Dhoni-2011.jpg',
-                }}
-              />
-            </Left>
-            <Body>
-              <Text>Kumar Pratik</Text>
-              <Text note>Today, 11:50 am</Text>
-            </Body>
-          </ListItem>
-          <ListItem avatar style={{height: 84}}>
-            <Left>
-              <Thumbnail
-                source={{
-                  uri:
-                    'https://cdn.britannica.com/25/222725-050-170F622A/Indian-cricketer-Mahendra-Singh-Dhoni-2011.jpg',
-                }}
-              />
-            </Left>
-            <Body>
-              <Text>Kumar Pratik</Text>
-              <Text note>Today, 11:50 am</Text>
-            </Body>
-          </ListItem>
+          {delivered.map((item, index) => (
+            <ListItem key={index + 'delivered'} avatar style={{height: 84}}>
+              <Left>
+                <Thumbnail
+                  source={{
+                    uri:
+                      'https://cdn.britannica.com/25/222725-050-170F622A/Indian-cricketer-Mahendra-Singh-Dhoni-2011.jpg',
+                  }}
+                />
+              </Left>
+              <Body>
+                <Text>Kumar Pratik</Text>
+                <Text note>{moment(item.delivered).calendar()}</Text>
+              </Body>
+            </ListItem>
+          ))}
         </List>
       </View>
     </Content>
@@ -217,6 +167,9 @@ const MessageInfoScreen = ({
   },
 }) => {
   const theme = useTheme();
+  const [delivered, setDelivered] = useState([]);
+  const [read, setRead] = useState([]);
+  const [remainigReads, setRemainingReads] = useState(0);
 
   const getMessageInfo = async () => {
     try {
@@ -229,16 +182,6 @@ const MessageInfoScreen = ({
 
       const token = fcmToken != '' ? fcmToken : '1111';
 
-      console.log(`${API_URL}api-message/get-msg-info`);
-      console.log(formData);
-      console.log({
-        'Content-Type': 'multipart/form-data',
-        device_id: '1234',
-        device_token: token,
-        device_type: Platform.OS,
-        Authorization: JSON.parse(userAccessToken),
-      });
-
       const response = await fetch(`${API_URL}api-message/get-msg-info`, {
         method: 'POST',
         headers: {
@@ -250,9 +193,13 @@ const MessageInfoScreen = ({
         },
         body: formData,
       });
-      console.log(response);
       const results = await response.json();
-      console.log(JSON.stringify(results, null, 2));
+      if (results.code == '200') {
+        const {isread, delivered, remaireads} = results.data;
+        setDelivered(delivered);
+        setRead(isread);
+        setRemainingReads(remaireads);
+      }
     } catch (error) {
       console.log('Here Error ', error);
     }
@@ -287,7 +234,13 @@ const MessageInfoScreen = ({
       </View>
       <View style={{flex: 1, backgroundColor: theme.colors.background}}>
         {role === 'user' && <ForUser />}
-        {role === 'group' && <ForGroup />}
+        {role === 'group' && (
+          <ForGroup
+            delivered={delivered}
+            read={read}
+            remainigReads={remainigReads}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

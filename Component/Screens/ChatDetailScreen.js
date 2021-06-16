@@ -254,7 +254,7 @@ class ChatDetailScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData.data);
+        // console.log(responseData.data);
         if (responseData.code == '200') {
           const readIds = responseData.data.read.split(',');
           if (
@@ -605,6 +605,7 @@ class ChatDetailScreen extends React.Component {
       }));
     }
 
+    
     var raw = JSON.stringify({
       user_id: this.state.userId,
       toid: this.props.route.params.userid,
@@ -2433,70 +2434,19 @@ class ChatDetailScreen extends React.Component {
                                       name="information-circle-outline"
                                       type="Ionicons"
                                       onPress={async () => {
-                                        let formData = new FormData();
-                                        formData.append(
-                                          'msgid',
-                                          this.state.forwardMessageIds[0],
-                                        );
-                                        formData.append(
-                                          'user_id',
-                                          this.props.route.params.userid,
-                                        );
-                                        const token =
-                                          this.state.fcmToken != ''
-                                            ? this.state.fcmToken
-                                            : '1111';
-                                        console.log(
-                                          `${API_URL}api-message/get-msg-info`,
-                                        );
-                                        console.log(formData);
-                                        console.log({
-                                          'Content-Type': 'multipart/form-data',
-                                          device_id: '1234',
-                                          device_token: token,
-                                          device_type: Platform.OS,
-                                          Authorization: JSON.parse(
-                                            this.state.userAccessToken,
-                                          ),
-                                        });
-
-                                        const response = fetch(
-                                          `${API_URL}api-message/get-msg-info`,
+                                        this.props.navigation.navigate(
+                                          'MessageInfoScreen',
                                           {
-                                            method: 'POST',
-                                            headers: {
-                                              'Content-Type':
-                                                'multipart/form-data',
-                                              device_id: '1234',
-                                              device_token: token,
-                                              device_type: Platform.OS,
-                                              Authorization: JSON.parse(
-                                                this.state.userAccessToken,
-                                              ),
-                                            },
-                                            body: formData,
+                                            msg_id: this.state
+                                              .forwardMessageIds[0],
+                                            user_id: this.state.userId,
+                                            role:
+                                              this.props.route.params
+                                                .msg_type == '1'
+                                                ? 'group'
+                                                : 'user',
                                           },
-                                        )
-                                          .then((res) => res.json())
-                                          .then((data) => console.log(data))
-                                          .catch((err) => console.log(err));
-                                        // console.log(response);
-                                        // const results = await response.json();
-                                        // console.log(results);
-                                        // this.props.navigation.navigate(
-                                        //   'MessageInfoScreen',
-                                        //   {
-                                        //     msg_id: this.state
-                                        //       .forwardMessageIds[0],
-                                        //     user_id: this.props.route.params
-                                        //       .userid,
-                                        //     role:
-                                        //       this.props.route.params
-                                        //         .msg_type == '1'
-                                        //         ? 'group'
-                                        //         : 'user',
-                                        //   },
-                                        // );
+                                        );
                                       }}
                                       style={{
                                         color: '#2B2B2B',
