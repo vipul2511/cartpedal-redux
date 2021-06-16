@@ -24,7 +24,7 @@ import {useTheme} from '@react-navigation/native';
 import {API_URL} from '../../Config';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const ForUser = () => {
+const ForUser = ({delivered, read}) => {
   return (
     <Content>
       <View
@@ -36,28 +36,32 @@ const ForUser = () => {
           borderRadius: 4,
           borderColor: 'grey',
         }}>
-        <ListItem icon>
-          <Body
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-            }}>
-            <Icon name="checkmark-done" style={{color: '#34B7F1'}} />
-            <Text style={{paddingHorizontal: 12}}>Read</Text>
-          </Body>
-        </ListItem>
-        <ListItem icon>
-          <Body
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-            }}>
-            <Icon name="checkmark-done" style={{color: 'grey'}} />
-            <Text style={{paddingHorizontal: 12}}>Delivered</Text>
-          </Body>
-        </ListItem>
+        {read && (
+          <ListItem icon>
+            <Body
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+              }}>
+              <Icon name="checkmark-done" style={{color: '#34B7F1'}} />
+              <Text style={{paddingHorizontal: 12}}>Read</Text>
+            </Body>
+          </ListItem>
+        )}
+        {delivered && (
+          <ListItem icon>
+            <Body
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+              }}>
+              <Icon name="checkmark-done" style={{color: 'grey'}} />
+              <Text style={{paddingHorizontal: 12}}>Delivered</Text>
+            </Body>
+          </ListItem>
+        )}
       </View>
     </Content>
   );
@@ -149,7 +153,7 @@ const ForGroup = ({read, delivered, remainigReads}) => {
                 />
               </Left>
               <Body>
-                <Text>Kumar Pratik</Text>
+                <Text>{item.username}</Text>
                 <Text note>{moment(item.delivered).calendar()}</Text>
               </Body>
             </ListItem>
@@ -175,7 +179,6 @@ const MessageInfoScreen = ({
     try {
       const fcmToken = await AsyncStorage.getItem('@fcmtoken');
       const userAccessToken = await AsyncStorage.getItem('@access_token');
-      console.log(fcmToken, userAccessToken);
       let formData = new FormData();
       formData.append('msgid', msg_id);
       formData.append('user_id', user_id);
@@ -233,7 +236,7 @@ const MessageInfoScreen = ({
         <TouchableOpacity style={styles.SearchContainer} />
       </View>
       <View style={{flex: 1, backgroundColor: theme.colors.background}}>
-        {role === 'user' && <ForUser />}
+        {role === 'user' && <ForUser delivered={delivered} read={read} />}
         {role === 'group' && (
           <ForGroup
             delivered={delivered}
