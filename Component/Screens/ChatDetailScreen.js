@@ -32,7 +32,7 @@ import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-crop-picker';
 import resp from 'rn-responsive-font';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-import {DocumentDirectoryPath, readFile, stat} from 'react-native-fs';
+import {DocumentDirectoryPath, readFile} from 'react-native-fs';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import ImageModal from 'react-native-image-modal';
@@ -60,7 +60,6 @@ import {ListFiles} from '../utils/FilesCaching';
 import {API_URL} from '../../Config';
 import {Tool, VESDK} from 'react-native-videoeditorsdk';
 import Draggable from 'react-native-draggable';
-import {Easing} from 'react-native-reanimated';
 
 let height = Dimensions.get('window').height;
 
@@ -255,6 +254,7 @@ class ChatDetailScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseData) => {
+        console.log(responseData.data);
         if (responseData.code == '200') {
           const readIds = responseData.data.read.split(',');
           if (
@@ -2432,10 +2432,71 @@ class ChatDetailScreen extends React.Component {
                                     <Icon
                                       name="information-circle-outline"
                                       type="Ionicons"
-                                      onPress={() => {
-                                        this.props.navigation.navigate(
-                                          'MessageInfoScreen',
+                                      onPress={async () => {
+                                        let formData = new FormData();
+                                        formData.append(
+                                          'msgid',
+                                          this.state.forwardMessageIds[0],
                                         );
+                                        formData.append(
+                                          'user_id',
+                                          this.props.route.params.userid,
+                                        );
+                                        const token =
+                                          this.state.fcmToken != ''
+                                            ? this.state.fcmToken
+                                            : '1111';
+                                        console.log(
+                                          `${API_URL}api-message/get-msg-info`,
+                                        );
+                                        console.log(formData);
+                                        console.log({
+                                          'Content-Type': 'multipart/form-data',
+                                          device_id: '1234',
+                                          device_token: token,
+                                          device_type: Platform.OS,
+                                          Authorization: JSON.parse(
+                                            this.state.userAccessToken,
+                                          ),
+                                        });
+
+                                        const response = fetch(
+                                          `${API_URL}api-message/get-msg-info`,
+                                          {
+                                            method: 'POST',
+                                            headers: {
+                                              'Content-Type':
+                                                'multipart/form-data',
+                                              device_id: '1234',
+                                              device_token: token,
+                                              device_type: Platform.OS,
+                                              Authorization: JSON.parse(
+                                                this.state.userAccessToken,
+                                              ),
+                                            },
+                                            body: formData,
+                                          },
+                                        )
+                                          .then((res) => res.json())
+                                          .then((data) => console.log(data))
+                                          .catch((err) => console.log(err));
+                                        // console.log(response);
+                                        // const results = await response.json();
+                                        // console.log(results);
+                                        // this.props.navigation.navigate(
+                                        //   'MessageInfoScreen',
+                                        //   {
+                                        //     msg_id: this.state
+                                        //       .forwardMessageIds[0],
+                                        //     user_id: this.props.route.params
+                                        //       .userid,
+                                        //     role:
+                                        //       this.props.route.params
+                                        //         .msg_type == '1'
+                                        //         ? 'group'
+                                        //         : 'user',
+                                        //   },
+                                        // );
                                       }}
                                       style={{
                                         color: '#2B2B2B',
@@ -4433,7 +4494,7 @@ const newMessage = {
   fattach: null,
   fmsg: '',
   id: 42,
-  isread: '',
+  isread: null,
   msg_type: '',
   reply_id: 0,
   tattach: '',
@@ -4447,7 +4508,7 @@ const replyNewMessage = {
   fattach: null,
   fmsg: '',
   id: 42,
-  isread: '',
+  isread: null,
   msg_type: '',
   reply_id: 0,
   reply_msg: {

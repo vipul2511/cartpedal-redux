@@ -213,8 +213,10 @@ export const MessageComponent = ({
 
   useEffect(() => {
     if (message.id) {
+      const length =
+        message.isread === null ? 0 : message.isread.split(',').length;
       if (
-        message.isread.split(',').length !== membersCount &&
+        length !== membersCount &&
         !messageIdList.includes(message.id) &&
         message.fmsg !== ''
       ) {
@@ -603,7 +605,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -1097,7 +1100,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -1242,7 +1246,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -1744,7 +1749,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -2333,7 +2339,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -2819,7 +2826,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -3372,7 +3380,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -3758,7 +3767,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',
@@ -4328,7 +4338,8 @@ export const MessageComponent = ({
                 style={{
                   fontSize: 16,
                   color:
-                    message.isread.split(',').length === membersCount ||
+                    (message.isread !== null &&
+                      message.isread.split(',').length === membersCount) ||
                     messageIdList.includes(message.id)
                       ? '#34B7F1'
                       : 'grey',

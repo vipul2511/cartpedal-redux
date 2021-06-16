@@ -8,7 +8,7 @@ import {
   ListItem,
   Thumbnail,
 } from 'native-base';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,9 +16,12 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import {useTheme} from '@react-navigation/native';
+import {API_URL} from '../../Config';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const ForUser = () => {
   return (
@@ -207,10 +210,58 @@ const ForGroup = () => {
   );
 };
 
-const MessageInfoScreen = ({navigation}) => {
+const MessageInfoScreen = ({
+  navigation,
+  route: {
+    params: {user_id, msg_id, role},
+  },
+}) => {
   const theme = useTheme();
-  // const role = 'user';
-  const role = 'group';
+
+  const getMessageInfo = async () => {
+    try {
+      const fcmToken = await AsyncStorage.getItem('@fcmtoken');
+      const userAccessToken = await AsyncStorage.getItem('@access_token');
+      console.log(fcmToken, userAccessToken);
+      let formData = new FormData();
+      formData.append('msgid', msg_id);
+      formData.append('user_id', user_id);
+
+      const token = fcmToken != '' ? fcmToken : '1111';
+
+      console.log(`${API_URL}api-message/get-msg-info`);
+      console.log(formData);
+      console.log({
+        'Content-Type': 'multipart/form-data',
+        device_id: '1234',
+        device_token: token,
+        device_type: Platform.OS,
+        Authorization: JSON.parse(userAccessToken),
+      });
+
+      const response = await fetch(`${API_URL}api-message/get-msg-info`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          device_id: '1234',
+          device_token: token,
+          device_type: Platform.OS,
+          Authorization: JSON.parse(userAccessToken),
+        },
+        body: formData,
+      });
+      console.log(response);
+      const results = await response.json();
+      console.log(JSON.stringify(results, null, 2));
+    } catch (error) {
+      console.log('Here Error ', error);
+    }
+  };
+
+  useEffect(() => {
+    getMessageInfo();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerView}>

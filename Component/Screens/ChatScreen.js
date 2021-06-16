@@ -371,7 +371,7 @@ class ChatScreen extends Component {
                           groupexit: v.lastmsg.group_id !== 0 ? v.exit : '',
                           membersCount:
                             !v.member || v.member == ''
-                              ? 2
+                              ? 1
                               : v.member.split(',').length,
                         });
                       }}>

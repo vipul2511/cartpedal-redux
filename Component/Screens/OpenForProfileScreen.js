@@ -341,7 +341,7 @@ class OpenForProfileScreen extends Component {
                       groupId: '0',
                       msg_type: '0',
                       userphone: this.state.wholeData.mobile,
-                      membersCount: 2,
+                      membersCount: 1,
                     });
                   }}>
                   <Image
