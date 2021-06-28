@@ -26,6 +26,7 @@ export const ChatlistAction = (userId, userAccesstoken) => {
     })
       .then((response) => response.json())
       .then(async (responseData) => {
+        console.log(JSON.stringify(responseData, null, 2));
         if (responseData.code == '200') {
           dispatch({
             type: CHAT_LIST_SUCCESS,
@@ -41,6 +42,7 @@ export const ChatlistAction = (userId, userAccesstoken) => {
         }
       })
       .catch((error) => {
+        console.log(error);
         dispatch({
           type: CHAT_LIST_ERROR,
           payload: error,

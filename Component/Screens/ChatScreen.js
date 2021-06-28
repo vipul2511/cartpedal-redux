@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 console.disableYellowBox = true;
-
 import {
   StyleSheet,
   View,
@@ -12,7 +11,6 @@ import {
   ScrollView,
   Platform,
   TextInput,
-  PermissionsAndroid,
 } from 'react-native';
 import resp from 'rn-responsive-font';
 import Spinner from 'react-native-loading-spinner-overlay';
