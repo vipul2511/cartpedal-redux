@@ -85,7 +85,7 @@
     "react-native-video": "^5.1.0-alpha8",
     "react-native-video-controls": "^2.7.1",
     "react-native-video-player": "https://github.com/ShariqMush/react-native-fullscreenvideo-player",
-    "react-native-videoeditorsdk": "^2.9.0",
+    "react-native-videoeditorsdk": "^2.8.0",
     "react-native-webview": "^11.0.0",
     "react-native-wifi-reborn": "^4.3.8",
     "react-redux": "^7.2.3",
