@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
-  Share,
   ScrollView,
   Dimensions,
   Platform,
@@ -22,6 +21,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 import FastImage from 'react-native-fast-image';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob'
 console.disableYellowBox = true;
 import {BASE_URL} from '../Component/ApiClient';
 let width = Dimensions.get('window').width;
@@ -51,6 +52,7 @@ class OpenForProfileScreen extends Component {
       baseUrl: `${BASE_URL}`,
       images: [require('../images/placeholder-image-2.png')],
       name: '',
+      defaultProfile:'https://miro.medium.com/max/790/1*reXbWdk_3cew69RuAUbVzg.png'
     };
   }
 
@@ -125,25 +127,44 @@ class OpenForProfileScreen extends Component {
       .done();
   }
 
-  onShare = async (links) => {
+  onShare = async (links,imagelink) => {
     try {
-      const result = await Share.share({
-        message: `Get the product at ${links}`,
-        url: `${links}`,
-      });
+      let shareOptions = {
+        title: 'GET Product',
+        url: imagelink,
+        message: `GET Products ${links}`,
+      };
+      this.hideLoading();
+      const result=await Share.open(shareOptions);
 
       if (result.action === Share.sharedAction) {
+        // this.hideLoading();
         if (result.activityType) {
+          // shared with activity type of result.activityType
         } else {
+          // shared
         }
       } else if (result.action === Share.dismissedAction) {
+        // this.hideLoading();
+        // dismissed
       }
     } catch (error) {
+      // this.hideLoading();
       alert(error.message);
     }
   };
+  base64ImageConvetor=async(links,imagelink)=>{
+    this.showLoading();
+    RNFetchBlob.fetch('GET', `${imagelink}`)
+    .then(resp => {
+       
+      let base64image = resp.data;
+      this.onShare(links,'data:image/png;base64,' + base64image);
+    })
+    .catch(err =>console.log('error',err));
+  }
 
-  link = async (id, name) => {
+  link = async (id, name,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         id,
@@ -155,14 +176,13 @@ class OpenForProfileScreen extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
-        console.log('the url', url);
-        this.onShare(url);
+        this.base64ImageConvetor(url,Imagelink);
       });
   };
 
-  forwardlink = async (userid, name) => {
+  forwardlink = async (userid, name,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         userid,
@@ -174,7 +194,7 @@ class OpenForProfileScreen extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
         AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
           if (NumberFormat) {
@@ -184,7 +204,7 @@ class OpenForProfileScreen extends Component {
               PhoneNumber: numID,
               userId: this.state.userNo,
               userAccessToken: this.state.userAccessToken,
-              msgids: url,
+              msgids: `${url}?&li=${Imagelink}`,
             });
           }
         });
@@ -382,11 +402,19 @@ class OpenForProfileScreen extends Component {
                   }}
                   option1Click={() => {
                     let name = 'OpenForProfileScreen';
-                    this.link(this.props.route.params.id, name);
+                    let image;
+                    this.state.avatar != null
+                    ? image= this.state.avatar
+                    : image=this.state.defaultProfile
+                    this.link(this.props.route.params.id, name,image);
                   }}
                   option2Click={() => {
                     let name = 'OpenForProfileScreen';
-                    this.forwardlink(this.props.route.params.id, name);
+                    let image;
+                    this.state.avatar != null
+                    ? image= this.state.avatar
+                    : image=this.state.defaultProfile
+                    this.forwardlink(this.props.route.params.id, name,image);
                   }}
                 />
               </View>
@@ -499,11 +527,19 @@ class OpenForProfileScreen extends Component {
                             }}
                             option1Click={() => {
                               let name = 'ProductDetailScreen';
-                              this.link(item.id, name);
+                              let image;
+                              item.image[0]
+                          ? image= item.image[0].image
+                          : image=this.state.defaultProfile
+                              this.link(item.id, name,image);
                             }}
                             option2Click={() => {
                               let name = 'ProductDetailScreen';
-                              this.forwardlink(item.id, name);
+                              let image;
+                              item.image[0]
+                          ? image= item.image[0].image
+                          : image=this.state.defaultProfile
+                              this.forwardlink(item.id, name,image);
                             }}
                           />
                         </TouchableOpacity>

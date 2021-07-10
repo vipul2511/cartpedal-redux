@@ -12,7 +12,6 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
-  Share,
   Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
@@ -22,6 +21,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob'
 let width = Dimensions.get('window').width;
 
 class OpenForPublicDetail extends Component {
@@ -44,6 +45,7 @@ class OpenForPublicDetail extends Component {
       pickedImage: require('../images/default_user.png'),
       avatar: '',
       baseUrl: `${BASE_URL}`,
+      defaultProfile:'https://miro.medium.com/max/790/1*reXbWdk_3cew69RuAUbVzg.png'
     };
   }
 
@@ -166,15 +168,30 @@ class OpenForPublicDetail extends Component {
       .done();
   }
 
-  onShare = async (links) => {
+  base64ImageConvetor=async(links,imagelink)=>{
+    this.showLoading();
+    RNFetchBlob.fetch('GET', `${imagelink}`)
+    .then(resp => {
+       
+      let base64image = resp.data;
+      this.onShare(links,'data:image/png;base64,' + base64image);
+    })
+    .catch(err =>console.log('error',err));
+  }
+  onShare = async (links,imagelink) => {
     try {
-      const result = await Share.share({
-        message: `Get the product at ${links}`,
-        url: `${links}`,
-      });
+      let shareOptions = {
+        title: 'GET Product',
+        url: imagelink,
+        message: `GET Products ${links}`,
+      };
+      this.hideLoading();
+      const result=await Share.open(shareOptions);
+
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
         } else {
+
         }
       } else if (result.action === Share.dismissedAction) {
       }
@@ -183,7 +200,7 @@ class OpenForPublicDetail extends Component {
     }
   };
 
-  link = async (id, name) => {
+  link = async (id, name,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         id,
@@ -195,13 +212,13 @@ class OpenForPublicDetail extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
-        this.onShare(url);
+        this.base64ImageConvetor(url,Imagelink);
       });
   };
 
-  forwardlink = async (userid, name) => {
+  forwardlink = async (userid, name,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         userid,
@@ -213,7 +230,7 @@ class OpenForPublicDetail extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
         AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
           if (NumberFormat) {
@@ -223,7 +240,7 @@ class OpenForPublicDetail extends Component {
               PhoneNumber: numID,
               userId: this.state.userNo,
               userAccessToken: this.state.userAccessToken,
-              msgids: url,
+              msgids: `${url}?&li=${Imagelink}`,
             });
           }
         });
@@ -407,11 +424,19 @@ class OpenForPublicDetail extends Component {
                       }}
                       option1Click={() => {
                         let name = 'ProductDetailScreen';
-                        this.link(item.id, name);
+                        let image;
+                        item.image[0]
+                        ? image= item.image[0].image
+                        : image=this.state.defaultProfile
+                        this.link(item.id, name,image);
                       }}
                       option2Click={() => {
                         let name = 'ProductDetailScreen';
-                        this.forwardlink(item.id, name);
+                        let image;
+                        item.image[0]
+                        ? image= item.image[0].image
+                        : image=this.state.defaultProfile
+                        this.forwardlink(item.id, name,image);
                       }}
                     />
                   </View>

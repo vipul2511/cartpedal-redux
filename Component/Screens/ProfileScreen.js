@@ -15,7 +15,6 @@ import {
   TextInput,
   Modal,
   Dimensions,
-  Share,
   ScrollView,
 } from 'react-native';
 import resp from 'rn-responsive-font';
@@ -31,6 +30,8 @@ import SeeMore from 'react-native-see-more-inline';
 import moment from 'moment';
 import ImageSelectDialog from '../Component/ImageSelectDialog';
 import firebase from 'react-native-firebase';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob'
 import {
   profileView,
   addStoryAction,
@@ -92,6 +93,7 @@ class ProfileScreen extends Component {
         profileImage: require('../images/default_user.png'),
         covers: [require('../images/placeholder-image-2.png')],
         images: [require('../images/default_user.png')],
+        defaultProfile:'https://miro.medium.com/max/790/1*reXbWdk_3cew69RuAUbVzg.png'
       });
   }
   async componentDidMount() {
@@ -642,7 +644,7 @@ class ProfileScreen extends Component {
       .done();
   };
 
-  forwardlink = async (userid, name) => {
+  forwardlink = async (userid, name,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         userid,
@@ -665,19 +667,32 @@ class ProfileScreen extends Component {
               PhoneNumber: numID,
               userId: this.state.userId,
               userAccessToken: this.state.userAccessToken,
-              msgids: url,
+              msgids: `${url}?&li=${Imagelink}`,
             });
           }
         });
       });
   };
 
-  onShare = async (links) => {
+  base64ImageConvetor=async(links,imagelink)=>{
+    this.showLoading();
+    RNFetchBlob.fetch('GET', `${imagelink}`)
+    .then(resp => {
+       
+      let base64image = resp.data;
+      this.onShare(links,'data:image/png;base64,' + base64image);
+    })
+    .catch(err =>console.log('error',err));
+  }
+  onShare = async (links,imagelink) => {
     try {
-      const result = await Share.share({
-        message: `Get the product at ${links}`,
-        url: `${links}`,
-      });
+      let shareOptions = {
+        title: 'GET Product',
+        url: imagelink,
+        message: `GET Products ${links}`,
+      };
+      this.hideLoading();
+      const result=await Share.open(shareOptions);
 
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -690,7 +705,7 @@ class ProfileScreen extends Component {
     }
   };
 
-  link = async (id, name) => {
+  link = async (id, name,ImageLink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
         id,
@@ -702,10 +717,9 @@ class ProfileScreen extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
-        console.log('the url', url);
-        this.onShare(url);
+        this.base64ImageConvetor(url,ImageLink);
       });
   };
   viewFunc = () => {
@@ -920,11 +934,19 @@ class ProfileScreen extends Component {
                     }}
                     option1Click={() => {
                       let name = 'OpenForProfileScreen';
-                      this.link(this.state.userId, name);
+                      let image;
+                      this.state.profilepic == null
+                      ? image=this.state.profileImage
+                      : image=this.state.profilepic
+                      this.link(this.state.userId, name,image);
                     }}
                     option2Click={() => {
                       let name = 'OpenForProfileScreen';
-                      this.forwardlink(this.state.userId, name);
+                      let image;
+                      this.state.profilepic == null
+                      ? image=this.state.profileImage
+                      : image=this.state.profilepic
+                      this.forwardlink(this.state.userId, name,image);
                     }}
                   />
                 </TouchableOpacity>
@@ -1334,11 +1356,19 @@ class ProfileScreen extends Component {
                               }}
                               option2Click={() => {
                                 let name = 'ProductDetailScreen';
-                                this.link(item.product_id, name);
+                                let image;
+                                item.images[0]
+                                ? image= item.images[0].file_url
+                                : image=this.state.pickedImage
+                                this.link(item.product_id, name,image);
                               }}
                               option3Click={() => {
                                 let name = 'ProductDetailScreen';
-                                this.forwardlink(item.product_id, name);
+                                let image;
+                                item.images[0]
+                                ? image= item.images[0].file_url
+                                : image=this.state.pickedImage
+                                this.forwardlink(item.product_id, name,image);
                               }}
                               option4Click={() => {
                                 this.props.navigation.navigate(

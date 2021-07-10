@@ -11,7 +11,6 @@ import {
   RefreshControl,
   ScrollView,
   Dimensions,
-  Share,
   Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
@@ -22,6 +21,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
 import {hp, wp} from '../Component/hightWidthRatio';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob'
 let width = Dimensions.get('window').width;
 
 class FavouriteTab extends Component {
@@ -43,6 +44,7 @@ class FavouriteTab extends Component {
       whiteIcon: require('../images/dislike.png'),
       avatar: '',
       pickedImage: require('../images/default_user.png'),
+      defaultProfile:'https://miro.medium.com/max/790/1*reXbWdk_3cew69RuAUbVzg.png'
     };
     console.log('this props', JSON.stringify(this.props));
   }
@@ -303,28 +305,39 @@ class FavouriteTab extends Component {
       .done();
   };
 
-  onShare = async (links) => {
+  base64ImageConvetor=async(links,imagelink)=>{
+    this.showLoading();
+    RNFetchBlob.fetch('GET', `${imagelink}`)
+    .then(resp => {
+       
+      let base64image = resp.data;
+      this.onShare(links,'data:image/png;base64,' + base64image);
+    })
+    .catch(err =>console.log('error',err));
+  }
+  onShare = async (links,imagelink) => {
     try {
-      const result = await Share.share({
-        message: `Get the product at ${links}`,
-        url: `${links}`,
-      });
+      let shareOptions = {
+        title: 'GET Product',
+        url: imagelink,
+        message: `GET Products ${links}`,
+      };
+      this.hideLoading();
+      const result=await Share.open(shareOptions);
 
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // shared with activity type of result.activityType
         } else {
-          // shared
+
         }
       } else if (result.action === Share.dismissedAction) {
-        // dismissed
       }
     } catch (error) {
       alert(error.message);
     }
   };
 
-  link = async (id) => {
+  link = async (id,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
         id,
@@ -336,13 +349,13 @@ class FavouriteTab extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
-        this.onShare(url);
+        this.base64ImageConvetor(url,Imagelink);
       });
   };
 
-  forwardlink = async (userid) => {
+  forwardlink = async (userid,ImageLink) => {
     const link = new firebase.links.DynamicLink(
       'https://cartpedal.page.link?id=in.cartpedal&page=OpenForPublicDetail&profileId=' +
         userid,
@@ -354,7 +367,7 @@ class FavouriteTab extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
         AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
           if (NumberFormat) {
@@ -364,7 +377,7 @@ class FavouriteTab extends Component {
               PhoneNumber: numID,
               userId: this.state.userNo,
               userAccessToken: this.state.userAccessToken,
-              msgids: url,
+              msgids: `http://${url}?&li=${ImageLink}`,
             });
           }
         });
@@ -574,10 +587,18 @@ class FavouriteTab extends Component {
                             this.blockuser(item.id);
                           }}
                           option2Click={() => {
-                            this.link(item.id);
+                            let image;
+                            item.products[0].image
+                            ?image= item.products[0].image
+                            : image=this.state.defaultProfile
+                            this.link(item.id,image);
                           }}
                           option3Click={() => {
-                            this.forwardlink(item.id);
+                            let image;
+                            item.products[0].image
+                            ?image= item.products[0].image
+                            : image=this.state.defaultProfile
+                            this.forwardlink(item.id,image);
                           }}
                           option4Click={() => {
                             this.SendReportIssue();

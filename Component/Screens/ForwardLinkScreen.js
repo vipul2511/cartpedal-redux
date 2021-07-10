@@ -191,7 +191,7 @@ class ForwardLinkScreen extends Component {
         <View style={styles.MainContentBox}>
           <ScrollView>
             <View>
-              {this.state.list.map((v, i) => {
+              {this.state.list&&this.state.list.map((v, i) => {
                 const inList = this.state.toids.indexOf(v.id) !== -1;
                 return (
                   <TouchableOpacity
@@ -250,7 +250,7 @@ class ForwardLinkScreen extends Component {
                   </TouchableOpacity>
                 );
               })}
-              {this.state.groups.map((v, i) => {
+              {this.state.groups&&this.state.groups.map((v, i) => {
                 const inList = this.state.toids.indexOf(v.grpid) !== -1;
                 return (
                   <TouchableOpacity

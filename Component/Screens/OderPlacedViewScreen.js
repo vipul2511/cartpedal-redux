@@ -13,7 +13,6 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
   ScrollView,
-  Share,
   Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
@@ -26,6 +25,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 import SeeMore from 'react-native-see-more-inline';
 import {BASE_URL} from '../Component/ApiClient';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob'
 class OderPlacedViewScreen extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +44,7 @@ class OderPlacedViewScreen extends Component {
       whiteIcon: require('../images/dislike.png'),
       avatar: '',
       pickedImage: require('../images/default_user.png'),
-
+      defaultProfile:'https://miro.medium.com/max/790/1*reXbWdk_3cew69RuAUbVzg.png',
       baseUrl: `${BASE_URL}`,
       images: [require('../images/placeholder-image-2.png')],
     };
@@ -56,13 +57,25 @@ class OderPlacedViewScreen extends Component {
   hideLoading() {
     this.setState({spinner: false});
   }
-  onShare = async (links) => {
+  base64ImageConvetor=async(links,imagelink)=>{
+    this.showLoading();
+    RNFetchBlob.fetch('GET', `${imagelink}`)
+    .then(resp => {
+       
+      let base64image = resp.data;
+      this.onShare(links,'data:image/png;base64,' + base64image);
+    })
+    .catch(err =>console.log('error',err));
+  }
+ onShare = async (links,imagelink) => {
     try {
-      const result = await Share.share({
-        message: `Get the product at ${links}`,
-        url: `${links}`,
-      });
-
+      let shareOptions = {
+        title: 'GET Product',
+        url: imagelink,
+        message: `GET Products ${links}`,
+      };
+      this.hideLoading();
+      const result=await Share.open(shareOptions);
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
         } else {
@@ -73,10 +86,10 @@ class OderPlacedViewScreen extends Component {
       alert(error.message);
     }
   };
-  link = async (id, name) => {
+  link = async (id, name,Imagelink,orderID) => {
+    console.log('image',Imagelink);
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
-        id,
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
     ).android
       .setPackageName('in.cartpedal')
@@ -85,17 +98,15 @@ class OderPlacedViewScreen extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
-        console.log('the url', url);
-        this.onShare(url);
+        this.base64ImageConvetor(url,Imagelink);
       });
   };
 
-  forwardlink = async (userid, name) => {
+  forwardlink = async (userid, name,orderID,ImageLink) => {
     const link = new firebase.links.DynamicLink(
-      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=` +
-        userid,
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
     ).android
       .setPackageName('in.cartpedal')
@@ -104,7 +115,7 @@ class OderPlacedViewScreen extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
         AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
@@ -115,7 +126,7 @@ class OderPlacedViewScreen extends Component {
               PhoneNumber: numID,
               userId: this.state.userNo,
               userAccessToken: this.state.userAccessToken,
-              msgids: url,
+              msgids: `${url}?&li=${ImageLink}`,
             });
           }
         });
@@ -410,18 +421,29 @@ class OderPlacedViewScreen extends Component {
                     }}
                     option2Click={() => {
                       let name = 'OrderRecievedViewScreen';
+                      let image;
+                      this.state.avatar == ''
+                        ? image=this.state.defaultProfile
+                        : image= this.state.avatar
                       this.link(
                         this.state.ProfileData.block_id,
                         name,
+                        image,
                         this.props.route.params.order_id,
+                        
                       );
                     }}
                     option3Click={() => {
                       let name = 'OrderRecievedViewScreen';
+                      let image;
+                      this.state.avatar == ''
+                        ? image=this.state.defaultProfile
+                        : image= this.state.avatar
                       this.forwardlink(
                         this.state.ProfileData.block_id,
                         name,
                         this.props.route.params.order_id,
+                        image
                       );
                     }}
                   />
@@ -484,18 +506,28 @@ class OderPlacedViewScreen extends Component {
                           }}
                           option1Click={() => {
                             let name = 'OrderRecievedViewScreen';
+                            let image;
+                            item.image?
+                            image=item.image:
+                            image=this.state.defaultProfile
                             this.link(
                               this.state.ProfileData.block_id,
                               name,
                               this.props.route.params.order_id,
+                              image
                             );
                           }}
                           option2Click={() => {
                             let name = 'OrderRecievedViewScreen';
+                            let image;
+                            item.image?
+                            image=item.image:
+                            image=this.state.defaultProfile
                             this.forwardlink(
                               this.state.ProfileData.block_id,
                               name,
                               this.props.route.params.order_id,
+                              image
                             );
                           }}
                         />

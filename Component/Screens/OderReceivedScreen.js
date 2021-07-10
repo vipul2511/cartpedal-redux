@@ -10,12 +10,10 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
-  Share,
   Dimensions,
   Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
-
 import CustomMenuIcon from './CustomMenuIcon';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -23,6 +21,8 @@ import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
 import {BASE_URL} from '../Component/ApiClient';
 import {wp, hp} from '../Component/hightWidthRatio';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob'
 let width = Dimensions.get('window').width;
 
 class CartPlaceScreen extends Component {
@@ -49,6 +49,7 @@ class CartPlaceScreen extends Component {
       pickedImage: require('../images/default_user.png'),
       avatar: '',
       acceptText: 'Accepted',
+      defaultProfile:'https://miro.medium.com/max/790/1*reXbWdk_3cew69RuAUbVzg.png'
     };
   }
 
@@ -242,14 +243,25 @@ class CartPlaceScreen extends Component {
       responseData.data.access_token.toString(),
     );
   }
-
-  onShare = async (links) => {
+  base64ImageConvetor=async(links,imagelink)=>{
+    this.showLoading();
+    RNFetchBlob.fetch('GET', `${imagelink}`)
+    .then(resp => {
+       
+      let base64image = resp.data;
+      this.onShare(links,'data:image/png;base64,' + base64image);
+    })
+    .catch(err =>console.log('error',err));
+  }
+  onShare = async (links,imagelink) => {
     try {
-      const result = await Share.share({
-        message: `Get the product at ${links}`,
-        url: `${links}`,
-      });
-
+      let shareOptions = {
+        title: 'GET Product',
+        url: imagelink,
+        message: `GET Products ${links}`,
+      };
+      this.hideLoading();
+      const result=await Share.open(shareOptions);
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
         } else {
@@ -261,7 +273,7 @@ class CartPlaceScreen extends Component {
     }
   };
 
-  link = async (id, name, orderID) => {
+  link = async (id, name, orderID,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
@@ -272,13 +284,13 @@ class CartPlaceScreen extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
-        this.onShare(url);
+        this.base64ImageConvetor(url,Imagelink);
       });
   };
 
-  forwardlink = async (userid, name, orderID) => {
+  forwardlink = async (userid, name, orderID,Imagelink) => {
     const link = new firebase.links.DynamicLink(
       `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
       'https://cartpedal.page.link',
@@ -289,7 +301,7 @@ class CartPlaceScreen extends Component {
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
         AsyncStorage.getItem('@Phonecontacts').then((NumberFormat) => {
           if (NumberFormat) {
@@ -299,7 +311,7 @@ class CartPlaceScreen extends Component {
               PhoneNumber: numID,
               userId: this.state.userNo,
               userAccessToken: this.state.userAccessToken,
-              msgids: url,
+              msgids: `${url}?&li=${Imagelink}`,
             });
           }
         });
@@ -447,11 +459,19 @@ class CartPlaceScreen extends Component {
                               }}
                               option1Click={() => {
                                 let name = 'OderPlacedViewScreen';
-                                this.link(item.id, name, item.orderid);
+                                let image;
+                                item.products[0].image?
+                                image= item.products[0].image
+                                :image=this.state.defaultProfile
+                                this.link(item.id, name, item.orderid,image);
                               }}
                               option2Click={() => {
                                 let name = 'OderPlacedViewScreen';
-                                this.forwardlink(item.id, name, item.orderid);
+                                let image;
+                                item.products[0].image?
+                                image= item.products[0].image
+                                :image=this.state.defaultProfile
+                                this.forwardlink(item.id, name, item.orderid,image);
                               }}
                             />
                           </View>

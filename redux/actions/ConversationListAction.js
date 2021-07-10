@@ -33,7 +33,6 @@ export const ConversationListAction = (userID, type, toid, userAccessToken) => {
       .then((response) => response.json())
       .then((responseData) => {
         if (responseData.code == '200') {
-          // console.log(JSON.stringify(responseData.data, null, 2));
           dispatch({
             type: CONVERSION_LIST_SUCCESS,
             payload: {data: responseData.data, id: toid},

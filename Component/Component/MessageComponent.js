@@ -26,7 +26,7 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import ImageModal from 'react-native-image-modal';
 import {IsFileExist, saveFileInCache} from '../utils/FilesCaching';
 import Highlighter from 'react-native-highlight-words';
-import Video from 'react-native-video';
+import FastImage from 'react-native-fast-image';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
@@ -1111,6 +1111,11 @@ export const MessageComponent = ({
   }
   if (msg_type === 'link') {
     if (message.tmsg !== '') {
+      let page='';
+      const split1 = message.tmsg.split('&');
+      if (split1.length > 1) {
+           page = split1[1].split('=')[1];
+      }
       content = (
         <View
           style={{
@@ -1128,6 +1133,7 @@ export const MessageComponent = ({
               <Hyperlink
                 linkDefault
                 linkStyle={{color: '#2980b9', fontSize: 20}}>
+               <Image  source={page!=''?{uri:page}:require('../images/placeholder-image.png')} style={{width:'100%',height:200}}/>
                 <Text
                   style={{
                     margin: 10,
@@ -1159,8 +1165,13 @@ export const MessageComponent = ({
       );
     }
     if (message.fmsg !== '') {
+    let page='';
+      const split1 = message.fmsg.split('&');
+      if (split1.length > 1) {
+           page = split1[1].split('=')[1];
+      }
       content = (
-        <View style={{alignSelf: 'flex-end', marginVertical: 10}}>
+        <View style={{alignSelf: 'flex-end', marginVertical:10}}>
           <View
             style={{
               backgroundColor: 'white',
@@ -1182,6 +1193,7 @@ export const MessageComponent = ({
                 <Hyperlink
                   linkDefault
                   linkStyle={{color: '#2980b9', fontSize: 20}}>
+                    <Image source={page!=''?{uri:page}:require('../images/placeholder-image.png')} style={{width:'100%',height:200}}/>
                   <Text
                     style={{
                       margin: 10,

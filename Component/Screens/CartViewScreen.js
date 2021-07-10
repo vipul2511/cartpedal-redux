@@ -12,7 +12,6 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
-  Share,
   Platform,
 } from 'react-native';
 import resp from 'rn-responsive-font';
@@ -24,6 +23,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SeeMore from 'react-native-see-more-inline';
 import firebase from 'react-native-firebase';
+import Share from 'react-native-share';
+import RNFetchBlob from 'rn-fetch-blob';
 let width = Dimensions.get('screen').width;
 let height = Dimensions.get('screen').height;
 import {BASE_URL} from '../Component/ApiClient';
@@ -58,6 +59,7 @@ class CartViewScreen extends Component {
       redIcon: require('../images/Heart_icon.png'),
       whiteIcon: require('../images/dislike.png'),
       baseUrl: `${BASE_URL}`,
+      defaultProfile:'https://miro.medium.com/max/790/1*reXbWdk_3cew69RuAUbVzg.png'
     };
   }
   showLoading() {
@@ -296,52 +298,62 @@ class CartViewScreen extends Component {
 
       .done();
   }
-  onShare = async (links) => {
+  base64ImageConvetor=async(links,imagelink)=>{
+    this.showLoading();
+    RNFetchBlob.fetch('GET', `${imagelink}`)
+    .then(resp => {
+       
+      let base64image = resp.data;
+      this.onShare(links,'data:image/png;base64,' + base64image);
+    })
+    .catch(err =>console.log('error',err));
+  }
+ onShare = async (links,imagelink) => {
     try {
-      const result = await Share.share({
-        message: `Get the product at ${links}`,
-        url: `${links}`,
-      });
-
+      let shareOptions = {
+        title: 'GET Product',
+        url: imagelink,
+        message: `GET Products ${links}`,
+      };
+      this.hideLoading();
+      const result=await Share.open(shareOptions);
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // shared with activity type of result.activityType
         } else {
-          // shared
         }
       } else if (result.action === Share.dismissedAction) {
-        // dismissed
       }
     } catch (error) {
       alert(error.message);
     }
   };
-  link = async (id, name, orderID) => {
+  link = async (id, name, orderID,imagelink) => {
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
-      'cartpedal.page.link',
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
+      'https://cartpedal.page.link?',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
 
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
-        console.log('the url', url);
-        this.onShare('http://' + url);
+        this.base64ImageConvetor(url,imagelink);
       });
   };
-  forwardlink = async (userid, name, orderID) => {
+  forwardlink = async (userid, name, orderID,Imagelink) => {
     const link = new firebase.links.DynamicLink(
-      `https://play.google.com/store/apps/details?id=in.cartpedal&page=${name}&profileId=${userid}&OrderId=${orderID}`,
-      'cartpedal.page.link',
+      `https://cartpedal.page.link?id=in.cartpedal&page=${name}&profileId=${id}&OrderId=${orderID}`,
+      'https://cartpedal.page.link?',
     ).android
-      .setPackageName('com.cart.android')
-      .ios.setBundleId('com.cart.ios');
+    .setPackageName('in.cartpedal')
+    .ios.setBundleId('com.ios.cartpadle')
+    .ios.setAppStoreId('1539321365');
     firebase
       .links()
-      .createDynamicLink(link)
+      .createShortDynamicLink(link)
       .then((url) => {
         console.log('the url', url);
         //  this.sendMessage(url,userid);
@@ -354,7 +366,7 @@ class CartViewScreen extends Component {
               PhoneNumber: numID,
               userId: this.state.userNo,
               userAccessToken: this.state.userAccessToken,
-              msgids: 'http://' + url,
+              msgids: `http://${url}?&li=${Imagelink}`,
             });
           }
         });
@@ -552,19 +564,28 @@ class CartViewScreen extends Component {
                   }}
                   option2Click={() => {
                     let name = 'CartViewScreen';
+                    let image;
+                    this.state.avatar == ''
+                        ? image=this.state.defaultProfile
+                        : image= this.state.avatar
                     this.link(
                       this.props.route.params.id,
                       name,
                       this.props.route.params.order_id,
+                      image
                     );
-                    // Toast.show('CLicked Shared Link', Toast.LONG)
                   }}
                   option3Click={() => {
                     let name = 'CartViewScreen';
+                    let image;
+                    this.state.avatar == ''
+                        ? image=this.state.defaultProfile
+                        : image= this.state.avatar
                     this.forwardlink(
                       this.props.route.params.id,
                       name,
                       this.props.route.params.order_id,
+                      image
                     );
                     // Toast.show('CLicked Forward Link', Toast.LONG)
                   }}
@@ -637,18 +658,28 @@ class CartViewScreen extends Component {
                             }}
                             option1Click={() => {
                               let name = 'CartViewScreen';
+                              let image;
+                              item.image == ''
+                                  ? image=this.state.defaultProfile
+                                  : image= item.image
                               this.link(
                                 this.props.route.params.id,
                                 name,
                                 this.props.route.params.order_id,
+                                image
                               );
                             }}
                             option2Click={() => {
                               let name = 'CartViewScreen';
+                              let image;
+                              item.image == ''
+                                  ? image=this.state.defaultProfile
+                                  : image= item.image
                               this.forwardlink(
                                 this.props.route.params.id,
                                 name,
                                 this.props.route.params.order_id,
+                                image
                               );
                               // Toast.show('CLicked Forward Link', Toast.LONG)
 
